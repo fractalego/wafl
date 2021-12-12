@@ -1,0 +1,18 @@
+the user greets the bot :-
+  the user is called {username},
+  hello to you, {username}!
+;
+
+the user says their name :-
+  the user is called {username},
+  nice to meet you {username}
+;
+
+the user greets the bot :-
+  hello to you!,
+  what is the user's name ? {username},
+  nice to meet you {username}
+;
+
+the bot name is fractalego;
+
