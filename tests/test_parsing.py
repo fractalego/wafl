@@ -8,7 +8,6 @@ USER greets
   USER is called {username}
   SAY hello to you, {username}!
 
-
 USER says their name
   USER is called {username}
   nice to meet you {username}
