@@ -3,14 +3,7 @@ from wafl.rules import Rule
 
 
 def get_facts_and_rules_from_text(text: str):
-    lines = []
-    for line in text.split('\n'):
-        if line.strip() and line.strip()[0] == '#':
-            continue
-
-        line = line.split('#')[0]
-        lines.append(line)
-    lines.append('')
+    lines = _get_lines_stripped_from_comments(text)
 
     facts = []
     rules = []
@@ -43,3 +36,16 @@ def get_facts_and_rules_from_text(text: str):
             effect = line.strip()
 
     return {'facts': facts, 'rules': rules}
+
+
+def _get_lines_stripped_from_comments(text):
+    lines = []
+    for line in text.split('\n'):
+        if line.strip() and line.strip()[0] == '#':
+            continue
+
+        line = line.split('#')[0]
+        lines.append(line)
+
+    lines.append('')
+    return lines

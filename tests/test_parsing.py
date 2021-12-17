@@ -38,5 +38,11 @@ class TestParsing(TestCase):
         facts = knowledge.ask_for_facts("how is the user")
         assert str(facts[0]) == expected
 
+    def test_knowledge_rules(self):
+        knowledge = Knowledge(wafl_example)
+        expected = "Rule(effect='USER greets', causes=['USER is called {username}', 'SAY hello to you, {username}!'])"
+        rules = knowledge.ask_for_rule_backward("the user greets you")
+        assert str(rules[0]) == expected
+
 
 

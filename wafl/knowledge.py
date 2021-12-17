@@ -18,6 +18,9 @@ class Knowledge:
         self._rules_retriever = Retriever()
         self._initialize_retrievers()
 
+    def add(self, text):
+        self._facts_dict[f'F{len(self._facts_dict)}'] = text
+
     def ask_for_facts(self, text):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(text)
         return [self._facts_dict[item[0]] for item in indices_and_scores if item[1] > self._threshold]

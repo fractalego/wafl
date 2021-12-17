@@ -27,5 +27,5 @@ class Retriever:
         return self._embeddings_model.similar_by_vector(embeddings, topn=2)
 
 
-def _get_embeddings_from_text(text):
+def _get_embeddings_from_text(text: str) -> "numpy.array":
     return sentence_model.encode(text)
