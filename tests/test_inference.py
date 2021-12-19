@@ -10,9 +10,9 @@ USER greets
   What is the user's name ? username
   SAY hello to you, {username}!
 
-USER says their name
+USER says they can swim
+  What is the user's name ? username
   USER is called {username}
-  SAY nice to meet you {username}
 
 This bot name is Fractalego
 
@@ -21,6 +21,12 @@ the user is very happy
 The user's name is Bob
 
 """.strip()
+
+### TODO
+### 1) Implement substitutions of variables within causes loop
+### 2) implement SAY (conversation), REMEMBER (knowledge)
+### 3) Implement questions being asked during inference
+### 4) Should you use fact_checking and qa in rule's effect? (YES)
 
 
 class TestInference(TestCase):
@@ -50,6 +56,13 @@ class TestInference(TestCase):
     def test_simple_rule(self):
         inference = BackwardInference(Knowledge(wafl_example))
         query = Query(text="The user says hello!", is_question=False, variable='name')
+        answer = inference.compute(query)
+        expected = "True"
+        assert answer.text == expected
+
+    def test_backward_substitution(self):
+        inference = BackwardInference(Knowledge(wafl_example))
+        query = Query(text="The user says: I can swim", is_question=False, variable='name')
         answer = inference.compute(query)
         expected = "True"
         assert answer.text == expected

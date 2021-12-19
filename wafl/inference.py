@@ -26,14 +26,18 @@ class BackwardInference:
             if str(fact) in already_matched:
                 continue
 
-            already_matched.add(str(fact))
+            #already_matched.add(str(fact)) ### THIS IS MORE COMPLICATED THEN PROLOG
             return answer
 
         rules = self._knowledge.ask_for_rule_backward(query.text)
         for rule in rules:
             index = 0
+            substitutions = {}
             for cause in rule.causes:
                 new_already_matched = already_matched.copy()
+
+                for key, value in substitutions.items():
+                    cause = cause.replace(key, value)
 
                 if cause.lower().find('say') == 0:
                     answer = Answer(text='True')
@@ -52,6 +56,8 @@ class BackwardInference:
                     break
 
                 already_matched = new_already_matched
+                if answer.variable:
+                     substitutions[f'{{{answer.variable.strip()}}}'] = answer.text
                 index += 1
 
             if index == len(rule.causes):
