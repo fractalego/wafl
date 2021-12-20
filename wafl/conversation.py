@@ -20,7 +20,9 @@ class Conversation:
         self._timestamp = 0
 
     def utter(self, text):
-        self._to_utter.append(Utterance(speaker="BOT", utterance=text, timestamp=self._timestamp))
+        self._to_utter.append(
+            Utterance(speaker="BOT", utterance=text, timestamp=self._timestamp)
+        )
         self._timestamp += 1
 
     def next(self):
@@ -29,5 +31,7 @@ class Conversation:
         return utterance
 
     def answer(self, text):
-        self._utterances.append(Utterance(speaker="USER", utterance=text, timestamp=self._timestamp))
+        self._utterances.append(
+            Utterance(speaker="USER", utterance=text, timestamp=self._timestamp)
+        )
         self._timestamp += 1

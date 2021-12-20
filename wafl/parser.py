@@ -9,7 +9,7 @@ def get_facts_and_rules_from_text(text: str):
     rules = []
 
     rule_length = 0
-    effect = ''
+    effect = ""
     causes = []
 
     for line in lines:
@@ -33,25 +33,25 @@ def get_facts_and_rules_from_text(text: str):
             causes.append(Fact(text=line.strip()))
 
         else:
-            if '?' in line:
+            if "?" in line:
                 is_question = True
-                variable = line.split('?')[1].strip()
+                variable = line.split("?")[1].strip()
             else:
                 is_question = False
                 variable = None
             effect = Fact(text=line.strip(), is_question=is_question, variable=variable)
 
-    return {'facts': facts, 'rules': rules}
+    return {"facts": facts, "rules": rules}
 
 
 def _get_lines_stripped_from_comments(text):
     lines = []
-    for line in text.split('\n'):
-        if line.strip() and line.strip()[0] == '#':
+    for line in text.split("\n"):
+        if line.strip() and line.strip()[0] == "#":
             continue
 
-        line = line.split('#')[0]
+        line = line.split("#")[0]
         lines.append(line)
 
-    lines.append('')
+    lines.append("")
     return lines

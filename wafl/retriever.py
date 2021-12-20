@@ -10,7 +10,7 @@ _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sentence_model = SentenceTransformer('msmarco-distilbert-base-v3')
+sentence_model = SentenceTransformer("msmarco-distilbert-base-v3")
 sentence_model = sentence_model.to(device)
 
 

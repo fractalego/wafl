@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class Rule:
     effect: "Fact"
@@ -8,4 +9,3 @@ class Rule:
 
     def toJSON(self):
         return str(self)
-
