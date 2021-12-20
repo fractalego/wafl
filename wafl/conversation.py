@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from wafl.inference import BackwardInference
+
 
 @dataclass
 class Utterance:
@@ -12,26 +14,11 @@ class Utterance:
         return self.text
 
 
-class Conversation:
-    def __init__(self, knowledge):
+class Conversation():
+    def __init__(self, knowledge, interface):
         self._knowledge = knowledge
-        self._utterances = []
-        self._to_utter = []
-        self._timestamp = 0
+        self._interface = interface
+        self._inference = BackwardInference(knowledge, interface)
 
     def utter(self, text):
-        self._to_utter.append(
-            Utterance(speaker="BOT", utterance=text, timestamp=self._timestamp)
-        )
-        self._timestamp += 1
-
-    def next(self):
-        utterance = self._to_utter.pop()
-        self._utterances.append(utterance)
-        return utterance
-
-    def answer(self, text):
-        self._utterances.append(
-            Utterance(speaker="USER", utterance=text, timestamp=self._timestamp)
-        )
-        self._timestamp += 1
+        self._interface.output(text)

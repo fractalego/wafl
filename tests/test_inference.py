@@ -73,15 +73,3 @@ class TestInference(TestCase):
         answer = inference.compute(query)
         expected = "True"
         assert answer.text == expected
-
-#    def test_conversation(self):
-#        conversation = Conversation(Knowledge(wafl_example))
-#        conversation.utter('Welcome to the website. How may I help you?')
-#
-#        while conversation.ongoing():
-#            utterance = conversation.next()
-#            print(utterance)
-#
-#            if utterance.is_question:
-#                answer = input()
-#                conversation.answer(answer)

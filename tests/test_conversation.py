@@ -1,6 +1,8 @@
 from unittest import TestCase
 
+from wafl.conversation import Conversation
 from wafl.inference import BackwardInference
+from wafl.interface import BaseInterface
 from wafl.knowledge import Knowledge
 from wafl.qa.qa import Query
 
@@ -41,16 +43,24 @@ Bob has black hair
 ### 5) Implement questions being asked during inference
 
 
-class TestInference(TestCase):
+class DummyInterface(BaseInterface):
+    def __init__(self, to_utter=None):
+        self.utterances = []
+        self._to_utter = to_utter
+
+    def output(self, text: str):
+        self.utterances.append(text)
+
+    def input(self) -> str:
+        return self._to_utter.pop()
+
+
+class TestConversation(TestCase):
 
     def test_conversation(self):
-        conversation = Conversation(Knowledge(wafl_example))
-        conversation.utter('Welcome to the website. How may I help you?')
-
-        while conversation.ongoing():
-            utterance = conversation.next()
-            print(utterance)
-
-            if utterance.is_question:
-                answer = input()
-                conversation.answer(answer)
+        interface = DummyInterface()
+        conversation = Conversation(Knowledge(wafl_example),
+                                    interface=interface)
+        utterance = 'Welcome to the website. How may I help you?'
+        conversation.utter(utterance)
+        assert interface.utterances[0] == utterance

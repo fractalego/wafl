@@ -6,9 +6,10 @@ _logger = logging.getLogger(__name__)
 
 
 class BackwardInference:
-    def __init__(self, knowledge: "Knowledge", max_depth: int = 4):
+    def __init__(self, knowledge: "Knowledge", interface: "Interface", max_depth: int = 4):
         self._max_depth = max_depth
         self._knowledge = knowledge
+        self._interface = interface
         self._qa = QA()
 
     def compute(self, query):
@@ -24,7 +25,7 @@ class BackwardInference:
             if str(fact) in already_matched:
                 continue
 
-            # already_matched.add(str(fact)) ### THIS IS MORE COMPLICATED THEN PROLOG
+            # already_matched.add(str(fact)) ### THIS IS MORE NUANCED THEN PROLOG
             return answer
 
         rules = self._knowledge.ask_for_rule_backward(query)
