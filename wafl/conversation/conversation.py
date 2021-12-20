@@ -1,17 +1,6 @@
-from dataclasses import dataclass
-
+from wafl.conversation.utils import is_question
 from wafl.inference import BackwardInference
-
-
-@dataclass
-class Utterance:
-    speaker: str
-    text: str
-    timestamp: int
-    is_question: bool = False
-
-    def __str__(self):
-        return self.text
+from wafl.qa.qa import Query
 
 
 class Conversation:
@@ -20,5 +9,9 @@ class Conversation:
         self._interface = interface
         self._inference = BackwardInference(knowledge, interface)
 
-    def utter(self, text):
+    def output(self, text):
         self._interface.output(text)
+
+    def input(self, text):
+        query = Query(text=text, is_question=is_question(text), variable="name")
+        self._inference.compute(query)

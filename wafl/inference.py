@@ -30,6 +30,14 @@ class BackwardInference:
             # already_matched.add(str(fact)) ### THIS IS MORE NUANCED THEN PROLOG
             return answer
 
+        if depth > 0 and facts == [] and query.is_question:
+            self._interface.output(query.text)
+            user_input_text = self._interface.input()
+            user_answer = self._qa.ask(query, f"The user says: {user_input_text}")
+
+            if user_answer.text != "False":
+                return user_answer
+
         rules = self._knowledge.ask_for_rule_backward(query)
         for rule in rules:
             index = 0
@@ -48,6 +56,8 @@ class BackwardInference:
                     cause.text = cause.text.replace(key, value)
 
                 if cause.text.lower().find("say") == 0:
+                    utterance = cause.text[3:].strip().capitalize()
+                    self._interface.output(utterance)
                     answer = Answer(text="True")
 
                 else:
