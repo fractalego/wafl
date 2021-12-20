@@ -3,10 +3,9 @@ from typing import List
 
 @dataclass
 class Rule:
-    effect: str
-    causes: List[str]
+    effect: "Fact"
+    causes: List["Fact"]
 
     def toJSON(self):
         return str(self)
-
 

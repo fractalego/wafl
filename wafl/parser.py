@@ -18,22 +18,28 @@ def get_facts_and_rules_from_text(text: str):
                 continue
 
             if rule_length == 0:
-                facts.append(Fact(text=effect))
+                facts.append(effect)
 
             else:
                 rules.append(Rule(effect=effect, causes=causes))
 
-            effect = ''
+            effect = None
             causes = []
             rule_length = 0
 
         separation = line.find(line.strip())
         if separation > 0:
             rule_length += 1
-            causes.append(line.strip())
+            causes.append(Fact(text=line.strip()))
 
         else:
-            effect = line.strip()
+            if '?' in line:
+                is_question = True
+                variable = line.split('?')[1].strip()
+            else:
+                is_question = False
+                variable = None
+            effect = Fact(text=line.strip(), is_question=is_question, variable=variable)
 
     return {'facts': facts, 'rules': rules}
 

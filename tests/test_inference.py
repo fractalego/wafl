@@ -14,13 +14,17 @@ The user says they can swim
   What is the user's name ? username
   USER is called {username}
   
-
+What is the user's hair color ? color
+  What is the user's name ? username
+  {username} has {color} hair
 
 This bot name is Fractalego
 
 the user is very happy
 
 The user's name is Bob
+
+Bob has black hair
 
 """.strip()
 
@@ -66,9 +70,16 @@ class TestInference(TestCase):
         expected = "True"
         assert answer.text == expected
 
-    def test_backward_substitution(self):
+    def test_forward_substitution(self):
         inference = BackwardInference(Knowledge(wafl_example))
         query = Query(text="The user says: I can swim", is_question=False, variable='name')
+        answer = inference.compute(query)
+        expected = "True"
+        assert answer.text == expected
+
+    def test_backward_substitution(self):
+        inference = BackwardInference(Knowledge(wafl_example))
+        query = Query(text="The user says: I have black hair", is_question=False, variable='name')
         answer = inference.compute(query)
         expected = "True"
         assert answer.text == expected

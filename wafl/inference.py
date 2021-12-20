@@ -20,7 +20,7 @@ class BackwardInference:
         if depth > self._max_depth:
             return Answer(text='False')
 
-        facts = self._knowledge.ask_for_facts(query.text)
+        facts = self._knowledge.ask_for_facts(query)
         for fact in facts:
             answer = self._qa.ask(query, fact.text)
             if str(fact) in already_matched:
@@ -29,11 +29,11 @@ class BackwardInference:
             #already_matched.add(str(fact)) ### THIS IS MORE COMPLICATED THEN PROLOG
             return answer
 
-        rules = self._knowledge.ask_for_rule_backward(query.text)
+        rules = self._knowledge.ask_for_rule_backward(query)
         for rule in rules:
             index = 0
             substitutions = {}
-            answer = self._qa.ask(query, rule.effect)
+            answer = self._qa.ask(rule.effect, query.text)
             if answer.text == 'False':
                 continue
 
@@ -44,18 +44,18 @@ class BackwardInference:
                 new_already_matched = already_matched.copy()
 
                 for key, value in substitutions.items():
-                    cause = cause.replace(key, value)
+                    cause.text = cause.text.replace(key, value)
 
-                if cause.lower().find('say') == 0:
+                if cause.text.lower().find('say') == 0:
                     answer = Answer(text='True')
 
                 else:
-                    if '?' in cause:
-                        text, variable = cause.split('?')
+                    if '?' in cause.text:
+                        text, variable = cause.text.split('?')
                         new_query = Query(text=text, is_question=True, variable=variable)
 
                     else:
-                        new_query = Query(text=cause, is_question=False)
+                        new_query = Query(text=cause.text, is_question=False)
 
                     answer = self._compute_recursively(new_query, new_already_matched, depth + 1)
 
