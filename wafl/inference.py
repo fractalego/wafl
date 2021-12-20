@@ -33,6 +33,13 @@ class BackwardInference:
         for rule in rules:
             index = 0
             substitutions = {}
+            answer = self._qa.ask(query, rule.effect)
+            if answer.text == 'False':
+                continue
+
+            if answer.variable:
+                 substitutions[f'{{{answer.variable.strip()}}}'] = answer.text
+
             for cause in rule.causes:
                 new_already_matched = already_matched.copy()
 

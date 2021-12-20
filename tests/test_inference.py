@@ -6,13 +6,15 @@ from wafl.qa.qa import Query
 
 wafl_example = """
 
-USER greets
+The user greets
   What is the user's name ? username
   SAY hello to you, {username}!
 
-USER says they can swim
+The user says they can swim
   What is the user's name ? username
   USER is called {username}
+  
+
 
 This bot name is Fractalego
 
@@ -22,11 +24,15 @@ The user's name is Bob
 
 """.strip()
 
+
 ### TODO
-### 1) Implement substitutions of variables within causes loop
-### 2) implement SAY (conversation), REMEMBER (knowledge)
-### 3) Implement questions being asked during inference
-### 4) Should you use fact_checking and qa in rule's effect? (YES)
+### /1) Implement substitutions of variables within causes loop
+### 2) Should you use fact_checking and qa in rule's effect? (YES)
+###    2a) Implement fact checking for non-questions
+###    2b) Implement question + forward substitution
+### 3) Investigate interplay btw substitutions and already_matched
+### 3) implement SAY (conversation), REMEMBER (knowledge)
+### 4) Implement questions being asked during inference
 
 
 class TestInference(TestCase):
