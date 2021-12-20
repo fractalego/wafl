@@ -6,7 +6,9 @@ _logger = logging.getLogger(__name__)
 
 
 class BackwardInference:
-    def __init__(self, knowledge: "Knowledge", interface: "Interface", max_depth: int = 4):
+    def __init__(
+        self, knowledge: "Knowledge", interface: "Interface", max_depth: int = 4
+    ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface

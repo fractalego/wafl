@@ -14,7 +14,7 @@ class Utterance:
         return self.text
 
 
-class Conversation():
+class Conversation:
     def __init__(self, knowledge, interface):
         self._knowledge = knowledge
         self._interface = interface

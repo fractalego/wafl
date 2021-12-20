@@ -1,10 +1,8 @@
 from unittest import TestCase
 
 from wafl.conversation import Conversation
-from wafl.inference import BackwardInference
 from wafl.interface import BaseInterface
 from wafl.knowledge import Knowledge
-from wafl.qa.qa import Query
 
 wafl_example = """
 
@@ -41,6 +39,7 @@ Bob has black hair
 
 ### 4) implement SAY (conversation), REMEMBER (knowledge)
 ### 5) Implement questions being asked during inference
+### 6) Implement temp knowledge and knowledge list
 
 
 class DummyInterface(BaseInterface):
@@ -56,11 +55,9 @@ class DummyInterface(BaseInterface):
 
 
 class TestConversation(TestCase):
-
     def test_conversation(self):
         interface = DummyInterface()
-        conversation = Conversation(Knowledge(wafl_example),
-                                    interface=interface)
-        utterance = 'Welcome to the website. How may I help you?'
+        conversation = Conversation(Knowledge(wafl_example), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
         conversation.utter(utterance)
         assert interface.utterances[0] == utterance
