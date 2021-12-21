@@ -1,6 +1,7 @@
 import sys
 
 from wafl.config import create_initial_files
+from wafl.run import run_from_command_line
 
 
 def download_models():
@@ -18,5 +19,7 @@ if __name__ == "__main__":
 
         if command == "init":
             create_initial_files()
+            download_models()
 
-    download_models()
+        if command == "run":
+            run_from_command_line()

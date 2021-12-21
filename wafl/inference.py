@@ -8,18 +8,18 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-            self,
-            knowledge: "Knowledge",
-            interface: "Interface",
-            code_path=None,
-            max_depth: int = 4,
+        self,
+        knowledge: "Knowledge",
+        interface: "Interface",
+        code_path=None,
+        max_depth: int = 4,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
         self._qa = QA()
         if code_path:
-            self._module = importlib.import_module(f'{code_path}')
+            self._module = importlib.import_module(f"{code_path}")
 
     def compute(self, query):
         return self._compute_recursively(query, already_matched=set(), depth=0)
@@ -65,8 +65,8 @@ class BackwardInference:
                 new_already_matched = already_matched.copy()
 
                 for key, value in substitutions.items():
-                    if '(' in cause.text:
-                        cause.text = cause.text.replace(' ', '')
+                    if "(" in cause.text:
+                        cause.text = cause.text.replace(" ", "")
 
                     cause.text = cause.text.replace(key, value)
 
@@ -80,8 +80,8 @@ class BackwardInference:
                     self._knowledge.add(utterance)
                     answer = Answer(text="True")
 
-                elif '(' in cause.text.lower():
-                    if '=' in cause.text:
+                elif "(" in cause.text.lower():
+                    if "=" in cause.text:
                         variable, to_execute = cause.text.split("=")
                         variable = variable.strip()
                         to_execute = to_execute.strip()
@@ -89,13 +89,13 @@ class BackwardInference:
                     else:
                         to_execute = cause.text.strip()
 
-                    result = eval(f'self._module.{to_execute}')
-                    if '=' in cause.text:
-                        substitutions.update({f'{{{variable}}}': result})
-                        substitutions.update({f'({variable})': result})
-                        substitutions.update({f'({variable},': result})
-                        substitutions.update({f',{variable},': result})
-                        substitutions.update({f',{variable})': result})
+                    result = eval(f"self._module.{to_execute}")
+                    if "=" in cause.text:
+                        substitutions.update({f"{{{variable}}}": result})
+                        substitutions.update({f"({variable})": result})
+                        substitutions.update({f"({variable},": result})
+                        substitutions.update({f",{variable},": result})
+                        substitutions.update({f",{variable})": result})
 
                     answer = Answer(text="True")
 

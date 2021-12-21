@@ -24,4 +24,10 @@ class Conversation:
         if not query.is_question and answer.text == "False":
             self._knowledge.add(text)
 
+        if query.is_question and answer.text not in ["True", "False"]:
+            self.output(answer.text)
+
+        if query.is_question and answer.text == "False":
+            self.output("Unknown")
+
         return answer

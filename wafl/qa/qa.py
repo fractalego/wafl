@@ -13,20 +13,25 @@ _tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 _model = GPT2LMHeadModel.from_pretrained("gpt2")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 checkpoint = torch.load(
-    os.path.join(_path, "../../models/save_small6"), map_location=device
+    os.path.join("/home/alce/src/wafl/models/save_small6"), map_location=device
 )
+### CHANGE PATH (DOWNLOAD FROM REPO)
 _model.load_state_dict(checkpoint["model_state_dict"])
 _model = _model.to(device)
 _forbidden_words = set(
     [
         item.strip().lower()
-        for item in open(os.path.join(_path, "../../data/bad-words.txt")).readlines()
+        for item in open(
+            os.path.join(_path, "/home/alce/src/wafl/data/bad-words.txt")
+        ).readlines()
     ]
 )
+### CHANGE PATH (DOWNLOAD FROM REPO)
 _fact_checking_model = GPT2LMHeadModel.from_pretrained("gpt2")
 checkpoint = torch.load(
-    os.path.join(_path, "../../models/save_fever0"), map_location=device
+    os.path.join(_path, "/home/alce/src/wafl/models/save_fever0"), map_location=device
 )
+### CHANGE PATH (DOWNLOAD FROM REPO)
 _fact_checking_model.load_state_dict(checkpoint["model_state_dict"])
 
 

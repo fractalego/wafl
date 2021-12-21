@@ -8,10 +8,10 @@ class BaseInterface:
 
 class CommandLineInterface(BaseInterface):
     def output(self, text: str):
-        print("Bot >", text)
+        print("bot>", text)
 
     def input(self) -> str:
-        return input("User > ")
+        return input("user> ")
 
 
 class DummyInterface(BaseInterface):
