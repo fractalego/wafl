@@ -42,12 +42,14 @@ class BackwardInference:
         for rule in rules:
             index = 0
             substitutions = {}
-            answer = self._qa.ask(rule.effect, query.text)
-            if answer.text == "False":
-                continue
+            if rule.effect.is_question:
+                answer = self._qa.ask(rule.effect, query.text)
 
-            if answer.variable:
-                substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
+                if answer.text == "False":
+                    continue
+
+                if answer.variable:
+                    substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
 
             for cause in rule.causes:
                 new_already_matched = already_matched.copy()
@@ -90,6 +92,14 @@ class BackwardInference:
                 index += 1
 
             if index == len(rule.causes):
-                return Answer(text="True")
+                for key, value in substitutions.items():
+                    rule.effect.text = rule.effect.text.replace(key, value)
+
+                answer = self._qa.ask(query, rule.effect.text)
+
+                if answer.text == "False":
+                    continue
+
+                return answer
 
         return Answer(text="False")

@@ -18,6 +18,11 @@ The user says they can swim
 color = What is the user's hair color
   username = What is the user's name
   {username} has {color} hair
+  
+{username} has a {treetype} tree in the garden
+   username = what is the user's name
+   house_address = what is {username} house address
+   treetype = what is the tree type at {house_address}
 
 This bot name is Fractalego
 
@@ -26,6 +31,10 @@ the user is very happy
 The user's name is Bob
 
 Bob has black hair
+
+Bob lives are 42 Flinch road
+
+42 Flinch road has a peach tree in the garden
 
 """.strip()
 
@@ -78,4 +87,16 @@ class TestInference(TestCase):
         )
         answer = inference.compute(query)
         expected = "True"
+        assert answer.text == expected
+
+    def test_forward_substution_2(self):
+        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        query = Query(
+            text="What type of tree is there at Bob's house",
+            is_question=True,
+            variable="name",
+        )
+        answer = inference.compute(query)
+        print(answer)
+        expected = "peach tree"
         assert answer.text == expected

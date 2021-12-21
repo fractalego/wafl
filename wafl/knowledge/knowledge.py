@@ -12,20 +12,18 @@ _logger = logging.getLogger(__name__)
 class Knowledge(BaseKnowledge):
     _threshold_for_questions = 0.48
     _threshold_for_facts = 0.58
+    _threshold_for_partial_facts = 0.42
 
     def __init__(self, rules_text=None):
         facts_and_rules = get_facts_and_rules_from_text(rules_text)
         self._facts_dict = {
             f"F{index}": value for index, value in enumerate(facts_and_rules["facts"])
         }
-        self._rules_fact_dict = {
-            f"RF{index}": value for index, value in enumerate(facts_and_rules["rules"])
+        self._rules_dict = {
+            f"R{index}": value for index, value in enumerate(facts_and_rules["rules"])
         }
-        self._rules_question_dict = {
-            f"RQ{index}": value for index, value in enumerate(facts_and_rules["rules"])
-        }
-        ### THIS IS NOT GOOD!! YOU ONLY NEED ONE RULES_DICT WITH TWO RETRIEVERS
         self._facts_retriever = Retriever()
+        self._rules_incomplete_retriever = Retriever()
         self._rules_fact_retriever = Retriever()
         self._rules_question_retriever = Retriever()
         self._initialize_retrievers()
@@ -57,7 +55,7 @@ class Knowledge(BaseKnowledge):
             self._rules_fact_retriever.get_indices_and_scores_from_text(query.text)
         )
         fact_rules = [
-            self._rules_fact_dict[item[0]]
+            self._rules_dict[item[0]]
             for item in indices_and_scores
             if item[1] > self._threshold_for_facts
         ]
@@ -65,13 +63,25 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = (
             self._rules_question_retriever.get_indices_and_scores_from_text(query.text)
         )
+
         question_rules = [
-            self._rules_question_dict[item[0]]
+            self._rules_dict[item[0]]
             for item in indices_and_scores
             if item[1] > self._threshold_for_questions
         ]
 
-        return fact_rules + question_rules
+        indices_and_scores = (
+            self._rules_incomplete_retriever.get_indices_and_scores_from_text(
+                query.text
+            )
+        )
+        incomplete_rules = [
+            self._rules_dict[item[0]]
+            for item in indices_and_scores
+            if item[1] > self._threshold_for_partial_facts
+        ]
+
+        return fact_rules + question_rules + incomplete_rules
 
     def _initialize_retrievers(self):
         for index, fact in self._facts_dict.items():
@@ -79,16 +89,19 @@ class Knowledge(BaseKnowledge):
                 clean_text_for_retrieval(fact.text), index
             )
 
-        for index, rule in self._rules_fact_dict.items():
-            if rule.effect.is_question:
+        for index, rule in self._rules_dict.items():
+            if "{" in rule.effect.text:
+                self._rules_incomplete_retriever.add_text_and_index(
+                    clean_text_for_retrieval(rule.effect.text), index
+                )
                 continue
-            self._rules_fact_retriever.add_text_and_index(
-                clean_text_for_retrieval(rule.effect.text), index
-            )
 
-        for index, rule in self._rules_question_dict.items():
-            if not rule.effect.is_question:
-                continue
-            self._rules_question_retriever.add_text_and_index(
-                clean_text_for_retrieval(rule.effect.text), index
-            )
+            elif rule.effect.is_question:
+                self._rules_question_retriever.add_text_and_index(
+                    clean_text_for_retrieval(rule.effect.text), index
+                )
+
+            else:
+                self._rules_fact_retriever.add_text_and_index(
+                    clean_text_for_retrieval(rule.effect.text), index
+                )

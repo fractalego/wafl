@@ -5,7 +5,8 @@ from wafl.config import create_initial_files
 
 def download_models():
     import nltk
-    nltk.download('averaged_perceptron_tagger')
+
+    nltk.download("averaged_perceptron_tagger")
 
 
 if __name__ == "__main__":
