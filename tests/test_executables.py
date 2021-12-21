@@ -21,6 +21,7 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.input(input_from_user)
+        conversation.add(input_from_user)
         expected = "Test@example.com has been added to the newsletter 'fake_newsletter'"
+        print(interface.utterances)
         assert interface.utterances[-1] == expected

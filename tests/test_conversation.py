@@ -55,7 +55,7 @@ class TestConversation(TestCase):
         interface = DummyInterface()
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         input_from_user = "hello!".capitalize()
-        conversation.input(input_from_user)
+        conversation.add(input_from_user)
         expected = "Hello to you, bob!"
         assert interface.utterances[-1] == expected
 
@@ -63,7 +63,7 @@ class TestConversation(TestCase):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.input(input_from_user)
+        conversation.add(input_from_user)
         expected = "Test@example.com has been added to the newsletter"
         assert interface.utterances[-1] == expected
 
@@ -71,7 +71,15 @@ class TestConversation(TestCase):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.input(input_from_user)
+        conversation.add(input_from_user)
 
-        answer = conversation.input("What is the email of the user")
+        answer = conversation.add("What is the email of the user")
         assert answer.text == "test@example.com"
+
+    def test_knowledge_insertion(self):
+        interface = DummyInterface(to_utter=["test@example.com"])
+        conversation = Conversation(Knowledge(wafl_example), interface=interface)
+        input_from_user = "the user's mother is called Ada"
+        conversation.add(input_from_user)
+        answer = conversation.add("How is the user's mum called")
+        assert answer.text == "Ada"

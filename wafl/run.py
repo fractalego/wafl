@@ -11,9 +11,8 @@ def run_from_command_line():
 
     while True:
         try:
-            input_from_user = input("user> ")
+            conversation.input()
         except (KeyError, EOFError):
             break
-        conversation.input(input_from_user)
 
     conversation.output("Goodbye!")

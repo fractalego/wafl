@@ -137,6 +137,9 @@ class BackwardInference:
                 if answer.text == "False":
                     continue
 
+                if answer.text.lower() == "yes":
+                    answer.text = "True"
+
                 return answer
 
         return Answer(text="False")
