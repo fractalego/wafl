@@ -1,0 +1,4 @@
+### TODO
+* Implement Server with HTML page (docker-compose up)
+* Refactor code and clean up
+* Investigate interplay btw substitutions and already_matched

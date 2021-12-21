@@ -43,15 +43,6 @@ The user greets
 """
 
 
-### TODO
-### Implement executable python code
-### Implement RUN with CLI conversation (wafl run)
-### Implement Server with HTML page (docker-compose up)
-
-### Refactor code and clean up ###
-### Investigate interplay btw substitutions and already_matched
-
-
 class TestConversation(TestCase):
     def test_single_utterance(self):
         interface = DummyInterface()
@@ -94,9 +85,7 @@ class TestConversation(TestCase):
         assert answer.text == "Ada"
 
     def test_greeting(self):
-        interface = DummyInterface(
-            ["The user's name is Albert", "What is the user name"]
-        )
+        interface = DummyInterface(["My name is Albert", "What is my name"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
