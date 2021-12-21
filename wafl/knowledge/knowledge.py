@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Knowledge(BaseKnowledge):
-    _threshold_for_questions = 0.48
+    _threshold_for_questions = 0.51
     _threshold_for_facts = 0.58
     _threshold_for_partial_facts = 0.42
 

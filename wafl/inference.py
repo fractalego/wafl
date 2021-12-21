@@ -1,3 +1,4 @@
+import importlib
 import logging
 
 from wafl.qa.qa import QA, Answer, Query
@@ -7,12 +8,18 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-        self, knowledge: "Knowledge", interface: "Interface", max_depth: int = 4
+            self,
+            knowledge: "Knowledge",
+            interface: "Interface",
+            code_path=None,
+            max_depth: int = 4,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
         self._qa = QA()
+        if code_path:
+            self._module = importlib.import_module(f'{code_path}')
 
     def compute(self, query):
         return self._compute_recursively(query, already_matched=set(), depth=0)
@@ -27,7 +34,6 @@ class BackwardInference:
             if str(fact) in already_matched:
                 continue
 
-            # already_matched.add(str(fact)) ### THIS IS MORE NUANCED THEN PROLOG
             return answer
 
         if depth > 0 and facts == [] and query.is_question:
@@ -50,11 +56,18 @@ class BackwardInference:
 
                 if answer.variable:
                     substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
+                    substitutions[f"({answer.variable.strip()})"] = f'("{answer.text}")'
+                    substitutions[f"({answer.variable.strip()},"] = f'("{answer.text}")'
+                    substitutions[f",{answer.variable.strip()},"] = f'("{answer.text}")'
+                    substitutions[f",{answer.variable.strip()})"] = f'("{answer.text}")'
 
             for cause in rule.causes:
                 new_already_matched = already_matched.copy()
 
                 for key, value in substitutions.items():
+                    if '(' in cause.text:
+                        cause.text = cause.text.replace(' ', '')
+
                     cause.text = cause.text.replace(key, value)
 
                 if cause.text.lower().find("say") == 0:
@@ -65,6 +78,25 @@ class BackwardInference:
                 elif cause.text.lower().find("remember") == 0:
                     utterance = cause.text[8:].strip().capitalize()
                     self._knowledge.add(utterance)
+                    answer = Answer(text="True")
+
+                elif '(' in cause.text.lower():
+                    if '=' in cause.text:
+                        variable, to_execute = cause.text.split("=")
+                        variable = variable.strip()
+                        to_execute = to_execute.strip()
+
+                    else:
+                        to_execute = cause.text.strip()
+
+                    result = eval(f'self._module.{to_execute}')
+                    if '=' in cause.text:
+                        substitutions.update({f'{{{variable}}}': result})
+                        substitutions.update({f'({variable})': result})
+                        substitutions.update({f'({variable},': result})
+                        substitutions.update({f',{variable},': result})
+                        substitutions.update({f',{variable})': result})
+
                     answer = Answer(text="True")
 
                 else:
@@ -89,6 +121,11 @@ class BackwardInference:
                 already_matched = new_already_matched
                 if answer.variable:
                     substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
+                    substitutions[f"({answer.variable.strip()})"] = f'("{answer.text}")'
+                    substitutions[f"({answer.variable.strip()},"] = f'("{answer.text}")'
+                    substitutions[f",{answer.variable.strip()},"] = f'("{answer.text}")'
+                    substitutions[f",{answer.variable.strip()})"] = f'("{answer.text}")'
+
                 index += 1
 
             if index == len(rule.causes):

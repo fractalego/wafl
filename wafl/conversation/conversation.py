@@ -4,10 +4,12 @@ from wafl.qa.qa import Query
 
 
 class Conversation:
-    def __init__(self, knowledge: "BaseKnowledge", interface: "BaseInterface"):
+    def __init__(
+        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+    ):
         self._knowledge = knowledge
         self._interface = interface
-        self._inference = BackwardInference(self._knowledge, interface)
+        self._inference = BackwardInference(self._knowledge, interface, code_path)
 
     def output(self, text: str):
         self._interface.output(text)

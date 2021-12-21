@@ -35,20 +35,12 @@ Bob has black hair
 
 
 ### TODO
-### /1) Implement substitutions of variables within causes loop
-### /2) Should you use fact_checking and qa in rule's effect? (YES)
-###    /2a) Implement fact checking for non-questions
-###    /2b) Implement question + forward substitution
-### /3) implement SAY (conversation), REMEMBER (knowledge)
-### /4) Implement questions being asked during inference
-### /5) Implement temp knowledge and knowledge list
-
 ### Implement executable python code
 ### Implement RUN with CLI conversation (wafl run)
 ### Implement Server with HTML page (docker-compose up)
 
-### 7) Refactor code and clean up ###
-### 8) Investigate interplay btw substitutions and already_matched
+### Refactor code and clean up ###
+### Investigate interplay btw substitutions and already_matched
 
 
 class TestConversation(TestCase):
@@ -81,5 +73,5 @@ class TestConversation(TestCase):
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.input(input_from_user)
 
-        answer = conversation.input("What is the user's email")
+        answer = conversation.input("What is the email of the user")
         assert answer.text == "test@example.com"
