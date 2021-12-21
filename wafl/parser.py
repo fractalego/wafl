@@ -33,9 +33,9 @@ def get_facts_and_rules_from_text(text: str):
             causes.append(Fact(text=line.strip()))
 
         else:
-            if "?" in line:
+            if "=" in line:
                 is_question = True
-                variable = line.split("?")[1].strip()
+                variable = line.split("=")[0].strip()
             else:
                 is_question = False
                 variable = None

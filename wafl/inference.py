@@ -66,8 +66,10 @@ class BackwardInference:
                     answer = Answer(text="True")
 
                 else:
-                    if "?" in cause.text:
-                        text, variable = cause.text.split("?")
+                    if "=" in cause.text:
+                        variable, text = cause.text.split("=")
+                        variable = variable.strip()
+                        text = text.strip()
                         new_query = Query(
                             text=text, is_question=True, variable=variable
                         )

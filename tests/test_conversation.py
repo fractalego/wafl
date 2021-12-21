@@ -7,19 +7,19 @@ from wafl.knowledge.knowledge import Knowledge
 wafl_example = """
 
 The user greets
-  What is the user's name? username
+  username = What is the user's name
   SAY hello to you, {username}!
 
 The user says they can swim
-  What is the user's name? username
+  username = What is the user's name
   the user is called {username}
 
-What is the user's hair color ? color
-  What is the user's name? username
+color = What is the user's hair color
+  username = What is the user's name
   {username} has {color} hair
 
 the user wants to register to the newsletter
-  what is the user's email? email
+  email = what is the user's email
   REMEMBER the user's email is {email}
   SAY {email} has been added to the newsletter
 

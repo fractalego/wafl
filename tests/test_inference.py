@@ -8,15 +8,15 @@ from wafl.qa.qa import Query
 wafl_example = """
 
 The user greets
-  What is the user's name ? username
+  username = What is the user's name
   SAY hello to you, {username}!
 
 The user says they can swim
-  What is the user's name ? username
+  username = What is the user's name
   USER is called {username}
   
-What is the user's hair color ? color
-  What is the user's name ? username
+color = What is the user's hair color
+  username = What is the user's name
   {username} has {color} hair
 
 This bot name is Fractalego
