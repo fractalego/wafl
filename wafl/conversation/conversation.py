@@ -6,7 +6,7 @@ from wafl.qa.qa import Query
 
 class Conversation:
     def __init__(
-        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+            self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -39,5 +39,4 @@ class Conversation:
 
     def input(self):
         user_input = self._interface.input()
-        user_input = from_user_to_bot(user_input)
-        self.add(user_input)
+        self.add(from_user_to_bot(user_input))
