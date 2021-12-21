@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.inference import BackwardInference
 from wafl.interface import DummyInterface
-from wafl.knowledge import Knowledge
+from wafl.knowledge.knowledge import Knowledge
 from wafl.qa.qa import Query
 
 wafl_example = """

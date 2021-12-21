@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface import DummyInterface
-from wafl.knowledge import Knowledge
+from wafl.knowledge.knowledge import Knowledge
 
 wafl_example = """
 
@@ -12,7 +12,7 @@ The user greets
 
 The user says they can swim
   What is the user's name? username
-  USER is called {username}
+  the user is called {username}
 
 What is the user's hair color ? color
   What is the user's name? username
@@ -20,6 +20,7 @@ What is the user's hair color ? color
 
 the user wants to register to the newsletter
   what is the user's email? email
+  REMEMBER the user's email is {email}
   SAY {email} has been added to the newsletter
 
 This bot name is Fractalego
@@ -38,12 +39,16 @@ Bob has black hair
 ### /2) Should you use fact_checking and qa in rule's effect? (YES)
 ###    /2a) Implement fact checking for non-questions
 ###    /2b) Implement question + forward substitution
+### /3) implement SAY (conversation), REMEMBER (knowledge)
+### /4) Implement questions being asked during inference
+### /5) Implement temp knowledge and knowledge list
 
-### 3) Investigate interplay btw substitutions and already_matched
+### Implement executable python code
+### Implement RUN with CLI conversation (wafl run)
+### Implement Server with HTML page (docker-compose up)
 
-### 4) implement SAY (conversation), REMEMBER (knowledge)
-### /5) Implement questions being asked during inference
-### 6) Implement temp knowledge and knowledge list
+### 7) Refactor code and clean up ###
+### 8) Investigate interplay btw substitutions and already_matched
 
 
 class TestConversation(TestCase):
@@ -58,7 +63,7 @@ class TestConversation(TestCase):
         interface = DummyInterface()
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         input_from_user = "hello!".capitalize()
-        conversation.input(f"The user says: {input_from_user}")
+        conversation.input(input_from_user)
         expected = "Hello to you, bob!"
         assert interface.utterances[-1] == expected
 
@@ -66,7 +71,15 @@ class TestConversation(TestCase):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.input(f"The user says: {input_from_user}")
+        conversation.input(input_from_user)
         expected = "Test@example.com has been added to the newsletter"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected
+
+    def test_remember_command(self):
+        interface = DummyInterface(to_utter=["test@example.com"])
+        conversation = Conversation(Knowledge(wafl_example), interface=interface)
+        input_from_user = "Can I register to the newsletter?".capitalize()
+        conversation.input(input_from_user)
+
+        answer = conversation.input("What is the user's email")
+        assert answer.text == "test@example.com"

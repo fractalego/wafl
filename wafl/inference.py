@@ -60,6 +60,11 @@ class BackwardInference:
                     self._interface.output(utterance)
                     answer = Answer(text="True")
 
+                elif cause.text.lower().find("remember") == 0:
+                    utterance = cause.text[8:].strip().capitalize()
+                    self._knowledge.add(utterance)
+                    answer = Answer(text="True")
+
                 else:
                     if "?" in cause.text:
                         text, variable = cause.text.split("?")

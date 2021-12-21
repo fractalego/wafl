@@ -1,5 +1,7 @@
 import logging
 
+from wafl.facts import Fact
+from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.parser import get_facts_and_rules_from_text
 from wafl.retriever import Retriever
 from wafl.text_utils import clean_text_for_retrieval
@@ -7,11 +9,11 @@ from wafl.text_utils import clean_text_for_retrieval
 _logger = logging.getLogger(__name__)
 
 
-class Knowledge:
-    _threshold_for_questions = 0.5
+class Knowledge(BaseKnowledge):
+    _threshold_for_questions = 0.48
     _threshold_for_facts = 0.58
 
-    def __init__(self, rules_text):
+    def __init__(self, rules_text=None):
         facts_and_rules = get_facts_and_rules_from_text(rules_text)
         self._facts_dict = {
             f"F{index}": value for index, value in enumerate(facts_and_rules["facts"])
@@ -22,13 +24,18 @@ class Knowledge:
         self._rules_question_dict = {
             f"RQ{index}": value for index, value in enumerate(facts_and_rules["rules"])
         }
+        ### THIS IS NOT GOOD!! YOU ONLY NEED ONE RULES_DICT WITH TWO RETRIEVERS
         self._facts_retriever = Retriever()
         self._rules_fact_retriever = Retriever()
         self._rules_question_retriever = Retriever()
         self._initialize_retrievers()
 
     def add(self, text):
-        self._facts_dict[f"F{len(self._facts_dict)}"] = text
+        fact_index = f"F{len(self._facts_dict)}"
+        self._facts_dict[fact_index] = Fact(text=text)
+        self._facts_retriever.add_text_and_index(
+            clean_text_for_retrieval(text), fact_index
+        )
 
     def ask_for_facts(self, query):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(

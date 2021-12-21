@@ -21,6 +21,7 @@ class Retriever:
     def add_text_and_index(self, text: str, index: str):
         embeddings = _get_embeddings_from_text(text)
         self._embeddings_model.add_vector(index, embeddings)
+        self._embeddings_model.fill_norms(force=True)
 
     def get_indices_and_scores_from_text(self, text: str) -> List[Tuple[str, float]]:
         embeddings = _get_embeddings_from_text(text)

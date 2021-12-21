@@ -45,6 +45,9 @@ def get_facts_and_rules_from_text(text: str):
 
 
 def _get_lines_stripped_from_comments(text):
+    if not text:
+        return []
+
     lines = []
     for line in text.split("\n"):
         if line.strip() and line.strip()[0] == "#":
