@@ -23,4 +23,4 @@ class DummyInterface(BaseInterface):
         self.utterances.append(text)
 
     def input(self) -> str:
-        return self._to_utter.pop()
+        return self._to_utter.pop(0)

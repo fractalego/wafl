@@ -23,5 +23,4 @@ class TestExecutables(TestCase):
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         expected = "Test@example.com has been added to the newsletter 'fake_newsletter'"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected

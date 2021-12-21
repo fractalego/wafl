@@ -1,4 +1,6 @@
 The user greets
   SAY Hello there!
   username = What is the user's name
+  REMEMBER the user is called {username}
+  REMEMBER the user's name is {username}
   SAY Nice to meet you, {username}!
