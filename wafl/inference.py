@@ -39,10 +39,17 @@ class BackwardInference:
         if depth > 0 and facts == [] and query.is_question:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
-            user_answer = self._qa.ask(query, f"The user says: {user_input_text}")
 
-            if user_answer.text != "False":
-                return user_answer
+            if user_input_text.lower() == "yes":
+                user_answer = Answer(text="True")
+
+            elif user_input_text.lower() == "no" or user_input_text.strip() == "":
+                user_answer = Answer(text="False")
+
+            else:
+                user_answer = self._qa.ask(query, f"The user says: {user_input_text}")
+
+            return user_answer
 
         rules = self._knowledge.ask_for_rule_backward(query)
         for rule in rules:
@@ -107,6 +114,9 @@ class BackwardInference:
                         new_query = Query(
                             text=text, is_question=True, variable=variable
                         )
+
+                    elif cause.is_question:
+                        new_query = Query(text=cause.text, is_question=True)
 
                     else:
                         new_query = Query(text=cause.text, is_question=False)

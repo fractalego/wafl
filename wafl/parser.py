@@ -1,3 +1,4 @@
+from wafl.conversation.utils import is_question
 from wafl.facts import Fact
 from wafl.rules import Rule
 
@@ -30,16 +31,20 @@ def get_facts_and_rules_from_text(text: str):
         separation = line.find(line.strip())
         if separation > 0:
             rule_length += 1
-            causes.append(Fact(text=line.strip()))
+            text = line.strip()
+            causes.append(Fact(text=text, is_question=is_question(text)))
 
         else:
             if "=" in line:
-                is_question = True
+                sentence_is_question = True
                 variable = line.split("=")[0].strip()
+
             else:
-                is_question = False
+                sentence_is_question = False
                 variable = None
-            effect = Fact(text=line.strip(), is_question=is_question, variable=variable)
+            effect = Fact(
+                text=line.strip(), is_question=sentence_is_question, variable=variable
+            )
 
     return {"facts": facts, "rules": rules}
 

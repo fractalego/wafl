@@ -40,7 +40,12 @@ The user greets
   REMEMBER the user is called {username}
   REMEMBER the user's name is {username}
   SAY Nice to meet you, {username}!
-"""
+  
+The user wants to join the club
+  Is the user good enough to join?
+  SAY Welcome to the club!
+
+""".strip()
 
 
 class TestConversation(TestCase):
@@ -110,3 +115,19 @@ class TestConversation(TestCase):
         conversation.input()
         conversation.input()
         assert "no" in interface.utterances[-1].lower()
+
+    def test_yes_no_questions_from_bot_with_answer_yes(self):
+        interface = DummyInterface(["I want to join the club", "yes"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        assert interface.utterances[-1] == "Welcome to the club!"
+
+    def test_yes_no_questions_from_bot_with_answer_no(self):
+        interface = DummyInterface(["I want to join the club", "no"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        assert interface.utterances[-1] == "are you good enough to join?"

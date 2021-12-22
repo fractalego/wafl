@@ -1,4 +1,5 @@
 ### TODO
+!* Yes/No Questions from the bot
 !* add deixis on the interface (at least for output!! so when the system ask for questions they have "you")
 !* make it so one can define variables as strings: list = {list}, apples; statement = {user} is {feeling}
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
