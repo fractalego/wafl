@@ -92,3 +92,21 @@ class TestConversation(TestCase):
         conversation.input()
         conversation.input()
         assert interface.utterances[-1] == "Albert"
+
+    def test_yes(self):
+        interface = DummyInterface(["My name is Ada", "am I called Ada"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        conversation.input()
+        assert "yes" in interface.utterances[-1].lower()
+
+    def test_no(self):
+        interface = DummyInterface(["My name is Albert", "Is my name Bob"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        conversation.input()
+        assert "no" in interface.utterances[-1].lower()

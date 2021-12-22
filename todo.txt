@@ -1,4 +1,13 @@
 ### TODO
+!* Check Yes/No questions (answer must appear to the user)
+!* make it so one can define variables as strings: list = {list}, apples; statement = {user} is {feeling}
+!* Implement FORGET (the whole Fact should disappear from Knowledge)
+
+
+* Better QA for yes/no question (maybe add SNLI to qa?)
+* Add math expressions to fact-checker (some, any, every)
+
 * Implement Server with HTML page (docker-compose up)
 * Refactor code and clean up
 * Investigate interplay btw substitutions and already_matched
+  - Maybe one can avoid having same answer for btw same question and same depth (and same rule)

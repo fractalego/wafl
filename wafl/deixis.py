@@ -11,7 +11,7 @@ def from_user_to_bot(text):
         if word.lower() in ["my", "mine"] and pos == "PRP$":
             new_text.append("the user's")
 
-        if word.lower() in ["your", "yours"] and pos == "PRP$":
+        elif word.lower() in ["your", "yours"] and pos == "PRP$":
             new_text.append("this bot's")
 
         elif word.lower() in ["i", "me", "myself"] and pos == "PRP":

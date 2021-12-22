@@ -6,7 +6,7 @@ from wafl.qa.qa import Query
 
 class Conversation:
     def __init__(
-            self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
     ):
         self._knowledge = knowledge
         self._interface = interface

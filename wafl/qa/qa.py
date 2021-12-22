@@ -59,7 +59,11 @@ class QA:
         return self.__check_fact(query, text)
 
     def __answer_question(self, query: "Query", text: str):
-        answer, _ = _generate_answer(text, query.text)
+        query_text = query.text.strip()
+        if query_text[-1] != "?":
+            query_text += "?"
+
+        answer, _ = _generate_answer(text, query_text)
         if answer.lower() == "unknown":
             return "False"
 
