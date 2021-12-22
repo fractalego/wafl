@@ -1,5 +1,4 @@
 from wafl.conversation.utils import is_question
-from wafl.deixis import from_user_to_bot, from_bot_to_user
 from wafl.inference import BackwardInference
 from wafl.qa.qa import Query
 
@@ -29,8 +28,7 @@ class Conversation:
             self._knowledge.add(text)
 
         if query.is_question and answer.text not in ["True", "False"]:
-            bot_answer = from_bot_to_user(answer.text)
-            self.output(bot_answer)
+            self.output(answer.text)
 
         if query.is_question and answer.text == "False":
             self.output("Unknown")
@@ -38,5 +36,4 @@ class Conversation:
         return answer
 
     def input(self):
-        user_input = self._interface.input()
-        self.add(from_user_to_bot(user_input))
+        self.add(self._interface.input())
