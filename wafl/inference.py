@@ -55,6 +55,7 @@ class BackwardInference:
         for rule in rules:
             index = 0
             substitutions = {}
+            bot_has_spoken = False
             if rule.effect.is_question:
                 answer = self._qa.ask(rule.effect, query.text)
 
@@ -71,44 +72,50 @@ class BackwardInference:
             for cause in rule.causes:
                 new_already_matched = already_matched.copy()
 
+                cause_text = cause.text
                 for key, value in substitutions.items():
-                    if "(" in cause.text:
-                        cause.text = cause.text.replace(" ", "")
+                    if "(" in cause_text:
+                        cause_text = cause_text.replace(" ", "")
 
-                    cause.text = cause.text.replace(key, value)
+                    cause_text = cause_text.replace(key, str(value))
 
-                if cause.text.lower().find("say") == 0:
-                    utterance = cause.text[3:].strip().capitalize()
+                if cause_text.lower().find("say") == 0:
+                    utterance = cause_text[3:].strip().capitalize()
                     self._interface.output(utterance)
+                    bot_has_spoken = True
                     answer = Answer(text="True")
 
-                elif cause.text.lower().find("remember") == 0:
-                    utterance = cause.text[8:].strip().capitalize()
+                elif cause_text.lower().find("remember") == 0:
+                    utterance = cause_text[8:].strip().capitalize()
                     self._knowledge.add(utterance)
                     answer = Answer(text="True")
 
-                elif "(" in cause.text.lower():
-                    if "=" in cause.text:
-                        variable, to_execute = cause.text.split("=")
+                elif "(" in cause_text.lower():
+                    if "=" in cause_text:
+                        variable, to_execute = cause_text.split("=")
                         variable = variable.strip()
                         to_execute = to_execute.strip()
 
                     else:
-                        to_execute = cause.text.strip()
+                        to_execute = cause_text.strip()
 
                     result = eval(f"self._module.{to_execute}")
-                    if "=" in cause.text:
+                    if "=" in cause_text:
                         substitutions.update({f"{{{variable}}}": result})
                         substitutions.update({f"({variable})": result})
                         substitutions.update({f"({variable},": result})
                         substitutions.update({f",{variable},": result})
                         substitutions.update({f",{variable})": result})
 
-                    answer = Answer(text="True")
+                    if result != False:
+                        answer = Answer(text="True")
+
+                    else:
+                        answer = Answer(text="False")
 
                 else:
-                    if "=" in cause.text:
-                        variable, text = cause.text.split("=")
+                    if "=" in cause_text:
+                        variable, text = cause_text.split("=")
                         variable = variable.strip()
                         text = text.strip()
                         new_query = Query(
@@ -116,10 +123,10 @@ class BackwardInference:
                         )
 
                     elif cause.is_question:
-                        new_query = Query(text=cause.text, is_question=True)
+                        new_query = Query(text=cause_text, is_question=True)
 
                     else:
-                        new_query = Query(text=cause.text, is_question=False)
+                        new_query = Query(text=cause_text, is_question=False)
 
                     answer = self._compute_recursively(
                         new_query, new_already_matched, depth + 1
@@ -139,15 +146,16 @@ class BackwardInference:
                 index += 1
 
             if index == len(rule.causes):
+                rule_effect_text = rule.effect.text
                 for key, value in substitutions.items():
-                    rule.effect.text = rule.effect.text.replace(key, value)
+                    rule_effect_text = rule_effect_text.replace(key, value)
 
-                answer = self._qa.ask(query, rule.effect.text)
+                answer = self._qa.ask(query, rule_effect_text)
 
                 if answer.text == "False":
                     continue
 
-                if answer.text.lower() == "yes":
+                if answer.text.lower() == "yes" or bot_has_spoken:
                     answer.text = "True"
 
                 return answer
