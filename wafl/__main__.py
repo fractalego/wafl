@@ -1,7 +1,7 @@
 import sys
 
 from wafl.config import create_initial_files
-from wafl.run import run_from_command_line
+from wafl.run import run_from_command_line, run_from_audio
 
 
 def download_models():
@@ -23,3 +23,6 @@ if __name__ == "__main__":
 
         if command == "run":
             run_from_command_line()
+
+        if command == "run-audio":
+            run_from_audio()

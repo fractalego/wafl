@@ -35,5 +35,19 @@ class Conversation:
 
         return answer
 
-    def input(self):
-        self.add(self._interface.input())
+    def input(self, activation_word=""):
+        text = self._interface.input()
+
+        if self.__activation_word_in_text(activation_word, text):
+            text = self.__remove_activation_word(activation_word, text)
+            self.add(text)
+
+    def __activation_word_in_text(self, activation_word, text):
+        activation_pos = text.lower().find(activation_word.lower())
+        if activation_pos == 0 or activation_pos == len(text) - len(activation_word):
+            return True
+
+        return False
+
+    def __remove_activation_word(self, activation_word, text):
+        return text.replace(activation_word, "")

@@ -1,10 +1,11 @@
 from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
-from wafl.interface import DummyInterface
+from wafl.interface.interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 wafl_example = """
+
 the user wants to register to the newsletter
   email = what is the user's email
   REMEMBER the user's email is {email}
@@ -78,7 +79,10 @@ class TestExecutables(TestCase):
         conversation.input()
         expected = "The shopping list contains: apples, bananas"
         expected2 = "The shopping list contains: bananas, apples"
-        assert interface.utterances[-1] == expected or interface.utterances[-1] == expected2
+        assert (
+            interface.utterances[-1] == expected
+            or interface.utterances[-1] == expected2
+        )
 
     def test_list_the_items2(self):
         interface = DummyInterface(
@@ -96,4 +100,7 @@ class TestExecutables(TestCase):
         conversation.input()
         expected = "The shopping list contains: apples, bananas"
         expected2 = "The shopping list contains: bananas, apples"
-        assert interface.utterances[-1] == expected or interface.utterances[-1] == expected2
+        assert (
+            interface.utterances[-1] == expected
+            or interface.utterances[-1] == expected2
+        )

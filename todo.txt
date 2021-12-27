@@ -1,13 +1,14 @@
 ### TODO
 !* make it so if the user does not know the answer, one can continue inference?
    - Or should you try to do the inference first??
-!* make it so one can define variables as strings: list = {list}, apples; statement = {user} is {feeling}
+!* Implement a standard sign for code. Should it be '''> ?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
 
 * Better QA for yes/no question (maybe add SNLI to qa?)
 * Add math expressions to fact-checker (some, any, every)
 
+* Parser should allow for empty lines within rules
 * Implement Server with HTML page (docker-compose up)
 * Refactor code and clean up
 * Investigate interplay btw substitutions and already_matched
