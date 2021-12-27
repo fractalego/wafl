@@ -37,13 +37,17 @@ def get_facts_and_rules_from_text(text: str):
         else:
             if "=" in line:
                 sentence_is_question = True
-                variable = line.split("=")[0].strip()
+                variable, text = line.split("=")
+                text = text.strip()
+                variable = variable.strip()
 
             else:
                 sentence_is_question = False
                 variable = None
+                text = line.strip()
+
             effect = Fact(
-                text=line.strip(), is_question=sentence_is_question, variable=variable
+                text=text, is_question=sentence_is_question, variable=variable
             )
 
     return {"facts": facts, "rules": rules}

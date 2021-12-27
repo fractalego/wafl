@@ -14,14 +14,14 @@ the user says their name
 
 class TestVoice(TestCase):
     def test_activation(self):
-        interface = DummyInterface(to_utter=['computer my name is bob'])
+        interface = DummyInterface(to_utter=["computer my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
-        conversation.input(activation_word='computer')
-        expected = 'Nice to meet you!'
+        conversation.input(activation_word="computer")
+        expected = "Nice to meet you!"
         assert interface.utterances[0] == expected
 
     def test_no_activation(self):
-        interface = DummyInterface(to_utter=['my name is bob'])
+        interface = DummyInterface(to_utter=["my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
-        conversation.input(activation_word='computer')
+        conversation.input(activation_word="computer")
         assert interface.utterances == []

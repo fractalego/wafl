@@ -1,4 +1,12 @@
 ### TODO
+!* wrap code execution and log errors
+!* Create hotword list from text in rules
+!* Create conversation tests in userspace
+!* create tests for voice
+!* make it so information can be extracted from the query too! (The query should be a temporary fact)
+
+!* Why did it say "no" on "can you please add bananas to the shopping list?"
+
 !* make it so if the user does not know the answer, one can continue inference?
    - Or should you try to do the inference first??
 !* Implement a standard sign for code. Should it be '''> ?
