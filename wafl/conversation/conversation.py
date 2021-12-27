@@ -5,7 +5,7 @@ from wafl.qa.qa import Query
 
 class Conversation:
     def __init__(
-        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+            self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -24,6 +24,10 @@ class Conversation:
         query = Query(text=query_text, is_question=is_question(text), variable="name")
         answer = self._inference.compute(query)
 
+        if query.is_question and answer.text == "False":
+            query = Query(text=f"The user says: {text}", is_question=is_question(text), variable="name")
+            answer = self._inference.compute(query)
+
         if not query.is_question and answer.text == "False":
             self._knowledge.add(text)
 
@@ -37,7 +41,6 @@ class Conversation:
 
     def input(self, activation_word=""):
         text = self._interface.input()
-
         if self.__activation_word_in_text(activation_word, text):
             text = self.__remove_activation_word(activation_word, text)
             self.add(text)
@@ -50,4 +53,8 @@ class Conversation:
         return False
 
     def __remove_activation_word(self, activation_word, text):
-        return text.replace(activation_word, "")
+        activation_pos = text.lower().find(activation_word.lower())
+        if activation_pos == 0:
+            return text[len(activation_word):]
+        if activation_pos == len(text) - len(activation_word):
+            return text[:-len(activation_word)]

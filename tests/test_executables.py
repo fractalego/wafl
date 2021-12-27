@@ -24,6 +24,10 @@ item = what does the user want to remove from the shopping list?
 the user wants to know what is in the shopping list
   items = get_shopping_list_in_english()
   SAY The shopping list contains: {items}
+  
+the user asks for the time
+  time = get_time()
+  SAY the time is {time}
     
 """
 
@@ -104,3 +108,12 @@ class TestExecutables(TestCase):
             interface.utterances[-1] == expected
             or interface.utterances[-1] == expected2
         )
+
+    def test_question_activates_inference(self):
+        interface = DummyInterface(to_utter=["What time is it?"])
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "The time is"
+        assert expected in  interface.utterances[-1]

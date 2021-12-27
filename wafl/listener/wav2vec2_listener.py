@@ -1,9 +1,12 @@
-import numpy as np
+import os
 import pyaudio
 import time
+import numpy as np
 
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from pyctcdecode import build_ctcdecoder
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 class Wav2Vec2Listener:
@@ -74,7 +77,7 @@ class Wav2Vec2Listener:
                 transcription = self._decoder.decode(
                     logits.cpu().detach().numpy()[0],
                     hotwords=self._hotwords,
-                    hotword_weight=10.0,
+                    hotword_weight=20.0,
                 )
                 if len(transcription) >= 2:
                     return transcription

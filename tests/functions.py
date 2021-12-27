@@ -1,5 +1,7 @@
 import logging
 
+from datetime import datetime
+
 _logger = logging.getLogger(__file__)
 
 shopping_list = []
@@ -16,3 +18,8 @@ def dummy_log_email(email):
 
 def get_shopping_list_in_english():
     return ", ".join(list(set(shopping_list)))
+
+
+def get_time():
+    now = datetime.now()
+    return now.strftime("%H, %M")

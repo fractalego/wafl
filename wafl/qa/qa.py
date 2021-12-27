@@ -65,7 +65,7 @@ class QA:
 
         answer, _ = _generate_answer(text, query_text)
         if answer.lower() == "unknown":
-            return "False"
+            return Answer("False")
 
         return Answer(text=answer, variable=query.variable)
 
