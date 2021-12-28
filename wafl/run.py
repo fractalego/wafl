@@ -29,9 +29,16 @@ def run_from_audio():
     )
     conversation.output("Hello. Please say 'Computer' to activate me")
 
+    activation_word = "computer"
     while True:
         try:
-            conversation.input(activation_word="computer")
+            conversation.input(activation_word=activation_word)
+            activation_word = ""
+
+        except KeyboardInterrupt:
+            activation_word = "computer"
+            continue
+
         except (KeyError, EOFError):
             break
 
