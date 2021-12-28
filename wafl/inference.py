@@ -99,7 +99,12 @@ class BackwardInference:
                     else:
                         to_execute = cause_text.strip()
 
-                    result = eval(f"self._module.{to_execute}")
+                    try:
+                        result = eval(f"self._module.{to_execute}")
+
+                    except Exception as e:
+                        _logger.warning(str(e))
+
                     if "=" in cause_text:
                         substitutions.update({f"{{{variable}}}": result})
                         substitutions.update({f"({variable})": result})

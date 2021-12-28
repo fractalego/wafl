@@ -43,7 +43,7 @@ class Conversation:
 
         return answer
 
-    def input(self, activation_word: str ="") -> bool:
+    def input(self, activation_word: str = "") -> bool:
         text = self._interface.input()
         if self.__activation_word_in_text(activation_word, text):
             text = self.__remove_activation_word(activation_word, text)
