@@ -32,8 +32,8 @@ def run_from_audio():
     activation_word = "computer"
     while True:
         try:
-            conversation.input(activation_word=activation_word)
-            activation_word = ""
+            if conversation.input(activation_word=activation_word):
+                activation_word = ""
 
         except KeyboardInterrupt:
             activation_word = "computer"
