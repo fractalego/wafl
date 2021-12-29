@@ -21,6 +21,17 @@ item = what does the user want to remove from the shopping list?
   shopping_list.remove(item)
   SAY {item} has been removed from the list
 
+item = what does the user want to add to the test list?
+  ! equal(item, "batteries") 
+  REMEMBER the user wants to add {item} 
+  shopping_list.append(item)
+  SAY {item} has been added to the list
+
+item = what does the user want to add to the test list?
+  equal(item, "batteries") 
+  REMEMBER the user wants to add {item} 
+  SAY {item} cannot be added to the list
+
 the user wants to know what is in the shopping list
   items = get_shopping_list_in_english()
   SAY The shopping list contains: {items}
@@ -126,3 +137,12 @@ class TestExecutables(TestCase):
         conversation.input()
         expected = "The time is"
         assert expected in interface.utterances[-1]
+
+    def test_negation(self):
+        interface = DummyInterface(to_utter=["add batteries to the test list"])
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "Batteries cannot be added to the list"
+        assert interface.utterances[-1] == expected

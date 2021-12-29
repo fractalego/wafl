@@ -2,7 +2,7 @@ import logging
 
 from wafl.facts import Fact
 from wafl.knowledge.base_knowledge import BaseKnowledge
-from wafl.parser import get_facts_and_rules_from_text
+from wafl.parsing.parser import get_facts_and_rules_from_text
 from wafl.retriever import Retriever
 from wafl.text_utils import clean_text_for_retrieval
 

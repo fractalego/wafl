@@ -1,8 +1,8 @@
 ### TODO
-!* wrap code execution and log errors
+!* Allow rules to be called from functions.py !!
+
 !* Create hotword list from text in rules (taken from facts and rules.effect! - UPDATED EVERY TIME!)
 !* Create conversation tests in userspace
-!* create tests for voice
 !* make it so information can be extracted from the query too! (The query should be a temporary fact)
 
 !* USER REQUEST: Multiple items to the shopping list in one go: apples AND bananas AND vegetables
@@ -14,10 +14,12 @@
 !* Implement a standard sign for code. Should it be '''> ?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
+* Improve yes/no recognition when reading input from user
 
 * Better QA for yes/no question (maybe add SNLI to qa?)
 * Add math expressions to fact-checker (some, any, every)
 
+* create tests for voice
 * Parser should allow for empty lines within rules
 * Implement Server with HTML page (docker-compose up)
 * Refactor code and clean up

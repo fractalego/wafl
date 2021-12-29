@@ -31,8 +31,8 @@ def from_user_to_bot(text):
 
 def from_bot_to_user(text):
     text = re.sub("the user's", "your", text, flags=re.IGNORECASE)
-    text = re.sub("is the user", "are you", text, flags=re.IGNORECASE)
     text = re.sub("does the user", "do you", text, flags=re.IGNORECASE)
+    text = re.sub("is the user", "are you", text, flags=re.IGNORECASE)
     text = re.sub("the user is", "you are", text, flags=re.IGNORECASE)
     text = re.sub("the user", "you", text, flags=re.IGNORECASE)
     return text

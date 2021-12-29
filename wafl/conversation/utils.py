@@ -12,7 +12,7 @@ def is_question(text):
 
     word_and_pos_list = pos_tag(word_tokenize(text))
     first_tag = word_and_pos_list[0][1]
-    if first_tag in ["VB", "VBZ", "VBD", "VBP", "MD", "WRB", "WP"]:
+    if first_tag in ["VB", "VBZ", "VBD", "VBP", "MD", "WRB", "WP", "WDT"]:
         return True
 
     return False

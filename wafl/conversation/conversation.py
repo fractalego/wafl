@@ -1,5 +1,5 @@
 from wafl.conversation.utils import is_question
-from wafl.inference import BackwardInference
+from wafl.inference.backward_inference import BackwardInference
 from wafl.qa.qa import Query
 
 
