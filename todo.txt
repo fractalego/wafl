@@ -1,17 +1,19 @@
 ### TODO
 
-!* refactor BackwardInference
 !* Create hotword list from text in rules (taken from facts and rules.effect! - UPDATED EVERY TIME!)
+   -- You'll need config.json for this one
+
 !* Create conversation tests in userspace
 !* Working memory should really be working knowledge
-
+!* refactor BackwardInference
 
 !* make it so if the user does not know the answer, one can continue inference?
    - Or should you try to do the inference first??
 !* Implement a standard sign for code. Should it be '''> ?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
-* Improve yes/no recognition when reading input from user
+
+* Working memory is unnecessarily complicated. It can just contain the story and some method to automatically fill it.
 !* Why did it say "no" on "can you please add bananas to the shopping list?"
 * Better QA for yes/no question (maybe add SNLI to qa?)
 * Add math expressions to fact-checker (some, any, every)

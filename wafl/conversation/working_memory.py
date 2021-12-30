@@ -1,6 +1,6 @@
 class WorkingMemory:
     def __init__(self):
-        self._story = ''
+        self._story = ""
         self._questions = []
         self._answers = []
 
@@ -8,18 +8,18 @@ class WorkingMemory:
         return self._story
 
     def get_discussion(self):
-        discussion = ''
-        for question, answer in zip(self._questions, self._answers + ['']):
-            discussion += 'Q: ' + question + '\n'
-            discussion += 'A: ' + answer + '\n'
+        discussion = ""
+        for question, answer in zip(self._questions, self._answers + [""]):
+            discussion += "Q: " + question + "\n"
+            discussion += "A: " + answer + "\n"
 
         return discussion
 
     def add_story(self, text):
-        if text[-1] != '.':
-            text += '.'
+        if text[-1] != ".":
+            text += "."
 
-        self._story += ' ' + text
+        self._story += " " + text
 
     def add_question(self, text):
         self._questions.append(text)

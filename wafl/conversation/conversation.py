@@ -6,7 +6,7 @@ from wafl.qa.qa import Query
 
 class Conversation:
     def __init__(
-            self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -67,6 +67,6 @@ class Conversation:
     def __remove_activation_word(self, activation_word, text):
         activation_pos = text.lower().find(activation_word.lower())
         if activation_pos == 0:
-            return text[len(activation_word):]
+            return text[len(activation_word) :]
         if activation_pos == len(text) - len(activation_word):
             return text[: -len(activation_word)]

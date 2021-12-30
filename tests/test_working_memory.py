@@ -18,9 +18,9 @@ The user says hello
 class TestWorkingMemory(TestCase):
     def test_working_memory_class(self):
         working_memory = WorkingMemory()
-        working_memory.add_question('What is the color of Bob\'s dress')
-        working_memory.add_answer('Red')
-        working_memory.add_question('Who is talking')
+        working_memory.add_question("What is the color of Bob's dress")
+        working_memory.add_answer("Red")
+        working_memory.add_question("Who is talking")
         prediction = working_memory.get_discussion().strip()
         expected = """
 Q: What is the color of Bob's dress
@@ -31,8 +31,6 @@ A:
         assert prediction == expected
 
     def test_executables(self):
-        ####
-
         interface = DummyInterface(
             to_utter=[
                 "Hello, my name is Bob",
