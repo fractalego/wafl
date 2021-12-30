@@ -3,6 +3,7 @@
 !* refactor BackwardInference
 !* Create hotword list from text in rules (taken from facts and rules.effect! - UPDATED EVERY TIME!)
 !* Create conversation tests in userspace
+!* Working memory should really be working knowledge
 
 
 !* make it so if the user does not know the answer, one can continue inference?

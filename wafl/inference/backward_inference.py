@@ -30,7 +30,7 @@ class BackwardInference:
 
     def get_inference_answer(self, text):
         query = Query(text=text, is_question=is_question(text))
-        answer = self._compute_recursively(query, WorkingMemory(), already_matched={}, depth=1)
+        answer = self._compute_recursively(query, WorkingMemory(), depth=1)
 
         if answer.text == "True":
             return True
@@ -44,19 +44,24 @@ class BackwardInference:
         if not working_memory:
             working_memory = WorkingMemory()
 
-        return self._compute_recursively(query, working_memory, already_matched=set(), depth=0)
+        return self._compute_recursively(query, working_memory, depth=0)
 
-    def _compute_recursively(self, query: "Query", working_memory, already_matched, depth):
-        if depth > self._max_depth:
-            return Answer(text="False")
-
+    def _look_for_answer_in_facts(self, query, working_memory):
         facts = self._knowledge.ask_for_facts(query)
         for fact in facts:
             answer = self._qa.ask(query, fact.text)
-            if str(fact) in already_matched:
-                continue
 
             working_memory.add_story(fact.text)
+            return True, answer
+
+        return False, None
+
+    def _compute_recursively(self, query: "Query", working_memory, depth):
+        if depth > self._max_depth:
+            return Answer(text="False")
+
+        answer_is_found, answer = self._look_for_answer_in_facts(query, working_memory)
+        if answer_is_found:
             return answer
 
         if query.is_question and depth > 0 and working_memory.get_story():
@@ -64,7 +69,7 @@ class BackwardInference:
             if answer.text.lower().replace('.', '') not in ['unknown', 'yes', 'no']:
                 return answer
 
-        if depth > 0 and facts == [] and query.is_question:
+        if depth > 0 and query.is_question:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
             user_answer = self._qa.ask(query,
@@ -102,8 +107,6 @@ class BackwardInference:
                     substitutions[f",{answer.variable.strip()})"] = f',"{answer.text}")'
 
             for cause in rule.causes:
-                new_already_matched = already_matched.copy()
-
                 cause_text = cause.text.strip()
                 invert_results = False
                 if cause_text[0] == "!":
@@ -181,7 +184,6 @@ class BackwardInference:
                     answer = self._compute_recursively(
                         new_query,
                         working_memory,
-                        new_already_matched,
                         depth + 1
                     )
 
@@ -195,7 +197,6 @@ class BackwardInference:
                 if answer.text == "False":
                     break
 
-                already_matched = new_already_matched
                 if answer.variable:
                     substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
                     substitutions[f"({answer.variable.strip()})"] = f'("{answer.text}")'
