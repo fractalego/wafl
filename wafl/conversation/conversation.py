@@ -1,11 +1,12 @@
 from wafl.conversation.utils import is_question
+from wafl.conversation.working_memory import WorkingMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.qa.qa import Query
 
 
 class Conversation:
     def __init__(
-        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+            self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -15,22 +16,26 @@ class Conversation:
         self._interface.output(text)
 
     def add(self, text: str):
+        working_memory = WorkingMemory()
+
         if not is_question(text):
-            query_text = f"The user says: {text}"
+            query_text = f"The user says: '{text}'"
+            working_memory.add_story(query_text)
 
         else:
             query_text = text
 
         query = Query(text=query_text, is_question=is_question(text), variable="name")
-        answer = self._inference.compute(query)
+        answer = self._inference.compute(query, working_memory)
 
         if query.is_question and answer.text == "False":
             query = Query(
-                text=f"The user says: {text}",
+                text=f"The user asks: '{text}'",
                 is_question=is_question(text),
                 variable="name",
             )
-            answer = self._inference.compute(query)
+            working_memory.add_story(query.text)
+            answer = self._inference.compute(query, working_memory)
 
         if not query.is_question and answer.text == "False":
             self._knowledge.add(text)
@@ -62,6 +67,6 @@ class Conversation:
     def __remove_activation_word(self, activation_word, text):
         activation_pos = text.lower().find(activation_word.lower())
         if activation_pos == 0:
-            return text[len(activation_word) :]
+            return text[len(activation_word):]
         if activation_pos == len(text) - len(activation_word):
             return text[: -len(activation_word)]

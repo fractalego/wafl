@@ -77,7 +77,6 @@ class TestConversation(TestCase):
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
-
         answer = conversation.add("What is the email of the user")
         assert answer.text == "test@example.com"
 

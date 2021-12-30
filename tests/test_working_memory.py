@@ -8,7 +8,7 @@ from wafl.knowledge.knowledge import Knowledge
 
 wafl_example = """
 
-The user greets
+The user says hello
   name = What is the user's name
   SAY Hello, {name}!  
 
@@ -30,7 +30,7 @@ A:
         """.strip()
         assert prediction == expected
 
-    def ntest_executables(self):
+    def test_executables(self):
         ####
 
         interface = DummyInterface(
@@ -42,5 +42,5 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Hello, Bob!"
-        assert interface.utterances[-1] == expected
+        expected = "Hello, bob!"
+        assert interface.utterances[0] == expected

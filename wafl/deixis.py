@@ -26,7 +26,9 @@ def from_user_to_bot(text):
         else:
             new_text.append(word)
 
-    return " ".join(new_text)
+    return_text = " ".join(new_text)
+    return_text = return_text.replace(' @ ', '@')
+    return return_text
 
 
 def from_bot_to_user(text):

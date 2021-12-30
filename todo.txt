@@ -1,13 +1,9 @@
 ### TODO
-!* Allow rules to be called from functions.py !!
 
+!* refactor BackwardInference
 !* Create hotword list from text in rules (taken from facts and rules.effect! - UPDATED EVERY TIME!)
 !* Create conversation tests in userspace
-!* make it so information can be extracted from the query too! (The query should be a temporary fact)
 
-!* USER REQUEST: Multiple items to the shopping list in one go: apples AND bananas AND vegetables
-
-!* Why did it say "no" on "can you please add bananas to the shopping list?"
 
 !* make it so if the user does not know the answer, one can continue inference?
    - Or should you try to do the inference first??
@@ -15,10 +11,10 @@
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
 * Improve yes/no recognition when reading input from user
-
+!* Why did it say "no" on "can you please add bananas to the shopping list?"
 * Better QA for yes/no question (maybe add SNLI to qa?)
 * Add math expressions to fact-checker (some, any, every)
-
+* USER REQUEST: Multiple items to the shopping list in one go: apples AND bananas AND vegetables
 * create tests for voice
 * Parser should allow for empty lines within rules
 * Implement Server with HTML page (docker-compose up)

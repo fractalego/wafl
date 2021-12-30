@@ -3,6 +3,7 @@ import re
 import traceback
 
 from wafl.conversation.utils import is_question
+from wafl.conversation.working_memory import WorkingMemory
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
@@ -12,11 +13,11 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-        self,
-        knowledge: "Knowledge",
-        interface: "Interface",
-        module_name=None,
-        max_depth: int = 4,
+            self,
+            knowledge: "Knowledge",
+            interface: "Interface",
+            module_name=None,
+            max_depth: int = 4,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
@@ -29,7 +30,7 @@ class BackwardInference:
 
     def get_inference_answer(self, text):
         query = Query(text=text, is_question=is_question(text))
-        answer = self._compute_recursively(query, already_matched={}, depth=1)
+        answer = self._compute_recursively(query, WorkingMemory(), already_matched={}, depth=1)
 
         if answer.text == "True":
             return True
@@ -39,10 +40,13 @@ class BackwardInference:
 
         return answer.text
 
-    def compute(self, query):
-        return self._compute_recursively(query, already_matched=set(), depth=0)
+    def compute(self, query, working_memory=None):
+        if not working_memory:
+            working_memory = WorkingMemory()
 
-    def _compute_recursively(self, query: "Query", already_matched, depth):
+        return self._compute_recursively(query, working_memory, already_matched=set(), depth=0)
+
+    def _compute_recursively(self, query: "Query", working_memory, already_matched, depth):
         if depth > self._max_depth:
             return Answer(text="False")
 
@@ -52,23 +56,29 @@ class BackwardInference:
             if str(fact) in already_matched:
                 continue
 
+            working_memory.add_story(fact.text)
             return answer
+
+        if query.is_question and depth > 0 and working_memory.get_story():
+            answer = self._qa.ask(query, working_memory.get_story())
+            if answer.text.lower().replace('.', '') not in ['unknown', 'yes', 'no']:
+                return answer
 
         if depth > 0 and facts == [] and query.is_question:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
+            user_answer = self._qa.ask(query,
+                                       f"When asked '{query.text}', the user says: '{user_input_text}'")
 
-            ### TODO: Make yes/no less naive (and add unknown as possible input from user)
-            if user_input_text.lower() == "yes":
+            if user_answer.text.lower().replace('.', '') == "yes":
                 user_answer = Answer(text="True")
 
-            elif user_input_text.lower() == "no" or user_input_text.strip() == "":
+            elif user_input_text.lower().replace('.', '') == "no":
                 user_answer = Answer(text="False")
 
-            else:
-                user_answer = self._qa.ask(query, f"The user says: {user_input_text}")
-
-            return user_answer
+            working_memory.add_story(f"When asked '{query.text}', the user says: '{user_input_text}'")
+            if user_answer.text.lower().replace('.', '') != 'unknown':
+                return user_answer
 
         rules = self._knowledge.ask_for_rule_backward(query)
         for rule in rules:
@@ -106,6 +116,10 @@ class BackwardInference:
 
                     cause_text = cause_text.replace(key, str(value))
 
+                if cause_text.lower().find("new_frame") == 0:
+                    cause_text = cause_text[9:].strip().capitalize()
+                    working_memory = WorkingMemory()
+
                 if cause_text.lower().find("say") == 0:
                     utterance = cause_text[3:].strip().capitalize()
                     self._interface.output(utterance)
@@ -128,7 +142,7 @@ class BackwardInference:
 
                     try:
                         if any(item + "(" in to_execute for item in self._functions):
-                            to_execute = add_self_to_function_arguments(to_execute)
+                            to_execute = add_function_arguments(to_execute)
                         result = eval(f"self._module.{to_execute}")
 
                     except Exception as e:
@@ -165,7 +179,10 @@ class BackwardInference:
                         new_query = Query(text=cause_text, is_question=False)
 
                     answer = self._compute_recursively(
-                        new_query, new_already_matched, depth + 1
+                        new_query,
+                        working_memory,
+                        new_already_matched,
+                        depth + 1
                     )
 
                 if invert_results:
@@ -205,7 +222,7 @@ class BackwardInference:
         return Answer(text="False")
 
 
-def add_self_to_function_arguments(text: str) -> str:
+def add_function_arguments(text: str) -> str:
     text = re.sub("(.*\([\"'0-9a-zA-Z@\-\.,\s]+)\)$", "\\1, self)", text)
     text = re.sub("(.*)\(\)$", "\\1(self)", text)
     return text
