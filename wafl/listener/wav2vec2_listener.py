@@ -14,6 +14,7 @@ class Wav2Vec2Listener:
     _format = pyaudio.paInt16
     _channels = 1
     _rate = 16000
+    _range = 32768
 
     def __init__(self, model_name):
         self.p = pyaudio.PyAudio()
@@ -41,6 +42,9 @@ class Wav2Vec2Listener:
     def set_hotwords(self, hotwords):
         self._hotwords = hotwords
 
+    def add_hotwords(self, hotwords):
+        self._hotwords += hotwords
+
     def set_timeout(self, timeout):
         self._timeout = timeout
 
@@ -59,7 +63,7 @@ class Wav2Vec2Listener:
             current = time.time()
             rec.append(data)
 
-        return np.frombuffer(b"".join(rec), dtype=np.int16) / 32768
+        return np.frombuffer(b"".join(rec), dtype=np.int16) / self._range
 
     def input(self):
         while True:

@@ -1,5 +1,6 @@
 from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
+from wafl.interface.utils import get_most_common_words
 from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
 from wafl.speaker.picotts_speaker import PiCoTTSSpeaker
 
@@ -22,8 +23,12 @@ class VoiceInterface(BaseInterface):
         self._listener.set_timeout(1.1)
         self._speaker = PiCoTTSSpeaker()
 
-    def set_hot_words_from_text(self):
-        pass
+    def add_hotwords_from_knowledge(self, knowledge: "Knowledge"):
+        hotwords = get_most_common_words(
+            knowledge.get_facts_and_rule_as_text(), max_num_words=100
+        )
+        hotwords = [word.upper() for word in hotwords]
+        self._listener.add_hotwords(hotwords)
 
     def output(self, text: str):
         text = from_bot_to_user(text)

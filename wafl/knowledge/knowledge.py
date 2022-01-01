@@ -89,6 +89,16 @@ class Knowledge(BaseKnowledge):
             )
         ]
 
+    def get_facts_and_rule_as_text(self):
+        text = ""
+        for fact in self._facts_dict.values():
+            text += fact.text + "\n"
+
+        for effect in self._rules_dict.values():
+            text += effect.effect.text + "\n"
+
+        return text
+
     def _initialize_retrievers(self):
         for index, fact in self._facts_dict.items():
             self._facts_retriever.add_text_and_index(

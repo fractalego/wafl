@@ -22,11 +22,10 @@ def run_from_command_line():
 
 
 def run_from_audio():
-    wafl_rules = open("rules.wafl").read()
+    knowledge = Knowledge(open("rules.wafl").read())
     interface = VoiceInterface()
-    conversation = Conversation(
-        Knowledge(wafl_rules), interface=interface, code_path="functions"
-    )
+    interface.add_hotwords_from_knowledge(knowledge)
+    conversation = Conversation(knowledge, interface=interface, code_path="functions")
     conversation.output("Hello. Please say 'Computer' to activate me")
 
     activation_word = "computer"
