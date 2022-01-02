@@ -1,7 +1,10 @@
 ### TODO
 
-!* Create hotword list from text in rules (taken from facts and rules.effect! - UPDATED EVERY TIME!)
-   -- You'll need config.json for this one
+* working memory only within the same level of rules with same activation
+* Check again "no" for "do you want to add more items" (it is not flexible enough, "no thanks" doesn't work)
+* add perplexity to measure how much sense the input makes
+* New voice! It's ridiculous to have to have a memory leak from picotts
+    - Maybe use pyfestival (voice_cmu_us_slt_arctic_hts)
 
 !* Create conversation tests in userspace
 !* Working memory should really be working knowledge
@@ -12,7 +15,7 @@
 !* Implement a standard sign for code. Should it be '''> ?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
-
+* add hotwords to config.json
 * Working memory is unnecessarily complicated. It can just contain the story and some method to automatically fill it.
 !* Why did it say "no" on "can you please add bananas to the shopping list?"
 * Better QA for yes/no question (maybe add SNLI to qa?)

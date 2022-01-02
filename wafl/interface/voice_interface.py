@@ -2,7 +2,7 @@ from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
 from wafl.interface.utils import get_most_common_words
 from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
-from wafl.speaker.picotts_speaker import PiCoTTSSpeaker
+from wafl.speaker.festival_speaker import FestivalSpeaker
 
 
 class VoiceInterface(BaseInterface):
@@ -20,8 +20,8 @@ class VoiceInterface(BaseInterface):
                 "APPLES",
             ]
         )
-        self._listener.set_timeout(1.1)
-        self._speaker = PiCoTTSSpeaker()
+        self._listener.set_timeout(0.8)
+        self._speaker = FestivalSpeaker()
 
     def add_hotwords_from_knowledge(self, knowledge: "Knowledge"):
         hotwords = get_most_common_words(
