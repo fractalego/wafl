@@ -32,7 +32,9 @@ class TestVoice(TestCase):
 
     def test_hotwords_as_input(self):
         interface = VoiceInterface()
-        interface.add_hotwords_from_knowledge(Knowledge(_wafl_example))
+        interface.add_hotwords_from_knowledge(
+            Knowledge(_wafl_example), count_threshold=1
+        )
         expected = [
             "COMPUTER",
             "JUBILEE",

@@ -148,19 +148,28 @@ class BackwardInference:
         if depth > 0 and query.is_question:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
-            user_answer = self._qa.ask(
-                query, f"When asked '{query.text}', the user says: '{user_input_text}'"
+            working_memory.add_story(
+                f"When asked '{query.text}', the user says: '{user_input_text}'"
             )
 
-            if user_answer.text.lower().replace(".", "") == "yes":
+            if user_input_text.lower().replace(".", "") == "yes":
                 user_answer = Answer(text="True")
 
             elif user_input_text.lower().replace(".", "") == "no":
                 user_answer = Answer(text="False")
 
-            working_memory.add_story(
-                f"When asked '{query.text}', the user says: '{user_input_text}'"
-            )
+            else:
+                user_answer = self._qa.ask(
+                    query,
+                    f"When asked '{query.text}', the user says: '{user_input_text}'",
+                )
+
+                if user_answer.text.lower().replace(".", "") == "yes":
+                    user_answer = Answer(text="True")
+
+                elif user_answer.text.lower().replace(".", "") == "no":
+                    user_answer = Answer(text="False")
+
             if user_answer.text.lower().replace(".", "") != "unknown":
                 return user_answer
 

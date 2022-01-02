@@ -20,12 +20,16 @@ class VoiceInterface(BaseInterface):
                 "APPLES",
             ]
         )
-        self._listener.set_timeout(0.8)
+        self._listener.set_timeout(1.1)
         self._speaker = FestivalSpeaker()
 
-    def add_hotwords_from_knowledge(self, knowledge: "Knowledge"):
+    def add_hotwords_from_knowledge(
+        self, knowledge: "Knowledge", max_num_words=100, count_threshold=5
+    ):
         hotwords = get_most_common_words(
-            knowledge.get_facts_and_rule_as_text(), max_num_words=100
+            knowledge.get_facts_and_rule_as_text(),
+            max_num_words=max_num_words,
+            count_threshold=count_threshold,
         )
         hotwords = [word.upper() for word in hotwords]
         self._listener.add_hotwords(hotwords)
