@@ -106,3 +106,8 @@ def _generate_answer(text, query, dialogue=None, length=50):
         _logger.warning("A forbidden word was caught in the answer!")
         answer = "unknown"
     return answer, score
+
+
+def get_perplexity(text):
+    tokens = _tokenizer.encode(text, return_tensors="pt")
+    return float(_model(tokens.to(device), labels=tokens.to(device))[0])

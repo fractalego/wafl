@@ -1,6 +1,8 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
+from wafl.qa.qa import get_perplexity
+
 
 def get_most_common_words(text, max_num_words, count_threshold=1):
     corpus = text.split("\n")
@@ -16,3 +18,26 @@ def get_most_common_words(text, max_num_words, count_threshold=1):
     ]
     words_freq = sorted(words_freq, key=lambda x: -x[1])
     return [word for word, _ in words_freq][:max_num_words]
+
+
+def not_good_enough(text):
+    if not text:
+        return True
+
+    text = f"""
+In the text below two people are discussing a story.
+
+Story:
+The user asks a few questions.
+
+Discussion:
+Q:{text}
+    """.strip()
+
+    perplexity_threshold = 3
+    perplexity = get_perplexity(text)
+    print(perplexity)
+    if perplexity > perplexity_threshold:
+        return True
+
+    return False
