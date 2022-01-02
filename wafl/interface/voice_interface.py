@@ -12,7 +12,6 @@ class VoiceInterface(BaseInterface):
             [
                 "COMPUTER",
                 "JUBILEE",
-                "LINE",
                 "CAMDEN",
                 "ADD",
                 "REMOVE",

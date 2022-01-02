@@ -19,7 +19,7 @@ class Conversation:
         working_memory = WorkingMemory()
 
         if not is_question(text):
-            query_text = f"The user says: '{text}'"
+            query_text = f"The user says: '{text}.'"
             working_memory.add_story(query_text)
 
         else:
@@ -30,7 +30,7 @@ class Conversation:
 
         if query.is_question and answer.text == "False":
             query = Query(
-                text=f"The user asks: '{text}'",
+                text=f"The user asks: '{text}.'",
                 is_question=is_question(text),
                 variable="name",
             )

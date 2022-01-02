@@ -15,7 +15,7 @@ def run_from_command_line():
     while True:
         try:
             conversation.input()
-        except (KeyError, EOFError):
+        except (RuntimeWarning, KeyboardInterrupt, EOFError):
             break
 
     conversation.output("Goodbye!")
@@ -33,11 +33,11 @@ def run_from_audio():
             if conversation.input(activation_word=activation_word):
                 activation_word = ""
 
-        except KeyboardInterrupt:
+        except RuntimeWarning:
             activation_word = "computer"
             continue
 
-        except (KeyError, EOFError):
+        except (KeyboardInterrupt, EOFError):
             break
 
     conversation.output("Goodbye!")

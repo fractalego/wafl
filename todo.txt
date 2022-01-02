@@ -1,10 +1,12 @@
 ### TODO
 
 * working memory only within the same level of rules with same activation
-* Check again "no" for "do you want to add more items" (it is not flexible enough, "no thanks" doesn't work)
-* add perplexity to measure how much sense the input makes
+  GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!
+
+* write aux function that create standard formatting (for punctuation at end of string and lowercase)
+
 * New voice! It's ridiculous to have to have a memory leak from picotts
-    - Maybe use pyfestival (voice_cmu_us_slt_arctic_hts)
+    - Use fairseq voices
 
 !* Create conversation tests in userspace
 !* Working memory should really be working knowledge

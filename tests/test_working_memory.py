@@ -5,12 +5,22 @@ from wafl.conversation.working_memory import WorkingMemory
 from wafl.interface.interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
-
 wafl_example = """
 
 The user says hello
   name = What is the user's name
   SAY Hello, {name}!  
+  
+item = what does the user want to add to the shopping list?
+  shopping_list.append(item)
+  SAY {item} has been added to the list
+  ! the bot asks to add another item to the shopping list
+
+the bot asks to add another item to the shopping list
+  does the user want to add another item
+  item = what do you want to add
+  SAY {item} has been added to the list
+  ! the bot asks to add another item to the shopping list
 
 """
 
@@ -34,6 +44,22 @@ A:
         interface = DummyInterface(
             to_utter=[
                 "Hello, my name is Bob",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "Hello, bob!"
+        assert interface.utterances[0] == expected
+
+    def ntest_working_memory_does_not_propagate_down(self):
+
+        ### MAKE WORKING MEMORY PROPAGATIONLIMITED TO QUESTIONS, NOT FACTS
+
+        interface = DummyInterface(
+            to_utter=[
+                "hello"
             ]
         )
         conversation = Conversation(

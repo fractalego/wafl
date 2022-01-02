@@ -142,6 +142,8 @@ class BackwardInference:
         if query.is_question and depth > 0 and working_memory.get_story():
             answer = self._qa.ask(query, working_memory.get_story())
             if answer.text.lower().replace(".", "") not in ["unknown", "yes", "no"]:
+                if answer.text[-1] == '.':
+                    answer.text = answer.text[:-1]
                 return answer
 
     def _look_for_answer_by_asking_the_user(self, query, working_memory, depth):
@@ -149,7 +151,7 @@ class BackwardInference:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
             working_memory.add_story(
-                f"When asked '{query.text}', the user says: '{user_input_text}'"
+                f"When asked '{query.text}', the user says: '{user_input_text}.'"
             )
 
             if user_input_text.lower().replace(".", "") == "yes":
@@ -161,7 +163,7 @@ class BackwardInference:
             else:
                 user_answer = self._qa.ask(
                     query,
-                    f"When asked '{query.text}', the user says: '{user_input_text}'",
+                    f"When asked '{query.text}', the user says: '{user_input_text}.'",
                 )
 
                 if user_answer.text.lower().replace(".", "") == "yes":
@@ -171,6 +173,8 @@ class BackwardInference:
                     user_answer = Answer(text="False")
 
             if user_answer.text.lower().replace(".", "") != "unknown":
+                if user_answer.text[-1] == '.':
+                    user_answer.text = user_answer.text[:-1]
                 return user_answer
 
     def _validate_question_in_effects(self, effect, query_text, substitutions):
@@ -255,6 +259,7 @@ class BackwardInference:
 
         else:
             new_query = Query(text=cause_text, is_question=False)
+            working_memory = WorkingMemory()
 
         answer = self._compute_recursively(new_query, working_memory, depth + 1)
 

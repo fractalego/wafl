@@ -130,3 +130,11 @@ class TestConversation(TestCase):
         conversation.output(utterance)
         conversation.input()
         assert interface.utterances[-1] == "are you good enough to join?"
+
+    def test_hello_and_username(self):
+        interface = DummyInterface(["Hello", "Albert"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        assert interface.utterances[-1] == "Nice to meet you, albert!"
