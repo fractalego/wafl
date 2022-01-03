@@ -57,11 +57,7 @@ A:
 
         ### MAKE WORKING MEMORY PROPAGATIONLIMITED TO QUESTIONS, NOT FACTS
 
-        interface = DummyInterface(
-            to_utter=[
-                "hello"
-            ]
-        )
+        interface = DummyInterface(to_utter=["hello"])
         conversation = Conversation(
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )

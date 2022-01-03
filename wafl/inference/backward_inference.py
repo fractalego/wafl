@@ -73,6 +73,9 @@ class BackwardInference:
         if answer:
             return answer
 
+        if depth > 0:
+            working_memory = WorkingMemory()
+
         answer = self._look_for_answer_in_rules(query, working_memory, depth)
         if answer:
             return answer
@@ -142,7 +145,7 @@ class BackwardInference:
         if query.is_question and depth > 0 and working_memory.get_story():
             answer = self._qa.ask(query, working_memory.get_story())
             if answer.text.lower().replace(".", "") not in ["unknown", "yes", "no"]:
-                if answer.text[-1] == '.':
+                if answer.text[-1] == ".":
                     answer.text = answer.text[:-1]
                 return answer
 
@@ -158,7 +161,9 @@ class BackwardInference:
                 user_answer = Answer(text="False")
 
             else:
-                story = f"When asked '{query.text}', the user says: '{user_input_text}.'"
+                story = (
+                    f"When asked '{query.text}', the user says: '{user_input_text}.'"
+                )
                 user_answer = self._qa.ask(query, story)
 
                 if user_answer.text.lower().replace(".", "") == "yes":
@@ -171,7 +176,7 @@ class BackwardInference:
                     working_memory.add_story(story)
 
             if user_answer.text.lower().replace(".", "") != "unknown":
-                if user_answer.text[-1] == '.':
+                if user_answer.text[-1] == ".":
                     user_answer.text = user_answer.text[:-1]
                 return user_answer
 
@@ -257,7 +262,6 @@ class BackwardInference:
 
         else:
             new_query = Query(text=cause_text, is_question=False)
-            working_memory = WorkingMemory()
 
         answer = self._compute_recursively(new_query, working_memory, depth + 1)
 
