@@ -18,7 +18,7 @@ item = what does the user want to add to the shopping list?
 
 the bot asks to add another item to the shopping list
   does the user want to add another item
-  item = what do you want to add
+  item = what do you want to add to the shopping list
   SAY {item} has been added to the list
   ! the bot asks to add another item to the shopping list
 

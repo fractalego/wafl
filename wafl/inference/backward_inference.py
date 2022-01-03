@@ -24,11 +24,11 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-        self,
-        knowledge: "Knowledge",
-        interface: "Interface",
-        module_name=None,
-        max_depth: int = 4,
+            self,
+            knowledge: "Knowledge",
+            interface: "Interface",
+            module_name=None,
+            max_depth: int = 4,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
@@ -150,9 +150,6 @@ class BackwardInference:
         if depth > 0 and query.is_question:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
-            working_memory.add_story(
-                f"When asked '{query.text}', the user says: '{user_input_text}.'"
-            )
 
             if user_input_text.lower().replace(".", "") == "yes":
                 user_answer = Answer(text="True")
@@ -161,16 +158,17 @@ class BackwardInference:
                 user_answer = Answer(text="False")
 
             else:
-                user_answer = self._qa.ask(
-                    query,
-                    f"When asked '{query.text}', the user says: '{user_input_text}.'",
-                )
+                story = f"When asked '{query.text}', the user says: '{user_input_text}.'"
+                user_answer = self._qa.ask(query, story)
 
                 if user_answer.text.lower().replace(".", "") == "yes":
                     user_answer = Answer(text="True")
 
                 elif user_answer.text.lower().replace(".", "") == "no":
                     user_answer = Answer(text="False")
+
+                else:
+                    working_memory.add_story(story)
 
             if user_answer.text.lower().replace(".", "") != "unknown":
                 if user_answer.text[-1] == '.':
@@ -201,7 +199,7 @@ class BackwardInference:
         return Answer(text="True")
 
     def __validate_fact_in_effects(
-        self, rule_effect_text, query, substitutions, bot_has_spoken
+            self, rule_effect_text, query, substitutions, bot_has_spoken
     ):
         for key, value in substitutions.items():
             rule_effect_text = rule_effect_text.replace(key, value)

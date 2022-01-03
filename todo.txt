@@ -4,13 +4,15 @@
   GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!
 
 * write aux function that create standard formatting (for punctuation at end of string and lowercase)
+* empty input retrieves everyting? Do not allow empty input (maybe user perplexity also in CLI)
 
 * New voice! It's ridiculous to have to have a memory leak from picotts
     - Use fairseq voices
 
-!* Create conversation tests in userspace
-!* Working memory should really be working knowledge
-!* refactor BackwardInference
+* why is Alberto not recognized as a name by the retriever? need a better retriever than MSMARCO distill
+* Create conversation tests in userspace
+* Working memory should really be working knowledge
+* refactor BackwardInference
 
 !* make it so if the user does not know the answer, one can continue inference?
    - Or should you try to do the inference first??

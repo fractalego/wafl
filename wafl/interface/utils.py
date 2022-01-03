@@ -36,7 +36,6 @@ Q:{text}
 
     perplexity_threshold = 3
     perplexity = get_perplexity(text)
-    print(perplexity)
     if perplexity > perplexity_threshold:
         return True
 
