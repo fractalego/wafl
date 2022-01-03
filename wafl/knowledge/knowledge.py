@@ -2,8 +2,10 @@ import logging
 
 from wafl.facts import Fact
 from wafl.knowledge.base_knowledge import BaseKnowledge
+from wafl.knowledge.utils import text_is_exact_string
 from wafl.parsing.parser import get_facts_and_rules_from_text
-from wafl.retriever import Retriever
+from wafl.retriever.string_retriever import StringRetriever
+from wafl.retriever.text_retriever import TextRetriever
 from wafl.text_utils import clean_text_for_retrieval
 
 _logger = logging.getLogger(__name__)
@@ -23,10 +25,11 @@ class Knowledge(BaseKnowledge):
         self._rules_dict = {
             f"R{index}": value for index, value in enumerate(facts_and_rules["rules"])
         }
-        self._facts_retriever = Retriever()
-        self._rules_incomplete_retriever = Retriever()
-        self._rules_fact_retriever = Retriever()
-        self._rules_question_retriever = Retriever()
+        self._facts_retriever = TextRetriever()
+        self._rules_incomplete_retriever = TextRetriever()
+        self._rules_fact_retriever = TextRetriever()
+        self._rules_question_retriever = TextRetriever()
+        self._rules_string_retriever = StringRetriever()
         self._initialize_retrievers()
 
     def add(self, text):
@@ -52,6 +55,14 @@ class Knowledge(BaseKnowledge):
         ]
 
     def ask_for_rule_backward(self, query):
+        if text_is_exact_string(query.text):
+            indices_and_scores = (
+                self._rules_string_retriever.get_indices_and_scores_from_text(
+                    query.text
+                )
+            )
+            return [self._rules_dict[item[0]] for item in indices_and_scores]
+
         indices_and_scores = (
             self._rules_fact_retriever.get_indices_and_scores_from_text(query.text)
         )
@@ -101,11 +112,17 @@ class Knowledge(BaseKnowledge):
 
     def _initialize_retrievers(self):
         for index, fact in self._facts_dict.items():
+            if text_is_exact_string(fact.text):
+                continue
+
             self._facts_retriever.add_text_and_index(
                 clean_text_for_retrieval(fact.text), index
             )
 
         for index, rule in self._rules_dict.items():
+            if text_is_exact_string(rule.effect.text):
+                continue
+
             if "{" in rule.effect.text:
                 self._rules_incomplete_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
@@ -121,3 +138,9 @@ class Knowledge(BaseKnowledge):
                 self._rules_fact_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )
+
+        for index, rule in self._rules_dict.items():
+            if not text_is_exact_string(rule.effect.text):
+                continue
+
+            self._rules_string_retriever.add_text_and_index(rule.effect.text, index)

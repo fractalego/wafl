@@ -20,6 +20,7 @@ setup(name='wafl',
                 'wafl.parsing',
                 'wafl.qa',
                 'wafl.speaker',
+                'wafl.retriever',
                 ],
       package_data={
           'wafl': ['templates/*'],

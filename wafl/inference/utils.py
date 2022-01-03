@@ -1,5 +1,7 @@
 import re
 
+from wafl.qa.qa import Answer
+
 
 def cause_is_negated(cause_text):
     return cause_text.find("!") == 0
@@ -64,10 +66,10 @@ def update_substitutions_from_results(result, variable, substitutions):
 
 def invert_answer(answer):
     if answer.text == "False":
-        answer.text = "True"
+        return Answer(text="True")
 
     if answer.text == "True":
-        answer.text = "False"
+        return Answer(text="False")
 
     return answer
 

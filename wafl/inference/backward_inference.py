@@ -3,18 +3,7 @@ import traceback
 
 from wafl.conversation.utils import is_question
 from wafl.conversation.working_memory import WorkingMemory
-from wafl.inference.utils import (
-    check_negation,
-    text_is_code,
-    apply_substitutions,
-    text_has_say_command,
-    text_has_remember_command,
-    update_substitutions_from_answer,
-    add_function_arguments,
-    update_substitutions_from_results,
-    invert_answer,
-    text_has_assigmnent,
-)
+from wafl.inference.utils import *
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
@@ -24,11 +13,11 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-            self,
-            knowledge: "Knowledge",
-            interface: "Interface",
-            module_name=None,
-            max_depth: int = 4,
+        self,
+        knowledge: "Knowledge",
+        interface: "Interface",
+        module_name=None,
+        max_depth: int = 10,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
@@ -57,7 +46,9 @@ class BackwardInference:
 
         return self._compute_recursively(query, working_memory, depth=0)
 
-    def _compute_recursively(self, query: "Query", working_memory, depth):
+    def _compute_recursively(
+        self, query: "Query", working_memory, depth, inverted_rule=False
+    ):
         if depth > self._max_depth:
             return Answer(text="False")
 
@@ -76,13 +67,15 @@ class BackwardInference:
         if depth > 0:
             working_memory = WorkingMemory()
 
-        answer = self._look_for_answer_in_rules(query, working_memory, depth)
+        answer = self._look_for_answer_in_rules(
+            query, working_memory, depth, inverted_rule
+        )
         if answer:
             return answer
 
         return Answer(text="False")
 
-    def _look_for_answer_in_rules(self, query, working_memory, depth):
+    def _look_for_answer_in_rules(self, query, working_memory, depth, inverted_rule):
         rules = self._knowledge.ask_for_rule_backward(query)
         for rule in rules:
             index = 0
@@ -112,7 +105,11 @@ class BackwardInference:
 
                 else:
                     answer = self.__process_query(
-                        cause_text, cause.is_question, working_memory, depth
+                        cause_text,
+                        cause.is_question,
+                        working_memory,
+                        depth,
+                        inverted_rule=invert_results,
                     )
 
                 if invert_results:
@@ -133,11 +130,13 @@ class BackwardInference:
                 if answer:
                     return answer
 
+            if inverted_rule:
+                return Answer(text="False")
+
     def _look_for_answer_in_facts(self, query, working_memory):
         facts = self._knowledge.ask_for_facts(query)
         for fact in facts:
             answer = self._qa.ask(query, fact.text)
-
             working_memory.add_story(fact.text)
             return answer
 
@@ -204,7 +203,7 @@ class BackwardInference:
         return Answer(text="True")
 
     def __validate_fact_in_effects(
-            self, rule_effect_text, query, substitutions, bot_has_spoken
+        self, rule_effect_text, query, substitutions, bot_has_spoken
     ):
         for key, value in substitutions.items():
             rule_effect_text = rule_effect_text.replace(key, value)
@@ -250,7 +249,9 @@ class BackwardInference:
 
         return answer
 
-    def __process_query(self, cause_text, cause_is_question, working_memory, depth):
+    def __process_query(
+        self, cause_text, cause_is_question, working_memory, depth, inverted_rule
+    ):
         if "=" in cause_text:
             variable, text = cause_text.split("=")
             variable = variable.strip()
@@ -263,6 +264,8 @@ class BackwardInference:
         else:
             new_query = Query(text=cause_text, is_question=False)
 
-        answer = self._compute_recursively(new_query, working_memory, depth + 1)
+        answer = self._compute_recursively(
+            new_query, working_memory, depth + 1, inverted_rule
+        )
 
         return answer

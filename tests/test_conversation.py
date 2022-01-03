@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
-from wafl.interface.interface import DummyInterface
+from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 _wafl_example = """

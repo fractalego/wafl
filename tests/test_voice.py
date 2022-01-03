@@ -4,7 +4,7 @@ from wafl.interface.voice_interface import VoiceInterface
 from wafl.interface.utils import not_good_enough
 
 from wafl.conversation.conversation import Conversation
-from wafl.interface.interface import DummyInterface
+from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 _wafl_example = """

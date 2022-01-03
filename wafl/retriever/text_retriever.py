@@ -6,6 +6,8 @@ from typing import List, Tuple
 from gensim.models import KeyedVectors
 from sentence_transformers import SentenceTransformer
 
+from wafl.retriever.base_retriever import BaseRetriever
+
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 
@@ -14,7 +16,7 @@ sentence_model = SentenceTransformer("msmarco-distilbert-base-v3")
 sentence_model = sentence_model.to(device)
 
 
-class Retriever:
+class TextRetriever(BaseRetriever):
     def __init__(self):
         self._embeddings_model = KeyedVectors(768)
 
