@@ -67,6 +67,13 @@ class BackwardInference:
         if depth > 0:
             working_memory = WorkingMemory()
 
+            if text_has_say_command(query.text):
+                answer, _ = self.__process_say_command(query.text)
+                return answer
+
+            elif text_has_remember_command(query.text):
+                return self.__process_remember_command(query.text)
+
         answer = self._look_for_answer_in_rules(
             query, working_memory, depth, inverted_rule
         )
@@ -191,7 +198,7 @@ class BackwardInference:
         return True
 
     def __process_say_command(self, cause_text):
-        utterance = cause_text[3:].strip().capitalize()
+        utterance = cause_text.strip()[3:].strip().capitalize()
         self._interface.output(utterance)
         bot_has_spoken = True
         answer = Answer(text="True")

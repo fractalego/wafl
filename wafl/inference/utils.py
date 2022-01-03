@@ -25,17 +25,21 @@ def text_is_code(text):
 
 
 def apply_substitutions(cause_text, substitutions):
-    for key, value in substitutions.items():
-        if text_is_code(cause_text):
-            cause_text = cause_text.replace(" ", "")
+    if text_is_code(cause_text):
+        cause_text = cause_text.replace(" ", "")
 
+    for key, value in substitutions.items():
         cause_text = cause_text.replace(key, str(value))
 
     return cause_text
 
 
 def text_has_say_command(text):
-    return text.lower().find("say") == 0
+    words = text.strip().split()
+    if words:
+        return words[0].lower() == "say"
+
+    return False
 
 
 def text_has_remember_command(text):

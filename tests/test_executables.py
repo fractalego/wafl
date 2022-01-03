@@ -40,6 +40,9 @@ the user asks for the time
   time = get_time()
   SAY the time is {time}
     
+    
+sentence = What does the user want to say
+  say_text(sentence)
 """
 
 
@@ -145,4 +148,13 @@ class TestExecutables(TestCase):
         )
         conversation.input()
         expected = "Batteries cannot be added to the list"
+        assert interface.utterances[-1] == expected
+
+    def test_say_command_in_functions(self):
+        interface = DummyInterface(to_utter=["I want to say 'this is a test'"])
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected ="'this is a test'"
         assert interface.utterances[-1] == expected

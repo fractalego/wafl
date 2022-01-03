@@ -38,3 +38,7 @@ def append_until_user_is_done():
     while {"% does the user want to add more items %"}:
         item = {"% what does the user want to add %"}
         shopping_list.append(item)
+
+
+def say_text(text):
+    {f"% SAY {text} %"}

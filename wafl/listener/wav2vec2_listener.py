@@ -67,10 +67,10 @@ class Wav2Vec2Listener:
 
     def input(self):
         while True:
-            input = self.stream.read(self._chunk)
-            rms_val = _rms(input)
+            inp = self.stream.read(self._chunk)
+            rms_val = _rms(inp)
             if rms_val > self._threshold:
-                waveform = self.record(start_with=input)
+                waveform = self.record(start_with=inp)
                 input_values = self._processor(
                     waveform,
                     return_tensors="pt",

@@ -9,6 +9,7 @@ def create_preprocessed(module: str):
     filename = module + ".py"  ### TODO: This is not enough in general
     with open(filename) as file:
         text = file.read()
+        text = text.replace('{f"%', 'inference.get_inference_answer(f"')
         text = text.replace('{"%', 'inference.get_inference_answer(f"')
         text = text.replace('%"}', '")')
         text = re.sub("(def .*\([0-9a-zA-Z,\s:]+)\):", "\\1, inference):", text)
