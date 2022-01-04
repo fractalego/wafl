@@ -20,8 +20,10 @@ item = what does the user want to add to the shopping list?
 
 the user wants to know what is in the shopping list
   items = get_shopping_list_in_english()
-  SAY The shopping list contains: {items}  
-
+  SAY The shopping list contains: {items}
+  
+the user wants this bot to say hello twice
+  say_twice()
 """
 
 
@@ -52,3 +54,21 @@ class TestLanguageInFunctions(TestCase):
         conversation.input()
         expected = "The shopping list contains: apples, bananas"
         assert interface.utterances[-1] == expected
+
+    def test_say_twice_in_python_space(self):
+        interface = DummyInterface(
+            to_utter=[
+                "Please say hello twice",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = [
+            "Please say: 'hello'",
+            "Your input is recorded",
+            "Please say: 'hello'",
+            "Your input is recorded",
+        ]
+        assert interface.utterances == expected

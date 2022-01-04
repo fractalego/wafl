@@ -80,3 +80,10 @@ def invert_answer(answer):
 
 def text_has_assigmnent(cause_text):
     return "=" in cause_text
+
+
+def process_unknown_answer(answer):
+    if answer.text.lower().replace(".", "") == "unknown":
+        answer = None
+
+    return answer

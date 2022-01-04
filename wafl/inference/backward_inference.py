@@ -4,6 +4,7 @@ import traceback
 from wafl.conversation.utils import is_question
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.inference.utils import *
+from wafl.inference.utils import process_unknown_answer
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
@@ -145,6 +146,7 @@ class BackwardInference:
         for fact in facts:
             answer = self._qa.ask(query, fact.text)
             working_memory.add_story(fact.text)
+            answer = process_unknown_answer(answer)
             return answer
 
     def _look_for_answer_in_working_memory(self, query, working_memory, depth):
@@ -239,6 +241,10 @@ class BackwardInference:
             if any(item + "(" in to_execute for item in self._functions):
                 to_execute = add_function_arguments(to_execute)
             result = eval(f"self._module.{to_execute}")
+
+        except RuntimeWarning as e:
+            _logger.warning(str(e))
+            raise e
 
         except Exception as e:
             traceback.print_exc()

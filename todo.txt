@@ -1,4 +1,7 @@
 ### TODO
+BUG: Why can't the python-space use SAY more than once?
+{%SAY safdfd%}
+{%SAY safdfdfdsfds%} ->
 
 * working memory only within the same level of rules with same activation
   GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!

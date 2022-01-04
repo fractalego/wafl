@@ -42,3 +42,18 @@ def append_until_user_is_done():
 
 def say_text(text):
     {f"% SAY {text} %"}
+
+
+def say_twice():
+    index = 0
+    utterances = ["HELLO", "HELLO"]
+    while index < len(utterances):
+        {f"% SAY Please say: '{utterances[index]}' %"}
+
+        {"% SAY Your input is recorded %"}
+
+        index += 1
+
+
+def close_conversation():
+    raise RuntimeWarning()

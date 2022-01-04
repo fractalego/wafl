@@ -18,15 +18,6 @@ class Wav2Vec2Listener:
 
     def __init__(self, model_name):
         self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(
-            format=self._format,
-            channels=self._channels,
-            rate=self._rate,
-            input=True,
-            output=False,
-            frames_per_buffer=self._chunk,
-        )
-
         self._threshold = 0.8
         self._processor = Wav2Vec2Processor.from_pretrained(model_name)
         self._model = Wav2Vec2ForCTC.from_pretrained(model_name)
@@ -66,6 +57,15 @@ class Wav2Vec2Listener:
         return np.frombuffer(b"".join(rec), dtype=np.int16) / self._range
 
     def input(self):
+        self.stream = self.p.open(
+            format=self._format,
+            channels=self._channels,
+            rate=self._rate,
+            input=True,
+            output=False,
+            frames_per_buffer=self._chunk,
+        )
+
         while True:
             inp = self.stream.read(self._chunk)
             rms_val = _rms(inp)
@@ -84,6 +84,8 @@ class Wav2Vec2Listener:
                     hotword_weight=20.0,
                 )
                 if len(transcription) >= 2:
+                    self.stream.stop_stream()
+                    self.stream.close()
                     return transcription
 
 

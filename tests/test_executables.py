@@ -123,13 +123,13 @@ class TestExecutables(TestCase):
             or interface.utterances[-1] == expected2
         )
 
-    def test_list_the_mispelled_item(self):
+    def test_mispelled_items_are_added_to_the_shopping_list(self):
         interface = DummyInterface(to_utter=["add app list the shopping list"])
         conversation = Conversation(
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "A list of items has been added to the list"
+        expected = "Add app list the shopping list has been added to the list"
         assert interface.utterances[-1] == expected
 
     def test_question_activates_inference(self):
@@ -156,5 +156,5 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected ="'this is a test'"
+        expected = "'this is a test.'"
         assert interface.utterances[-1] == expected
