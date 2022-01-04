@@ -14,7 +14,7 @@ The user says their name
 """.strip()
 
 
-class TesEmptyInput(TestCase):
+class TestEmptyInput(TestCase):
     def test_hello_and_username(self):
         interface = DummyInterface(["Hello, my name is unknown", "", "", "Albert"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)

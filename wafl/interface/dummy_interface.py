@@ -7,10 +7,12 @@ class DummyInterface(BaseInterface):
     def __init__(self, to_utter=None):
         self.utterances = []
         self._to_utter = to_utter
+        self._bot_has_spoken = False
 
     def output(self, text: str):
         print("bot>", text)
         self.utterances.append(from_bot_to_user(text))
+        self.bot_has_spoken(True)
 
     def input(self) -> str:
         text = from_user_to_bot(self._to_utter.pop(0)).strip()
@@ -20,3 +22,9 @@ class DummyInterface(BaseInterface):
         text = text.lower().capitalize()
         print("user>", text)
         return from_user_to_bot(text)
+
+    def bot_has_spoken(self, to_set: bool = None):
+        if to_set != None:
+            self._bot_has_spoken = to_set
+
+        return self._bot_has_spoken

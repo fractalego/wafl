@@ -21,6 +21,7 @@ class VoiceInterface(BaseInterface):
         )
         self._listener.set_timeout(1.1)
         self._speaker = FestivalSpeaker()
+        self._bot_has_spoken = False
 
     def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
@@ -37,6 +38,7 @@ class VoiceInterface(BaseInterface):
         text = from_bot_to_user(text)
         print("bot>", text)
         self._speaker.speak(text)
+        self.bot_has_spoken(True)
 
     def input(self) -> str:
         text = ""
@@ -48,3 +50,9 @@ class VoiceInterface(BaseInterface):
         text = text.lower().capitalize()
         print("user>", text)
         return from_user_to_bot(text)
+
+    def bot_has_spoken(self, to_set: bool = None):
+        if to_set != None:
+            self._bot_has_spoken = to_set
+
+        return self._bot_has_spoken

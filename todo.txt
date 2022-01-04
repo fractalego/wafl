@@ -1,10 +1,9 @@
 ### TODO
-BUG: Why can't the python-space use SAY more than once?
-{%SAY safdfd%}
-{%SAY safdfdfdsfds%} ->
 
-* working memory only within the same level of rules with same activation
-  GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!
+
+* are you satisfied? Yes I am satisfied -> no?!
+* Use config to set wether to add random facts
+
 
 * write aux function that create standard formatting (for punctuation at end of string and lowercase)
 * empty input retrieves everyting? Do not allow empty input (maybe user perplexity also in CLI)
@@ -23,6 +22,7 @@ BUG: Why can't the python-space use SAY more than once?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
 * add hotwords to config.json
+* Do not allow arbitrary input (at least for voice)
 * Working memory is unnecessarily complicated. It can just contain the story and some method to automatically fill it.
 !* Why did it say "no" on "can you please add bananas to the shopping list?"
 * Better QA for yes/no question (maybe add SNLI to qa?)
@@ -32,5 +32,9 @@ BUG: Why can't the python-space use SAY more than once?
 * Parser should allow for empty lines within rules
 * Implement Server with HTML page (docker-compose up)
 * Refactor code and clean up
+
 * Investigate interplay btw substitutions and already_matched
   - Maybe one can avoid having same answer for btw same question and same depth (and same rule)
+* Say "This is true" or "this is false" if a statement matches (My name is Alberto -> True)
+* working memory only within the same level of rules with same activation
+  GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!

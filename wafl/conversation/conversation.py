@@ -26,6 +26,7 @@ class Conversation:
             query_text = text
 
         query = Query(text=query_text, is_question=is_question(text), variable="name")
+        self._interface.bot_has_spoken(False)
         answer = self._inference.compute(query, working_memory)
 
         if query.is_question and answer.text == "False":
@@ -35,16 +36,22 @@ class Conversation:
                 variable="name",
             )
             working_memory.add_story(query.text)
+            self._interface.bot_has_spoken(False)
             answer = self._inference.compute(query, working_memory)
 
         if not query.is_question and answer.text == "False":
+            ### This needs to be part of the config file
             self._knowledge.add(text)
 
-        if query.is_question and answer.text not in ["True", "False"]:
-            self.output(answer.text)
+        if not self._interface.bot_has_spoken():
+            if not query.is_question and answer.text in ["True", "False", "unknown"]:
+                self.output(answer.text)
 
-        if query.is_question and answer.text == "False":
-            self.output("Unknown")
+            if query.is_question and answer.text not in ["True", "False"]:
+                self.output(answer.text)
+
+            if query.is_question and answer.text == "False":
+                self.output("Unknown")
 
         return answer
 

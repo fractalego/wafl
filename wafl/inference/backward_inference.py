@@ -133,8 +133,9 @@ class BackwardInference:
 
             if index == len(rule.causes):
                 answer = self.__validate_fact_in_effects(
-                    rule_effect_text, query, substitutions, bot_has_spoken
+                    rule_effect_text, query, substitutions
                 )
+                answer.bot_has_spoken = bot_has_spoken
                 if answer:
                     return answer
 
@@ -211,9 +212,7 @@ class BackwardInference:
         self._knowledge.add(utterance)
         return Answer(text="True")
 
-    def __validate_fact_in_effects(
-        self, rule_effect_text, query, substitutions, bot_has_spoken
-    ):
+    def __validate_fact_in_effects(self, rule_effect_text, query, substitutions):
         for key, value in substitutions.items():
             rule_effect_text = rule_effect_text.replace(key, value)
 
@@ -222,7 +221,7 @@ class BackwardInference:
         if answer.text == "False":
             return False
 
-        if answer.text.lower() == "yes" or bot_has_spoken:
+        if answer.text.lower() == "yes":
             answer.text = "True"
 
         return answer
