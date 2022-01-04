@@ -1,0 +1,6 @@
+{
+  "accept_random_facts": false,
+  "voice_hotwords": [
+    "computer"
+  ]
+}

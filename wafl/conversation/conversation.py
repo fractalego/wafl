@@ -39,9 +39,14 @@ class Conversation:
             self._interface.bot_has_spoken(False)
             answer = self._inference.compute(query, working_memory)
 
-        if not query.is_question and answer.text == "False":
+        if (
+            not query.is_question
+            and answer.text == "False"
+            and not self._interface.bot_has_spoken()
+        ):
             ### This needs to be part of the config file
             self._knowledge.add(text)
+            self.output("I will remember it.")
 
         if not self._interface.bot_has_spoken():
             if not query.is_question and answer.text in ["True", "False", "unknown"]:
