@@ -1,12 +1,12 @@
 ### TODO
 
 
-* are you satisfied? Yes I am satisfied -> no?!
-* Use config to set wether to add random facts
-
-
+* refactor .lower().... -> normalized(text)
 * write aux function that create standard formatting (for punctuation at end of string and lowercase)
-* empty input retrieves everyting? Do not allow empty input (maybe user perplexity also in CLI)
+
+* Use config to set whether to add random facts
+* Do you still need already matched?
+
 
 * New voice! It's ridiculous to have to have a memory leak from picotts
     - Use fairseq voices

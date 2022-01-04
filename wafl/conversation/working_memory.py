@@ -26,3 +26,10 @@ class WorkingMemory:
 
     def add_answer(self, text):
         self._answers.append(text)
+
+    def text_is_in_prior_questions(self, text: str):
+        for question in self._questions:
+            if text.lower() in question.lower():
+                return True
+
+        return False

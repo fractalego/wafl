@@ -153,6 +153,10 @@ class BackwardInference:
     def _look_for_answer_in_working_memory(self, query, working_memory, depth):
         if query.is_question and depth > 0 and working_memory.get_story():
             answer = self._qa.ask(query, working_memory.get_story())
+
+            if working_memory.text_is_in_prior_questions(answer.text):
+                answer.text = "unknown"
+
             if answer.text.lower().replace(".", "") not in ["unknown", "yes", "no"]:
                 if answer.text[-1] == ".":
                     answer.text = answer.text[:-1]
@@ -177,12 +181,17 @@ class BackwardInference:
 
                 if user_answer.text.lower().replace(".", "") == "yes":
                     user_answer = Answer(text="True")
+                    working_memory.add_story(story)
+                    working_memory.add_question(query.text)
+                    working_memory.add_answer(user_input_text)
 
                 elif user_answer.text.lower().replace(".", "") == "no":
                     user_answer = Answer(text="False")
 
                 else:
                     working_memory.add_story(story)
+                    working_memory.add_question(query.text)
+                    working_memory.add_answer(user_input_text)
 
             if user_answer.text.lower().replace(".", "") != "unknown":
                 if user_answer.text[-1] == ".":

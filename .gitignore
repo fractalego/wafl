@@ -1,3 +1,11 @@
 .idea/
 .git/
 .env/
+build/
+dist/
+wafl/
+wafl.egg-info/
+
+__pycache__/
+
+tests/__wafl*

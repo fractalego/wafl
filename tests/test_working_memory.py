@@ -27,7 +27,7 @@ _ask_another_item
 
 
 class TestWorkingMemory(TestCase):
-    def test_working_memory_class(self):
+    def ntest_working_memory_class(self):
         working_memory = WorkingMemory()
         working_memory.add_question("What is the color of Bob's dress")
         working_memory.add_answer("Red")
@@ -87,6 +87,21 @@ A:
                 "pineapple",
                 "yes",
                 "bananas",
+                "no",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "Bananas has been added to the list"
+        assert interface.utterances[-2] == expected
+
+    def test_working_memory_works_for_yes_questions(self):
+        interface = DummyInterface(
+            to_utter=[
+                "Add apples to the shopping list",
+                "yes bananas",
                 "no",
             ]
         )
