@@ -2,10 +2,9 @@
 
 
 * refactor .lower().... -> normalized(text)
-* write aux function that create standard formatting (for punctuation at end of string and lowercase)
+   - write aux function that create standard formatting (for punctuation at end of string and lowercase)
 
 * Use config to set whether to add random facts
-* Do you still need already matched?
 
 
 * New voice! It's ridiculous to have to have a memory leak from picotts

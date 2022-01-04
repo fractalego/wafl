@@ -43,7 +43,7 @@ def text_has_say_command(text):
 
 
 def text_has_remember_command(text):
-    return text.lower().find("remember") == 0
+    return normalized(text).find("remember") == 0
 
 
 def update_substitutions_from_answer(answer, substitutions):
@@ -83,7 +83,18 @@ def text_has_assigmnent(cause_text):
 
 
 def process_unknown_answer(answer):
-    if answer.text.lower().replace(".", "") == "unknown":
+    if normalized(answer.text) == "unknown":
         answer = None
 
     return answer
+
+
+def normalized(text):
+    text = text.strip()
+    if not text:
+        return ""
+
+    if text[-1] == ".":
+        text = text[:-1]
+
+    return text.lower()

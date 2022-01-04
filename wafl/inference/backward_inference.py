@@ -157,7 +157,7 @@ class BackwardInference:
             if working_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
-            if answer.text.lower().replace(".", "") not in ["unknown", "yes", "no"]:
+            if normalized(answer.text) not in ["unknown", "yes", "no"]:
                 if answer.text[-1] == ".":
                     answer.text = answer.text[:-1]
                 return answer
@@ -167,10 +167,10 @@ class BackwardInference:
             self._interface.output(query.text)
             user_input_text = self._interface.input()
 
-            if user_input_text.lower().replace(".", "") == "yes":
+            if normalized(user_input_text) == "yes":
                 user_answer = Answer(text="True")
 
-            elif user_input_text.lower().replace(".", "") == "no":
+            elif normalized(user_input_text) == "no":
                 user_answer = Answer(text="False")
 
             else:
@@ -179,13 +179,13 @@ class BackwardInference:
                 )
                 user_answer = self._qa.ask(query, story)
 
-                if user_answer.text.lower().replace(".", "") == "yes":
+                if normalized(user_answer.text) == "yes":
                     user_answer = Answer(text="True")
                     working_memory.add_story(story)
                     working_memory.add_question(query.text)
                     working_memory.add_answer(user_input_text)
 
-                elif user_answer.text.lower().replace(".", "") == "no":
+                elif normalized(user_answer.text) == "no":
                     user_answer = Answer(text="False")
 
                 else:
@@ -193,7 +193,7 @@ class BackwardInference:
                     working_memory.add_question(query.text)
                     working_memory.add_answer(user_input_text)
 
-            if user_answer.text.lower().replace(".", "") != "unknown":
+            if normalized(user_answer.text) != "unknown":
                 if user_answer.text[-1] == ".":
                     user_answer.text = user_answer.text[:-1]
                 return user_answer
