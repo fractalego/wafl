@@ -1,3 +1,4 @@
+from wafl.config import Configuration
 from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.exceptions import InterruptTask
 from wafl.inference.backward_inference import BackwardInference
@@ -5,11 +6,19 @@ from wafl.inference.backward_inference import BackwardInference
 
 class Conversation:
     def __init__(
-        self, knowledge: "BaseKnowledge", interface: "BaseInterface", code_path=None
+        self,
+        knowledge: "BaseKnowledge",
+        interface: "BaseInterface",
+        code_path=None,
+        config=None,
     ):
         self._knowledge = knowledge
         self._interface = interface
         self._inference = BackwardInference(self._knowledge, interface, code_path)
+        if not config:
+            self._config = Configuration.load_local_config()
+        else:
+            self._config = config
 
     def output(self, text: str):
         self._interface.output(text)
@@ -25,11 +34,11 @@ class Conversation:
             return
 
         if (
-            not text_is_question
+            self._config.get_value("accept_random_facts")
+            and not text_is_question
             and answer.text == "False"
             and not self._interface.bot_has_spoken()
         ):
-            ### This needs to be part of the config file
             self._knowledge.add(text)
             self.output("I will remember it.")
 

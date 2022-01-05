@@ -48,6 +48,9 @@ class Knowledge(BaseKnowledge):
         if len(answer) < 5:
             return False
 
+        if any(normalized(answer).find(item) == 0 for item in ["yes", "no"]):
+            return False
+
         answer_dot_product = get_dot_product(question, answer)
         story_dot_product = get_dot_product(story, answer)
 

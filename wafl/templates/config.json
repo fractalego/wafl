@@ -1,1 +1,10 @@
-{"exception_messages": ["Oops, there was an internal error"]}
+{
+  "accept_random_facts": true,
+  "allow_interruptions": true,
+  "voice_hotwords": [
+    "computer"
+  ],
+  "waking_up_word": [
+    "computer"
+  ]
+}

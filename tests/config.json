@@ -1,5 +1,5 @@
 {
-  "accept_random_facts": false,
+  "accept_random_facts": true,
   "allow_interruptions": true,
   "voice_hotwords": [
     "computer"

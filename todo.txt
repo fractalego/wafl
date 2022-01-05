@@ -2,7 +2,8 @@
 
 
 * Use config to set whether to add random facts
-
+* for yes/no or limited choice questions there should not be ambiguity. The machine should match the closest item and
+  if there is no item close enough ask again.
 
 * New voice! It's ridiculous to have to have a memory leak from picotts
     - Use fairseq voices

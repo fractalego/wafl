@@ -1,3 +1,5 @@
+from wafl.exceptions import CloseConversation
+
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
@@ -15,7 +17,7 @@ def run_from_command_line():
     while True:
         try:
             conversation.input()
-        except (RuntimeWarning, KeyboardInterrupt, EOFError):
+        except (CloseConversation, KeyboardInterrupt, EOFError):
             break
 
     conversation.output("Goodbye!")
@@ -33,7 +35,7 @@ def run_from_audio():
             if conversation.input(activation_word=activation_word):
                 activation_word = ""
 
-        except RuntimeWarning:
+        except CloseConversation:
             activation_word = "computer"
             continue
 

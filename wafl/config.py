@@ -1,13 +1,15 @@
+import json
 import os
 
 _path = os.path.dirname(__file__)
-_rules_template = open(os.path.join(_path, "templates/rules.wafl"))
-_server_template = open(os.path.join(_path, "templates/server.py"))
-_functions_template = open(os.path.join(_path, "templates/functions.py"))
-_config_template = open(os.path.join(_path, "templates/config.json"))
 
 
 def create_initial_files():
+    _rules_template = open(os.path.join(_path, "templates/rules.wafl"))
+    _server_template = open(os.path.join(_path, "templates/server.py"))
+    _functions_template = open(os.path.join(_path, "templates/functions.py"))
+    _config_template = open(os.path.join(_path, "templates/config.json"))
+
     print("+ Initializing ... ", end="")
 
     with open("rules.wafl", "w") as file:
@@ -23,3 +25,29 @@ def create_initial_files():
         file.write(_config_template.read())
 
     print("Done.")
+
+
+class Configuration:
+    def __init__(self, filename):
+        self._data = json.load(open(filename))
+
+    def get_value(self, key):
+        if key in self._data:
+            return self._data[key]
+
+    def set_value(self, key, value):
+        if key not in self._data:
+            raise ValueError(f"Key '{key}' does not exist in the config file")
+
+        self._data[key] = value
+
+    @classmethod
+    def load_local_config(cls):
+        try:
+            return cls("config.json")
+
+        except FileNotFoundError:
+            print(
+                "Cannot load 'config.json'. Does the file exist in the execution path?"
+            )
+            exit(0)
