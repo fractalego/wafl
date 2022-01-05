@@ -70,7 +70,7 @@ class BackwardInference:
             working_memory = WorkingMemory()
 
             if text_has_say_command(query.text):
-                answer, _ = self.__process_say_command(query.text)
+                answer = self.__process_say_command(query.text)
                 return answer
 
             elif text_has_remember_command(query.text):
@@ -103,7 +103,7 @@ class BackwardInference:
                 cause_text = apply_substitutions(cause_text, substitutions)
 
                 if text_has_say_command(cause_text):
-                    answer= self.__process_say_command(cause_text)
+                    answer = self.__process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
                     answer = self.__process_remember_command(cause_text)

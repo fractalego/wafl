@@ -27,7 +27,7 @@ _ask_another_item
 
 
 class TestWorkingMemory(TestCase):
-    def ntest_working_memory_class(self):
+    def test_working_memory_class(self):
         working_memory = WorkingMemory()
         working_memory.add_question("What is the color of Bob's dress")
         working_memory.add_answer("Red")

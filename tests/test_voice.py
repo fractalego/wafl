@@ -18,20 +18,20 @@ the user name is Jane
 
 
 class TestVoice(TestCase):
-    def ntest_activation(self):
+    def test_activation(self):
         interface = DummyInterface(to_utter=["computer my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         conversation.input(activation_word="computer")
         expected = "Nice to meet you!"
         assert interface.utterances[0] == expected
 
-    def ntest_no_activation(self):
+    def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         conversation.input(activation_word="computer")
         assert interface.utterances == []
 
-    def ntest_hotwords_as_input(self):
+    def test_hotwords_as_input(self):
         interface = VoiceInterface()
         interface.add_hotwords_from_knowledge(
             Knowledge(_wafl_example), count_threshold=1
@@ -39,7 +39,6 @@ class TestVoice(TestCase):
         expected = [
             "COMPUTER",
             "JUBILEE",
-            "LINE",
             "CAMDEN",
             "ADD",
             "REMOVE",
@@ -52,6 +51,8 @@ class TestVoice(TestCase):
             "SAYS THEIR",
             "THEIR NAME",
         ]
+
+        print(interface._listener._hotwords)
         assert interface._listener._hotwords == expected
 
     def test_input_perplexity_is_not_good_enough(self):
