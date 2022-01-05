@@ -89,7 +89,6 @@ class BackwardInference:
         for rule in rules:
             index = 0
             substitutions = {}
-            bot_has_spoken = False
 
             rule_effect_text = rule.effect.text
 
@@ -104,7 +103,7 @@ class BackwardInference:
                 cause_text = apply_substitutions(cause_text, substitutions)
 
                 if text_has_say_command(cause_text):
-                    answer, bot_has_spoken = self.__process_say_command(cause_text)
+                    answer= self.__process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
                     answer = self.__process_remember_command(cause_text)
@@ -136,7 +135,6 @@ class BackwardInference:
                 answer = self.__validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
-                answer.bot_has_spoken = bot_has_spoken
                 if answer:
                     return answer
 
@@ -223,9 +221,8 @@ class BackwardInference:
     def __process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._interface.output(utterance)
-        bot_has_spoken = True
         answer = Answer(text="True")
-        return answer, bot_has_spoken
+        return answer
 
     def __process_remember_command(self, cause_text):
         utterance = cause_text[8:].strip().capitalize()
