@@ -18,6 +18,8 @@ sentence_model = sentence_model.to(device)
 
 
 class TextRetriever(BaseRetriever):
+    _threshold_length = 5
+
     def __init__(self):
         self._embeddings_model = KeyedVectors(768)
 
@@ -27,7 +29,7 @@ class TextRetriever(BaseRetriever):
         self._embeddings_model.fill_norms(force=True)
 
     def get_indices_and_scores_from_text(self, text: str) -> List[Tuple[str, float]]:
-        if not text:
+        if not text or len(text) < self._threshold_length:
             return []
 
         embeddings = _get_embeddings_from_text(text)

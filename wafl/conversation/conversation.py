@@ -8,11 +8,11 @@ from wafl.inference.backward_inference import BackwardInference
 
 class Conversation:
     def __init__(
-            self,
-            knowledge: "BaseKnowledge",
-            interface: "BaseInterface",
-            code_path=None,
-            config=None,
+        self,
+        knowledge: "BaseKnowledge",
+        interface: "BaseInterface",
+        code_path=None,
+        config=None,
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -36,10 +36,10 @@ class Conversation:
             return
 
         if (
-                self._config.get_value("accept_random_facts")
-                and not text_is_question
-                and answer.text == "False"
-                and not self._interface.bot_has_spoken()
+            self._config.get_value("accept_random_facts")
+            and not text_is_question
+            and answer.text == "False"
+            and not self._interface.bot_has_spoken()
         ):
             self._knowledge.add(text)
             self.output("I will remember it.")
@@ -76,4 +76,4 @@ class Conversation:
         if activation_pos != -1:
             return text[activation_pos:]
 
-        return ''
+        return ""

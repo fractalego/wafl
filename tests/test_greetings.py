@@ -21,5 +21,4 @@ class TestGreetings(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        print(interface.utterances)
         assert interface.utterances[-1] == "Nice to meet you, albert!"

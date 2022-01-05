@@ -3,6 +3,15 @@ from unittest import TestCase
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.text_retriever import TextRetriever
 
+_wafl_greetings = """
+
+The user says their name
+  SAY Hello there!
+  username = What is the user's name
+  SAY Nice to meet you, {username}!
+
+""".strip()
+
 
 class TestRetrieval(TestCase):
     def test_retrieval(self):
@@ -30,3 +39,14 @@ class TestRetrieval(TestCase):
         expected = "2"
         predicted = retriever.get_indices_and_scores_from_text(query)
         assert predicted[0][0] == expected
+
+    def test_short_text_retrieves_nothing(self):
+        retriever = TextRetriever()
+        sentences = ["The user greets"]
+        for index, sentence in enumerate(sentences):
+            retriever.add_text_and_index(sentence, str(index))
+
+        query = "O uh"
+        expected = []
+        predicted = retriever.get_indices_and_scores_from_text(query)
+        assert predicted == expected

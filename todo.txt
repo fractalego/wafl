@@ -2,6 +2,8 @@
 
 * "O do" triggers good bye. WHY?!
 
+
+* should yes/no filter be in retriever instead of knowledge?
 * yes/no answers should never trigger an interruption in Knowledge.has_better_match()
 
 * for yes/no or limited choice questions there should not be ambiguity. The machine should match the closest item and
