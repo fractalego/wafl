@@ -1,7 +1,5 @@
-from wafl.conversation.utils import is_question
-from wafl.conversation.working_memory import WorkingMemory
+from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.inference.backward_inference import BackwardInference
-from wafl.qa.qa import Query
 
 
 class Conversation:
@@ -16,31 +14,11 @@ class Conversation:
         self._interface.output(text)
 
     def add(self, text: str):
-        working_memory = WorkingMemory()
-
-        if not is_question(text):
-            query_text = f"The user says: '{text}.'"
-            working_memory.add_story(query_text)
-
-        else:
-            query_text = text
-
-        query = Query(text=query_text, is_question=is_question(text), variable="name")
-        self._interface.bot_has_spoken(False)
-        answer = self._inference.compute(query, working_memory)
-
-        if query.is_question and answer.text == "False":
-            query = Query(
-                text=f"The user asks: '{text}.'",
-                is_question=is_question(text),
-                variable="name",
-            )
-            working_memory.add_story(query.text)
-            self._interface.bot_has_spoken(False)
-            answer = self._inference.compute(query, working_memory)
+        text_is_question = is_question(text)
+        answer = get_answer_using_text(self._inference, self._interface, text)
 
         if (
-            not query.is_question
+            not text_is_question
             and answer.text == "False"
             and not self._interface.bot_has_spoken()
         ):
@@ -49,13 +27,13 @@ class Conversation:
             self.output("I will remember it.")
 
         if not self._interface.bot_has_spoken():
-            if not query.is_question and answer.text in ["True", "False", "unknown"]:
+            if not text_is_question and answer.text in ["True", "False", "unknown"]:
                 self.output(answer.text)
 
-            if query.is_question and answer.text not in ["True", "False"]:
+            if text_is_question and answer.text not in ["True", "False"]:
                 self.output(answer.text)
 
-            if query.is_question and answer.text == "False":
+            if text_is_question and answer.text == "False":
                 self.output("Unknown")
 
         return answer

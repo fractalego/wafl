@@ -1,7 +1,7 @@
 import logging
 import traceback
 
-from wafl.conversation.utils import is_question
+from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.inference.utils import *
 from wafl.inference.utils import process_unknown_answer
@@ -164,8 +164,18 @@ class BackwardInference:
 
     def _look_for_answer_by_asking_the_user(self, query, working_memory, depth):
         if depth > 0 and query.is_question:
-            self._interface.output(query.text)
-            user_input_text = self._interface.input()
+
+            while True:
+                self._interface.output(query.text)
+                user_input_text = self._interface.input()
+
+                if self._knowledge.has_better_match(
+                    query.text, user_input_text, working_memory.get_story()
+                ):
+                    get_answer_using_text(self, self._interface, user_input_text)
+
+                else:
+                    break
 
             if normalized(user_input_text) == "yes":
                 user_answer = Answer(text="True")

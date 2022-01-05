@@ -3,6 +3,9 @@ import re
 from nltk import pos_tag
 from nltk import word_tokenize
 
+from wafl.conversation.working_memory import WorkingMemory
+from wafl.qa.qa import Query
+
 
 def is_question(text):
     text = text.strip()
@@ -21,3 +24,30 @@ def is_question(text):
         return True
 
     return False
+
+
+def get_answer_using_text(inference, interface, text):
+    working_memory = WorkingMemory()
+    if not is_question(text):
+        query_text = f"The user says: '{text}.'"
+        working_memory.add_story(query_text)
+
+    else:
+        query_text = text
+
+    query = Query(text=query_text, is_question=is_question(text), variable="name")
+    interface.bot_has_spoken(False)
+    answer = inference.compute(query, working_memory)
+
+    if query.is_question and answer.text == "False":
+        query = Query(
+            text=f"The user asks: '{text}.'",
+            is_question=is_question(text),
+            variable="name",
+        )
+        working_memory = WorkingMemory()
+        working_memory.add_story(query.text)
+        interface.bot_has_spoken(False)
+        answer = inference.compute(query, working_memory)
+
+    return answer

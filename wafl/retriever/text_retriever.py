@@ -1,6 +1,7 @@
 import os
 import torch
 import logging
+import numpy as np
 
 from typing import List, Tuple
 from gensim.models import KeyedVectors
@@ -32,3 +33,13 @@ class TextRetriever(BaseRetriever):
 
 def _get_embeddings_from_text(text: str) -> "numpy.array":
     return sentence_model.encode(text)
+
+
+def get_dot_product(lhs: str, rhs: str) -> float:
+    lhs_vector = sentence_model.encode(lhs)
+    rhs_vector = sentence_model.encode(rhs)
+    return (
+        np.dot(lhs_vector, rhs_vector)
+        / np.linalg.norm(lhs_vector)
+        / np.linalg.norm(rhs_vector)
+    )
