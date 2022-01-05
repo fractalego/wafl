@@ -1,3 +1,5 @@
+from wafl.inference.utils import normalized
+
 from wafl.config import Configuration
 from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.exceptions import InterruptTask
@@ -6,11 +8,11 @@ from wafl.inference.backward_inference import BackwardInference
 
 class Conversation:
     def __init__(
-        self,
-        knowledge: "BaseKnowledge",
-        interface: "BaseInterface",
-        code_path=None,
-        config=None,
+            self,
+            knowledge: "BaseKnowledge",
+            interface: "BaseInterface",
+            code_path=None,
+            config=None,
     ):
         self._knowledge = knowledge
         self._interface = interface
@@ -34,10 +36,10 @@ class Conversation:
             return
 
         if (
-            self._config.get_value("accept_random_facts")
-            and not text_is_question
-            and answer.text == "False"
-            and not self._interface.bot_has_spoken()
+                self._config.get_value("accept_random_facts")
+                and not text_is_question
+                and answer.text == "False"
+                and not self._interface.bot_has_spoken()
         ):
             self._knowledge.add(text)
             self.output("I will remember it.")
@@ -64,15 +66,14 @@ class Conversation:
         return False
 
     def __activation_word_in_text(self, activation_word, text):
-        activation_pos = text.lower().find(activation_word.lower())
-        if activation_pos == 0 or activation_pos == len(text) - len(activation_word):
+        if normalized(activation_word) in normalized(text):
             return True
 
         return False
 
     def __remove_activation_word(self, activation_word, text):
-        activation_pos = text.lower().find(activation_word.lower())
-        if activation_pos == 0:
-            return text[len(activation_word) :]
-        if activation_pos == len(text) - len(activation_word):
-            return text[: -len(activation_word)]
+        activation_pos = normalized(text).find(normalized(activation_word))
+        if activation_pos != -1:
+            return text[activation_pos:]
+
+        return ''

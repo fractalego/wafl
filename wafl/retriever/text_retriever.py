@@ -27,6 +27,9 @@ class TextRetriever(BaseRetriever):
         self._embeddings_model.fill_norms(force=True)
 
     def get_indices_and_scores_from_text(self, text: str) -> List[Tuple[str, float]]:
+        if not text:
+            return []
+
         embeddings = _get_embeddings_from_text(text)
         return self._embeddings_model.similar_by_vector(embeddings, topn=2)
 
