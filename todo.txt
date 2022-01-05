@@ -1,7 +1,9 @@
 ### TODO
 
+* "O do" triggers good bye. WHY?!
 
-* Use config to set whether to add random facts
+* yes/no answers should never trigger an interruption in Knowledge.has_better_match()
+
 * for yes/no or limited choice questions there should not be ambiguity. The machine should match the closest item and
   if there is no item close enough ask again.
 

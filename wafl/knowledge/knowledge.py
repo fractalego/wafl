@@ -45,10 +45,13 @@ class Knowledge(BaseKnowledge):
         )
 
     def has_better_match(self, question: str, answer: str, story: str) -> bool:
-        if len(answer) < 5:
+        if len(answer) < len("the user say"):
             return False
 
         if any(normalized(answer).find(item) == 0 for item in ["yes", "no"]):
+            return False
+
+        if any(normalized(answer).find(item) != -1 for item in [" yes", " no"]):
             return False
 
         answer_dot_product = get_dot_product(question, answer)
