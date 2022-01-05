@@ -156,5 +156,5 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "'this is a test.'"
+        expected = "'this is a test'"
         assert interface.utterances[-1] == expected
