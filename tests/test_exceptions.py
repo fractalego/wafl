@@ -1,12 +1,13 @@
 from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
+from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 _wafl_greetings = """
 
-The says good bye
+The user says good bye
   close_conversation()
   
 """.strip()
@@ -23,7 +24,7 @@ class TesEmptyInput(TestCase):
         try:
             conversation.input()
 
-        except RuntimeWarning:
+        except CloseConversation:
             return
 
         assert False

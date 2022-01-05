@@ -2,6 +2,8 @@ import logging
 
 from datetime import datetime
 
+from wafl.exceptions import CloseConversation
+
 _logger = logging.getLogger(__file__)
 
 shopping_list = []
@@ -56,4 +58,4 @@ def say_twice():
 
 
 def close_conversation():
-    raise RuntimeWarning()
+    raise CloseConversation()

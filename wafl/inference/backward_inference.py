@@ -3,6 +3,7 @@ import traceback
 
 from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.conversation.working_memory import WorkingMemory
+from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
 from wafl.inference.utils import process_unknown_answer
 from wafl.parsing.preprocess import import_module, create_preprocessed
@@ -260,7 +261,7 @@ class BackwardInference:
                 to_execute = add_function_arguments(to_execute)
             result = eval(f"self._module.{to_execute}")
 
-        except RuntimeWarning as e:
+        except (CloseConversation, InterruptTask) as e:
             _logger.warning(str(e))
             raise e
 
