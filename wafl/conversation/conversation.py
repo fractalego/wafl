@@ -1,4 +1,5 @@
 from wafl.conversation.utils import is_question, get_answer_using_text
+from wafl.exceptions import InterruptTask
 from wafl.inference.backward_inference import BackwardInference
 
 
@@ -15,7 +16,13 @@ class Conversation:
 
     def add(self, text: str):
         text_is_question = is_question(text)
-        answer = get_answer_using_text(self._inference, self._interface, text)
+
+        try:
+            answer = get_answer_using_text(self._inference, self._interface, text)
+
+        except InterruptTask:
+            self._interface.output("Task interrupted")
+            return
 
         if (
             not text_is_question

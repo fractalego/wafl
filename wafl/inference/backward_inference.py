@@ -15,11 +15,11 @@ _logger = logging.getLogger(__name__)
 
 class BackwardInference:
     def __init__(
-        self,
-        knowledge: "Knowledge",
-        interface: "Interface",
-        module_name=None,
-        max_depth: int = 10,
+            self,
+            knowledge: "Knowledge",
+            interface: "Interface",
+            module_name=None,
+            max_depth: int = 10,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
@@ -49,7 +49,7 @@ class BackwardInference:
         return self._compute_recursively(query, working_memory, depth=0)
 
     def _compute_recursively(
-        self, query: "Query", working_memory, depth, inverted_rule=False
+            self, query: "Query", working_memory, depth, inverted_rule=False
     ):
         if depth > self._max_depth:
             return Answer(text="False")
@@ -169,7 +169,7 @@ class BackwardInference:
                 user_input_text = self._interface.input()
 
                 if self._knowledge.has_better_match(
-                    query.text, user_input_text, working_memory.get_story()
+                        query.text, user_input_text, working_memory.get_story()
                 ):
                     get_answer_using_text(self, self._interface, user_input_text)
 
@@ -279,7 +279,7 @@ class BackwardInference:
         return answer
 
     def __process_query(
-        self, cause_text, cause_is_question, working_memory, depth, inverted_rule
+            self, cause_text, cause_is_question, working_memory, depth, inverted_rule
     ):
         if "=" in cause_text:
             variable, text = cause_text.split("=")

@@ -18,6 +18,9 @@ the user wants to know the time
   
 the user says to shut up
   close_conversation()
+
+the user does not want to continue the task
+  close_task()
   
 """.strip()
 
@@ -56,3 +59,13 @@ class TestInterruptions(TestCase):
             return
 
         assert False
+
+    def test_task_interrupt_task_does_interrupt(self):
+        interface = DummyInterface(["Hello", "I don't want to continue the task"])
+        conversation = Conversation(
+            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+        )
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        assert interface.utterances[-1] == "Task interrupted"

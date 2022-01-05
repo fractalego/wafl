@@ -5,8 +5,12 @@ from nltk import word_tokenize
 
 
 def from_user_to_bot(text):
+    text = re.sub("I don't", "the user doesn't", text, flags=re.IGNORECASE)
+    text = re.sub("I do not", "the user does not", text, flags=re.IGNORECASE)
+
     word_and_pos_list = pos_tag(word_tokenize(text))
     new_text = []
+
     for word, pos in word_and_pos_list:
         if word.lower() in ["my", "mine"] and pos == "PRP$":
             new_text.append("the user's")
@@ -32,6 +36,9 @@ def from_user_to_bot(text):
 
 
 def from_bot_to_user(text):
+    text = re.sub("the user doesn't", "you don't", text, flags=re.IGNORECASE)
+    text = re.sub("the user does not", "you do not", text, flags=re.IGNORECASE)
+    text = re.sub("the user does", "you do", text, flags=re.IGNORECASE)
     text = re.sub("the user's", "your", text, flags=re.IGNORECASE)
     text = re.sub("does the user", "do you", text, flags=re.IGNORECASE)
     text = re.sub("is the user", "are you", text, flags=re.IGNORECASE)

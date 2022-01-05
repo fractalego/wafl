@@ -2,7 +2,7 @@ import logging
 
 from datetime import datetime
 
-from wafl.exceptions import CloseConversation
+from wafl.exceptions import CloseConversation, InterruptTask
 
 _logger = logging.getLogger(__file__)
 
@@ -59,3 +59,7 @@ def say_twice():
 
 def close_conversation():
     raise CloseConversation()
+
+
+def close_task():
+    raise InterruptTask()
