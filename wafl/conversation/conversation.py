@@ -74,6 +74,6 @@ class Conversation:
     def __remove_activation_word(self, activation_word, text):
         activation_pos = normalized(text).find(normalized(activation_word))
         if activation_pos != -1:
-            return text[activation_pos:]
+            return text[activation_pos + len(activation_word) :]
 
         return ""
