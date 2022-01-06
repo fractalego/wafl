@@ -10,7 +10,7 @@ _wafl_greetings = """
 """.strip()
 
 
-class TestEmptyInput(TestCase):
+class TestConfig(TestCase):
     def test_random_facts_are_not_accepted(self):
         config = Configuration.load_local_config()
         config.set_value("accept_random_facts", False)
