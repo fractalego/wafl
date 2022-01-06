@@ -7,6 +7,7 @@
 
 * should yes/no filter be in retriever instead of knowledge?
 
+* Create interfaces for google voice, other apis
 
 
 * for yes/no or limited choice questions there should not be ambiguity. The machine should match the closest item and

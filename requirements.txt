@@ -14,3 +14,4 @@ fact_checking==0.0.3
 pyfestival==0.5
 python-Levenshtein==0.12.2
 
+https://github.com/kpu/kenlm/archive/master.zip
