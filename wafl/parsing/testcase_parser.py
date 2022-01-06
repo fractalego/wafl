@@ -9,6 +9,7 @@ def get_user_and_bot_lines_from_text(text: str):
 
     testcase_name = ""
     testcases = {}
+    to_negate = False
     bot_lines = []
     user_lines = []
 
@@ -22,11 +23,18 @@ def get_user_and_bot_lines_from_text(text: str):
                 testcases[testcase_name] = {
                     "bot_lines": bot_lines,
                     "user_lines": user_lines,
+                    "negated": to_negate,
                 }
+                to_negate = False
                 bot_lines = []
                 user_lines = []
 
-            testcase_name = line.strip()
+            line = line.strip()
+            if line.find("!") == 0:
+                to_negate = True
+                line = line[1:].strip()
+
+            testcase_name = line
             testcases[testcase_name] = {}
             continue
 
@@ -43,6 +51,7 @@ def get_user_and_bot_lines_from_text(text: str):
         testcases[testcase_name] = {
             "bot_lines": bot_lines,
             "user_lines": user_lines,
+            "negated": to_negate,
         }
 
     return testcases

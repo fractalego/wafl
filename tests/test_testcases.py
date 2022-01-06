@@ -26,6 +26,14 @@ test the greetings work
   user> Bob
   bot> Nice to meet you, bob!
 
+! test the greetings uses the correct name
+  user> Hello
+  bot> Hello there!
+  bot> What is your name
+  user> Bob
+  bot> Nice to meet you, unknown!
+
+
 """.strip()
 
 
@@ -35,6 +43,7 @@ class TestConversationalTestCases(TestCase):
         assert list(dialogue_data["test the greetings work"].keys()) == [
             "bot_lines",
             "user_lines",
+            "negated",
         ]
 
     def test_that_test_case_is_parsed_correctly_with_correct_dialogues(self):

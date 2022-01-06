@@ -4,3 +4,9 @@ The user greets
   REMEMBER the user is called {username}
   REMEMBER the user's name is {username}
   SAY Nice to meet you, {username}!
+
+
+the user wishes good bye
+  SAY Good bye!
+  close_conversation()
+

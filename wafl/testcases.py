@@ -15,6 +15,7 @@ class ConversationTestCases:
 
         user_lines = self._testcase_data[name]["user_lines"]
         bot_lines = self._testcase_data[name]["bot_lines"]
+        is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
         conversation = Conversation(
             self._knowledge, interface=interface, code_path="functions"
@@ -29,7 +30,9 @@ class ConversationTestCases:
             except IndexError:
                 break
 
-        if bot_lines == interface.utterances:
+        if (bot_lines == interface.utterances and not is_negated) or (
+            bot_lines != interface.utterances and is_negated
+        ):
             print(" [Success]")
             return True
 

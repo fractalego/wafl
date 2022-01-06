@@ -4,3 +4,7 @@ test the greetings work
   bot> What is your name
   user> Bob
   bot> Nice to meet you, bob!
+
+test good bye
+  user> Good bye
+  bot> Good bye!
