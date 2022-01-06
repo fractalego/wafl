@@ -98,11 +98,14 @@ def _generate_answer(text, query, dialogue=None, length=50):
     start = 0
     end = generated_text.find("\n", start + 1)
     if end == -1:
-        end = len(generated_text)
+        _logger.warning("The bot is hallucinating an answer. Resetting to unknown")
+        return "unknown", score
+
     answer = generated_text[start : end + 1].split("A:")[-1].strip()
     if len(set(answer.split()) & _forbidden_words) > 0:
         _logger.warning("A forbidden word was caught in the answer!")
         answer = "unknown"
+
     return answer, score
 
 

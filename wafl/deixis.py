@@ -7,6 +7,7 @@ from nltk import word_tokenize
 def from_user_to_bot(text):
     text = re.sub("I don't", "the user doesn't", text, flags=re.IGNORECASE)
     text = re.sub("I do not", "the user does not", text, flags=re.IGNORECASE)
+    text = re.sub("are you", "is this bot", text, flags=re.IGNORECASE)
 
     word_and_pos_list = pos_tag(word_tokenize(text))
     new_text = []
