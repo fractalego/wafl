@@ -2,7 +2,7 @@ import sys
 
 from wafl.config import create_initial_files
 from wafl.parsing.preprocess import remove_preprocessed
-from wafl.run import run_from_command_line, run_from_audio
+from wafl.run import run_from_command_line, run_from_audio, run_testcases
 
 
 def download_models():
@@ -28,4 +28,8 @@ if __name__ == "__main__":
 
         if command == "run-audio":
             run_from_audio()
+            remove_preprocessed("functions")
+
+        if command == "test":
+            run_testcases()
             remove_preprocessed("functions")

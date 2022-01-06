@@ -13,7 +13,7 @@ The user says good bye
 """.strip()
 
 
-class TesEmptyInput(TestCase):
+class TestExceptions(TestCase):
     def test_runtime_warning_escapes_python_space(self):
         interface = DummyInterface(["Good bye!"])
         conversation = Conversation(

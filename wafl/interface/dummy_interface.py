@@ -8,9 +8,10 @@ class DummyInterface(BaseInterface):
         self.utterances = []
         self._to_utter = to_utter
         self._bot_has_spoken = False
+        self._dialogue = ""
 
     def output(self, text: str):
-        print("bot>", text)
+        self._dialogue += "bot> " + text + "\n"
         self.utterances.append(from_bot_to_user(text))
         self.bot_has_spoken(True)
 
@@ -20,7 +21,7 @@ class DummyInterface(BaseInterface):
             self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
         text = text.lower().capitalize()
-        print("user>", text)
+        self._dialogue += "user> " + text + "\n"
         return from_user_to_bot(text)
 
     def bot_has_spoken(self, to_set: bool = None):
@@ -28,3 +29,6 @@ class DummyInterface(BaseInterface):
             self._bot_has_spoken = to_set
 
         return self._bot_has_spoken
+
+    def get_dialogue(self):
+        return self._dialogue

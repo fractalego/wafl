@@ -12,4 +12,5 @@ spacy==2.3.7
 gender_guesser==0.4.0
 fact_checking==0.0.3
 pyfestival==0.5
+python-Levenshtein==0.12.2
 

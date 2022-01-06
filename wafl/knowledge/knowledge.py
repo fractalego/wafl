@@ -5,7 +5,7 @@ from wafl.facts import Fact
 from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import text_is_exact_string
-from wafl.parsing.parser import get_facts_and_rules_from_text
+from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.text_retriever import TextRetriever, get_dot_product
 from wafl.text_utils import clean_text_for_retrieval

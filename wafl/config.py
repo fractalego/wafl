@@ -9,6 +9,7 @@ def create_initial_files():
     _server_template = open(os.path.join(_path, "templates/server.py"))
     _functions_template = open(os.path.join(_path, "templates/functions.py"))
     _config_template = open(os.path.join(_path, "templates/config.json"))
+    _testcases_template = open(os.path.join(_path, "templates/testcases.txt"))
 
     print("+ Initializing ... ", end="")
 
@@ -23,6 +24,9 @@ def create_initial_files():
 
     with open("config.json", "w") as file:
         file.write(_config_template.read())
+
+    with open("testcases.txt", "w") as file:
+        file.write(_testcases_template.read())
 
     print("Done.")
 

@@ -1,9 +1,12 @@
+from wafl.parsing.preprocess import create_preprocessed
+
 from wafl.exceptions import CloseConversation
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.knowledge import Knowledge
+from wafl.testcases import ConversationTestCases
 
 
 def run_from_command_line():
@@ -43,3 +46,10 @@ def run_from_audio():
             break
 
     conversation.output("Goodbye!")
+
+
+def run_testcases():
+    knowledge = Knowledge(open("rules.wafl").read())
+    test_cases_text = open("testcases.txt").read()
+    testcases = ConversationTestCases(test_cases_text, knowledge)
+    testcases.run()

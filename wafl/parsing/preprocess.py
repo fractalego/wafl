@@ -8,6 +8,7 @@ preprocessed_prefix = "__wafl_"
 def create_preprocessed(module: str):
     filename = module + ".py"  ### TODO: This is not enough in general
     with open(filename) as file:
+        print(f"Preprocessing {filename}.")
         text = file.read()
         text = text.replace('{f"%', 'inference.get_inference_answer(f"')
         text = text.replace('{"%', 'inference.get_inference_answer(f"')
@@ -24,5 +25,7 @@ def import_module(module_name):
 
 
 def remove_preprocessed(module):
+    print("Removing preprocessed files")
     filename = module + ".py"
-    os.remove(preprocessed_prefix + filename)
+    if os.path.isfile(filename):
+        os.remove(preprocessed_prefix + filename)

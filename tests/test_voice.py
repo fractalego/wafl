@@ -51,8 +51,6 @@ class TestVoice(TestCase):
             "SAYS THEIR",
             "THEIR NAME",
         ]
-
-        print(interface._listener._hotwords)
         assert interface._listener._hotwords == expected
 
     def test_input_perplexity_is_not_good_enough(self):

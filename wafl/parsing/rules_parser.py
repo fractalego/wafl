@@ -1,10 +1,11 @@
 from wafl.conversation.utils import is_question
 from wafl.facts import Fact
+from wafl.parsing.utils import get_lines_stripped_from_comments
 from wafl.rules import Rule
 
 
 def get_facts_and_rules_from_text(text: str):
-    lines = _get_lines_stripped_from_comments(text)
+    lines = get_lines_stripped_from_comments(text)
 
     facts = []
     rules = []
@@ -51,19 +52,3 @@ def get_facts_and_rules_from_text(text: str):
             )
 
     return {"facts": facts, "rules": rules}
-
-
-def _get_lines_stripped_from_comments(text):
-    if not text:
-        return []
-
-    lines = []
-    for line in text.split("\n"):
-        if line.strip() and line.strip()[0] == "#":
-            continue
-
-        line = line.split("#")[0]
-        lines.append(line)
-
-    lines.append("")
-    return lines
