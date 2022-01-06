@@ -33,7 +33,8 @@ def create_initial_files():
 
 class Configuration:
     def __init__(self, filename):
-        self._data = json.load(open(filename))
+        with open(filename) as file:
+            self._data = json.load(file)
 
     def get_value(self, key):
         if key in self._data:
