@@ -45,7 +45,7 @@ class Conversation:
             self.output("I will remember it.")
 
         if not self._interface.bot_has_spoken():
-            if not text_is_question and answer.text in ["True", "False", "unknown"]:
+            if not text_is_question and normalized(answer.text) in ["unknown"]:
                 self.output(answer.text)
 
             if text_is_question and answer.text not in ["True", "False"]:
