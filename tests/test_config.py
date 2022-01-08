@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from wafl.interface.voice_interface import VoiceInterface
+
 from wafl.config import Configuration
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -24,3 +26,8 @@ class TestConfig(TestCase):
         conversation.input()
         conversation.input()
         assert interface.utterances[-1] == "Unknown"
+
+    def test_voice_interface_receives_config(self):
+        config = Configuration.load_local_config()
+        interface = VoiceInterface(config)
+        assert interface.listener_model_name == config.get_value("listener_model")

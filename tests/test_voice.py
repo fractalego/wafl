@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.interface.utils import not_good_enough
 
@@ -32,7 +33,8 @@ class TestVoice(TestCase):
         assert interface.utterances == []
 
     def test_hotwords_as_input(self):
-        interface = VoiceInterface()
+        config = Configuration.load_local_config()
+        interface = VoiceInterface(config)
         interface.add_hotwords_from_knowledge(
             Knowledge(_wafl_example), count_threshold=1
         )

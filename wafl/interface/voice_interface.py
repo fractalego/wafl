@@ -6,8 +6,9 @@ from wafl.speaker.festival_speaker import FestivalSpeaker
 
 
 class VoiceInterface(BaseInterface):
-    def __init__(self):
-        self._listener = Wav2Vec2Listener("facebook/wav2vec2-large-robust-ft-swbd-300h")
+    def __init__(self, config):
+        self.listener_model_name = config.get_value("listener_model")
+        self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_hotwords(
             [
                 "COMPUTER",

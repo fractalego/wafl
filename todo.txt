@@ -1,7 +1,10 @@
 ### TODO
 
-* Create conversation tests in userspace
+* allow {variable} to be interpreted as code/call for another task (at least add tests)
+* allow some type of introspection
+
 * finish config
+ - add hotwords to config.json
 * upload to github, with tests and logs
 * validate the user code (is REMEMBR spelled correctly?)
 
@@ -26,7 +29,7 @@
 !* Implement a standard sign for code. Should it be '''> ?
 !* Implement FORGET (the whole Fact should disappear from Knowledge)
 
-* add hotwords to config.json
+
 * Do not allow arbitrary input (at least for voice)
 * Working memory is unnecessarily complicated. It can just contain the story and some method to automatically fill it.
 !* Why did it say "no" on "can you please add bananas to the shopping list?"

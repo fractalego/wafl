@@ -1,3 +1,4 @@
+from wafl.config import Configuration
 from wafl.parsing.preprocess import create_preprocessed
 
 from wafl.exceptions import CloseConversation
@@ -27,9 +28,12 @@ def run_from_command_line():
 
 
 def run_from_audio():
+    config = Configuration.load_local_config()
     knowledge = Knowledge(open("rules.wafl").read())
-    interface = VoiceInterface()
-    conversation = Conversation(knowledge, interface=interface, code_path="functions")
+    interface = VoiceInterface(config)
+    conversation = Conversation(
+        knowledge, interface=interface, code_path="functions", config=config
+    )
     conversation.output("Hello. Please say 'Computer' to activate me")
 
     activation_word = "computer"

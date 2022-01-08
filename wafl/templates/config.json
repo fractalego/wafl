@@ -6,5 +6,6 @@
   ],
   "waking_up_word": [
     "computer"
-  ]
+  ],
+  "listener_model": "facebook/wav2vec2-large-robust-ft-swbd-300h"
 }
