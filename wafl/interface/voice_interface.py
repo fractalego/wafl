@@ -12,12 +12,6 @@ class VoiceInterface(BaseInterface):
         self._listener.set_hotwords(
             [
                 "COMPUTER",
-                "JUBILEE",
-                "CAMDEN",
-                "ADD",
-                "REMOVE",
-                "SHOPPING LIST",
-                "APPLES",
             ]
         )
         self._listener.set_timeout(1.1)
