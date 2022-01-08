@@ -1,3 +1,5 @@
+from wafl.exceptions import CloseConversation
+
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 
@@ -27,7 +29,7 @@ class ConversationTestCases:
             try:
                 conversation.input()
 
-            except IndexError:
+            except (IndexError, CloseConversation):
                 break
 
         if (bot_lines == interface.utterances and not is_negated) or (
