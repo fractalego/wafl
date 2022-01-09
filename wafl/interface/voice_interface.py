@@ -37,11 +37,10 @@ class VoiceInterface(BaseInterface):
         self.bot_has_spoken(True)
 
     def input(self) -> str:
-        text = ""
+        text = self._listener.input()
         while self._check_understanding and not_good_enough(text):
-            if text:
-                print("user>", text)
-                self.output("I did not quite understand that")
+            print("user>", text)
+            self.output("I did not quite understand that")
             text = self._listener.input()
         text = text.lower().capitalize()
         print("user>", text)
