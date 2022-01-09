@@ -7,3 +7,6 @@ class BaseInterface:
 
     def bot_has_spoken(self, to_set: bool = None):
         raise NotImplemented
+
+    def check_understanding(self, do_the_check: bool):
+        raise NotImplemented

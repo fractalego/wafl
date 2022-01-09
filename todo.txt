@@ -1,6 +1,7 @@
 ### TODO
 
 * do not say anything unless it is activated (output should be suppressed)
+* Why is everything interpreted as "hello" or "hi"? You need a better retriever
 
 * allow {variable} to be interpreted as code/call for another task (at least add tests)
 * allow some type of introspection

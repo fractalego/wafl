@@ -31,6 +31,7 @@ def run_from_audio():
     config = Configuration.load_local_config()
     knowledge = Knowledge(open("rules.wafl").read())
     interface = VoiceInterface(config)
+    interface.check_understanding(False)
     conversation = Conversation(
         knowledge, interface=interface, code_path="functions", config=config
     )
@@ -44,6 +45,7 @@ def run_from_audio():
 
         except CloseConversation:
             activation_word = "computer"
+            interface.check_understanding(False)
             continue
 
         except (KeyboardInterrupt, EOFError):

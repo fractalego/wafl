@@ -13,6 +13,13 @@ The user says their name
   
 """.strip()
 
+_wafl_greetings2 = """
+
+The user says hi or hello
+  SAY Hello there!
+
+""".strip()
+
 
 class TestEmptyInput(TestCase):
     def test_hello_and_username(self):
@@ -22,3 +29,11 @@ class TestEmptyInput(TestCase):
         conversation.output(utterance)
         conversation.input()
         assert interface.utterances[-1] == "Nice to meet you, albert!"
+
+    def test_empty_input_does_nothing(self):
+        interface = DummyInterface(["computer"])
+        conversation = Conversation(Knowledge(_wafl_greetings2), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input(activation_word='computer')
+        assert interface.utterances != ['Hello there!']

@@ -14,12 +14,13 @@ class VoiceInterface(BaseInterface):
                 "COMPUTER",
             ]
         )
-        self._listener.set_timeout(1.1)
+        self._listener.set_timeout(0.8)
         self._speaker = FestivalSpeaker()
         self._bot_has_spoken = False
+        self._check_understanding = True
 
     def add_hotwords_from_knowledge(
-        self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
+            self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
             knowledge.get_facts_and_rule_as_text(),
@@ -37,7 +38,7 @@ class VoiceInterface(BaseInterface):
 
     def input(self) -> str:
         text = ""
-        while not_good_enough(text):
+        while self._check_understanding and not_good_enough(text):
             if text:
                 print("user>", text)
                 self.output("I did not quite understand that")
@@ -51,3 +52,6 @@ class VoiceInterface(BaseInterface):
             self._bot_has_spoken = to_set
 
         return self._bot_has_spoken
+
+    def check_understanding(self, do_the_check):
+        self._check_understanding = do_the_check

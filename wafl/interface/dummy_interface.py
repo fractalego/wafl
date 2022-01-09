@@ -9,6 +9,7 @@ class DummyInterface(BaseInterface):
         self._to_utter = to_utter
         self._bot_has_spoken = False
         self._dialogue = ""
+        self._check_understanding = True
 
     def output(self, text: str):
         self._dialogue += "bot> " + text + "\n"
@@ -17,7 +18,7 @@ class DummyInterface(BaseInterface):
 
     def input(self) -> str:
         text = self._to_utter.pop(0).strip()
-        while not_good_enough(text):
+        while self._check_understanding and not_good_enough(text):
             self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
         text = text.lower().capitalize()
@@ -32,3 +33,6 @@ class DummyInterface(BaseInterface):
 
     def get_dialogue(self):
         return self._dialogue
+
+    def check_understanding(self, do_the_check: bool):
+        self._check_understanding = do_the_check

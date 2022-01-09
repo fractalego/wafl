@@ -4,6 +4,7 @@ from nltk import pos_tag
 from nltk import word_tokenize
 
 from wafl.conversation.working_memory import WorkingMemory
+from wafl.inference.utils import normalized
 from wafl.qa.qa import Query
 
 
@@ -51,3 +52,13 @@ def get_answer_using_text(inference, interface, text):
         answer = inference.compute(query, working_memory)
 
     return answer
+
+
+def input_is_valid(text):
+    if not text.strip():
+        return False
+
+    if normalized(text) != 'no' and len(text) < 2:
+        return False
+
+    return True
