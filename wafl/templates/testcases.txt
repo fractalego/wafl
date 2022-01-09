@@ -1,9 +1,6 @@
 test the greetings work
-  user> Hello
+  user> bring yourself online
   bot> Hello there!
-  bot> What is your name
-  user> Bob
-  bot> Nice to meet you, bob!
 
 test good bye
   user> Good bye

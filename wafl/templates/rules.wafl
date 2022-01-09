@@ -1,9 +1,5 @@
-The user greets
+The user says "bring yourself online"
   SAY Hello there!
-  username = What is the user's name
-  REMEMBER the user is called {username}
-  REMEMBER the user's name is {username}
-  SAY Nice to meet you, {username}!
 
 
 the user wishes good bye
