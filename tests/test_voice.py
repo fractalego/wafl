@@ -38,7 +38,15 @@ class TestVoice(TestCase):
         interface.add_hotwords_from_knowledge(
             Knowledge(_wafl_example), count_threshold=1
         )
-        expected = ['COMPUTER', 'JANE', 'NAME IS', 'IS JANE', 'SAYS', 'SAYS THEIR', 'THEIR NAME']
+        expected = [
+            "MARLIES",
+            "JANE",
+            "NAME IS",
+            "IS JANE",
+            "SAYS",
+            "SAYS THEIR",
+            "THEIR NAME",
+        ]
         assert interface._listener._hotwords == expected
 
     def test_input_perplexity_is_not_good_enough(self):

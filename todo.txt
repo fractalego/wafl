@@ -1,7 +1,10 @@
 ### TODO
 
-* do not say anything unless it is activated (output should be suppressed)
+* If the result of input is false -> close conversation
+
 * Why is everything interpreted as "hello" or "hi"? You need a better retriever
+  - Change retriever with the one you liked
+
 
 * allow {variable} to be interpreted as code/call for another task (at least add tests)
 * allow some type of introspection
@@ -14,7 +17,8 @@
 * should yes/no filter be in retriever instead of knowledge?
 
 * Create interfaces for google voice, other apis
-
+* A goal oriented bot would scan all the rules to find how to obtain the goal.
+  The user can be simulated using a generative model for dialogue.
 
 * for yes/no or limited choice questions there should not be ambiguity. The machine should match the closest item and
   if there is no item close enough ask again.

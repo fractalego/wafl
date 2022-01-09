@@ -11,7 +11,7 @@ class VoiceInterface(BaseInterface):
         self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_hotwords(
             [
-                "COMPUTER",
+                "MARLIES",
             ]
         )
         self._listener.set_timeout(0.8)
@@ -20,7 +20,7 @@ class VoiceInterface(BaseInterface):
         self._check_understanding = True
 
     def add_hotwords_from_knowledge(
-            self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
+        self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
             knowledge.get_facts_and_rule_as_text(),
@@ -31,6 +31,7 @@ class VoiceInterface(BaseInterface):
         self._listener.add_hotwords(hotwords)
 
     def output(self, text: str):
+        self._listener.activate()
         text = from_bot_to_user(text)
         print("bot>", text)
         self._speaker.speak(text)

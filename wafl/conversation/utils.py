@@ -58,7 +58,7 @@ def input_is_valid(text):
     if not text.strip():
         return False
 
-    if normalized(text) != 'no' and len(text) <= 2:
+    if normalized(text) != "no" and len(text) <= 2:
         return False
 
     return True

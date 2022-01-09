@@ -35,5 +35,5 @@ class TestEmptyInput(TestCase):
         conversation = Conversation(Knowledge(_wafl_greetings2), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input(activation_word='computer')
-        assert interface.utterances != ['Hello there!']
+        conversation.input(activation_word="computer")
+        assert interface.utterances != ["Hello there!"]

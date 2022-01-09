@@ -40,7 +40,9 @@ class Configuration:
         if key in self._data:
             return self._data[key]
 
-        print(f"The value '{key}' does not appear in the configuration. Should you add it?")
+        print(
+            f"The value '{key}' does not appear in the configuration. Should you add it?"
+        )
 
     def set_value(self, key, value):
         if key not in self._data:

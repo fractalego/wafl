@@ -29,6 +29,7 @@ class Wav2Vec2Listener:
             alpha=0.5,
             beta=1.0,
         )
+        self.is_active = False
 
     def set_hotwords(self, hotwords):
         self._hotwords = hotwords
@@ -57,15 +58,27 @@ class Wav2Vec2Listener:
 
         return np.frombuffer(b"".join(rec), dtype=np.int16) / self._range
 
+    def activate(self):
+        if not self.is_active:
+            self.stream = self.p.open(
+                format=self._format,
+                channels=self._channels,
+                rate=self._rate,
+                input=True,
+                output=False,
+                frames_per_buffer=self._chunk,
+            )
+            self.is_active = True
+
+    def deactivate(self):
+        if self.is_active:
+            self.stream.stop_stream()
+            self.stream.close()
+            self.is_active = False
+
     def input(self):
-        self.stream = self.p.open(
-            format=self._format,
-            channels=self._channels,
-            rate=self._rate,
-            input=True,
-            output=False,
-            frames_per_buffer=self._chunk,
-        )
+        if not self.is_active:
+            self.activate()
 
         while True:
             inp = self.stream.read(self._chunk)
@@ -85,8 +98,7 @@ class Wav2Vec2Listener:
                     hotword_weight=20.0,
                 )
                 if len(transcription) >= 2:
-                    self.stream.stop_stream()
-                    self.stream.close()
+                    self.deactivate()
                     return transcription
 
 
