@@ -36,7 +36,7 @@ class Conversation:
 
         except InterruptTask:
             self._interface.output("Task interrupted")
-            return
+            return False
 
         if (
             self._config.get_value("accept_random_facts")
@@ -64,8 +64,9 @@ class Conversation:
         if self.__activation_word_in_text(activation_word, text):
             self._interface.check_understanding(True)
             text = self.__remove_activation_word(activation_word, text)
-            self.add(text)
-            return True
+            answer = self.add(text)
+            if answer and answer.text != "False":
+                return True
 
         return False
 
