@@ -138,3 +138,9 @@ class TestConversation(TestCase):
         conversation.output(utterance)
         conversation.input()
         assert interface.utterances[-1] == "Nice to meet you, albert!"
+
+    def test_conversation_input_returns_false_for_trivial_input(self):
+        interface = DummyInterface(["uhm what"])
+        conversation = Conversation(Knowledge(""), interface=interface)
+        result = conversation.input()
+        assert not result

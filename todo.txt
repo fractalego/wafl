@@ -2,6 +2,9 @@
 
 * If the result of input is false -> close conversation
 
+* train bart for qa/facts
+* train your own retriever
+
 * Why is everything interpreted as "hello" or "hi"? You need a better retriever
   - Change retriever with the one you liked
 
