@@ -14,7 +14,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Knowledge(BaseKnowledge):
-    _threshold_for_questions = 0.51
+    _threshold_for_questions_from_user = 0.51
+    _threshold_for_questions_from_bot = 0.54
     _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.58
     _threshold_for_partial_facts = 0.42
@@ -82,15 +83,23 @@ class Knowledge(BaseKnowledge):
             for item in indices_and_scores
         )
 
-    def ask_for_facts(self, query):
+    def ask_for_facts(self, query, is_from_user=False):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
             query.text
         )
-        threshold = (
-            self._threshold_for_questions
-            if query.is_question
-            else self._threshold_for_facts
-        )
+        if is_from_user:
+            threshold = (
+                self._threshold_for_questions_from_user
+                if query.is_question
+                else self._threshold_for_facts
+            )
+        else:
+            threshold = (
+                self._threshold_for_questions_from_bot
+                if query.is_question
+                else self._threshold_for_facts
+            )
+
         return [
             self._facts_dict[item[0]]
             for item in indices_and_scores

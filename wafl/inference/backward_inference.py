@@ -54,7 +54,7 @@ class BackwardInference:
         if depth > self._max_depth:
             return Answer(text="False")
 
-        answer = self._look_for_answer_in_facts(query, working_memory)
+        answer = self._look_for_answer_in_facts(query, working_memory, depth)
         if answer:
             return answer
 
@@ -141,8 +141,8 @@ class BackwardInference:
             if inverted_rule:
                 return Answer(text="False")
 
-    def _look_for_answer_in_facts(self, query, working_memory):
-        facts = self._knowledge.ask_for_facts(query)
+    def _look_for_answer_in_facts(self, query, working_memory, depth):
+        facts = self._knowledge.ask_for_facts(query, is_from_user=depth == 0)
         for fact in facts:
             answer = self._qa.ask(query, fact.text)
             working_memory.add_story(fact.text)
