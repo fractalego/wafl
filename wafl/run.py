@@ -1,5 +1,4 @@
 from wafl.config import Configuration
-from wafl.parsing.preprocess import create_preprocessed
 
 from wafl.exceptions import CloseConversation
 
@@ -35,7 +34,7 @@ def run_from_audio():
     conversation = Conversation(
         knowledge, interface=interface, code_path="functions", config=config
     )
-    conversation.output("Hello. Please say 'Computer' to activate me")
+    conversation.output("Please say 'Computer' to activate me")
 
     activation_word = "computer"
     while True:
