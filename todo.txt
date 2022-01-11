@@ -1,7 +1,7 @@
 ### TODO
 
-* If the result of input is false -> close conversation
 
+* Select by levenstein distance before text_retriever (lev_retriever?)
 * train bart for qa/facts
 * train your own retriever
 

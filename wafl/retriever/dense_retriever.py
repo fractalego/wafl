@@ -17,7 +17,7 @@ sentence_model = SentenceTransformer("msmarco-distilbert-base-v3")
 sentence_model = sentence_model.to(device)
 
 
-class TextRetriever(BaseRetriever):
+class DenseRetriever(BaseRetriever):
     _threshold_length = 5
 
     def __init__(self):

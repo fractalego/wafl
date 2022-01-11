@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from wafl.retriever.string_retriever import StringRetriever
-from wafl.retriever.text_retriever import TextRetriever
+from wafl.retriever.dense_retriever import DenseRetriever
 
 _wafl_greetings = """
 
@@ -15,7 +15,7 @@ The user says their name
 
 class TestRetrieval(TestCase):
     def test_retrieval(self):
-        retriever = TextRetriever()
+        retriever = DenseRetriever()
         sentences = ["this is a test", "the food is hot on the table"]
         for index, sentence in enumerate(sentences):
             retriever.add_text_and_index(sentence, str(index))
@@ -41,7 +41,7 @@ class TestRetrieval(TestCase):
         assert predicted[0][0] == expected
 
     def test_short_text_retrieves_nothing(self):
-        retriever = TextRetriever()
+        retriever = DenseRetriever()
         sentences = ["The user greets"]
         for index, sentence in enumerate(sentences):
             retriever.add_text_and_index(sentence, str(index))

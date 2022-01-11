@@ -7,7 +7,7 @@ from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import text_is_exact_string
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.retriever.string_retriever import StringRetriever
-from wafl.retriever.text_retriever import TextRetriever, get_dot_product
+from wafl.retriever.dense_retriever import DenseRetriever, get_dot_product
 from wafl.text_utils import clean_text_for_retrieval
 
 _logger = logging.getLogger(__name__)
@@ -31,10 +31,10 @@ class Knowledge(BaseKnowledge):
         self._rules_dict = {
             f"R{index}": value for index, value in enumerate(facts_and_rules["rules"])
         }
-        self._facts_retriever = TextRetriever()
-        self._rules_incomplete_retriever = TextRetriever()
-        self._rules_fact_retriever = TextRetriever()
-        self._rules_question_retriever = TextRetriever()
+        self._facts_retriever = DenseRetriever()
+        self._rules_incomplete_retriever = DenseRetriever()
+        self._rules_fact_retriever = DenseRetriever()
+        self._rules_question_retriever = DenseRetriever()
         self._rules_string_retriever = StringRetriever()
         self._initialize_retrievers()
 
