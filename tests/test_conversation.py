@@ -47,6 +47,13 @@ The user wants to join the club
 
 """.strip()
 
+_wafl_how_are_you = """
+
+This bot name is Computer
+This bot is doing well
+
+""".strip()
+
 
 class TestConversation(TestCase):
     def test_single_utterance(self):
@@ -144,3 +151,9 @@ class TestConversation(TestCase):
         conversation = Conversation(Knowledge(""), interface=interface)
         result = conversation.input()
         assert not result
+
+    def test_how_are_you(self):
+        interface = DummyInterface(["How are you?"])
+        conversation = Conversation(Knowledge(_wafl_how_are_you), interface=interface)
+        conversation.input()
+        assert interface.utterances[-1] == "doing well"

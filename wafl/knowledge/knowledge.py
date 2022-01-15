@@ -106,6 +106,29 @@ class Knowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
+    def ask_for_facts_with_threshold(self, query, is_from_user=False):
+        indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
+            query.text
+        )
+        if is_from_user:
+            threshold = (
+                self._threshold_for_questions_from_user
+                if query.is_question
+                else self._threshold_for_facts
+            )
+        else:
+            threshold = (
+                self._threshold_for_questions_from_bot
+                if query.is_question
+                else self._threshold_for_facts
+            )
+
+        return [
+            (self._facts_dict[item[0]], item[1])
+            for item in indices_and_scores
+            if item[1] > threshold
+        ]
+
     def ask_for_rule_backward(self, query):
         if text_is_exact_string(query.text):
             indices_and_scores = (

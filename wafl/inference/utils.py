@@ -1,5 +1,6 @@
 import re
 
+from wafl.facts import Fact
 from wafl.qa.qa import Answer
 
 
@@ -98,3 +99,26 @@ def normalized(text):
         text = text[:-1]
 
     return text.lower()
+
+
+def cluster_facts(facts_and_threshold):
+    if not facts_and_threshold:
+        return []
+
+    _cluster_margin = 0.1
+
+    texts = []
+    last_threshold = facts_and_threshold[0][1]
+    text = ""
+    for fact, threshold in facts_and_threshold:
+        if abs(threshold - last_threshold) < _cluster_margin:
+            text += fact.text + ". "
+
+        else:
+            texts.append(text.strip())
+            text = ""
+            last_threshold = threshold
+
+    texts.append(text.strip())
+
+    return texts

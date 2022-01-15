@@ -106,6 +106,9 @@ def _generate_answer(text, query, dialogue=None, length=50):
         _logger.warning("A forbidden word was caught in the answer!")
         answer = "unknown"
 
+    if answer and answer[-1] == ".":
+        answer = answer[:-1]
+
     return answer, score
 
 

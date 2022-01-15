@@ -5,7 +5,7 @@ from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
-from wafl.inference.utils import process_unknown_answer
+from wafl.inference.utils import process_unknown_answer, cluster_facts
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
@@ -142,10 +142,13 @@ class BackwardInference:
                 return Answer(text="False")
 
     def _look_for_answer_in_facts(self, query, working_memory, depth):
-        facts = self._knowledge.ask_for_facts(query, is_from_user=depth == 0)
-        for fact in facts:
-            answer = self._qa.ask(query, fact.text)
-            working_memory.add_story(fact.text)
+        facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
+            query, is_from_user=depth == 0
+        )
+        texts = cluster_facts(facts_and_thresholds)
+        for text in texts:
+            answer = self._qa.ask(query, text)
+            working_memory.add_story(text)
             answer = process_unknown_answer(answer)
             return answer
 

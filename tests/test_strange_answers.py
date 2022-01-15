@@ -22,6 +22,5 @@ class TestExceptions(TestCase):
         conversation.output(utterance)
 
         conversation.input()
-        expected = "It is a bot name."
-        print(interface.utterances)
+        expected = "It is a bot name"
         assert interface.utterances[-1] == expected
