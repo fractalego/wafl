@@ -12,3 +12,13 @@ def get_lines_stripped_from_comments(text):
 
     lines.append("")
     return lines
+
+
+def is_quoted_text(text):
+    if not text:
+        return False
+
+    if text[0] == '"' and text[-1] == '"':
+        return True
+
+    return False

@@ -1,6 +1,6 @@
 from wafl.conversation.utils import is_question
 from wafl.facts import Fact
-from wafl.parsing.utils import get_lines_stripped_from_comments
+from wafl.parsing.utils import get_lines_stripped_from_comments, is_quoted_text
 from wafl.rules import Rule
 
 
@@ -46,6 +46,8 @@ def get_facts_and_rules_from_text(text: str):
                 sentence_is_question = False
                 variable = None
                 text = line.strip()
+                if is_quoted_text(text):
+                    text += "The user says: " + text
 
             effect = Fact(
                 text=text, is_question=sentence_is_question, variable=variable
