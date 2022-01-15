@@ -1,7 +1,6 @@
 import logging
 
 from datetime import datetime
-
 from wafl.exceptions import CloseConversation, InterruptTask
 
 _logger = logging.getLogger(__file__)
@@ -63,3 +62,21 @@ def close_conversation():
 
 def close_task():
     raise InterruptTask()
+
+
+def normalize_name(linename):
+    return "victoria"
+
+
+lines_dict = {
+    "overground": "overground",
+    "circle": "tube",
+    "northern": "tube",
+    "jubilee": "tube",
+    "victoria": "tube",
+    "dlr": "dlr",
+}
+
+
+def check_tfl_line(linename):
+    {f"% SAY The {linename} line is running normally %"}

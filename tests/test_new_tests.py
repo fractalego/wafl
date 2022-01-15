@@ -7,5 +7,5 @@ from wafl.knowledge.knowledge import Knowledge
 from wafl.qa.qa import Query
 
 
-class TestConversation(TestCase):
+class TestNew(TestCase):
     pass

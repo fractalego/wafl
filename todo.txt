@@ -1,6 +1,7 @@
 ### TODO
 
-* Try to group together facts when answering questions.
+* If a function calls another one within functions.py then there is an argument missing! inference is not there in the code
+
 * Select by levenstein distance before text_retriever (lev_retriever?)
 * train bart for qa/facts
 * train your own retriever

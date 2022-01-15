@@ -26,6 +26,21 @@ the user wants this bot to say hello twice
   say_twice()
 """
 
+_tube_line_rules = """
+linename = which line is running?
+  SAY RUNNING
+  normname = normalize_name(linename)
+  SAY {normname}
+  check_tfl_line(normname)
+
+is the overground running?
+  check_tfl_line("overground")
+
+is the dlr running?
+  check_tfl_line("dlr")
+
+""".strip()
+
 
 class TestLanguageInFunctions(TestCase):
     def test_preprocessing(self):
@@ -72,3 +87,11 @@ class TestLanguageInFunctions(TestCase):
             "Your input is recorded",
         ]
         assert interface.utterances == expected
+
+    def test_double_fuctions(self):
+        interface = DummyInterface(["Is the victoria line running"])
+        conversation = Conversation(
+            Knowledge(_tube_line_rules), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        assert interface.utterances[-1] == "The victoria line is running normally"

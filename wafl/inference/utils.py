@@ -63,10 +63,10 @@ def add_function_arguments(text: str) -> str:
 
 def update_substitutions_from_results(result, variable, substitutions):
     substitutions.update({f"{{{variable}}}": result})
-    substitutions.update({f"({variable})": result})
-    substitutions.update({f"({variable},": result})
-    substitutions.update({f",{variable},": result})
-    substitutions.update({f",{variable})": result})
+    substitutions.update({f"({variable})": f'("{result}")'})
+    substitutions.update({f"({variable},": f'("{result}",'})
+    substitutions.update({f",{variable},": f',"{result}",'})
+    substitutions.update({f",{variable})": f',"{result}")'})
 
 
 def invert_answer(answer):
