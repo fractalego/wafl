@@ -56,7 +56,7 @@ def update_substitutions_from_answer(answer, substitutions):
 
 
 def add_function_arguments(text: str) -> str:
-    text = re.sub("(.*\([\"'0-9a-zA-Z@\-\.,\s]+)\)$", "\\1, self)", text)
+    text = re.sub("(.*\([\"'0-9a-zA-Z@?':\-\.,\s]+)\)$", "\\1, self)", text)
     text = re.sub("(.*)\(\)$", "\\1(self)", text)
     return text
 

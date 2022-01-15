@@ -102,7 +102,7 @@ class TestConversation(TestCase):
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        assert interface.utterances[-1] == "albert"
+        assert interface.utterances[-1] == "Albert"
 
     def test_yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])

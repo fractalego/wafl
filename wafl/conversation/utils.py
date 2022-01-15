@@ -29,6 +29,7 @@ def is_question(text):
 
 def get_answer_using_text(inference, interface, text):
     working_memory = WorkingMemory()
+    text = text.capitalize()
     if not is_question(text):
         query_text = f"The user says: '{text}.'"
         working_memory.add_story(query_text)

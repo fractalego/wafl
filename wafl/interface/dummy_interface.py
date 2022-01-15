@@ -21,7 +21,6 @@ class DummyInterface(BaseInterface):
         while self._check_understanding and not_good_enough(text):
             self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
-        text = text.lower().capitalize()
         self._dialogue += "user> " + text + "\n"
         return from_user_to_bot(text)
 
