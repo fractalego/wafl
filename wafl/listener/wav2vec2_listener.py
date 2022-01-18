@@ -35,10 +35,14 @@ class Wav2Vec2Listener:
         self._hotwords = hotwords
 
     def add_hotwords(self, hotwords):
+        print("Interface: adding hotwords", str(hotwords))
         self._hotwords += hotwords
 
     def set_timeout(self, timeout):
         self._timeout = timeout
+
+    def set_threshold(self, threshold):
+        self._threshold = threshold
 
     def record(self, start_with):
         rec = list()
@@ -92,10 +96,11 @@ class Wav2Vec2Listener:
                     sampling_rate=self._rate,
                 ).input_values
                 logits = self._model(input_values).logits
+                print(self._hotwords)
                 transcription = self._decoder.decode(
                     logits.cpu().detach().numpy()[0],
                     hotwords=self._hotwords,
-                    hotword_weight=20.0,
+                    hotword_weight=10.0,
                 )
                 if len(transcription) >= 2:
                     self.deactivate()

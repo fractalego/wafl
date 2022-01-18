@@ -2,6 +2,18 @@
 
 * Create unit tests for conversation activation/deactivation
 
+* WHY DOES "E t" activate rules?
+user> E t
+RECURSION: 0 Query(text="The user says: 'E t.'", is_question=False, variable='name')
+FACTS INDICES AND SCORES [('F1', 0.2730557918548584), ('F0', 0.08991198986768723)]
+FACTS: None
+RULES FACT INDICES AND SCORES [('R24', 0.49339473247528076), ('R9', 0.49130013585090637)]
+RULES QUESTION INDICES AND SCORES [('R4', 0.20821554958820343), ('R3', 0.15777693688869476)]
+RULES INCOMPLETE INDICES AND SCORES [('R10', 0.5806549191474915), ('R11', 0.49084901809692383)]
+
+* The answer to the question can be found in the conversation from the bot.
+  The bot can speak to itself and then answer the user
+
 *yes/no questions should *never* trigger an interruption.
  It's not just yes/no answers, the deal is with the question!
 

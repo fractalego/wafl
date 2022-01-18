@@ -47,7 +47,7 @@ def get_facts_and_rules_from_text(text: str):
                 variable = None
                 text = line.strip()
                 if is_quoted_text(text):
-                    text += "The user says: " + text
+                    text = "The user says: " + text
 
             effect = Fact(
                 text=text, is_question=sentence_is_question, variable=variable

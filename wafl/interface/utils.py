@@ -1,5 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from wafl.inference.utils import normalized
 
 from wafl.qa.qa import get_perplexity
 
@@ -24,6 +25,9 @@ def not_good_enough(text):
     if not text:
         return True
 
+    if normalized(text) != 'no' and len(text.strip().replace(' ', '')) < 3:
+        return True
+
     text = f"""
 In the text below two people are discussing a story.
 
@@ -34,7 +38,7 @@ Discussion:
 Q:{text}
     """.strip()
 
-    perplexity_threshold = 3
+    perplexity_threshold = 3.2
     perplexity = get_perplexity(text)
     if perplexity > perplexity_threshold:
         return True

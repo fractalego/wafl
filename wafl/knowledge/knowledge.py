@@ -96,6 +96,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
             query.text
         )
+        print('FACTS INDICES AND SCORES', indices_and_scores)
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
@@ -119,6 +120,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
             query.text
         )
+        print('FACTS INDICES AND SCORES', indices_and_scores)
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
@@ -150,6 +152,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = (
             self._rules_fact_retriever.get_indices_and_scores_from_text(query.text)
         )
+        print('RULES FACT INDICES AND SCORES', indices_and_scores)
         fact_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
@@ -159,7 +162,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = (
             self._rules_question_retriever.get_indices_and_scores_from_text(query.text)
         )
-
+        print('RULES QUESTION INDICES AND SCORES', indices_and_scores)
         question_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
@@ -171,6 +174,7 @@ class Knowledge(BaseKnowledge):
                 query.text
             )
         )
+        print('RULES INCOMPLETE INDICES AND SCORES', indices_and_scores)
         incomplete_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores

@@ -10,6 +10,9 @@ from wafl.speaker.soundfile_speaker import SoundFileSpeaker
 _path = os.path.dirname(__file__)
 
 
+COLOR_START = "\033[94m"
+COLOR_END = "\033[0m"
+
 class VoiceInterface(BaseInterface):
     def __init__(self, config):
         self._sound_speaker = SoundFileSpeaker()
@@ -21,12 +24,8 @@ class VoiceInterface(BaseInterface):
         )
         self.listener_model_name = config.get_value("listener_model")
         self._listener = Wav2Vec2Listener(self.listener_model_name)
-        self._listener.set_hotwords(
-            [
-                "MARLIES",
-            ]
-        )
         self._listener.set_timeout(0.6)
+        self._listener.set_threshold(0.9)
         self._speaker = FestivalSpeaker()
         self._bot_has_spoken = False
         self._check_understanding = True
@@ -42,21 +41,24 @@ class VoiceInterface(BaseInterface):
         hotwords = [word.upper() for word in hotwords]
         self._listener.add_hotwords(hotwords)
 
+    def add_hotwords(self, hotwords):
+        self._listener.add_hotwords(hotwords)
+
     def output(self, text: str):
         self._listener.activate()
         text = from_bot_to_user(text)
-        print("bot>", text)
+        print(COLOR_START + "bot> " + text + COLOR_END)
         self._speaker.speak(text)
         self.bot_has_spoken(True)
 
     def input(self) -> str:
         text = self._listener.input()
         while self._check_understanding and not_good_enough(text):
-            print("user>", text)
+            print(COLOR_START + "user> " + text + COLOR_END)
             self.output("I did not quite understand that")
             text = self._listener.input()
         text = text.lower().capitalize()
-        print("user>", text)
+        print(COLOR_START + "user> " + text + COLOR_END)
         return from_user_to_bot(text)
 
     def bot_has_spoken(self, to_set: bool = None):

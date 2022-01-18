@@ -55,8 +55,10 @@ class BackwardInference:
             return Answer(text="False")
 
         candidate_answers = []
+        print('RECURSION:', depth, query)
 
         answer = self._look_for_answer_in_facts(query, working_memory, depth)
+        print('FACTS:', answer)
         candidate_answers.append(answer)
         if answer and normalized(answer.text) != "unknown":
             return answer
@@ -92,6 +94,7 @@ class BackwardInference:
 
     def _look_for_answer_in_rules(self, query, working_memory, depth, inverted_rule):
         rules = self._knowledge.ask_for_rule_backward(query)
+        print('RULES:', rules)
         for rule in rules:
             index = 0
             substitutions = {}
@@ -218,6 +221,9 @@ class BackwardInference:
 
     def _validate_question_in_effects(self, effect, query_text, substitutions):
         answer = self._qa.ask(effect, query_text)
+        print('QUESTION')
+        print("FINAL answer:", answer)
+        print("FINAL query:", query_text)
 
         if answer.text == "False":
             return False
@@ -240,9 +246,14 @@ class BackwardInference:
 
     def __validate_fact_in_effects(self, rule_effect_text, query, substitutions):
         for key, value in substitutions.items():
-            rule_effect_text = rule_effect_text.replace(key, value)
+            if key and value:
+                rule_effect_text = rule_effect_text.replace(key, value)
 
         answer = self._qa.ask(query, rule_effect_text)
+        print('FACT')
+        print("FINAL answer:", answer)
+        print("FINAL rule_effect_text:", rule_effect_text)
+        print("FINAL query:", query)
 
         if answer.text == "False":
             return False
