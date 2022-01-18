@@ -20,7 +20,7 @@ class Wav2Vec2Listener:
         self._p = pyaudio.PyAudio()
         self._threshold = 1
         self._timeout = 1
-        self._max_timeout = 3
+        self._max_timeout = 4
         self._processor = Wav2Vec2Processor.from_pretrained(model_name)
         self._model = Wav2Vec2ForCTC.from_pretrained(model_name)
         self._hotwords = list()
