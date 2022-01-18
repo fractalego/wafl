@@ -27,6 +27,22 @@ def is_question(text):
     return False
 
 
+def is_yes_no_question(text):
+    text = text.strip()
+    if not text:
+        return False
+
+    text = re.sub("^Are", "are", text)
+    text = re.sub("^Am", "am", text)
+
+    word_and_pos_list = pos_tag(word_tokenize(text))
+    first_tag = word_and_pos_list[0][1]
+    if first_tag in ["VBZ", "VBD", "VBP", "MD"]:
+        return True
+
+    return False
+
+
 def get_answer_using_text(inference, interface, text):
     working_memory = WorkingMemory()
     text = text.capitalize()

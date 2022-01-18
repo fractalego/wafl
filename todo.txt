@@ -1,5 +1,10 @@
 ### TODO
 
+* Create unit tests for conversation activation/deactivation
+
+*yes/no questions should *never* trigger an interruption.
+ It's not just yes/no answers, the deal is with the question!
+
 * If the fact answer is "unknown" then the system should continue to the rules.
   Eventually the system needs to "collect" answers from the subsystems and decide
   which is the best candidate.

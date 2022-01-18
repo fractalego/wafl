@@ -1,6 +1,6 @@
 import logging
 
-from wafl.conversation.utils import is_question
+from wafl.conversation.utils import is_question, is_yes_no_question
 from wafl.facts import Fact
 from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
@@ -21,6 +21,7 @@ class Knowledge(BaseKnowledge):
     _threshold_for_partial_facts = 0.42
     _interruption_question_penalty = 0.2
     _interruption_answer_penalty = 0.4
+    _interruption_yes_no_question_penalty = 0.5
     _interruption_story_penalty = 0.4
 
     def __init__(self, rules_text=None):
@@ -70,6 +71,14 @@ class Knowledge(BaseKnowledge):
         indices_and_scores += (
             self._rules_incomplete_retriever.get_indices_and_scores_from_text(answer)
         )
+
+        if is_yes_no_question(question):
+            return any(
+                item[1] - self._interruption_yes_no_question_penalty
+                > answer_dot_product
+                and item[1] - self._interruption_story_penalty > story_dot_product
+                for item in indices_and_scores
+            )
 
         if not is_question(answer):
             return any(
