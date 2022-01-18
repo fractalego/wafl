@@ -4,8 +4,8 @@
   "voice_hotwords": [
     "computer"
   ],
-  "waking_up_word": [
-    "computer"
-  ],
+  "waking_up_word": "computer",
+  "waking_up_sound": true,
+  "deactivate_sound": true,
   "listener_model": "facebook/wav2vec2-large-robust-ft-swbd-300h"
 }

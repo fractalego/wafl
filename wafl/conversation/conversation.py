@@ -64,6 +64,10 @@ class Conversation:
         if self.__activation_word_in_text(activation_word, text):
             self._interface.check_understanding(True)
             text = self.__remove_activation_word(activation_word, text)
+
+            if activation_word and not text:
+                return True
+
             answer = self.add(text)
             if answer and answer.text != "False":
                 return True
@@ -79,6 +83,6 @@ class Conversation:
     def __remove_activation_word(self, activation_word, text):
         activation_pos = normalized(text).find(normalized(activation_word))
         if activation_pos != -1:
-            return text[activation_pos + len(activation_word) :]
+            return text[activation_pos + len(activation_word) :].strip()
 
         return ""

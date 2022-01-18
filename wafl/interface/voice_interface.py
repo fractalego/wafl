@@ -1,12 +1,20 @@
+import os
+
 from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
 from wafl.interface.utils import get_most_common_words, not_good_enough
 from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
 from wafl.speaker.festival_speaker import FestivalSpeaker
+from wafl.speaker.soundfile_speaker import SoundFileSpeaker
+
+_path = os.path.dirname(__file__)
 
 
 class VoiceInterface(BaseInterface):
     def __init__(self, config):
+        self._sound_speaker = SoundFileSpeaker()
+        self._activation_sound_filename = self.__get_activation_sound_from_config(config)
+        self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(config)
         self.listener_model_name = config.get_value("listener_model")
         self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_hotwords(
@@ -54,4 +62,22 @@ class VoiceInterface(BaseInterface):
         return self._bot_has_spoken
 
     def check_understanding(self, do_the_check):
+        if do_the_check and not self._check_understanding:
+            self._sound_speaker.speak(self._activation_sound_filename)
+
+        if not do_the_check and self._check_understanding:
+            self._sound_speaker.speak(self._deactivation_sound_filename)
+
         self._check_understanding = do_the_check
+
+    def __get_activation_sound_from_config(self, config):
+        if config.get_value("waking_up_sound"):
+            return os.path.join(_path, "../sounds/activation.wav")
+
+        return None
+
+    def __get_deactivation_sound_from_config(self, config):
+        if config.get_value("deactivate_sound"):
+            return os.path.join(_path, "../sounds/deactivation.wav")
+
+        return None

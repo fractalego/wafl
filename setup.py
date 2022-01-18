@@ -25,7 +25,7 @@ setup(
         "wafl.retriever",
     ],
     package_data={
-        "wafl": ["templates/*"],
+        "wafl": ["templates/*", "sounds/*"],
     },
     install_requires=[
         "flask==2.0.1",
@@ -43,6 +43,7 @@ setup(
         "fact_checking==0.0.3",
         "pyfestival==0.5",
         "python-Levenshtein==0.12.2",
+        "wave==0.0.2",
     ],
     dependency_links=[
         "git+ssh://git@github.com/kpu/kenlm/archive/master.zip",

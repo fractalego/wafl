@@ -17,7 +17,7 @@ class Wav2Vec2Listener:
     _range = 32768
 
     def __init__(self, model_name):
-        self.p = pyaudio.PyAudio()
+        self._p = pyaudio.PyAudio()
         self._threshold = 1
         self._timeout = 1
         self._max_timeout = 3
@@ -60,7 +60,7 @@ class Wav2Vec2Listener:
 
     def activate(self):
         if not self.is_active:
-            self.stream = self.p.open(
+            self.stream = self._p.open(
                 format=self._format,
                 channels=self._channels,
                 rate=self._rate,
