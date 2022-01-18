@@ -37,15 +37,20 @@ def run_from_audio():
     conversation.output("Please say 'Computer' to activate me")
 
     activation_word = "computer"
+    max_misses = 3
+    num_misses = 0
     while True:
         try:
             result = conversation.input(activation_word=activation_word)
             if result:
                 activation_word = ""
+                num_misses = 0
 
             if not result:
-                activation_word = "computer"
-                interface.check_understanding(False)
+                num_misses += 1
+                if num_misses >= max_misses:
+                    activation_word = "computer"
+                    interface.check_understanding(False)
 
         except CloseConversation:
             activation_word = "computer"
