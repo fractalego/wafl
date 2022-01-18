@@ -122,3 +122,15 @@ def cluster_facts(facts_and_threshold):
     texts.append(text.strip())
 
     return texts
+
+
+def selected_answer(candidate_answers):
+    for answer in candidate_answers:
+        if answer and normalized(answer.text) != "unknown":
+            return answer
+
+    for answer in candidate_answers:
+        if answer:
+            return answer
+
+    return Answer(text="False")

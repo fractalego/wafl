@@ -13,8 +13,12 @@ _path = os.path.dirname(__file__)
 class VoiceInterface(BaseInterface):
     def __init__(self, config):
         self._sound_speaker = SoundFileSpeaker()
-        self._activation_sound_filename = self.__get_activation_sound_from_config(config)
-        self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(config)
+        self._activation_sound_filename = self.__get_activation_sound_from_config(
+            config
+        )
+        self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(
+            config
+        )
         self.listener_model_name = config.get_value("listener_model")
         self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_hotwords(

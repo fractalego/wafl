@@ -22,7 +22,7 @@ The user says hi or hello
 
 
 class TestEmptyInput(TestCase):
-    def ntest_hello_and_username(self):
+    def test_hello_and_username(self):
         interface = DummyInterface(["Hello, my name is unknown", "", "", "Albert"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"

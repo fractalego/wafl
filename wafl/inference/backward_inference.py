@@ -5,7 +5,7 @@ from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
-from wafl.inference.utils import process_unknown_answer, cluster_facts
+from wafl.inference.utils import process_unknown_answer, cluster_facts, selected_answer
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
@@ -54,16 +54,21 @@ class BackwardInference:
         if depth > self._max_depth:
             return Answer(text="False")
 
+        candidate_answers = []
+
         answer = self._look_for_answer_in_facts(query, working_memory, depth)
-        if answer:
+        candidate_answers.append(answer)
+        if answer and normalized(answer.text) != "unknown":
             return answer
 
         answer = self._look_for_answer_in_working_memory(query, working_memory, depth)
-        if answer:
+        candidate_answers.append(answer)
+        if answer and normalized(answer.text) != "unknown":
             return answer
 
         answer = self._look_for_answer_by_asking_the_user(query, working_memory, depth)
-        if answer:
+        candidate_answers.append(answer)
+        if answer and normalized(answer.text) != "unknown":
             return answer
 
         if depth > 0:
@@ -79,10 +84,11 @@ class BackwardInference:
         answer = self._look_for_answer_in_rules(
             query, working_memory, depth, inverted_rule
         )
-        if answer:
+        candidate_answers.append(answer)
+        if answer and normalized(answer.text) != "unknown":
             return answer
 
-        return Answer(text="False")
+        return selected_answer(candidate_answers)
 
     def _look_for_answer_in_rules(self, query, working_memory, depth, inverted_rule):
         rules = self._knowledge.ask_for_rule_backward(query)
