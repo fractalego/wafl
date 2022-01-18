@@ -26,7 +26,7 @@ class VoiceInterface(BaseInterface):
                 "MARLIES",
             ]
         )
-        self._listener.set_timeout(0.8)
+        self._listener.set_timeout(0.6)
         self._speaker = FestivalSpeaker()
         self._bot_has_spoken = False
         self._check_understanding = True
