@@ -25,7 +25,7 @@ def not_good_enough(text):
     if not text:
         return True
 
-    if normalized(text) != 'no' and len(text.strip().replace(' ', '')) < 3:
+    if normalized(text) != "no" and len(text.strip().replace(" ", "")) < 3:
         return True
 
     text = f"""

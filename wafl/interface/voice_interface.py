@@ -13,6 +13,7 @@ _path = os.path.dirname(__file__)
 COLOR_START = "\033[94m"
 COLOR_END = "\033[0m"
 
+
 class VoiceInterface(BaseInterface):
     def __init__(self, config):
         self._sound_speaker = SoundFileSpeaker()

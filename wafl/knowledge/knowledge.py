@@ -4,7 +4,7 @@ from wafl.conversation.utils import is_question, is_yes_no_question
 from wafl.facts import Fact
 from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
-from wafl.knowledge.utils import text_is_exact_string
+from wafl.knowledge.utils import text_is_exact_string, items_are_too_sparse
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever, get_dot_product
@@ -18,7 +18,7 @@ class Knowledge(BaseKnowledge):
     _threshold_for_questions_from_bot = 0.54
     _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.58
-    _threshold_for_partial_facts = 0.42
+    _threshold_for_partial_facts = 0.48
     _interruption_question_penalty = 0.2
     _interruption_answer_penalty = 0.4
     _interruption_yes_no_question_penalty = 0.5
@@ -96,7 +96,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
             query.text
         )
-        print('FACTS INDICES AND SCORES', indices_and_scores)
+        print("FACTS INDICES AND SCORES", indices_and_scores)
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
@@ -120,7 +120,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
             query.text
         )
-        print('FACTS INDICES AND SCORES', indices_and_scores)
+        print("FACTS INDICES AND SCORES", indices_and_scores)
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
@@ -152,7 +152,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = (
             self._rules_fact_retriever.get_indices_and_scores_from_text(query.text)
         )
-        print('RULES FACT INDICES AND SCORES', indices_and_scores)
+        print("RULES FACT INDICES AND SCORES", indices_and_scores)
         fact_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
@@ -162,7 +162,7 @@ class Knowledge(BaseKnowledge):
         indices_and_scores = (
             self._rules_question_retriever.get_indices_and_scores_from_text(query.text)
         )
-        print('RULES QUESTION INDICES AND SCORES', indices_and_scores)
+        print("RULES QUESTION INDICES AND SCORES", indices_and_scores)
         question_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
@@ -174,19 +174,24 @@ class Knowledge(BaseKnowledge):
                 query.text
             )
         )
-        print('RULES INCOMPLETE INDICES AND SCORES', indices_and_scores)
+        print("RULES INCOMPLETE INDICES AND SCORES", indices_and_scores)
         incomplete_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
             if item[1] > self._threshold_for_partial_facts
         ]
 
-        return [
+        items = [
             item[0]
             for item in sorted(
                 fact_rules + question_rules + incomplete_rules, key=lambda x: -x[1]
             )
         ]
+
+        if items_are_too_sparse(items):
+            return []
+
+        return items
 
     def get_facts_and_rule_as_text(self):
         text = ""

@@ -1,5 +1,7 @@
 ### TODO
 
+* Change the speaker voice
+
 * Create unit tests for conversation activation/deactivation
 
 * WHY DOES "E t" activate rules?
@@ -14,14 +16,12 @@ RULES INCOMPLETE INDICES AND SCORES [('R10', 0.5806549191474915), ('R11', 0.4908
 * The answer to the question can be found in the conversation from the bot.
   The bot can speak to itself and then answer the user
 
+* If a function calls another one within functions.py then there is an argument missing! inference is not there in the code
+
 *yes/no questions should *never* trigger an interruption.
  It's not just yes/no answers, the deal is with the question!
 
-* If the fact answer is "unknown" then the system should continue to the rules.
-  Eventually the system needs to "collect" answers from the subsystems and decide
-  which is the best candidate.
 
-* If a function calls another one within functions.py then there is an argument missing! inference is not there in the code
 
 * Select by levenstein distance before text_retriever (lev_retriever?)
 * train bart for qa/facts

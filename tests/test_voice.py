@@ -39,7 +39,6 @@ class TestVoice(TestCase):
             Knowledge(_wafl_example), count_threshold=1
         )
         expected = [
-            "MARLIES",
             "JANE",
             "NAME IS",
             "IS JANE",

@@ -19,10 +19,10 @@ color = What is the user's hair color
   username = What is the user's name
   {username} has {color} hair
   
-{username} has a {treetype} tree in the garden
-   username = what is the user's name
-   house_address = what is {username} house address
-   treetype = what is the tree type at {house_address}
+{person} has a {type} tree in the garden
+   person = what is the user's name
+   house_address = what is {person} house address
+   type = what is the tree type at {house_address}
 
 This bot name is Fractalego
 
@@ -98,4 +98,5 @@ class TestInference(TestCase):
         )
         answer = inference.compute(query)
         expected = "peach tree"
+        print(answer.text)
         assert answer.text == expected
