@@ -134,3 +134,10 @@ def selected_answer(candidate_answers):
             return answer
 
     return Answer(text="False")
+
+
+def fact_relates_to_user(text):
+    if "the user" in normalized(text):
+        return True
+
+    return False

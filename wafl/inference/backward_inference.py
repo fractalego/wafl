@@ -5,8 +5,14 @@ from wafl.conversation.utils import is_question, get_answer_using_text
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
-from wafl.inference.utils import process_unknown_answer, cluster_facts, selected_answer
+from wafl.inference.utils import (
+    process_unknown_answer,
+    cluster_facts,
+    selected_answer,
+    fact_relates_to_user,
+)
 from wafl.parsing.preprocess import import_module, create_preprocessed
+from wafl.qa.common_sense import CommonSense
 from wafl.qa.qa import QA, Answer, Query
 from inspect import getmembers, isfunction
 
@@ -25,6 +31,7 @@ class BackwardInference:
         self._knowledge = knowledge
         self._interface = interface
         self._qa = QA()
+        self._common_sense = CommonSense()
         if module_name:
             create_preprocessed(module_name)
             self._module = import_module(module_name)
@@ -86,6 +93,12 @@ class BackwardInference:
         answer = self._look_for_answer_in_rules(
             query, working_memory, depth, inverted_rule
         )
+        candidate_answers.append(answer)
+        if answer and normalized(answer.text) != "unknown":
+            return answer
+
+        answer = self._look_for_answer_in_common_sense(query, depth)
+        print("FACTS:", answer)
         candidate_answers.append(answer)
         if answer and normalized(answer.text) != "unknown":
             return answer
@@ -161,8 +174,13 @@ class BackwardInference:
             answer = process_unknown_answer(answer)
             return answer
 
+    def _look_for_answer_in_common_sense(self, query, depth):
+        if depth > 0 and not query.is_question and not fact_relates_to_user(query.text):
+            answer = self._common_sense.claim_makes_sense(query.text)
+            return answer
+
     def _look_for_answer_in_working_memory(self, query, working_memory, depth):
-        if depth > 0 and working_memory.get_story():
+        if depth > 0 and working_memory.get_story() and query.is_question:
             answer = self._qa.ask(query, working_memory.get_story())
 
             if working_memory.text_is_in_prior_questions(answer.text):
