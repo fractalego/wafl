@@ -6,6 +6,8 @@ import numpy as np
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from pyctcdecode import build_ctcdecoder
 
+from wafl.listener.utils import choose_best_output
+
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
@@ -96,12 +98,12 @@ class Wav2Vec2Listener:
                     sampling_rate=self._rate,
                 ).input_values
                 logits = self._model(input_values).logits
-                print(self._hotwords)
-                transcription = self._decoder.decode(
-                    logits.cpu().detach().numpy()[0],
-                    hotwords=self._hotwords,
-                    hotword_weight=10.0,
+                transcription = choose_best_output(
+                    self._decoder.decode_beams(
+                        logits.cpu().detach().numpy()[0],
+                    )
                 )
+
                 if len(transcription) >= 2:
                     self.deactivate()
                     return transcription
