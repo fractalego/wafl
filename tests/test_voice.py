@@ -1,3 +1,7 @@
+import os
+import wave
+import numpy as np
+
 from unittest import TestCase
 
 from wafl.listener.utils import choose_best_output
@@ -9,6 +13,7 @@ from wafl.interface.utils import not_good_enough
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
+from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
 
 _wafl_example = """
 
@@ -18,6 +23,9 @@ the user says their name
 the user name is Jane
 
 """.strip()
+
+
+_path = os.path.dirname(__file__)
 
 
 class TestVoice(TestCase):
@@ -63,3 +71,13 @@ class TestVoice(TestCase):
         choice = choose_best_output(options)
         expected = "NO"
         assert choice == expected
+
+    def test_sound_file_is_translated_correctly(self):
+        f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
+        waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
+        listener = Wav2Vec2Listener("fractalego/personal-speech-to-text-model")
+        hotwords = ["delete"]
+        listener.add_hotwords(hotwords)
+        result = listener.input_waveform(waveform)
+        expected = "DELETE BANANAS FROM THE GROCERY LIST"
+        assert result == expected

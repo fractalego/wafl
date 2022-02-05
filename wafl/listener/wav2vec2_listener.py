@@ -34,11 +34,13 @@ class Wav2Vec2Listener:
         self.is_active = False
 
     def set_hotwords(self, hotwords):
-        self._hotwords = hotwords
+        self._hotwords = [item.upper() for item in hotwords]
 
     def add_hotwords(self, hotwords):
+        if not type(hotwords) == list:
+            hotwords = [hotwords]
         print("Interface: adding hotwords", str(hotwords))
-        self._hotwords += hotwords
+        self._hotwords += [item.upper() for item in hotwords]
 
     def set_timeout(self, timeout):
         self._timeout = timeout
@@ -91,22 +93,30 @@ class Wav2Vec2Listener:
             rms_val = _rms(inp)
             if rms_val > self._threshold:
                 waveform = self.record(start_with=inp)
-                input_values = self._processor(
-                    waveform,
-                    return_tensors="pt",
-                    padding="longest",
-                    sampling_rate=self._rate,
-                ).input_values
-                logits = self._model(input_values).logits
-                transcription = choose_best_output(
-                    self._decoder.decode_beams(
-                        logits.cpu().detach().numpy()[0], token_min_logp=-30.0
-                    )
-                )
+                return self.input_waveform(waveform)
 
-                if len(transcription) >= 2:
-                    self.deactivate()
-                    return transcription
+    def input_waveform(self, waveform):
+        input_values = self._processor(
+            waveform,
+            return_tensors="pt",
+            padding="longest",
+            sampling_rate=self._rate,
+        ).input_values
+        logits = self._model(input_values).logits
+        transcription = choose_best_output(
+            self._decoder.decode_beams(
+                logits.cpu().detach().numpy()[0],
+                beam_width=50,
+                token_min_logp=-50.0,
+                beam_prune_logp=-50.0,
+                hotwords=self._hotwords,
+                hotword_weight=15,
+            )
+        )
+
+        if len(transcription) >= 2:
+            self.deactivate()
+            return transcription
 
 
 def _rms(frame):

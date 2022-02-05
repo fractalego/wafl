@@ -30,11 +30,11 @@ def choose_best_output(sentences):
     best_sentence = sentences[0][0]
     best_score = 1e6
 
-    for sentence in sentences[:15]:
+    for sentence in sentences:
         prompt = sentence[0]
         if not prompt:
             continue
-        print(prompt)
+
         original_score = sentence[-1]
         score = get_perplexity(_get_text_from_prompt(prompt)) - 1.5 * original_score
 
