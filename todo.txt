@@ -1,5 +1,19 @@
 ### TODO
 
+* Why is 'NNO' preferred over "NO" in choose_best_output()?
+
+
+* Why does remove X from the shopping list trigger so many other clauses?
+  - Make it so if the system remembers clauses that failed (and don't run them again)
+  - If a query has high entropy you need to control it somehow.
+     - remove activates add as of now!
+     - maybe you can cluster the rules and only choose the first cluster
+
+* Add working memory for python-space
+    - Maybe exclude WM answer if it is the same as the prior answer
+
+* Python hooks need to be in a class, like with Tests
+
 * Change the speaker voice
 
 * Create unit tests for conversation activation/deactivation

@@ -100,7 +100,7 @@ class Wav2Vec2Listener:
                 logits = self._model(input_values).logits
                 transcription = choose_best_output(
                     self._decoder.decode_beams(
-                        logits.cpu().detach().numpy()[0],
+                        logits.cpu().detach().numpy()[0], token_min_logp=-30.0
                     )
                 )
 

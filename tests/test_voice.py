@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from wafl.listener.utils import choose_best_output
+
 from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.interface.utils import not_good_enough
@@ -55,3 +57,9 @@ class TestVoice(TestCase):
     def test_input_perplexity_is_good_enough(self):
         text = "PLEASE ADD APPLES TO THE SHOPPING LIST"
         assert not not_good_enough(text)
+
+    def test_decoder_chooses_best_output(self):
+        options = (["NO", -5], ["NNO", -10])
+        choice = choose_best_output(options)
+        expected = "NO"
+        assert choice == expected

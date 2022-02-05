@@ -14,14 +14,29 @@ _cv = joblib.load(
 )
 
 
+def _get_text_from_prompt(prompt):
+    return f"""
+In the text below two people are discussing a story.
+
+Story:
+The user asks a few questions.
+
+Discussion:
+Q:{prompt}
+""".strip()
+
+
 def choose_best_output(sentences):
     best_sentence = sentences[0][0]
     best_score = 1e6
 
     for sentence in sentences[:15]:
         prompt = sentence[0]
+        if not prompt:
+            continue
+        print(prompt)
         original_score = sentence[-1]
-        score = get_perplexity(prompt) - 1.5 * original_score
+        score = get_perplexity(_get_text_from_prompt(prompt)) - 1.5 * original_score
 
         score -= np.sum(_cv.transform([prompt]).toarray())
 
