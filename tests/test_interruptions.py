@@ -12,14 +12,14 @@ The user says hi
   username = What is the user's name
   SAY Nice to meet you, {username}!
   
-the user wants to know the time
+INTERRUPTION the user wants to know the time
   time = get_time()
   SAY the time is {time}
   
-the user says to shut up
+INTERRUPTION the user says to shut up
   close_conversation()
 
-the user does not want to continue the task
+INTERRUPTION the user does not want to continue the task
   close_task()
   
 """.strip()

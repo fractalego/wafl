@@ -1,5 +1,6 @@
 import logging
 
+from fuzzywuzzy import process
 from datetime import datetime
 from wafl.exceptions import CloseConversation, InterruptTask
 
@@ -80,3 +81,22 @@ lines_dict = {
 
 def check_tfl_line(linename):
     {f"% SAY The {linename} line is running normally %"}
+
+
+def remove_from_shopping_list(item):
+    if not shopping_list:
+        return False
+
+    extracted, score = process.extract(item, shopping_list, limit=1)[0]
+    if score < 60:
+        {f"% SAY I did not quite get the item to remove %"}
+        return
+
+    if not {f"% Do you want to remove {extracted} from the shopping list? %"}:
+        return False
+
+    shopping_list.remove(extracted)
+
+
+def add_shopping_list(item):
+    shopping_list.append(item)

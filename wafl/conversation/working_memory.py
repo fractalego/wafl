@@ -3,6 +3,7 @@ class WorkingMemory:
         self._story = ""
         self._questions = []
         self._answers = []
+        self._failed_clauses = set()
 
     def get_story(self):
         return self._story
@@ -33,3 +34,9 @@ class WorkingMemory:
                 return True
 
         return False
+
+    def add_failed_clause(self, clause):
+        self._failed_clauses.add(clause)
+
+    def is_in_prior_failed_clauses(self, clause):
+        return clause in self._failed_clauses

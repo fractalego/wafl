@@ -1,2 +1,3 @@
 def clean_text_for_retrieval(text):
-    return text.replace("{", "").replace("}", "")
+    text = text.replace("{", "").replace("}", "")
+    return text

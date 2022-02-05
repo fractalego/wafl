@@ -124,6 +124,9 @@ class BackwardInference:
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
 
+                if working_memory.is_in_prior_failed_clauses(cause_text):
+                    continue
+
                 if text_has_say_command(cause_text):
                     answer = self.__process_say_command(cause_text)
 
@@ -146,6 +149,7 @@ class BackwardInference:
                     answer = invert_answer(answer)
 
                 if answer.text == "False":
+                    working_memory.add_failed_clause(cause_text)
                     break
 
                 if answer.variable:
@@ -205,9 +209,7 @@ class BackwardInference:
                 self._interface.output(query.text)
                 user_input_text = self._interface.input()
 
-                if self._knowledge.has_better_match(
-                    query.text, user_input_text, working_memory.get_story()
-                ):
+                if self._knowledge.has_better_match(user_input_text):
                     get_answer_using_text(self, self._interface, user_input_text)
 
                 else:

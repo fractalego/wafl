@@ -76,8 +76,7 @@ class TestVoice(TestCase):
         f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
         listener = Wav2Vec2Listener("fractalego/personal-speech-to-text-model")
-        hotwords = ["delete"]
-        listener.add_hotwords(hotwords)
+        listener.add_hotwords(["delete"])
         result = listener.input_waveform(waveform)
         expected = "DELETE BANANAS FROM THE GROCERY LIST"
         assert result == expected

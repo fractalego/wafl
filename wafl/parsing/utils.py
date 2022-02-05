@@ -22,3 +22,15 @@ def is_quoted_text(text):
         return True
 
     return False
+
+
+def text_has_interruption(text):
+    interruption_text = "INTERRUPTION"
+    if text.find(interruption_text) == 0:
+        return True
+
+    return False
+
+
+def clean_text(text):
+    return text.replace("INTERRUPTION ", "")

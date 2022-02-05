@@ -4,8 +4,13 @@ from wafl.conversation.utils import is_question, is_yes_no_question
 from wafl.facts import Fact
 from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
-from wafl.knowledge.utils import text_is_exact_string, items_are_too_different
+from wafl.knowledge.utils import (
+    text_is_exact_string,
+    items_are_too_different,
+    get_first_cluster_of_rules,
+)
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
+from wafl.qa.qa import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever, get_dot_product
 from wafl.text_utils import clean_text_for_retrieval
@@ -46,51 +51,17 @@ class Knowledge(BaseKnowledge):
             clean_text_for_retrieval(text), fact_index
         )
 
-    def has_better_match(self, question: str, answer: str, story: str) -> bool:
-        if len(answer) < len("the user say"):
-            return False
-
+    def has_better_match(self, answer: str) -> bool:
         if any(normalized(answer).find(item) == 0 for item in ["yes", "no"]):
             return False
 
         if any(normalized(answer).find(item) != -1 for item in [" yes", " no"]):
             return False
 
-        answer_dot_product = get_dot_product(question, answer)
-        story_dot_product = get_dot_product(story, answer)
-
-        indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
-            answer
+        rules = self.ask_for_rule_backward(
+            Query(text=f"The user says: '{answer}.'", is_question=False)
         )
-        indices_and_scores += (
-            self._rules_fact_retriever.get_indices_and_scores_from_text(answer)
-        )
-        indices_and_scores += (
-            self._rules_question_retriever.get_indices_and_scores_from_text(answer)
-        )
-        indices_and_scores += (
-            self._rules_incomplete_retriever.get_indices_and_scores_from_text(answer)
-        )
-
-        if is_yes_no_question(question):
-            return any(
-                item[1] - self._interruption_yes_no_question_penalty
-                > answer_dot_product
-                and item[1] - self._interruption_story_penalty > story_dot_product
-                for item in indices_and_scores
-            )
-
-        if not is_question(answer):
-            return any(
-                item[1] - self._interruption_answer_penalty > answer_dot_product
-                and item[1] - self._interruption_story_penalty > story_dot_product
-                for item in indices_and_scores
-            )
-
-        return any(
-            item[1] - self._interruption_question_penalty > answer_dot_product
-            for item in indices_and_scores
-        )
+        return any(rule.effect.is_interruption for rule in rules)
 
     def ask_for_facts(self, query, is_from_user=False):
         indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
@@ -182,16 +153,16 @@ class Knowledge(BaseKnowledge):
         ]
 
         items = [
-            item[0]
+            item
             for item in sorted(
                 fact_rules + question_rules + incomplete_rules, key=lambda x: -x[1]
             )
         ]
 
-        if items_are_too_different(items):
+        if items_are_too_different([item[0] for item in items]):
             return []
 
-        return items
+        return get_first_cluster_of_rules(items)
 
     def get_facts_and_rule_as_text(self):
         text = ""
