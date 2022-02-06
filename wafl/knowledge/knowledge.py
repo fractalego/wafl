@@ -1,6 +1,5 @@
 import logging
 
-from wafl.conversation.utils import is_question, is_yes_no_question
 from wafl.facts import Fact
 from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
@@ -12,7 +11,7 @@ from wafl.knowledge.utils import (
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.qa.qa import Query
 from wafl.retriever.string_retriever import StringRetriever
-from wafl.retriever.dense_retriever import DenseRetriever, get_dot_product
+from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
 
 _logger = logging.getLogger(__name__)
@@ -21,13 +20,9 @@ _logger = logging.getLogger(__name__)
 class Knowledge(BaseKnowledge):
     _threshold_for_questions_from_user = 0.51
     _threshold_for_questions_from_bot = 0.54
-    _threshold_for_questions_in_rules = 0.49
+    _threshold_for_questions_in_rules = 0.505
     _threshold_for_facts = 0.58
     _threshold_for_partial_facts = 0.48
-    _interruption_question_penalty = 0.2
-    _interruption_answer_penalty = 0.4
-    _interruption_yes_no_question_penalty = 0.5
-    _interruption_story_penalty = 0.4
 
     def __init__(self, rules_text=None):
         facts_and_rules = get_facts_and_rules_from_text(rules_text)
