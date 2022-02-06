@@ -35,6 +35,13 @@ class WorkingMemory:
 
         return False
 
+    def text_is_in_prior_answers(self, text: str):
+        for answer in self._answers:
+            if text.lower() in answer.lower():
+                return True
+
+        return False
+
     def add_failed_clause(self, clause):
         self._failed_clauses.add(clause)
 

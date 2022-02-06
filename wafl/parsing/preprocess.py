@@ -12,9 +12,11 @@ def create_preprocessed(module: str):
         text = file.read()
         text = text.replace('{f"%', 'inference.get_inference_answer(f"')
         text = text.replace('{"%', 'inference.get_inference_answer(f"')
-        text = text.replace('%"}', '")')
-        text = re.sub("(def .*\([0-9a-zA-Z,\s:]+)\):", "\\1, inference):", text)
-        text = re.sub("(def .*)\(\):", "\\1(inference):", text)
+        text = text.replace('%"}', '", working_memory)')
+        text = re.sub(
+            "(def .*\([0-9a-zA-Z,\s:]+)\):", "\\1, inference, working_memory):", text
+        )
+        text = re.sub("(def .*)\(\):", "\\1(inference, working_memory):", text)
 
     with open(preprocessed_prefix + filename, "w") as file:
         file.write(text)

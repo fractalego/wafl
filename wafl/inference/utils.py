@@ -1,4 +1,7 @@
 import re
+from typing import List
+
+from fuzzywuzzy import process
 
 from wafl.facts import Fact
 from wafl.qa.qa import Answer
@@ -56,8 +59,10 @@ def update_substitutions_from_answer(answer, substitutions):
 
 
 def add_function_arguments(text: str) -> str:
-    text = re.sub("(.*\([\"'0-9a-zA-Z@?':\-\.,\s]+)\)$", "\\1, self)", text)
-    text = re.sub("(.*)\(\)$", "\\1(self)", text)
+    text = re.sub(
+        "(.*\([\"'0-9a-zA-Z@?':\-\.,\s]+)\)$", "\\1, self, working_memory)", text
+    )
+    text = re.sub("(.*)\(\)$", "\\1(self, working_memory)", text)
     return text
 
 
@@ -141,3 +146,14 @@ def fact_relates_to_user(text):
         return True
 
     return False
+
+
+def project_answer(answer: "Answer", candidates: List) -> "Answer":
+    if not candidates:
+        return Answer(text="unknown")
+
+    extracted, score = process.extract(answer.text, candidates, limit=1)[0]
+    if score < 60:
+        return Answer(text="unknown")
+
+    return Answer(text=extracted)

@@ -1,7 +1,11 @@
 import logging
 import traceback
 
-from wafl.conversation.utils import is_question, get_answer_using_text
+from wafl.conversation.utils import (
+    is_question,
+    get_answer_using_text,
+    is_yes_no_question,
+)
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
@@ -10,6 +14,7 @@ from wafl.inference.utils import (
     cluster_facts,
     selected_answer,
     fact_relates_to_user,
+    project_answer,
 )
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.common_sense import CommonSense
@@ -37,9 +42,9 @@ class BackwardInference:
             self._module = import_module(module_name)
             self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
-    def get_inference_answer(self, text):
+    def get_inference_answer(self, text, working_memory=WorkingMemory()):
         query = Query(text=text, is_question=is_question(text))
-        answer = self._compute_recursively(query, WorkingMemory(), depth=1)
+        answer = self._compute_recursively(query, working_memory, depth=1)
 
         if answer.text == "True":
             return True
@@ -190,6 +195,9 @@ class BackwardInference:
             if working_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
+            if working_memory.text_is_in_prior_answers(answer.text):
+                answer.text = "unknown"
+
             if not query.is_question:
                 return answer
 
@@ -227,11 +235,14 @@ class BackwardInference:
                 )
                 user_answer = self._qa.ask(query, story)
 
+                if is_yes_no_question(query.text):
+                    user_answer = project_answer(user_answer, ["yes", "no"])
+
                 if normalized(user_answer.text) == "yes":
                     user_answer = Answer(text="True")
                     working_memory.add_story(story)
                     working_memory.add_question(query.text)
-                    working_memory.add_answer(user_input_text)
+                    working_memory.add_answer("yes")
 
                 elif normalized(user_answer.text) == "no":
                     user_answer = Answer(text="False")
@@ -303,6 +314,9 @@ class BackwardInference:
         try:
             if any(item + "(" in to_execute for item in self._functions):
                 to_execute = add_function_arguments(to_execute)
+
+            working_memory = WorkingMemory()
+            # working_memory is used as argument of the code in eval()
             result = eval(f"self._module.{to_execute}")
 
         except (CloseConversation, InterruptTask) as e:

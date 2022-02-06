@@ -43,7 +43,7 @@ is the dlr running?
 
 
 class TestLanguageInFunctions(TestCase):
-    def test_preprocessing(self):
+    def ntest_preprocessing(self):
         create_preprocessed("functions")
         remove_preprocessed("functions")
 
