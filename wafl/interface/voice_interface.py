@@ -53,7 +53,10 @@ class VoiceInterface(BaseInterface):
         self.bot_has_spoken(True)
 
     def input(self) -> str:
-        text = self._listener.input()
+        text = ''
+        while not text:
+            text = self._listener.input()
+
         while self._check_understanding and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
             self.output("I did not quite understand that")

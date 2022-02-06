@@ -118,6 +118,8 @@ class Wav2Vec2Listener:
             self.deactivate()
             return transcription
 
+        return ''
+
 
 def _rms(frame):
     data = np.frombuffer(frame, dtype=np.int16)
