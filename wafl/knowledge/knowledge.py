@@ -5,8 +5,9 @@ from wafl.inference.utils import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,
-    items_are_too_different,
+    rules_are_too_different,
     get_first_cluster_of_rules,
+    filter_out_rules_that_are_too_dissimilar_to_query,
 )
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.qa.qa import Query
@@ -147,17 +148,22 @@ class Knowledge(BaseKnowledge):
             if item[1] > self._threshold_for_partial_facts
         ]
 
-        items = [
+        rules_and_scores = [
             item
             for item in sorted(
                 fact_rules + question_rules + incomplete_rules, key=lambda x: -x[1]
             )
         ]
 
-        if items_are_too_different([item[0] for item in items]):
+        rules = [item[0] for item in rules_and_scores]
+        if rules_are_too_different(rules):
             return []
 
-        return get_first_cluster_of_rules(items)
+        rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
+            query, rules_and_scores
+        )
+
+        return get_first_cluster_of_rules(rules_and_scores)
 
     def get_facts_and_rule_as_text(self):
         text = ""

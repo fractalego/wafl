@@ -53,7 +53,7 @@ class VoiceInterface(BaseInterface):
         self.bot_has_spoken(True)
 
     def input(self) -> str:
-        text = ''
+        text = ""
         while not text:
             text = self._listener.input()
 

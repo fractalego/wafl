@@ -118,7 +118,7 @@ class Wav2Vec2Listener:
             self.deactivate()
             return transcription
 
-        return ''
+        return ""
 
 
 def _rms(frame):

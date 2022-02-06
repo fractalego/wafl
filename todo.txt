@@ -1,15 +1,12 @@
 ### TODO
 
-* Try to make the adding of elements work.
-  - The error is: Do you want to add more
-                  -> yes
-                  -> what do you want to add
-                  -> more?
-                  -> no
-                  -> INFINITE LOOP!!
 
 * Add working memory for python-space
     - Maybe exclude WM answer if it is the same as the prior answer
+
+* train new voice model excluding the incomplete transcription (recording ate the first chunk)
+
+* add delete last item
 
 * Python hooks need to be in a class, like with Tests
 

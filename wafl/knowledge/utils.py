@@ -5,11 +5,11 @@ def text_is_exact_string(text):
     return text.strip() and text.strip()[0] == "_"
 
 
-def items_are_too_different(items):
+def rules_are_too_different(rules):
     dot_products = []
-    for item in items[1:]:
-        dot_products.append(get_dot_product(item.effect.text, items[0].effect.text))
-        print("DOT PRODUCT:", get_dot_product(item.effect.text, items[0].effect.text))
+    for item in rules[1:]:
+        dot_products.append(get_dot_product(item.effect.text, rules[0].effect.text))
+        print("DOT PRODUCT:", get_dot_product(item.effect.text, rules[0].effect.text))
 
     if dot_products and min(dot_products) < 0.39:
         return False
@@ -31,3 +31,17 @@ def get_first_cluster_of_rules(rules_and_threshold):
             break
 
     return rules
+
+
+def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
+    num_query_words = len(query.text.split())
+    new_rules_and_scores = []
+    for item in rules_and_scores:
+        rule = item[0]
+        num_rule_effect_words = len(rule.effect.text.split())
+        if num_query_words < num_rule_effect_words / 3:
+            continue
+
+        new_rules_and_scores.append(item)
+
+    return new_rules_and_scores
