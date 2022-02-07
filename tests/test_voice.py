@@ -67,7 +67,7 @@ class TestVoice(TestCase):
         assert not not_good_enough(text)
 
     def test_decoder_chooses_best_output(self):
-        options = (["NO", -5], ["NNO", -10])
+        options = (["NO", -1, -1], ["NNO", -3, -3])
         choice = choose_best_output(options)
         expected = "NO"
         assert choice == expected
@@ -79,4 +79,13 @@ class TestVoice(TestCase):
         listener.add_hotwords(["delete"])
         result = listener.input_waveform(waveform)
         expected = "DELETE BANANAS FROM THE GROCERY LIST"
+        assert result == expected
+
+    def test_random_sounds_are_excluded(self):
+        f = wave.open(os.path.join(_path, "data/random_sounds.wav"), "rb")
+        waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
+        listener = Wav2Vec2Listener("fractalego/personal-speech-to-text-model")
+        listener.add_hotwords(["delete"])
+        result = listener.input_waveform(waveform)
+        expected = ""
         assert result == expected

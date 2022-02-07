@@ -28,14 +28,15 @@ Q:{prompt}
 
 def choose_best_output(sentences):
     best_sentence = sentences[0][0]
+    null_hypothesis = ("", -3.5, -3.5)
     best_score = 1e6
 
-    for sentence in sentences:
+    for sentence in list(sentences) + [null_hypothesis]:
         prompt = sentence[0]
         if not prompt:
             continue
 
-        original_score = sentence[-1]
+        original_score = sentence[-2]
         score = get_perplexity(_get_text_from_prompt(prompt)) - 1.5 * original_score
 
         score -= np.sum(_cv.transform([prompt]).toarray())
