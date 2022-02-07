@@ -16,6 +16,7 @@ from wafl.inference.utils import (
     fact_relates_to_user,
     project_answer,
 )
+from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.common_sense import CommonSense
 from wafl.qa.qa import QA, Answer, Query
@@ -124,6 +125,13 @@ class BackwardInference:
                     rule.effect, query.text, substitutions
                 )
 
+            elif not needs_substitutions(rule.effect):
+                answer = self.__validate_fact_in_effects(
+                    rule_effect_text, query, substitutions
+                )
+                if answer.text == "False":
+                    continue
+
             for cause in rule.causes:
                 cause_text = cause.text.strip()
                 cause_text, invert_results = check_negation(cause_text)
@@ -166,7 +174,8 @@ class BackwardInference:
                 answer = self.__validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
-                if answer:
+
+                if answer.text != "False":
                     return answer
 
             if inverted_rule:
@@ -294,7 +303,7 @@ class BackwardInference:
         print("FINAL query:", query)
 
         if answer.text == "False":
-            return False
+            return answer
 
         if answer.text.lower() == "yes":
             answer.text = "True"

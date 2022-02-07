@@ -51,7 +51,7 @@ class Knowledge(BaseKnowledge):
         if any(normalized(answer).find(item) == 0 for item in ["yes", "no"]):
             return False
 
-        if any(normalized(answer).find(item) != -1 for item in [" yes", " no"]):
+        if any(normalized(answer).find(item) != -1 for item in [" yes ", " no "]):
             return False
 
         rules = self.ask_for_rule_backward(

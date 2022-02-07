@@ -45,3 +45,10 @@ def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
         new_rules_and_scores.append(item)
 
     return new_rules_and_scores
+
+
+def needs_substitutions(effect):
+    if any(item in effect.text for item in ["{", "}"]):
+        return True
+
+    return False

@@ -10,7 +10,7 @@
 
 * Python hooks need to be in a class, like with Tests
 
-
+* rms threshold should be average of background noise
 * add delete last item
 
 
