@@ -19,8 +19,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Knowledge(BaseKnowledge):
-    _threshold_for_questions_from_user = 0.51
-    _threshold_for_questions_from_bot = 0.54
+    _threshold_for_questions_from_user = 0.6
+    _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.505
     _threshold_for_facts = 0.58
     _threshold_for_partial_facts = 0.48
@@ -33,10 +33,13 @@ class Knowledge(BaseKnowledge):
         self._rules_dict = {
             f"R{index}": value for index, value in enumerate(facts_and_rules["rules"])
         }
-        self._facts_retriever = DenseRetriever()
-        self._rules_incomplete_retriever = DenseRetriever()
-        self._rules_fact_retriever = DenseRetriever()
-        self._rules_question_retriever = DenseRetriever()
+        self._facts_retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        self._facts_retriever_for_questions = DenseRetriever(
+            "multi-qa-distilbert-dot-v1"
+        )
+        self._rules_incomplete_retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        self._rules_fact_retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        self._rules_question_retriever = DenseRetriever("msmarco-distilbert-base-v3")
         self._rules_string_retriever = StringRetriever()
         self._initialize_retrievers()
 
@@ -44,6 +47,9 @@ class Knowledge(BaseKnowledge):
         fact_index = f"F{len(self._facts_dict)}"
         self._facts_dict[fact_index] = Fact(text=text)
         self._facts_retriever.add_text_and_index(
+            clean_text_for_retrieval(text), fact_index
+        )
+        self._facts_retriever_for_questions.add_text_and_index(
             clean_text_for_retrieval(text), fact_index
         )
 
@@ -60,9 +66,17 @@ class Knowledge(BaseKnowledge):
         return any(rule.effect.is_interruption for rule in rules)
 
     def ask_for_facts(self, query, is_from_user=False):
-        indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
-            query.text
-        )
+        if query.is_question:
+            indices_and_scores = (
+                self._facts_retriever_for_questions.get_indices_and_scores_from_text(
+                    query.text
+                )
+            )
+
+        else:
+            indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
+                query.text
+            )
         print("FACTS INDICES AND SCORES", indices_and_scores)
         if is_from_user:
             threshold = (
@@ -84,9 +98,17 @@ class Knowledge(BaseKnowledge):
         ]
 
     def ask_for_facts_with_threshold(self, query, is_from_user=False):
-        indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
-            query.text
-        )
+        if query.is_question:
+            indices_and_scores = (
+                self._facts_retriever_for_questions.get_indices_and_scores_from_text(
+                    query.text
+                )
+            )
+
+        else:
+            indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
+                query.text
+            )
         print("FACTS INDICES AND SCORES", indices_and_scores)
         if is_from_user:
             threshold = (
@@ -156,7 +178,7 @@ class Knowledge(BaseKnowledge):
         ]
 
         rules = [item[0] for item in rules_and_scores]
-        if rules_are_too_different(rules):
+        if rules_are_too_different(self._rules_fact_retriever, rules):
             return []
 
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
@@ -181,6 +203,10 @@ class Knowledge(BaseKnowledge):
                 continue
 
             self._facts_retriever.add_text_and_index(
+                clean_text_for_retrieval(fact.text), index
+            )
+
+            self._facts_retriever_for_questions.add_text_and_index(
                 clean_text_for_retrieval(fact.text), index
             )
 

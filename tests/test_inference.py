@@ -32,15 +32,15 @@ The user's name is Bob
 
 Bob has black hair
 
-Bob lives are 42 Flinch road
+Bob's address is 42 Flinch road
 
 42 Flinch road has a peach tree in the garden
 
 """.strip()
 
 
-class TestInference(TestCase):
-    def test_simple_question(self):
+class test_Inference(TestCase):
+    def test__simple_question(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(text="What is this bot's name", is_question=True, variable="name")
         answer = inference.compute(query)
@@ -48,7 +48,7 @@ class TestInference(TestCase):
         assert answer.text == expected
         assert answer.variable == query.variable
 
-    def test_fact_check_true(self):
+    def test__fact_check_true(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
@@ -57,21 +57,21 @@ class TestInference(TestCase):
         expected = "True"
         assert answer.text == expected
 
-    def test_fact_check_false(self):
+    def test__fact_check_false(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(text="The user is sad", is_question=False, variable="name")
         answer = inference.compute(query)
         expected = "False"
         assert answer.text == expected
 
-    def test_simple_rule(self):
+    def test__simple_rule(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(text="The user says hello!", is_question=False, variable="name")
         answer = inference.compute(query)
         expected = "True"
         assert answer.text == expected
 
-    def test_forward_substitution(self):
+    def test__forward_substitution(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
@@ -80,7 +80,7 @@ class TestInference(TestCase):
         expected = "True"
         assert answer.text == expected
 
-    def test_backward_substitution(self):
+    def test__backward_substitution(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"
@@ -89,7 +89,7 @@ class TestInference(TestCase):
         expected = "True"
         assert answer.text == expected
 
-    def test_forward_substution_2(self):
+    def test__forward_substution_2(self):
         inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
         query = Query(
             text="What type of tree is there at Bob's house",
@@ -98,4 +98,5 @@ class TestInference(TestCase):
         )
         answer = inference.compute(query)
         expected = "peach tree"
+        print(answer)
         assert answer.text == expected

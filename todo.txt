@@ -1,10 +1,13 @@
 ### TODO
 
 
-* Add working memory for python-space
-    - Maybe exclude WM answer if it is the same as the prior answer
+* train your own retriever using the conversations in dailydialogue? MAYBE NOT
+* If the query is a question YOU NEED A QA RETRIEVER. take MULTI_QA instead of MSMARCO
+  -- also if the rule.effect is a question
 
-* train new voice model excluding the incomplete transcription (recording ate the first chunk)
+* Is there a need for a "Main Task" ? One that oversees everything?
+
+* add in knowledge facts about "the user". You don't need to remember everything that is said
 
 * Detect who is talking to whom. Some rules can only be activated by the user speaking to the bot
 
@@ -84,3 +87,6 @@
 * Say "This is true" or "this is false" if a statement matches (My name is Alberto -> True)
 * working memory only within the same level of rules with same activation
   GET WORKING MEMORY FOR FACTS WORKING WITH SHOPPING LIST!!
+
+/* Add working memory for python-space
+    - Maybe exclude WM answer if it is the same as the prior answer

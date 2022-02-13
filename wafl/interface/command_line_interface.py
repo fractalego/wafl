@@ -2,6 +2,9 @@ from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
+COLOR_START = "\033[94m"
+COLOR_END = "\033[0m"
+
 
 class CommandLineInterface(BaseInterface):
     def __init__(self):
@@ -9,7 +12,7 @@ class CommandLineInterface(BaseInterface):
         self._check_understanding = True
 
     def output(self, text: str):
-        print("bot>", from_bot_to_user(text))
+        print(COLOR_START + "bot> " + from_bot_to_user(text) + COLOR_END)
         self.bot_has_spoken(True)
 
     def input(self) -> str:

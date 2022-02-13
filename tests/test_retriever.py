@@ -15,7 +15,7 @@ The user says their name
 
 class TestRetrieval(TestCase):
     def test_retrieval(self):
-        retriever = DenseRetriever()
+        retriever = DenseRetriever("msmarco-distilbert-base-v3")
         sentences = ["this is a test", "the food is hot on the table"]
         for index, sentence in enumerate(sentences):
             retriever.add_text_and_index(sentence, str(index))
@@ -41,7 +41,7 @@ class TestRetrieval(TestCase):
         assert predicted[0][0] == expected
 
     def test_short_text_retrieves_nothing(self):
-        retriever = DenseRetriever()
+        retriever = DenseRetriever("msmarco-distilbert-base-v3")
         sentences = ["The user greets"]
         for index, sentence in enumerate(sentences):
             retriever.add_text_and_index(sentence, str(index))

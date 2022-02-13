@@ -56,14 +56,14 @@ This bot is doing well
 
 
 class TestConversation(TestCase):
-    def test_single_utterance(self):
+    def test__single_utterance(self):
         interface = DummyInterface()
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         assert interface.utterances[0] == utterance
 
-    def test_say_command(self):
+    def test__say_command(self):
         interface = DummyInterface()
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         input_from_user = "hello!".capitalize()
@@ -77,9 +77,10 @@ class TestConversation(TestCase):
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         expected = "Test@example.com has been added to the newsletter"
+        print(interface.utterances)
         assert interface.utterances[-1] == expected
 
-    def test_remember_command(self):
+    def test__remember_command(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         input_from_user = "Can I register to the newsletter?".capitalize()
@@ -87,7 +88,7 @@ class TestConversation(TestCase):
         answer = conversation.add("What is the email of the user")
         assert answer.text == "test@example.com"
 
-    def test_knowledge_insertion(self):
+    def test__knowledge_insertion(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         input_from_user = "the user's mother is called Ada"
@@ -95,16 +96,27 @@ class TestConversation(TestCase):
         answer = conversation.add("How is the user's mum called")
         assert answer.text == "Ada"
 
-    def test_greeting(self):
+    def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
         conversation.input()
+        print(interface.utterances)
         assert interface.utterances[-1] == "Albert"
 
-    def test_yes(self):
+    def test__greeting_with_alberto_as_name(self):
+        interface = DummyInterface(["My name is Albert0", "What is my name"])
+        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        utterance = "Welcome to the website. How may I help you?"
+        conversation.output(utterance)
+        conversation.input()
+        conversation.input()
+        print(interface.utterances)
+        assert interface.utterances[-1] == "Albert0"
+
+    def test__yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
@@ -113,7 +125,7 @@ class TestConversation(TestCase):
         conversation.input()
         assert "yes" in interface.utterances[-1].lower()
 
-    def test_no(self):
+    def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
@@ -122,7 +134,7 @@ class TestConversation(TestCase):
         conversation.input()
         assert "no" in interface.utterances[-1].lower()
 
-    def test_yes_no_questions_from_bot_with_answer_yes(self):
+    def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
@@ -130,7 +142,7 @@ class TestConversation(TestCase):
         conversation.input()
         assert interface.utterances[-1] == "Welcome to the club!"
 
-    def test_yes_no_questions_from_bot_with_answer_no(self):
+    def test__yes_no_questions_from_bot_with_answer_no(self):
         interface = DummyInterface(["I want to join the club", "no"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
@@ -138,7 +150,7 @@ class TestConversation(TestCase):
         conversation.input()
         assert interface.utterances[-1] == "are you good enough to join?"
 
-    def test_hello_and_username(self):
+    def test__hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
@@ -146,13 +158,13 @@ class TestConversation(TestCase):
         conversation.input()
         assert interface.utterances[-1] == "Nice to meet you, albert!"
 
-    def test_conversation_input_returns_false_for_trivial_input(self):
+    def test__conversation_input_returns_false_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])
         conversation = Conversation(Knowledge(""), interface=interface)
         result = conversation.input()
         assert not result
 
-    def test_how_are_you(self):
+    def test__how_are_you(self):
         interface = DummyInterface(["How are you?"])
         conversation = Conversation(Knowledge(_wafl_how_are_you), interface=interface)
         conversation.input()
