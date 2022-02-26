@@ -1,15 +1,11 @@
 ### TODO
 
 
-* train your own retriever using the conversations in dailydialogue? MAYBE NOT
-* If the query is a question YOU NEED A QA RETRIEVER. take MULTI_QA instead of MSMARCO
-  -- also if the rule.effect is a question
-
-* Is there a need for a "Main Task" ? One that oversees everything?
+* Detect who is talking to whom. Some rules can only be activated by the user speaking to the bot
 
 * add in knowledge facts about "the user". You don't need to remember everything that is said
 
-* Detect who is talking to whom. Some rules can only be activated by the user speaking to the bot
+* Is there a need for a "Main Task" ? One that oversees everything?
 
 * Python hooks need to be in a class, like with Tests
 
@@ -21,9 +17,13 @@
 
 * Create unit tests for conversation activation/deactivation
 
-
 * The answer to the question can be found in the conversation from the bot.
   The bot can speak to itself and then answer the user
+
+* train your own retriever using the conversations in dailydialogue? MAYBE NOT
+* If the query is a question YOU NEED A QA RETRIEVER. take MULTI_QA instead of MSMARCO
+  -- also if the rule.effect is a question
+
 
 * If a function calls another one within functions.py then there is an argument missing! inference is not there in the code
 
