@@ -89,3 +89,4 @@ class TestVoice(TestCase):
         result = listener.input_waveform(waveform)
         expected = ""
         assert result == expected
+
