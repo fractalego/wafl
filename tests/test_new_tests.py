@@ -1,8 +1,10 @@
+import json
 import os
 import wave
 from unittest import TestCase
 
 import numpy as np
+from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 
 from wafl.conversation.conversation import Conversation
 from wafl.inference.backward_inference import BackwardInference
@@ -32,4 +34,6 @@ the user is happy
 
 class TestNew(TestCase):
     def test_parsing_has_source_and_destination(self):
-        facts_and_rules = get_facts_and_rules_from_text(wafl_example)
+        facts_and_rules = get_facts_and_rules_from_text(_rules)
+        [print(item) for item in facts_and_rules["facts"]]
+        [print(item) for item in facts_and_rules["rules"]]

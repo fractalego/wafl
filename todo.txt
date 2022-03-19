@@ -2,6 +2,7 @@
 
 
 * Detect who is talking to whom. Some rules can only be activated by the user speaking to the bot
+    - Use get_sequence_probability_given_prompt()
 
 * add in knowledge facts about "the user". You don't need to remember everything that is said
 

@@ -7,6 +7,8 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 from fact_checking import FactChecker
 
+from wafl.qa.utils import generate_answer_greedy, create_prompt_for_qa
+
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 _tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
@@ -63,7 +65,7 @@ class QA:
         if query_text[-1] != "?":
             query_text += "?"
 
-        answer, _ = _generate_answer(text, query_text)
+        answer = _generate_answer(text, query_text)
 
         return Answer(text=answer, variable=query.variable)
 
@@ -73,35 +75,13 @@ class QA:
 
 
 def _generate_answer(text, query, dialogue=None, length=50):
-    text = text.strip()
-    query = query.strip()
-
-    prompt = "In the text below two people are discussing a story.\n\n"
-    prompt += "Story:\n" + text + "\n\n"
-    prompt += "Discussion:\n"
-    if dialogue:
-        dialogue = dialogue.strip()
-        prompt += dialogue + "\n"
-    prompt += "Q: " + query + "\n"
-    tokens = _tokenizer.encode(prompt, return_tensors="pt")
-    tokens_length = tokens.shape[1]
-    out_tokens = _model.generate(
-        tokens.to(device),
-        max_length=tokens_length + length,
-        temperature=0,
-        pad_token_id=50256,
-    )
-    generated_text = _tokenizer.decode(
-        out_tokens[:, tokens_length:][0], skip_special_tokens=True
-    )
-    score = float(_model(out_tokens, labels=out_tokens)[0])
-    start = 0
-    end = generated_text.find("\n", start + 1)
-    if end == -1:
+    prompt = create_prompt_for_qa(text, query, dialogue)
+    generated_text = generate_answer_greedy(_model, _tokenizer, prompt, length)
+    if len(generated_text) > length:
         _logger.warning("The bot is hallucinating an answer. Resetting to unknown")
-        return "unknown", score
+        return "unknown"
 
-    answer = generated_text[start : end + 1].split("A:")[-1].strip()
+    answer = generated_text
     if len(set(answer.split()) & _forbidden_words) > 0:
         _logger.warning("A forbidden word was caught in the answer!")
         answer = "unknown"
@@ -109,7 +89,7 @@ def _generate_answer(text, query, dialogue=None, length=50):
     if answer and answer[-1] == ".":
         answer = answer[:-1]
 
-    return answer, score
+    return answer
 
 
 def get_perplexity(text):
