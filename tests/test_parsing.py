@@ -3,7 +3,7 @@ from unittest import TestCase
 from wafl.facts import Fact
 from wafl.knowledge.knowledge import Knowledge
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.qa.qa import Query
+from wafl.qa.dataclasses import Query
 from wafl.rules import Rule
 
 wafl_example = """

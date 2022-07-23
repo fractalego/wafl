@@ -5,7 +5,7 @@ from nltk import word_tokenize
 
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.inference.utils import normalized
-from wafl.qa.qa import Query
+from wafl.qa.dataclasses import Query
 
 
 def is_question(text):

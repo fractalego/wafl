@@ -11,7 +11,7 @@ from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
-from wafl.qa.qa import Query
+from wafl.qa.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 

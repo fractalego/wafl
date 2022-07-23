@@ -23,10 +23,11 @@ The user says hi or hello
 
 class TestEmptyInput(TestCase):
     def test_hello_and_username(self):
-        interface = DummyInterface(["Hello, my name is unknown", "", "", "Albert"])
+        interface = DummyInterface(["Hello", "My name is Albert"])
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
+        conversation.input()
         conversation.input()
         assert interface.utterances[-1] == "Nice to meet you, albert!"
 

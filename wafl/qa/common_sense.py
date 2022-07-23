@@ -3,7 +3,7 @@ import os
 import torch
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
-from wafl.qa.qa import Answer
+from wafl.qa.dataclasses import Answer
 from wafl.qa.utils import get_answer_from_text, get_text_up_to_question
 
 _path = os.path.dirname(__file__)

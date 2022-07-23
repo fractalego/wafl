@@ -2,11 +2,12 @@ import logging
 import os
 import torch
 
-from dataclasses import dataclass
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
-from fact_checking import FactChecker
-
+from wafl.conversation.utils import is_question
+from wafl.inference.utils import normalized
+from wafl.qa.dataclasses import Answer
+from wafl.qa.entailer import Entailer
 from wafl.qa.utils import generate_answer_greedy, create_prompt_for_qa
 
 _path = os.path.dirname(__file__)
@@ -28,31 +29,11 @@ _forbidden_words = set(
         ).readlines()
     ]
 )
-### CHANGE PATH (DOWNLOAD FROM REPO)
-_fact_checking_model = GPT2LMHeadModel.from_pretrained("gpt2")
-checkpoint = torch.load(
-    os.path.join(_path, "/home/alce/src/wafl/models/save_fever0"), map_location=device
-)
-### CHANGE PATH (DOWNLOAD FROM REPO)
-_fact_checking_model.load_state_dict(checkpoint["model_state_dict"])
-
-
-@dataclass
-class Query:
-    text: str
-    is_question: bool
-    variable: str = None
-
-
-@dataclass
-class Answer:
-    text: str
-    variable: str = None
 
 
 class QA:
     def __init__(self):
-        self._fact_checker = FactChecker(_fact_checking_model, _tokenizer)
+        self._entailer = Entailer()
 
     def ask(self, query: "Query", text: str):
         if query.is_question:
@@ -70,8 +51,15 @@ class QA:
         return Answer(text=answer, variable=query.variable)
 
     def __check_fact(self, query, text):
-        answer = self._fact_checker.validate(query.text, text)
-        return Answer(text=str(answer))
+        if not is_question(text):
+            answer = self._entailer.entails(query.text, text)
+            return Answer(text=str(answer))
+
+        answer = normalized(_generate_answer(query.text, text))
+        if answer != "unknown" and answer != 'no':
+            return Answer(text="True")
+
+        return Answer(text="False")
 
 
 def _generate_answer(text, query, dialogue=None, length=50):

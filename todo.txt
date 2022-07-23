@@ -1,5 +1,9 @@
 ### TODO
+* Use entailment to make generated qa more accurate
+    - Upload qa system to huggingface and pip
 
+
+* Unify conversation/utils.py "the user says/asks" and the presupposition replace "to the bot" in entailer.py
 
 * Detect who is talking to whom. Some rules can only be activated by the user speaking to the bot
     - Use get_sequence_probability_given_prompt()

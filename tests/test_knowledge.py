@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from wafl.knowledge.knowledge import Knowledge
-from wafl.qa.qa import Query
+from wafl.qa.dataclasses import Query
 
 wafl_example = """
 

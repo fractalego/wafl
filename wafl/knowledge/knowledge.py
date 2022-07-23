@@ -8,9 +8,11 @@ from wafl.knowledge.utils import (
     rules_are_too_different,
     get_first_cluster_of_rules,
     filter_out_rules_that_are_too_dissimilar_to_query,
+    filter_out_rules_through_entailment,
 )
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.qa.qa import Query
+from wafl.qa.entailer import Entailer
+from wafl.qa.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
@@ -37,6 +39,7 @@ class Knowledge(BaseKnowledge):
         self._facts_retriever_for_questions = DenseRetriever(
             "multi-qa-distilbert-dot-v1"
         )
+        self._entailer = Entailer()
         self._rules_incomplete_retriever = DenseRetriever("msmarco-distilbert-base-v3")
         self._rules_fact_retriever = DenseRetriever("msmarco-distilbert-base-v3")
         self._rules_question_retriever = DenseRetriever("msmarco-distilbert-base-v3")
@@ -61,7 +64,7 @@ class Knowledge(BaseKnowledge):
             return False
 
         rules = self.ask_for_rule_backward(
-            Query(text=f"The user says: '{answer}.'", is_question=False)
+            Query(text=f"The user says to the bot: '{answer}.'", is_question=False)
         )
         return any(rule.effect.is_interruption for rule in rules)
 
@@ -183,6 +186,10 @@ class Knowledge(BaseKnowledge):
 
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
             query, rules_and_scores
+        )
+
+        rules_and_scores = filter_out_rules_through_entailment(
+            self._entailer, query, rules_and_scores
         )
 
         return get_first_cluster_of_rules(rules_and_scores)

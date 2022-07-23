@@ -29,4 +29,3 @@ class TestEntailment(TestCase):
 
         entailer = Entailer()
         self.assertTrue(entailer.entails(premise, hypothesis))
-       

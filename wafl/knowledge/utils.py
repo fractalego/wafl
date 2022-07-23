@@ -49,6 +49,24 @@ def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
     return new_rules_and_scores
 
 
+def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
+    new_rules_and_scores = []
+    for item in rules_and_scores:
+        rule = item[0]
+        if rule.effect.is_question:
+            new_rules_and_scores.append(item)
+            continue
+
+        if needs_substitutions(rule.effect):
+            new_rules_and_scores.append(item)
+            continue
+
+        if entailer.entails(query.text, rule.effect.text):
+            new_rules_and_scores.append(item)
+
+    return new_rules_and_scores
+
+
 def needs_substitutions(effect):
     if any(item in effect.text for item in ["{", "}"]):
         return True

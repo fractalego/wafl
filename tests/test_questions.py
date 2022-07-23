@@ -1,7 +1,8 @@
 from unittest import TestCase
 
 from wafl.conversation.utils import is_question
-from wafl.qa.qa import QA, Query
+from wafl.qa.qa import QA
+from wafl.qa.dataclasses import Query
 
 
 class TestQuestions(TestCase):

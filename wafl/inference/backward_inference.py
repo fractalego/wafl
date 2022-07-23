@@ -19,7 +19,8 @@ from wafl.inference.utils import (
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
 from wafl.qa.common_sense import CommonSense
-from wafl.qa.qa import QA, Answer, Query
+from wafl.qa.qa import QA
+from wafl.qa.dataclasses import Query, Answer
 from inspect import getmembers, isfunction
 
 _logger = logging.getLogger(__name__)
