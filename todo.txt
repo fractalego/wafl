@@ -27,7 +27,7 @@
 
 * train your own retriever using the conversations in dailydialogue? MAYBE NOT
 * If the query is a question YOU NEED A QA RETRIEVER. take MULTI_QA instead of MSMARCO
-  -- also if the rule.effect is a question
+  - also if the rule.effect is a question
 
 
 * If a function calls another one within functions.py then there is an argument missing! inference is not there in the code
