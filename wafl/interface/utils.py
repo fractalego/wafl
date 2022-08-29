@@ -2,8 +2,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from wafl.inference.utils import normalized
 
-from wafl.qa.qa import get_perplexity
-
 
 def get_most_common_words(text, max_num_words, count_threshold=1):
     corpus = text.split("\n")
@@ -26,21 +24,6 @@ def not_good_enough(text):
         return True
 
     if normalized(text) != "no" and len(text.strip().replace(" ", "")) < 3:
-        return True
-
-    text = f"""
-In the text below two people are discussing a story.
-
-Story:
-The user asks a few questions.
-
-Discussion:
-Q:{text}
-    """.strip()
-
-    perplexity_threshold = 3.2
-    perplexity = get_perplexity(text)
-    if perplexity > perplexity_threshold:
         return True
 
     return False

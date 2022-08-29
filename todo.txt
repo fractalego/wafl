@@ -1,7 +1,18 @@
 ### TODO
 * Use entailment to make generated qa more accurate
-    - Upload qa system to huggingface and pip
+    /- Upload qa system to huggingface and pip
+    -**** Use conversation_qa -> refactor qa.py
 
+* functions.py need a more clever way of handling hidden arguments
+  - should all functions have a hidden arg?
+  - make it possible to have more files
+
+* use different voice model (this one from hf?  )
+
+* speech to text
+    - use your own beam decoder + n-gram to improve quality
+    - use newer model?
+    - filter out filler sounds
 
 * Unify conversation/utils.py "the user says/asks" and the presupposition replace "to the bot" in entailer.py
 
