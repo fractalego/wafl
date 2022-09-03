@@ -8,7 +8,7 @@ setup(
     version="0.0.1",
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
-    author_email="alberto@nlulite.com",
+    author_email="alberto@fractalego.io",
     description="A hybrid chatbot.",
     long_description=long_description,
     long_description_content_type="text/markdown",
