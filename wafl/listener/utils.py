@@ -4,9 +4,7 @@ import numpy as np
 
 
 _path = os.path.dirname(__file__)
-_cv = joblib.load(
-    os.path.join(_path, "../models/discourse_count_vectorizer.joblib")
-)
+_cv = joblib.load(os.path.join(_path, "../models/discourse_count_vectorizer.joblib"))
 
 
 def _get_text_from_prompt(prompt):

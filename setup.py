@@ -33,7 +33,7 @@ setup(
         "flask_dropzone==1.6.0",
         "transformers==4.9.2",
         "sentence_transformers==2.0.0",
-        "torch==1.9.0",
+        "torch==1.12.1",
         "nltk==3.6.2",
         "gensim==4.0.1",
         "sklearn==0.0",
@@ -47,6 +47,8 @@ setup(
         "conversation-qa==0.0.10",
         "creak-sense==0.0.4",
         "protobuf==4.21.5",
+        "fairseq==0.12.2",
+        "g2p_en==2.1.0",
     ],
     dependency_links=[
         "git+ssh://git@github.com/kpu/kenlm/archive/master.zip",
