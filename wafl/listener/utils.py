@@ -24,7 +24,7 @@ Q:{prompt}
 def choose_best_output(sentences):
     best_sentence = sentences[0][0]
     null_hypothesis = ("", -3.5, -3.5)
-    best_score = 1e6
+    best_score = 0
 
     for sentence in list(sentences) + [null_hypothesis]:
         prompt = sentence[0]
@@ -32,9 +32,9 @@ def choose_best_output(sentences):
             continue
 
         score = sentence[-2]
-        score -= np.sum(_cv.transform([prompt]).toarray())
+        score += np.sum(_cv.transform([prompt]).toarray())
 
-        if score < best_score:
+        if score > best_score:
             best_score = score
             best_sentence = sentence[0]
 

@@ -24,7 +24,6 @@ the user name is Jane
 
 """.strip()
 
-
 _path = os.path.dirname(__file__)
 
 
@@ -58,16 +57,8 @@ class TestVoice(TestCase):
         ]
         assert interface._listener._hotwords == expected
 
-    def test_input_perplexity_is_not_good_enough(self):
-        text = "ADD APPLES ADD ADD BUTERIES"
-        assert not_good_enough(text)
-
-    def test_input_perplexity_is_good_enough(self):
-        text = "PLEASE ADD APPLES TO THE SHOPPING LIST"
-        assert not not_good_enough(text)
-
     def test_decoder_chooses_best_output(self):
-        options = (["NO", -1, -1], ["NNO", -3, -3])
+        options = (["NO", -1, -1], ["NNO", -0.5, -0.5])
         choice = choose_best_output(options)
         expected = "NO"
         assert choice == expected
@@ -75,16 +66,17 @@ class TestVoice(TestCase):
     def test_sound_file_is_translated_correctly(self):
         f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = Wav2Vec2Listener("fractalego/personal-speech-to-text-model")
+        listener = Wav2Vec2Listener("facebook/data2vec-audio-large-960h")
         listener.add_hotwords(["delete"])
         result = listener.input_waveform(waveform)
         expected = "DELETE BANANAS FROM THE GROCERY LIST"
+        print(result)
         assert result == expected
 
     def test_random_sounds_are_excluded(self):
         f = wave.open(os.path.join(_path, "data/random_sounds.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = Wav2Vec2Listener("fractalego/personal-speech-to-text-model")
+        listener = Wav2Vec2Listener("facebook/data2vec-audio-large-960h")
         listener.add_hotwords(["delete"])
         result = listener.input_waveform(waveform)
         expected = ""

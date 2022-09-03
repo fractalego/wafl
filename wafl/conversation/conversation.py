@@ -1,3 +1,4 @@
+import os
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
@@ -5,6 +6,8 @@ from wafl.conversation.utils import is_question, get_answer_using_text, input_is
 from wafl.exceptions import InterruptTask
 from wafl.inference.backward_inference import BackwardInference
 
+
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 class Conversation:
     def __init__(
