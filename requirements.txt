@@ -15,6 +15,6 @@ python-Levenshtein==0.12.2
 wave==0.0.2
 conversation-qa==0.0.9
 creak-sense==0.0.2
-protobuf==
+protobuf==4.21.5
 
 https://github.com/kpu/kenlm/archive/master.zip
