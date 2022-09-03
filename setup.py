@@ -44,6 +44,9 @@ setup(
         "pyfestival==0.5",
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
+        "conversation-qa==0.0.10",
+        "creak-sense==0.0.4",
+        "protobuf==4.21.5",
     ],
     dependency_links=[
         "git+ssh://git@github.com/kpu/kenlm/archive/master.zip",
