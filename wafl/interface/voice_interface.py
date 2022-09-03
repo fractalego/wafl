@@ -4,7 +4,7 @@ from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
 from wafl.interface.utils import get_most_common_words, not_good_enough
 from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
-from wafl.speaker.festival_speaker import FestivalSpeaker
+from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
 
 _path = os.path.dirname(__file__)
@@ -27,7 +27,7 @@ class VoiceInterface(BaseInterface):
         self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_timeout(0.6)
         self._listener.set_threshold(0.9)
-        self._speaker = FestivalSpeaker()
+        self._speaker = FairSeqSpeaker()
         self._bot_has_spoken = False
         self._check_understanding = True
 

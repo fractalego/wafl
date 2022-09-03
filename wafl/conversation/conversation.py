@@ -9,6 +9,7 @@ from wafl.inference.backward_inference import BackwardInference
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
+
 class Conversation:
     def __init__(
         self,
