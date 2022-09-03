@@ -25,7 +25,7 @@ setup(
         "wafl.retriever",
     ],
     package_data={
-        "wafl": ["templates/*", "sounds/*"],
+        "wafl": ["templates/*", "sounds/*", "models/*"],
     },
     install_requires=[
         "flask==2.0.1",

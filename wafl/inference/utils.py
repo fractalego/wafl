@@ -116,6 +116,9 @@ def cluster_facts(facts_and_threshold):
     last_threshold = facts_and_threshold[0][1]
     text = ""
     for fact, threshold in facts_and_threshold:
+        if not fact.text:
+            continue
+
         if abs(threshold - last_threshold) < _cluster_margin:
             text += fact.text + ". "
 
@@ -124,7 +127,8 @@ def cluster_facts(facts_and_threshold):
             text = ""
             last_threshold = threshold
 
-    texts.append(text.strip())
+    if text:
+        texts.append(text.strip())
 
     return texts
 

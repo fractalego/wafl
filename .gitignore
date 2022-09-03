@@ -3,7 +3,6 @@
 .env/
 build/
 dist/
-models/
 wafl.egg-info/
 
 __pycache__/

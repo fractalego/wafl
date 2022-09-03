@@ -168,4 +168,4 @@ class TestConversation(TestCase):
         interface = DummyInterface(["How are you?"])
         conversation = Conversation(Knowledge(_wafl_how_are_you), interface=interface)
         conversation.input()
-        assert interface.utterances[-1] == "doing well"
+        assert "doing well" in interface.utterances[-1]

@@ -38,7 +38,7 @@ class QA:
             return Answer(text=str(answer))
 
         dialogue = Dialogue()
-        answer = normalized(self._qa.get_answer(text, dialogue.get_text(), query.text))
+        answer = normalized(self._qa.get_answer(query.text, dialogue.get_text(), text))
         if answer != "unknown" and answer != "no":
             return Answer(text="True")
 
