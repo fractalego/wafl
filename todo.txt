@@ -1,8 +1,4 @@
 ### TODO
-* Use entailment to make generated qa more accurate
-    /- Upload qa system to huggingface and pip
-    -**** Use conversation_qa -> refactor qa.py
-
 * functions.py need a more clever way of handling hidden arguments
   - should all functions have a hidden arg?
   - make it possible to have more files
@@ -106,3 +102,6 @@
 
 /* Add working memory for python-space
     - Maybe exclude WM answer if it is the same as the prior answer
+/* Use entailment to make generated qa more accurate
+    /- Upload qa system to huggingface and pip
+    /-**** Use conversation_qa -> refactor qa.py
