@@ -53,7 +53,7 @@ class Configuration:
     @classmethod
     def load_local_config(cls):
         try:
-            return cls("config.json")
+            return cls(os.path.join(_path, "config.json"))
 
         except FileNotFoundError:
             print(
