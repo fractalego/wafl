@@ -26,8 +26,3 @@ class TestConfig(TestCase):
         conversation.input()
         conversation.input()
         assert interface.utterances[-1] == "Unknown"
-
-    def test_voice_interface_receives_config(self):
-        config = Configuration.load_local_config()
-        interface = VoiceInterface(config)
-        assert interface.listener_model_name == config.get_value("listener_model")

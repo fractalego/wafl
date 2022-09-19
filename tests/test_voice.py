@@ -81,3 +81,8 @@ class TestVoice(TestCase):
         result = listener.input_waveform(waveform)
         expected = ""
         assert result == expected
+
+    def test_voice_interface_receives_config(self):
+        config = Configuration.load_local_config()
+        interface = VoiceInterface(config)
+        assert interface.listener_model_name == config.get_value("listener_model")
