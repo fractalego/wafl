@@ -28,7 +28,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install portaudio19-dev
-        export PYTHONPATH="${PYTHONPATH}:$PWD/tests/"
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -40,4 +39,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        cp tests/functions.py ./
+        cp tests/config.json ./
         python -m unittest discover tests/
