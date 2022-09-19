@@ -41,4 +41,6 @@ jobs:
       run: |
         cp tests/functions.py ./
         cp tests/config.json ./
+        rm tests/test_speaker.py
+        rm tests/test_voice.py
         python -m unittest discover tests/

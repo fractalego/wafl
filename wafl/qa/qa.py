@@ -28,7 +28,7 @@ class QA:
             query_text += "?"
 
         dialogue = Dialogue()
-        answer = self._qa.get_answer(text, dialogue.get_text(), query.text)
+        answer = self._qa.get_answer(text, dialogue.get_text(), query_text)
 
         return Answer(text=answer, variable=query.variable)
 

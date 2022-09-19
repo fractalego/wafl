@@ -19,7 +19,7 @@ from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
 
 nltk.download("punkt")
-nltk.download('averaged_perceptron_tagger')
+nltk.download("averaged_perceptron_tagger")
 
 _logger = logging.getLogger(__name__)
 
