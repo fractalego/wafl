@@ -1,4 +1,5 @@
 import logging
+import nltk
 
 from wafl.facts import Fact
 from wafl.inference.utils import normalized
@@ -16,6 +17,9 @@ from wafl.qa.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
+
+nltk.download("punkt")
+nltk.download("averaged_perceptron_tagger")
 
 _logger = logging.getLogger(__name__)
 

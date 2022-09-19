@@ -9,6 +9,7 @@ _wafl_greetings = """
 
 _path = os.path.dirname(__file__)
 
+
 class TestSpeaker(TestCase):
     def test_voice(self):
         speaker = FairSeqSpeaker()

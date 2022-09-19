@@ -11,9 +11,12 @@ spacy==2.3.7
 gender_guesser==0.4.0
 python-Levenshtein==0.12.2
 wave==0.0.2
-conversation-qa==0.0.10
+conversation-qa==0.0.13
 creak-sense==0.0.4
 protobuf==4.21.5
 fairseq==0.12.2
 g2p_en==2.1.0
+fuzzywuzzy==0.18.0
+PyAudio==0.2.11
+pyctcdecode==0.2.1
 https://github.com/kpu/kenlm/archive/master.zip

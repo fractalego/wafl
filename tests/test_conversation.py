@@ -69,6 +69,7 @@ class TestConversation(TestCase):
         input_from_user = "hello!".capitalize()
         conversation.add(input_from_user)
         expected = "Hello to you, bob!"
+        print(interface.utterances)
         assert interface.utterances[-1] == expected
 
     def test_input_during_inference(self):
