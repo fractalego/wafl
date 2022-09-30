@@ -49,6 +49,7 @@ setup(
         "fuzzywuzzy==0.18.0",
         "PyAudio==0.2.11",
         "pyctcdecode==0.2.1",
+        "huggingface-hub==0.10.0",
     ],
     dependency_links=[
         "git+ssh://git@github.com/kpu/kenlm/archive/master.zip",

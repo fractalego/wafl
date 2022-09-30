@@ -19,4 +19,5 @@ g2p_en==2.1.0
 fuzzywuzzy==0.18.0
 PyAudio==0.2.11
 pyctcdecode==0.2.1
+huggingface-hub==0.10.0
 https://github.com/kpu/kenlm/archive/master.zip

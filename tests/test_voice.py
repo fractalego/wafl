@@ -8,7 +8,6 @@ from wafl.listener.utils import choose_best_output
 
 from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
-from wafl.interface.utils import not_good_enough
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
