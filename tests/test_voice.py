@@ -5,7 +5,6 @@ import numpy as np
 from unittest import TestCase
 
 from wafl.listener.utils import choose_best_output
-
 from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
 

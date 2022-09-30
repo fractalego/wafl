@@ -24,10 +24,10 @@ class VoiceInterface(BaseInterface):
             config
         )
         self.listener_model_name = config.get_value("listener_model")
+        self._speaker = FairSeqSpeaker()
         self._listener = Wav2Vec2Listener(self.listener_model_name)
         self._listener.set_timeout(0.6)
         self._listener.set_threshold(0.9)
-        self._speaker = FairSeqSpeaker()
         self._bot_has_spoken = False
         self._check_understanding = True
 

@@ -14,9 +14,13 @@ def create_preprocessed(module: str):
         text = text.replace('{"%', 'inference.get_inference_answer(f"')
         text = text.replace('%"}', '", working_memory)')
         text = re.sub(
-            "(def .*\([0-9a-zA-Z,\s:]+)\):", "\\1, inference=None, working_memory=None):", text
+            "(def .*\([0-9a-zA-Z,\s:]+)\):",
+            "\\1, inference=None, working_memory=None):",
+            text,
         )
-        text = re.sub("(def .*)\(\):", "\\1(inference=None, working_memory=None):", text)
+        text = re.sub(
+            "(def .*)\(\):", "\\1(inference=None, working_memory=None):", text
+        )
 
     with open(preprocessed_prefix + filename, "w") as file:
         file.write(text)

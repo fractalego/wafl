@@ -8,10 +8,10 @@ from wafl.speaker.base_speaker import BaseSpeaker
 class FairSeqSpeaker(BaseSpeaker):
     def __init__(self, voice="facebook/fastspeech2-en-ljspeech"):
         self._chunk = 1024
-        self._p = pyaudio.PyAudio()
         models, cfg, self._task = load_model_ensemble_and_task_from_hf_hub(
             voice, arg_overrides={"vocoder": "hifigan", "fp16": False}
         )
+        self._p = pyaudio.PyAudio()
         self._model = models[0]
         TTSHubInterface.update_cfg_with_data_cfg(cfg, self._task.data_cfg)
         self._generator = self._task.build_generator(models, cfg)

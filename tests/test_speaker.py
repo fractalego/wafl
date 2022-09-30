@@ -1,4 +1,5 @@
-import os.path
+import os
+
 from unittest import TestCase
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
