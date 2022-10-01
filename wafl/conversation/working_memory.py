@@ -47,3 +47,9 @@ class WorkingMemory:
 
     def is_in_prior_failed_clauses(self, clause):
         return clause in self._failed_clauses
+
+    def erase(self):
+        self._story = ""
+        self._questions = []
+        self._answers = []
+        self._failed_clauses = set()

@@ -50,6 +50,10 @@ def text_has_remember_command(text):
     return normalized(text).find("remember") == 0
 
 
+def text_has_new_working_memory_command(text):
+    return normalized(text).find("erase memory") == 0
+
+
 def update_substitutions_from_answer(answer, substitutions):
     substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
     substitutions[f"({answer.variable.strip()})"] = f'("{answer.text}")'

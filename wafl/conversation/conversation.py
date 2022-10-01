@@ -64,7 +64,12 @@ class Conversation:
         return answer
 
     def input(self, activation_word: str = "") -> bool:
-        text = self._interface.input()
+        try:
+            text = self._interface.input()
+
+        except IndexError:
+            return False
+
         if self.__activation_word_in_text(activation_word, text):
             self._interface.check_understanding(True)
             text = self.__remove_activation_word(activation_word, text)

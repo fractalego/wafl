@@ -1,3 +1,5 @@
+from time import sleep
+
 import pyaudio
 
 from fairseq.checkpoint_utils import load_model_ensemble_and_task_from_hf_hub
@@ -30,5 +32,6 @@ class FairSeqSpeaker(BaseSpeaker):
             output=True,
         )
         stream.write(wav.numpy().tobytes())
+        sleep(0.3)
         stream.stop_stream()
         stream.close()

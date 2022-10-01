@@ -62,9 +62,18 @@ the user wants to know what is in the shopping list
 
 """
 
+_lists_in_functions_rules = """
+item = what does the user want to add to the shopping list?
+  add_shopping_list_as_function(item)
+  
+the user wants to know what is in the shopping list
+  items = get_shopping_list_in_english()
+  SAY The shopping list contains: {items}
+"""
+
 
 class TestNew(TestCase):
-    def test_second_rule_is_not_run_if_prior_clause_fails(self):
+    def test__second_rule_is_not_run_if_prior_clause_fails(self):
         interface = DummyInterface(
             [
                 "add apples to the shopping list",
@@ -81,3 +90,29 @@ class TestNew(TestCase):
         output = "\n".join(interface.utterances)
         print(interface.utterances)
         assert output.count("Do you want to remove apples from the shopping list") == 1
+
+    def test__add_item_to_list_as_function(self):
+        interface = DummyInterface(
+            [
+                "add apples to the shopping list",
+                "yes",
+                "strawberries",
+                "yes",
+                "bananas",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+
+        print(interface.utterances)
+        assert (
+            interface.utterances[-1]
+            == "The shopping list contains: apples, bananas, strawberries"
+        )

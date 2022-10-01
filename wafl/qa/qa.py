@@ -29,7 +29,7 @@ class QA:
 
         dialogue = Dialogue()
         answer = self._qa.get_answer(text, dialogue.get_text(), query_text)
-        if answer[-1] in [".", ",", "!"]:
+        if answer and answer[-1] in [".", ",", "!"]:
             answer = answer[:-1]
 
         return Answer(text=answer, variable=query.variable)

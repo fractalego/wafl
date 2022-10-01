@@ -1,5 +1,8 @@
 ### TODO
-* functions.py need a more clever way of handling hidden arguments
+* Do lists as hard-coded
+* Do arbiter with QA
+
+/* functions.py need a more clever way of handling hidden arguments
   - should all functions have a hidden arg?
   - make it possible to have more files
 

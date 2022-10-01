@@ -3,7 +3,7 @@ import pyaudio
 import time
 import numpy as np
 
-from transformers import Wav2Vec2Processor, Data2VecAudioForCTC
+from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 from pyctcdecode import build_ctcdecoder
 
 from wafl.listener.utils import choose_best_output
@@ -24,7 +24,7 @@ class Wav2Vec2Listener:
         self._timeout = 1
         self._max_timeout = 4
         self._processor = Wav2Vec2Processor.from_pretrained(model_name)
-        self._model = Data2VecAudioForCTC.from_pretrained(model_name)
+        self._model = Wav2Vec2ForCTC.from_pretrained(model_name)
         self._hotwords = list()
         self._decoder = build_ctcdecoder(
             [k for k, _ in self._processor.tokenizer.get_vocab().items()],
@@ -39,6 +39,7 @@ class Wav2Vec2Listener:
     def add_hotwords(self, hotwords):
         if not type(hotwords) == list:
             hotwords = [hotwords]
+
         print("Interface: adding hotwords", str(hotwords))
         self._hotwords += [item.upper() for item in hotwords]
 
@@ -106,9 +107,9 @@ class Wav2Vec2Listener:
         transcription = choose_best_output(
             self._decoder.decode_beams(
                 logits.cpu().detach().numpy()[0],
-                beam_width=5,
-                token_min_logp=-10.0,
-                beam_prune_logp=-10.0,
+                beam_width=50,
+                token_min_logp=-50.0,
+                beam_prune_logp=-50.0,
                 hotwords=self._hotwords,
                 hotword_weight=15,
             )

@@ -61,7 +61,7 @@ def run_from_audio():
         except (KeyboardInterrupt, EOFError):
             break
 
-    conversation.output("Goodbye!")
+    conversation.output("Good bye!")
 
 
 def run_testcases():

@@ -77,6 +77,11 @@ class BackwardInference:
         if answer and normalized(answer.text) != "unknown":
             return answer
 
+        if depth > 0:
+            if text_has_new_working_memory_command(query.text):
+                working_memory.erase()
+                return self.__process_new_working_memory_command()
+
         answer = self._look_for_answer_in_working_memory(query, working_memory, depth)
         candidate_answers.append(answer)
         if answer and normalized(answer.text) != "unknown":
@@ -290,6 +295,9 @@ class BackwardInference:
     def __process_remember_command(self, cause_text):
         utterance = cause_text[8:].strip().capitalize()
         self._knowledge.add(utterance)
+        return Answer(text="True")
+
+    def __process_new_working_memory_command(self):
         return Answer(text="True")
 
     def __validate_fact_in_effects(self, rule_effect_text, query, substitutions):

@@ -17,6 +17,13 @@ class TestSpeaker(TestCase):
         text = "Hello world"
         speaker.speak(text)
 
+    def test_long_text(self):
+        speaker = FairSeqSpeaker()
+        text = (
+            "Shall I compare you to a summer's day? Thou art more lovely and temperate."
+        )
+        speaker.speak(text)
+
     def test_on_sound(self):
         speaker = SoundFileSpeaker()
         speaker.speak(os.path.join(_path, "../wafl/sounds/activation.wav"))

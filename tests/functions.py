@@ -100,3 +100,12 @@ def remove_from_shopping_list(item):
 
 def add_shopping_list(item):
     shopping_list.append(item)
+
+
+def add_shopping_list_as_function(item):
+    shopping_list.append(item)
+    while {"% Do you want to add anything else  %"}:
+        item = {"% What do you want to add?%"}
+        shopping_list.append(item)
+        {f"% SAY {item} has been added to the shopping list%"}
+        {"%ERASE MEMORY%"}
