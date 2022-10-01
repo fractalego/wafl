@@ -102,6 +102,9 @@ class BackwardInference:
             elif text_has_remember_command(query.text):
                 return self.__process_remember_command(query.text)
 
+            elif text_is_code(query.text):
+                return self.__process_code(query.text, {})
+
         answer = self._look_for_answer_in_rules(
             query, working_memory, depth, inverted_rule
         )
@@ -350,7 +353,7 @@ class BackwardInference:
             update_substitutions_from_results(result, variable, substitutions)
 
         if result != False:
-            answer = Answer(text="True")
+            answer = Answer(text=str(result))
 
         else:
             answer = Answer(text="False")

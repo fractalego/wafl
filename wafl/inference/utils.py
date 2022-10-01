@@ -28,12 +28,21 @@ def text_is_code(text):
     return False
 
 
+def _make_safe(text):
+    text = str(text)
+    text = text.replace('"', "'")
+    text = text.replace("''", "'")
+    text = text.replace('""', '"')
+    return text
+
+
 def apply_substitutions(cause_text, substitutions):
     if text_is_code(cause_text):
         cause_text = cause_text.replace(" ", "")
 
     for key, value in substitutions.items():
-        cause_text = cause_text.replace(key, str(value))
+        safe_value = _make_safe(str(value))
+        cause_text = cause_text.replace(key, safe_value)
 
     return cause_text
 
@@ -55,11 +64,12 @@ def text_has_new_working_memory_command(text):
 
 
 def update_substitutions_from_answer(answer, substitutions):
-    substitutions[f"{{{answer.variable.strip()}}}"] = answer.text
-    substitutions[f"({answer.variable.strip()})"] = f'("{answer.text}")'
-    substitutions[f"({answer.variable.strip()},"] = f'("{answer.text}",'
-    substitutions[f",{answer.variable.strip()},"] = f',"{answer.text}",'
-    substitutions[f",{answer.variable.strip()})"] = f',"{answer.text}")'
+    safe_value = _make_safe(answer.text)
+    substitutions[f"{{{answer.variable.strip()}}}"] = safe_value
+    substitutions[f"({answer.variable.strip()})"] = f'("{safe_value}")'
+    substitutions[f"({answer.variable.strip()},"] = f'("{safe_value}",'
+    substitutions[f",{answer.variable.strip()},"] = f',"{safe_value}",'
+    substitutions[f",{answer.variable.strip()})"] = f',"{safe_value}")'
 
 
 def add_function_arguments(text: str) -> str:
@@ -71,11 +81,12 @@ def add_function_arguments(text: str) -> str:
 
 
 def update_substitutions_from_results(result, variable, substitutions):
-    substitutions.update({f"{{{variable}}}": result})
-    substitutions.update({f"({variable})": f'("{result}")'})
-    substitutions.update({f"({variable},": f'("{result}",'})
-    substitutions.update({f",{variable},": f',"{result}",'})
-    substitutions.update({f",{variable})": f',"{result}")'})
+    safe_value = _make_safe(result)
+    substitutions.update({f"{{{variable}}}": safe_value})
+    substitutions.update({f"({variable})": f'("{safe_value}")'})
+    substitutions.update({f"({variable},": f'("{safe_value}",'})
+    substitutions.update({f",{variable},": f',"{safe_value}",'})
+    substitutions.update({f",{variable})": f',"{safe_value}")'})
 
 
 def invert_answer(answer):

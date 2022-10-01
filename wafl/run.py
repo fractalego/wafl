@@ -49,7 +49,6 @@ def run_from_audio():
             result = conversation.input(activation_word=activation_word)
             print(result)
             if result:
-                num_misses = 0
                 activation_word = ""
 
             if not result:
@@ -58,6 +57,7 @@ def run_from_audio():
                 if num_misses >= max_misses:
                     activation_word = "computer"
                     interface.check_understanding(False)
+                    num_misses = 0
 
         except CloseConversation:
             print("Closing conversation")
