@@ -33,5 +33,8 @@ class DummyInterface(BaseInterface):
     def get_dialogue(self):
         return self._dialogue
 
-    def check_understanding(self, do_the_check: bool):
+    def check_understanding(self, do_the_check: bool = None):
+        if do_the_check == None:
+            return self._check_understanding
+
         self._check_understanding = do_the_check

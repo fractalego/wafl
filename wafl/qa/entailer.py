@@ -24,12 +24,14 @@ class Entailer:
         prediction = {name: float(pred) for pred, name in zip(prediction, label_names)}
         return prediction
 
-    def entails(self, premise: str, hypothesis: str, threshold=0.8) -> bool:
+    def entails(
+        self, premise: str, hypothesis: str, threshold=0.8, contradiction_threshold=0.5
+    ) -> bool:
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
             return True
 
-        if prediction["neutral"] > threshold:
+        if prediction["contradiction"] < contradiction_threshold:
             premise = self._add_presuppositions_to_premise(premise)
             prediction = self.get_relation(premise, hypothesis)
 

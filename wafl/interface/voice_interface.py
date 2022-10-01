@@ -71,7 +71,10 @@ class VoiceInterface(BaseInterface):
 
         return self._bot_has_spoken
 
-    def check_understanding(self, do_the_check):
+    def check_understanding(self, do_the_check=None):
+        if do_the_check == None:
+            return self._check_understanding
+
         if do_the_check and not self._check_understanding:
             self._sound_speaker.speak(self._activation_sound_filename)
 

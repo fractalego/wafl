@@ -70,14 +70,20 @@ class Conversation:
         except IndexError:
             return False
 
-        if self.__activation_word_in_text(activation_word, text):
+        if activation_word and self.__activation_word_in_text(activation_word, text):
             self._interface.check_understanding(True)
-            text = self.__remove_activation_word(activation_word, text)
-
+            text = self.__remove_activation_word_and_normalize(activation_word, text)
             if activation_word and not text:
                 return True
 
             answer = self.add(text)
+            print("ANSWER:", answer)
+            if answer and answer.text != "False":
+                return True
+
+        elif self._interface.check_understanding():
+            answer = self.add(text)
+            print("ANSWER2:", answer)
             if answer and answer.text != "False":
                 return True
 
@@ -89,9 +95,9 @@ class Conversation:
 
         return False
 
-    def __remove_activation_word(self, activation_word, text):
+    def __remove_activation_word_and_normalize(self, activation_word, text):
         activation_pos = normalized(text).find(normalized(activation_word))
         if activation_pos != -1:
-            return text[activation_pos + len(activation_word) :].strip()
+            return normalized(text[activation_pos + len(activation_word) :])
 
         return ""

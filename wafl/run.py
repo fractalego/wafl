@@ -1,12 +1,14 @@
+import logging
+from logging import getLogger
 from wafl.config import Configuration
-
 from wafl.exceptions import CloseConversation
-
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
+
+_logger = getLogger(__file__)
 
 
 def run_from_command_line():
@@ -45,17 +47,21 @@ def run_from_audio():
     while True:
         try:
             result = conversation.input(activation_word=activation_word)
+            print(result)
             if result:
-                activation_word = ""
                 num_misses = 0
+                activation_word = ""
 
             if not result:
+                print(num_misses)
                 num_misses += 1
                 if num_misses >= max_misses:
                     activation_word = "computer"
                     interface.check_understanding(False)
 
         except CloseConversation:
+            print("Closing conversation")
+            _logger.info("Closing conversation")
             activation_word = "computer"
             interface.check_understanding(False)
             continue

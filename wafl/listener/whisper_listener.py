@@ -1,9 +1,12 @@
 import pyaudio
 import time
 import numpy as np
+import torch.cuda
 import whisper
 
 from scipy.io.wavfile import write
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class WhisperListener:
@@ -18,7 +21,7 @@ class WhisperListener:
         self._threshold = 1
         self._timeout = 1
         self._max_timeout = 4
-        self._model = whisper.load_model(model_name).to("cpu")
+        self._model = whisper.load_model(model_name).to(device)
         self._hotwords = list()
         self.is_active = False
 
@@ -89,15 +92,19 @@ class WhisperListener:
         write("tmp.wav", self._rate, waveform)
         audio = whisper.load_audio("tmp.wav")
         audio = whisper.pad_or_trim(audio)
-        mel = whisper.log_mel_spectrogram(audio).to("cpu")
+        mel = whisper.log_mel_spectrogram(audio).to(device)
         options = whisper.DecodingOptions(
-            fp16=False, without_timestamps=True, task="transcribe", language="en"
+            fp16=False,
+            without_timestamps=True,
+            task="transcribe",
+            language="en",
+            beam_size=2,
         )
 
         result = whisper.decode(self._model, mel, options)
         transcription = result.text
 
-        if result.no_speech_prob < 0.2:
+        if result.no_speech_prob < 0.4:
             self.deactivate()
             return transcription
 
