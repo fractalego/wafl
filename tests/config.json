@@ -1,11 +1,8 @@
 {
   "accept_random_facts": true,
   "allow_interruptions": true,
-  "voice_hotwords": [
-    "computer"
-  ],
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
-  "listener_model": "facebook/data2vec-audio-large-960h"
+  "listener_model": "tiny.en"
 }

@@ -49,9 +49,10 @@ setup(
         "PyAudio==0.2.11",
         "pyctcdecode==0.2.1",
         "huggingface-hub==0.10.0",
+        "whisper@git+https://github.com/openai/whisper",
     ],
     dependency_links=[
-        "git+ssh://git@github.com/kpu/kenlm/archive/master.zip",
+        "git+https://github.com/openai/whisper",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

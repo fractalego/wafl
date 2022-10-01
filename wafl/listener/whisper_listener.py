@@ -1,17 +1,12 @@
-import os
 import pyaudio
 import time
 import numpy as np
+import whisper
 
-from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
-from pyctcdecode import build_ctcdecoder
-
-from wafl.listener.utils import choose_best_output
-
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
+from scipy.io.wavfile import write
 
 
-class Wav2Vec2Listener:
+class WhisperListener:
     _chunk = 1024
     _format = pyaudio.paInt16
     _channels = 1
@@ -23,21 +18,15 @@ class Wav2Vec2Listener:
         self._threshold = 1
         self._timeout = 1
         self._max_timeout = 4
-        self._processor = Wav2Vec2Processor.from_pretrained(model_name)
-        self._model = Wav2Vec2ForCTC.from_pretrained(model_name)
+        self._model = whisper.load_model(model_name).to("cpu")
         self._hotwords = list()
-        self._decoder = build_ctcdecoder(
-            [k for k, _ in self._processor.tokenizer.get_vocab().items()],
-            alpha=0.5,
-            beta=1.0,
-        )
         self.is_active = False
 
     def set_hotwords(self, hotwords):
         self._hotwords = [item.upper() for item in hotwords]
 
     def add_hotwords(self, hotwords):
-        if not type(hotwords) == list:
+        if hotwords and not type(hotwords) == list:
             hotwords = [hotwords]
 
         print("Interface: adding hotwords", str(hotwords))
@@ -97,25 +86,18 @@ class Wav2Vec2Listener:
                 return self.input_waveform(waveform)
 
     def input_waveform(self, waveform):
-        input_values = self._processor(
-            waveform,
-            return_tensors="pt",
-            padding="longest",
-            sampling_rate=self._rate,
-        ).input_values
-        logits = self._model(input_values).logits
-        transcription = choose_best_output(
-            self._decoder.decode_beams(
-                logits.cpu().detach().numpy()[0],
-                beam_width=50,
-                token_min_logp=-50.0,
-                beam_prune_logp=-50.0,
-                hotwords=self._hotwords,
-                hotword_weight=15,
-            )
+        write("tmp.wav", self._rate, waveform)
+        audio = whisper.load_audio("tmp.wav")
+        audio = whisper.pad_or_trim(audio)
+        mel = whisper.log_mel_spectrogram(audio).to("cpu")
+        options = whisper.DecodingOptions(
+            fp16=False, without_timestamps=True, task="transcribe", language="en"
         )
 
-        if len(transcription) >= 2:
+        result = whisper.decode(self._model, mel, options)
+        transcription = result.text
+
+        if result.no_speech_prob < 0.2:
             self.deactivate()
             return transcription
 

@@ -31,7 +31,9 @@ def run_from_audio():
     knowledge = Knowledge(open("rules.wafl").read())
     interface = VoiceInterface(config)
     interface.check_understanding(False)
-    interface.add_hotwords(config.get_value("voice_hotwords"))
+    if config.get_value("voice_hotwords"):
+        interface.add_hotwords(config.get_value("voice_hotwords"))
+
     conversation = Conversation(
         knowledge, interface=interface, code_path="functions", config=config
     )

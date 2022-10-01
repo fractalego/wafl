@@ -3,7 +3,7 @@ import os
 from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.interface import BaseInterface
 from wafl.interface.utils import get_most_common_words, not_good_enough
-from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
+from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
 
@@ -25,7 +25,7 @@ class VoiceInterface(BaseInterface):
         )
         self.listener_model_name = config.get_value("listener_model")
         self._speaker = FairSeqSpeaker()
-        self._listener = Wav2Vec2Listener(self.listener_model_name)
+        self._listener = WhisperListener(self.listener_model_name)
         self._listener.set_timeout(0.6)
         self._listener.set_threshold(0.9)
         self._bot_has_spoken = False
