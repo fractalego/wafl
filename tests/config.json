@@ -4,5 +4,6 @@
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
+  "deny_sound": true,
   "listener_model": "tiny.en"
 }

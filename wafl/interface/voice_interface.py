@@ -23,6 +23,8 @@ class VoiceInterface(BaseInterface):
         self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(
             config
         )
+        self._deny_sound_filename = self.__get_deny_sound_from_config(config)
+
         self.listener_model_name = config.get_value("listener_model")
         self._speaker = FairSeqSpeaker()
         self._listener = WhisperListener(self.listener_model_name)
@@ -61,6 +63,7 @@ class VoiceInterface(BaseInterface):
             print(COLOR_START + "user> " + text + COLOR_END)
             self.output("I did not quite understand that")
             text = self._listener.input()
+
         text = text.lower().capitalize()
         print(COLOR_START + "user> " + text + COLOR_END)
         return from_user_to_bot(text)
@@ -83,6 +86,9 @@ class VoiceInterface(BaseInterface):
 
         self._check_understanding = do_the_check
 
+    def play_deny_sound(self):
+        self._sound_speaker.speak(self._deny_sound_filename)
+
     def __get_activation_sound_from_config(self, config):
         if config.get_value("waking_up_sound"):
             return os.path.join(_path, "../sounds/activation.wav")
@@ -92,5 +98,11 @@ class VoiceInterface(BaseInterface):
     def __get_deactivation_sound_from_config(self, config):
         if config.get_value("deactivate_sound"):
             return os.path.join(_path, "../sounds/deactivation.wav")
+
+        return None
+
+    def __get_deny_sound_from_config(self, config):
+        if config.get_value("deny_sound"):
+            return os.path.join(_path, "../sounds/deny.wav")
 
         return None
