@@ -11,6 +11,8 @@ from wafl.parsing.preprocess import (
 )
 
 wafl_example = """
+This bot is here to answer the user.
+
 _close
   close_conversation()
 

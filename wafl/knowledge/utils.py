@@ -61,7 +61,7 @@ def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
             new_rules_and_scores.append(item)
             continue
 
-        if entailer.entails(query.text, rule.effect.text):
+        if entailer.entails(query.text, rule.effect.text) == "True":
             new_rules_and_scores.append(item)
 
     return new_rules_and_scores

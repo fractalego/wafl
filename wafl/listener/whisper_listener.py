@@ -154,7 +154,7 @@ class WhisperListener:
             sum_logp += logp[index]
 
         print("SUM_LOGP", sum_logp)
-        return sum_logp > -3
+        return sum_logp > -8
 
 
 def _rms(frame):

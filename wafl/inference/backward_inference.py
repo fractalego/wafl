@@ -26,6 +26,10 @@ from inspect import getmembers, isfunction
 _logger = logging.getLogger(__name__)
 
 
+def answer_is_informative(answer):
+    return not any(item == normalized(answer.text) for item in ["unknown"])
+
+
 class BackwardInference:
     def __init__(
         self,
@@ -84,12 +88,12 @@ class BackwardInference:
 
         answer = self._look_for_answer_in_working_memory(query, working_memory, depth)
         candidate_answers.append(answer)
-        if answer and normalized(answer.text) != "unknown":
+        if answer and answer_is_informative(answer):
             return answer
 
         answer = self._look_for_answer_by_asking_the_user(query, working_memory, depth)
         candidate_answers.append(answer)
-        if answer and normalized(answer.text) != "unknown":
+        if answer and answer_is_informative(answer):
             return answer
 
         if depth > 0:
@@ -109,13 +113,13 @@ class BackwardInference:
             query, working_memory, depth, inverted_rule
         )
         candidate_answers.append(answer)
-        if answer and normalized(answer.text) != "unknown":
+        if answer and answer_is_informative(answer):
             return answer
 
         answer = self._look_for_answer_in_common_sense(query, depth)
         print("FACTS:", answer)
         candidate_answers.append(answer)
-        if answer and normalized(answer.text) != "unknown":
+        if answer and answer_is_informative(answer):
             return answer
 
         return selected_answer(candidate_answers)

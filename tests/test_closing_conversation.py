@@ -30,7 +30,7 @@ INTERRUPTION the user says: "thank you"
 """
 
 
-class TestLanguageInFunctions(TestCase):
+class TestInterruptionsToCloseConversation(TestCase):
     def test__good_bye_closes_conversation(self):
         interface = DummyInterface(
             to_utter=[

@@ -37,7 +37,7 @@ class QA:
     def __check_fact(self, query, text):
         if not is_question(text):
             answer = self._entailer.entails(query.text, text)
-            return Answer(text=str(answer))
+            return Answer(text=answer)
 
         dialogue = Dialogue()
         answer = normalized(self._qa.get_answer(query.text, dialogue.get_text(), text))

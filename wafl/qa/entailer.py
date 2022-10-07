@@ -25,17 +25,26 @@ class Entailer:
         return prediction
 
     def entails(
-        self, premise: str, hypothesis: str, threshold=0.8, contradiction_threshold=0.5
-    ) -> bool:
+        self, premise: str, hypothesis: str, threshold=0.8, contradiction_threshold=0.65
+    ) -> str:
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
-            return True
+            return "True"
 
         if prediction["contradiction"] < contradiction_threshold:
             premise = self._add_presuppositions_to_premise(premise)
             prediction = self.get_relation(premise, hypothesis)
 
-        return prediction["entailment"] > threshold
+        print("PREMISE", premise)
+        print("HYPOTHESIS", hypothesis)
+        print(prediction)
+        if prediction["entailment"] > threshold:
+            return "True"
+
+        if prediction["neutral"] > threshold:
+            return "Unknown"
+
+        return "False"
 
     def _add_presuppositions_to_premise(self, premise):
         premise = premise.replace("user says:", "user says to this bot:")
