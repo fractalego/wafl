@@ -150,19 +150,26 @@ class BackwardInference:
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
 
+                print("CAUSE")
+
                 if working_memory.is_in_prior_failed_clauses(cause_text):
+                    print("IN FAILED CLAUSES")
                     continue
 
                 if text_has_say_command(cause_text):
+                    print("SAY")
                     answer = self.__process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
+                    print("REMEMBER")
                     answer = self.__process_remember_command(cause_text)
 
                 elif text_is_code(cause_text):
+                    print("CODE")
                     answer = self.__process_code(cause_text, substitutions)
 
                 else:
+                    print("QUERY")
                     answer = self.__process_query(
                         cause_text,
                         cause.is_question,
@@ -200,9 +207,12 @@ class BackwardInference:
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts:
+            print("QUERY:", query)
+            print("TEXT:", text)
             answer = self._qa.ask(query, text)
             working_memory.add_story(text)
             answer = process_unknown_answer(answer)
+            print("ANSWER:", answer)
             return answer
 
     def _look_for_answer_in_common_sense(self, query, depth):
@@ -342,7 +352,9 @@ class BackwardInference:
 
             working_memory = WorkingMemory()
             # working_memory is used as argument of the code in eval()
+            print("EXECUTING", to_execute)
             result = eval(f"self._module.{to_execute}")
+            print("RESULT", result)
 
         except (CloseConversation, InterruptTask) as e:
             _logger.warning(str(e))
