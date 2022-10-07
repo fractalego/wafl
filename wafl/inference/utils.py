@@ -135,7 +135,7 @@ def cluster_facts(facts_and_threshold):
             continue
 
         if abs(threshold - last_threshold) < _cluster_margin:
-            text += fact.text + ". "
+            text += normalized(fact.text) + ". "
 
         else:
             texts.append(text.strip())
