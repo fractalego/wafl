@@ -28,6 +28,7 @@ class TestVoice(TestCase):
     def test_activation(self):
         interface = DummyInterface(to_utter=["computer my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation.check_understanding(True)
         conversation.input(activation_word="computer")
         expected = "Nice to meet you!"
         assert interface.utterances[0] == expected
@@ -35,6 +36,7 @@ class TestVoice(TestCase):
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation.check_understanding(False)
         conversation.input(activation_word="computer")
         assert interface.utterances == []
 
@@ -77,6 +79,24 @@ class TestVoice(TestCase):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
         assert interface.listener_model_name == config.get_value("listener_model")
+
+    def test__hotword_listener_activated_using_recording_of_hotword(self):
+        f = wave.open(os.path.join(_path, "data/computer.wav"), "rb")
+        waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
+        listener = WhisperListener("tiny.en")
+        listener.input_waveform(waveform)
+        result = listener.hotword_is_present("computer")
+
+        assert result
+
+    def test__hotword_listener_is_not_activated_using_recording_of_not_hotword(self):
+        f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
+        waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
+        listener = WhisperListener("tiny.en")
+        listener.input_waveform(waveform)
+        result = listener.hotword_is_present("computer")
+
+        assert not result
 
 
 def _normalize_utterance(text):

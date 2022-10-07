@@ -1,3 +1,5 @@
+import tempfile
+
 import pyaudio
 import time
 import numpy as np
@@ -5,6 +7,8 @@ import torch.cuda
 import whisper
 
 from scipy.io.wavfile import write
+from whisper.decoding import DecodingTask
+from whisper.tokenizer import get_tokenizer
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -22,18 +26,25 @@ class WhisperListener:
         self._timeout = 1
         self._max_timeout = 4
         self._model = whisper.load_model(model_name).to(device)
+        self._options = whisper.DecodingOptions(
+            fp16=False,
+            without_timestamps=True,
+            task="transcribe",
+            language="en",
+            beam_size=2,
+        )
         self._hotwords = list()
         self.is_active = False
+        self._temp_filename = None
 
     def set_hotwords(self, hotwords):
-        self._hotwords = [item.upper() for item in hotwords]
+        self._hotwords = [item.lower() for item in hotwords]
 
     def add_hotwords(self, hotwords):
         if hotwords and not type(hotwords) == list:
             hotwords = [hotwords]
 
-        print("Interface: adding hotwords", str(hotwords))
-        self._hotwords += [item.upper() for item in hotwords]
+        self._hotwords.extend([item.lower() for item in hotwords])
 
     def set_timeout(self, timeout):
         self._timeout = timeout
@@ -89,19 +100,13 @@ class WhisperListener:
                 return self.input_waveform(waveform)
 
     def input_waveform(self, waveform):
-        write("tmp.wav", self._rate, waveform)
-        audio = whisper.load_audio("tmp.wav")
+        self._temp_filename = tempfile.NamedTemporaryFile(delete=False).name
+        write(self._temp_filename, self._rate, waveform)
+        audio = whisper.load_audio(self._temp_filename)
         audio = whisper.pad_or_trim(audio)
         mel = whisper.log_mel_spectrogram(audio).to(device)
-        options = whisper.DecodingOptions(
-            fp16=False,
-            without_timestamps=True,
-            task="transcribe",
-            language="en",
-            beam_size=2,
-        )
 
-        result = whisper.decode(self._model, mel, options)
+        result = whisper.decode(self._model, mel, self._options)
         transcription = result.text
 
         if result.no_speech_prob < 0.4:
@@ -109,6 +114,47 @@ class WhisperListener:
             return transcription
 
         return ""
+
+    def get_hotword_if_present(self):
+        for hotword in self._hotwords:
+            if self.hotword_is_present(hotword):
+                return hotword
+
+        return ""
+
+    def hotword_is_present(self, hotword):
+        if not tempfile:
+            return False
+
+        tokenizer = get_tokenizer(multilingual=False, task="transcribe", language="en")
+        hotword_tokens = torch.tensor([tokenizer.encode(f" {hotword}")])
+        print("CHECKING FOR", hotword)
+
+        task = DecodingTask(self._model, self._options)
+        audio = whisper.load_audio(self._temp_filename)
+        audio = whisper.pad_or_trim(audio)
+        mel = whisper.log_mel_spectrogram(audio).to(device)
+        mel = mel.unsqueeze(0)
+        audio_features = task._get_audio_features(mel)
+        n_audio = mel.shape[0]
+        input_ids = (
+            torch.tensor([task._get_initial_tokens()]).expand(n_audio, -1).to(device)
+        )
+        for _ in range(hotword_tokens.shape[1]):
+            logits = self._model.decoder(
+                torch.tensor(input_ids), audio_features, kv_cache={}
+            )
+            new_token = torch.argmax(logits, dim=-1)
+            new_token = torch.tensor([[new_token[:, -1]]]).to(device)
+            input_ids = torch.cat([input_ids, new_token], dim=-1)
+
+        logprobs = torch.log(torch.softmax(logits, dim=-1))
+        sum_logp = 0
+        for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
+            sum_logp += logp[index]
+
+        print("SUM_LOGP", sum_logp)
+        return sum_logp > -3
 
 
 def _rms(frame):

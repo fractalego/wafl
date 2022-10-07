@@ -42,21 +42,26 @@ def run_from_audio():
     conversation.output("Please say 'Computer' to activate me")
 
     activation_word = "computer"
+    interface.add_hotwords(activation_word)
     max_misses = 3
     while True:
         try:
             result = conversation.input(activation_word=activation_word)
             num_misses = 0
-            print(result)
-            if result:
-                activation_word = ""
+            print("RESULT:", result)
 
-            if not result and not activation_word and not interface.bot_has_spoken():
+            if result:
+                interface.check_understanding(True)
+
+            if (
+                interface.check_understanding()
+                and not result
+                and not interface.bot_has_spoken()
+            ):
                 interface.play_deny_sound()
-                print(num_misses)
+                print("NUM_MISSES:", num_misses)
                 num_misses += 1
                 if num_misses >= max_misses:
-                    activation_word = "computer"
                     interface.check_understanding(False)
 
         except CloseConversation:

@@ -118,7 +118,7 @@ def normalized(text):
     if text[-1] == ".":
         text = text[:-1]
 
-    return text.lower()
+    return text.lower().strip()
 
 
 def cluster_facts(facts_and_threshold):

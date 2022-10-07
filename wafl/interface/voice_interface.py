@@ -41,7 +41,7 @@ class VoiceInterface(BaseInterface):
             max_num_words=max_num_words,
             count_threshold=count_threshold,
         )
-        hotwords = [word.upper() for word in hotwords]
+        hotwords = [word.lower() for word in hotwords]
         self._listener.add_hotwords(hotwords)
 
     def add_hotwords(self, hotwords):
@@ -58,6 +58,10 @@ class VoiceInterface(BaseInterface):
         text = ""
         while not text:
             text = self._listener.input()
+            hotword = self._listener.get_hotword_if_present()
+            print("HOTWORD", hotword)
+            if hotword:
+                text = f"[{hotword}] {text}"
 
         while self._check_understanding and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)

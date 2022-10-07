@@ -70,34 +70,33 @@ class Conversation:
         except IndexError:
             return False
 
-        if activation_word and self.__activation_word_in_text(activation_word, text):
+        if not self._interface.check_understanding() and self.__activation_word_in_text(
+            activation_word, text
+        ):
             self._interface.check_understanding(True)
+            print("ACTIVATING", text)
             text = self.__remove_activation_word_and_normalize(activation_word, text)
-            if activation_word and not text:
+            print(f"|{normalized(text)}|")
+            print(f"|{normalized(activation_word)}|")
+            if normalized(text) == normalized(activation_word):
                 return True
 
+        if self._interface.check_understanding():
             answer = self.add(text)
-            print("ANSWER:", answer)
-            if answer and answer.text != "False":
-                return True
-
-        elif self._interface.check_understanding():
-            answer = self.add(text)
-            print("ANSWER2:", answer)
             if answer and answer.text != "False":
                 return True
 
         return False
 
+    def check_understanding(self, do_the_check=None):
+        return self._interface.check_understanding(do_the_check)
+
     def __activation_word_in_text(self, activation_word, text):
-        if normalized(activation_word) in normalized(text):
+        if f"[{normalized(activation_word)}]" in normalized(text):
             return True
 
         return False
 
     def __remove_activation_word_and_normalize(self, activation_word, text):
-        activation_pos = normalized(text).find(normalized(activation_word))
-        if activation_pos != -1:
-            return normalized(text[activation_pos + len(activation_word) :])
-
-        return ""
+        to_remove = f"[{activation_word}]"
+        return text.replace(to_remove, "").strip()

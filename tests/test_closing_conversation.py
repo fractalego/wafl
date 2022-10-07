@@ -52,7 +52,7 @@ class TestLanguageInFunctions(TestCase):
     def test__thank_you_closes_conversation(self):
         interface = DummyInterface(
             to_utter=[
-                "Thank you.",
+                "Thank you",
             ]
         )
         conversation = Conversation(
