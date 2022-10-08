@@ -1,3 +1,5 @@
+from time import sleep
+
 import pyaudio
 import torch
 
@@ -38,5 +40,6 @@ class FairSeqSpeaker(BaseSpeaker):
             output=True,
         )
         stream.write(wav.cpu().numpy().tobytes())
+        sleep(0.5)
         stream.stop_stream()
         stream.close()
