@@ -43,15 +43,6 @@ is the dlr running?
 
 
 class TestLanguageInFunctions(TestCase):
-    def ntest_preprocessing(self):
-        create_preprocessed("functions")
-        remove_preprocessed("functions")
-
-    def test_import_preprocessed_module(self):
-        create_preprocessed("functions")
-        import_module("functions")
-        remove_preprocessed("functions")
-
     def test_executables(self):
         interface = DummyInterface(
             to_utter=[

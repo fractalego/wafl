@@ -12,7 +12,8 @@ class FairSeqSpeaker(BaseSpeaker):
     def __init__(self, voice="facebook/fastspeech2-en-ljspeech"):
         self._chunk = 1024
         models, cfg, self._task = load_model_ensemble_and_task_from_hf_hub(
-            voice, arg_overrides={"vocoder": "hifigan", "fp16": False},
+            voice,
+            arg_overrides={"vocoder": "hifigan", "fp16": False},
         )
         self._p = pyaudio.PyAudio()
         self._model = models[0]
@@ -23,7 +24,9 @@ class FairSeqSpeaker(BaseSpeaker):
 
     def speak(self, text):
         sample = TTSHubInterface.get_model_input(self._task, text)
-        sample["net_input"]["src_tokens"] = sample["net_input"]["src_tokens"].to(_device)
+        sample["net_input"]["src_tokens"] = sample["net_input"]["src_tokens"].to(
+            _device
+        )
         wav, rate = TTSHubInterface.get_prediction(
             self._task, self._model, self._generator, sample
         )

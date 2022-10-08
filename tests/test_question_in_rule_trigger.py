@@ -4,11 +4,7 @@ from wafl.conversation.conversation import Conversation
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
-from wafl.parsing.preprocess import (
-    create_preprocessed,
-    remove_preprocessed,
-    import_module,
-)
+
 
 wafl_example = """
 This bot is here to answer the user.
