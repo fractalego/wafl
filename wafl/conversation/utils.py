@@ -43,6 +43,58 @@ def is_yes_no_question(text):
     return False
 
 
+def get_sentence_from_yn_question(text):
+    text = text.strip()
+    text = text.replace("?", "")
+    if not text:
+        return ""
+
+    triggers_list = [
+        ("NN", "DT"),
+        ("NNP", "DT"),
+        ("NN", "JJ"),
+        ("NNP", "JJ"),
+        ("NN", "RB"),
+        ("NNP", "RB"),
+        ("NN", "VBG"),
+        ("NNP", "VBG"),
+        ("NN", "VB"),
+        ("NNP", "VB"),
+        ("NN", "VBN"),
+        ("NNP", "VBN"),
+        ("NNS", "DT"),
+        ("NNS", "JJ"),
+        ("NNS", "RB"),
+        ("NNS", "VBG"),
+        ("NNS", "VBN"),
+        ("NNS", "VB"),
+        ("PRP", "DT"),
+        ("PRP", "JJ"),
+        ("PRP", "RB"),
+        ("PRP", "VBG"),
+        ("PRP", "VBN"),
+        ("PRP", "VB"),
+    ]
+
+    word_and_pos_list = pos_tag(word_tokenize(text))
+    first_word = word_and_pos_list[0][0].lower()
+    new_word_list = []
+    words_has_been_added = False
+    for index in range(1, len(word_and_pos_list[1:])):
+        new_word_list.append(word_and_pos_list[index][0])
+        curr_pos = word_and_pos_list[index][1]
+        next_pos = word_and_pos_list[index + 1][1]
+        if not words_has_been_added and (curr_pos, next_pos) in triggers_list:
+            new_word_list.append(first_word)
+            words_has_been_added = True
+
+    if not words_has_been_added:
+        new_word_list.append(first_word)
+
+    new_word_list.append(word_and_pos_list[-1][0])
+    return " ".join(new_word_list)
+
+
 def get_answer_using_text(inference, interface, text):
     working_memory = WorkingMemory()
     text = text.capitalize()

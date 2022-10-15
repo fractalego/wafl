@@ -1,8 +1,10 @@
+import os
 import torch
 
 from typing import Dict
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
