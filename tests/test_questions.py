@@ -23,4 +23,4 @@ class TestQuestions(TestCase):
         qa = QA()
         answer = qa.ask(query, user_answer)
 
-        assert answer.text == "yes"
+        assert answer.is_true()

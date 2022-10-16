@@ -52,10 +52,10 @@ class BackwardInference:
         query = Query(text=text, is_question=is_question(text))
         answer = self._compute_recursively(query, working_memory, depth=1)
 
-        if answer.text == "True":
+        if answer.is_true():
             return True
 
-        if answer.text == "False":
+        if answer.is_false():
             return False
 
         return answer.text
@@ -78,7 +78,7 @@ class BackwardInference:
         answer = self._look_for_answer_in_facts(query, working_memory, depth)
         print("FACTS:", answer)
         candidate_answers.append(answer)
-        if answer and normalized(answer.text) != "unknown":
+        if answer and not answer.is_neutral():
             return answer
 
         if depth > 0:
@@ -142,7 +142,7 @@ class BackwardInference:
                 answer = self.__validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
-                if answer.text == "False":
+                if answer.is_false():
                     continue
 
             for cause in rule.causes:
@@ -181,7 +181,7 @@ class BackwardInference:
                 if invert_results:
                     answer = invert_answer(answer)
 
-                if answer.text == "False":
+                if answer.is_false():
                     working_memory.add_failed_clause(cause_text)
                     break
 
@@ -195,7 +195,7 @@ class BackwardInference:
                     rule_effect_text, query, substitutions
                 )
 
-                if answer.text != "False":
+                if not answer.is_false():
                     return answer
 
             if inverted_rule:
@@ -270,13 +270,13 @@ class BackwardInference:
                 if is_yes_no_question(query.text):
                     user_answer = project_answer(user_answer, ["yes", "no"])
 
-                if normalized(user_answer.text) == "yes":
+                if user_answer.is_true():
                     user_answer = Answer(text="True")
                     working_memory.add_story(story)
                     working_memory.add_question(query.text)
                     working_memory.add_answer("yes")
 
-                elif normalized(user_answer.text) == "no":
+                elif user_answer.is_false():
                     user_answer = Answer(text="False")
 
                 else:
@@ -284,7 +284,7 @@ class BackwardInference:
                     working_memory.add_question(query.text)
                     working_memory.add_answer(user_input_text)
 
-            if normalized(user_answer.text) != "unknown":
+            if not user_answer.is_neutral():
                 if user_answer.text[-1] == ".":
                     user_answer.text = user_answer.text[:-1]
                 return user_answer
@@ -295,7 +295,7 @@ class BackwardInference:
         print("FINAL answer:", answer)
         print("FINAL query:", query_text)
 
-        if answer.text == "False":
+        if answer.is_false():
             return False
 
         if answer.variable:
@@ -328,11 +328,8 @@ class BackwardInference:
         print("FINAL rule_effect_text:", rule_effect_text)
         print("FINAL query:", query)
 
-        if answer.text == "False":
+        if answer.is_true():
             return answer
-
-        if answer.text.lower() == "yes":
-            answer.text = "True"
 
         return answer
 

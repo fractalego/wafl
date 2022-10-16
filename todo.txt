@@ -1,6 +1,8 @@
 ### TODO
 * Do lists as hard-coded
 * Do arbiter with QA
+* y/n questions are never searched in working memory. Is this the right behavior?
+
 
 /* functions.py need a more clever way of handling hidden arguments
   - should all functions have a hidden arg?

@@ -16,7 +16,9 @@ class QA:
         self._entailer = Entailer()
         self._qa = ConvQA("fractalego/conversation-qa")
         self._entailer_to_qa_mapping = {"True": "Yes",
-                                        "False": "No"}
+                                        "False": "No",
+                                        "Unknown": "Unknown",
+                                        }
 
     def ask(self, query: "Query", text: str):
         query_text = query.text.strip()

@@ -16,6 +16,9 @@ def is_question(text):
     if text[-1] == "?":
         return True
 
+    if ", the user says" in text:
+        return False
+
     text = re.sub("^Are", "are", text)
     text = re.sub("^Am", "am", text)
 
@@ -59,21 +62,29 @@ def get_sentence_from_yn_question(text):
         ("NN", "VBG"),
         ("NNP", "VBG"),
         ("NN", "VB"),
+        ("NN", "VBP"),
+        ("NN", "VBD"),
         ("NNP", "VB"),
+        ("NNP", "VBP"),
         ("NN", "VBN"),
         ("NNP", "VBN"),
+        ("NNP", "VBD"),
         ("NNS", "DT"),
         ("NNS", "JJ"),
         ("NNS", "RB"),
         ("NNS", "VBG"),
         ("NNS", "VBN"),
+        ("NNS", "VBD"),
         ("NNS", "VB"),
+        ("NNS", "VBP"),
         ("PRP", "DT"),
         ("PRP", "JJ"),
         ("PRP", "RB"),
         ("PRP", "VBG"),
         ("PRP", "VBN"),
+        ("PRP", "VBD"),
         ("PRP", "VB"),
+        ("PRP", "VBP"),
     ]
 
     word_and_pos_list = pos_tag(word_tokenize(text))

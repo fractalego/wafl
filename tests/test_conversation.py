@@ -95,7 +95,7 @@ class TestConversation(TestCase):
         input_from_user = "the user's mother is called Ada"
         conversation.add(input_from_user)
         answer = conversation.add("How is the user's mum called")
-        assert answer.text == "Ada"
+        assert answer.text.lower() == "ada"
 
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
@@ -105,7 +105,7 @@ class TestConversation(TestCase):
         conversation.input()
         conversation.input()
         print(interface.utterances)
-        assert interface.utterances[-1] == "Albert"
+        assert interface.utterances[-1].lower() == "albert"
 
     def test__greeting_with_alberto_as_name(self):
         interface = DummyInterface(["My name is Albert0", "What is my name"])
@@ -115,7 +115,7 @@ class TestConversation(TestCase):
         conversation.input()
         conversation.input()
         print(interface.utterances)
-        assert interface.utterances[-1] == "Albert0"
+        assert interface.utterances[-1].lower() == "albert0"
 
     def test__yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])
@@ -157,6 +157,7 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
+        print(interface.utterances)
         assert interface.utterances[-1] == "Nice to meet you, albert!"
 
     def test__conversation_input_returns_false_for_trivial_input(self):
