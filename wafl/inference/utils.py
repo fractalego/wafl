@@ -110,7 +110,7 @@ def process_unknown_answer(answer):
     return answer
 
 
-def normalized(text):
+def normalized(text, lower_case=True):
     text = text.strip()
     if not text:
         return ""
@@ -118,7 +118,10 @@ def normalized(text):
     if text[-1] == ".":
         text = text[:-1]
 
-    return text.lower().strip()
+    if lower_case:
+        text = text.lower()
+
+    return text.strip()
 
 
 def cluster_facts(facts_and_threshold):
@@ -135,7 +138,7 @@ def cluster_facts(facts_and_threshold):
             continue
 
         if abs(threshold - last_threshold) < _cluster_margin:
-            text += normalized(fact.text) + ". "
+            text += normalized(fact.text, lower_case=False) + ". "
 
         else:
             texts.append(text.strip())
