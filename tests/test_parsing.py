@@ -11,13 +11,12 @@ wafl_example = """
 USER greets
   USER is called {username}
   SAY hello to you, {username}!
-
 USER says their name
   USER is called {username}
+  
   nice to meet you {username}
   
 BOT name is Fractalego
-
 the user is happy
 
 """.strip()
@@ -54,6 +53,7 @@ class TestParsing(TestCase):
                 Fact(text="the user is happy", is_question=False),
             ]
         )
+        print(facts_and_rules["facts"])
         assert str(facts_and_rules["facts"]) == expected
 
     def test_knowledge_facts(self):

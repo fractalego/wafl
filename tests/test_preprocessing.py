@@ -18,7 +18,6 @@ the user says hello
 """
 
 
-
 class TestLanguageInFunctions(TestCase):
     def test__preprocessing_has_all_functions_names(self):
         predicted = get_all_functions_names("preprocess_test_functions")
@@ -41,11 +40,12 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="preprocess_test_functions"
+            Knowledge(wafl_example),
+            interface=interface,
+            code_path="preprocess_test_functions",
         )
         conversation.input()
         expected = [
             "Hello",
         ]
         assert interface.utterances == expected
-        

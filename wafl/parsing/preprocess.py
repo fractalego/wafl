@@ -28,9 +28,7 @@ def create_preprocessed(module: str):
                 "\\1, inference, working_memory)",
                 text,
             )
-            text = re.sub(
-                f"({name})\(\)", "\\1(inference, working_memory)", text
-            )
+            text = re.sub(f"({name})\(\)", "\\1(inference, working_memory)", text)
 
     with open(preprocessed_prefix + filename, "w") as file:
         file.write(text)

@@ -7,7 +7,6 @@ from wafl.qa.qa import QA
 _path = os.path.dirname(__file__)
 
 
-
 class TestQuestionsToStatements(TestCase):
     def test__yn_question_is_translated_to_sentence1(self):
         text = "is this bot doing well?"

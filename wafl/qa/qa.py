@@ -2,7 +2,11 @@ import logging
 import os
 
 from conversation_qa import QA as ConvQA, Dialogue
-from wafl.conversation.utils import is_question, is_yes_no_question, get_sentence_from_yn_question
+from wafl.conversation.utils import (
+    is_question,
+    is_yes_no_question,
+    get_sentence_from_yn_question,
+)
 from wafl.inference.utils import normalized
 from wafl.qa.dataclasses import Answer
 from wafl.qa.entailer import Entailer
@@ -15,10 +19,11 @@ class QA:
     def __init__(self):
         self._entailer = Entailer()
         self._qa = ConvQA("fractalego/conversation-qa")
-        self._entailer_to_qa_mapping = {"True": "Yes",
-                                        "False": "No",
-                                        "Unknown": "Unknown",
-                                        }
+        self._entailer_to_qa_mapping = {
+            "True": "Yes",
+            "False": "No",
+            "Unknown": "Unknown",
+        }
 
     def ask(self, query: "Query", text: str):
         query_text = query.text.strip()
