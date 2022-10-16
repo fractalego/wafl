@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="wafl",
-    version="0.0.3",
+    version="0.0.4",
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
     author_email="alberto@fractalego.io",
