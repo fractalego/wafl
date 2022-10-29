@@ -46,14 +46,7 @@ class TestVoice(TestCase):
         interface.add_hotwords_from_knowledge(
             Knowledge(_wafl_example), count_threshold=1
         )
-        expected = [
-            "JANE",
-            "NAME IS",
-            "IS JANE",
-            "SAYS",
-            "SAYS THEIR",
-            "THEIR NAME",
-        ]
+        expected = ['jane', 'name is', 'is jane', 'says', 'says their', 'their name']
         assert interface._listener._hotwords == expected
 
     def test_sound_file_is_translated_correctly(self):

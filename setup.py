@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="wafl",
-    version="0.0.4",
+    version="0.0.6",
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
     author_email="alberto@fractalego.io",
@@ -48,10 +48,7 @@ setup(
         "PyAudio==0.2.11",
         "pyctcdecode==0.2.1",
         "huggingface-hub==0.10.0",
-        "whisper==1.0"
-    ],
-    dependency_links=[
-        "git+https://github.com/openai/whisper@9f70a352f9f8630ab3aa0d06af5cb9532bd8c21d#egg=whisper",
+        "whisper @ git+https://github.com/openai/whisper@9f70a35#egg=whisper-1.0",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",
