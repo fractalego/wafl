@@ -6,7 +6,6 @@
 # Installation
 ```bash
 sudo apt-get install portaudio19-dev ffmpeg
-pip install git+https://github.com/openai/whisper@9f70a3#egg=whisper
 pip install wafl
 ```
 
