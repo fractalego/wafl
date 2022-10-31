@@ -1,14 +1,9 @@
-import tempfile
-
 import pyaudio
 import time
 import numpy as np
 import torch.cuda
-import whisper
 
-from scipy.io.wavfile import write
-from whisper.decoding import DecodingTask
-from whisper.tokenizer import get_tokenizer
+from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -25,17 +20,13 @@ class WhisperListener:
         self._threshold = 1
         self._timeout = 1
         self._max_timeout = 4
-        self._model = whisper.load_model(model_name).to(device)
-        self._options = whisper.DecodingOptions(
-            fp16=False,
-            without_timestamps=True,
-            task="transcribe",
-            language="en",
-            beam_size=2,
+        self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
+            device
         )
+        self._processor = WhisperProcessor.from_pretrained(model_name)
         self._hotwords = list()
         self.is_active = False
-        self._temp_filename = None
+        self._last_waveform = None
 
     def set_hotwords(self, hotwords):
         self._hotwords = [item.lower() for item in hotwords]
@@ -100,16 +91,19 @@ class WhisperListener:
                 return self.input_waveform(waveform)
 
     def input_waveform(self, waveform):
-        self._temp_filename = tempfile.NamedTemporaryFile(delete=False).name
-        write(self._temp_filename, self._rate, waveform)
-        audio = whisper.load_audio(self._temp_filename)
-        audio = whisper.pad_or_trim(audio)
-        mel = whisper.log_mel_spectrogram(audio).to(device)
+        self._last_waveform = waveform
+        input_features = self._processor(waveform, return_tensors="pt").input_features
+        output = self._model.generate(
+            input_features.to(device),
+            num_beams=2,
+            return_dict_in_generate=True,
+            output_scores=True,
+        )
+        transcription = self._processor.batch_decode(
+            output.sequences, skip_special_tokens=True
+        )[0]
 
-        result = whisper.decode(self._model, mel, self._options)
-        transcription = result.text
-
-        if result.no_speech_prob < 0.4:
+        if torch.exp(output.sequences_scores) > 0.6:
             self.deactivate()
             return transcription
 
@@ -123,26 +117,22 @@ class WhisperListener:
         return ""
 
     def hotword_is_present(self, hotword):
-        if not tempfile:
-            return False
-
-        tokenizer = get_tokenizer(multilingual=False, task="transcribe", language="en")
-        hotword_tokens = torch.tensor([tokenizer.encode(f" {hotword}")])
-
-        task = DecodingTask(self._model, self._options)
-        audio = whisper.load_audio(self._temp_filename)
-        audio = whisper.pad_or_trim(audio)
-        mel = whisper.log_mel_spectrogram(audio).to(device)
-        mel = mel.unsqueeze(0)
-        audio_features = task._get_audio_features(mel)
-        n_audio = mel.shape[0]
-        input_ids = (
-            torch.tensor([task._get_initial_tokens()]).expand(n_audio, -1).to(device)
-        )
-        for _ in range(hotword_tokens.shape[1]):
-            logits = self._model.decoder(
-                torch.tensor(input_ids), audio_features, kv_cache={}
+        if type(self._last_waveform) != np.ndarray:
+            raise RuntimeError(
+                "The waveform has not been processed. Please call input_waveform() before hotword_is_present()"
             )
+
+        input_features = self._processor(
+            self._last_waveform, return_tensors="pt"
+        ).input_features
+        hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
+        starting_tokens = [50257, 50362]
+        input_ids = torch.tensor([starting_tokens]).to(device)
+        for _ in range(hotword_tokens.shape[1]):
+            logits = self._model(
+                input_features.to(device),
+                decoder_input_ids=input_ids,
+            ).logits
             new_token = torch.argmax(logits, dim=-1)
             new_token = torch.tensor([[new_token[:, -1]]]).to(device)
             input_ids = torch.cat([input_ids, new_token], dim=-1)

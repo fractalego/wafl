@@ -5,5 +5,5 @@
   "waking_up_sound": true,
   "deactivate_sound": true,
   "deny_sound": true,
-  "listener_model": "tiny.en"
+  "listener_model": "openai/whisper-tiny.en"
 }

@@ -208,7 +208,9 @@ class TestConversation(TestCase):
 
     def test__conversation_input_returns_false_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])
-        conversation = Conversation(Knowledge("", logger=_logger), interface=interface, logger=_logger)
+        conversation = Conversation(
+            Knowledge("", logger=_logger), interface=interface, logger=_logger
+        )
         result = conversation.input()
         assert not result
 

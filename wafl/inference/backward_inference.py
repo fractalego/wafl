@@ -400,6 +400,4 @@ class BackwardInference:
             if depth:
                 self._logger.set_depth(depth)
 
-            self._logger.write(
-                f"BackwardInference: {text}", self._logger.level.INFO
-            )
+            self._logger.write(f"BackwardInference: {text}", self._logger.level.INFO)
