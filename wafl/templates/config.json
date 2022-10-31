@@ -1,12 +1,9 @@
 {
   "accept_random_facts": false,
   "allow_interruptions": true,
-  "voice_hotwords": [
-    "COMPUTER"
-  ],
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
   "deny_sound": true,
-  "listener_model": "tiny.en",
+  "listener_model": "openai/whisper-tiny.en"
 }

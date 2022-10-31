@@ -1,5 +1,4 @@
-import logging
-from logging import getLogger
+from logger.local_file_logger import LocalFileLogger
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation
@@ -8,14 +7,17 @@ from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
 
-_logger = getLogger(__file__)
+_logger = LocalFileLogger(__file__)
 
 
 def run_from_command_line():
     wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
-        Knowledge(wafl_rules), interface=interface, code_path="functions"
+        Knowledge(wafl_rules, logger=_logger),
+        interface=interface,
+        code_path="functions",
+        logger=_logger,
     )
     conversation.output("Hello. How may I help you?")
 
@@ -30,14 +32,15 @@ def run_from_command_line():
 
 def run_from_audio():
     config = Configuration.load_local_config()
-    knowledge = Knowledge(open("rules.wafl").read())
+    knowledge = Knowledge(open("rules.wafl").read(), logger=_logger)
     interface = VoiceInterface(config)
     interface.check_understanding(False)
-    if config.get_value("voice_hotwords"):
-        interface.add_hotwords(config.get_value("voice_hotwords"))
-
     conversation = Conversation(
-        knowledge, interface=interface, code_path="functions", config=config
+        knowledge,
+        interface=interface,
+        code_path="functions",
+        config=config,
+        logger=_logger,
     )
     conversation.output("Please say 'Computer' to activate me")
 
@@ -48,7 +51,7 @@ def run_from_audio():
         try:
             result = conversation.input(activation_word=activation_word)
             num_misses = 0
-            print("RESULT:", result)
+            _logger.write(f"Conversation Result {result}", log_level=_logger.level.INFO)
 
             if result:
                 interface.check_understanding(True)
@@ -59,14 +62,12 @@ def run_from_audio():
                 and not interface.bot_has_spoken()
             ):
                 interface.play_deny_sound()
-                print("NUM_MISSES:", num_misses)
                 num_misses += 1
                 if num_misses >= max_misses:
                     interface.check_understanding(False)
 
         except CloseConversation:
-            print("Closing conversation")
-            _logger.info("Closing conversation")
+            _logger.write(f"Closing the conversation", log_level=_logger.level.INFO)
             activation_word = "computer"
             interface.check_understanding(False)
             continue

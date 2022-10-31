@@ -110,5 +110,4 @@ A:
         )
         conversation.input()
         expected = "Bananas has been added to the list"
-        print(interface.utterances)
         assert interface.utterances[-2] == expected

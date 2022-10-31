@@ -67,7 +67,6 @@ class TestNew(TestCase):
                 is_question=False,
             )
         )
-        print(len(results))
         assert len(results) == 2
 
     def test_second_rule_is_not_run_if_prior_clause_fails(self):
@@ -85,5 +84,4 @@ class TestNew(TestCase):
         conversation.input()
         conversation.input()
         output = "\n".join(interface.utterances)
-        print(interface.utterances)
         assert output.count("Do you want to remove apples from the shopping list") == 1

@@ -37,12 +37,15 @@ class BackwardInference:
         interface: "Interface",
         module_name=None,
         max_depth: int = 10,
+        logger=None,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
-        self._qa = QA()
+        self._qa = QA(logger)
         self._common_sense = CommonSense()
+        self._logger = logger
+
         if module_name:
             create_preprocessed(module_name)
             self._module = import_module(module_name)
@@ -69,16 +72,16 @@ class BackwardInference:
     def _compute_recursively(
         self, query: "Query", working_memory, depth, inverted_rule=False
     ):
+        self._log(f"The query is {query.text}", depth)
+
         if depth > self._max_depth:
             return Answer(text="False")
 
         candidate_answers = []
-        print("RECURSION:", depth, query)
-
         answer = self._look_for_answer_in_facts(query, working_memory, depth)
-        print("FACTS:", answer)
         candidate_answers.append(answer)
         if answer and not answer.is_neutral():
+            self._log("Answers in facts: " + answer.text, depth)
             return answer
 
         if depth > 0:
@@ -89,16 +92,17 @@ class BackwardInference:
         answer = self._look_for_answer_in_working_memory(query, working_memory, depth)
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
         answer = self._look_for_answer_by_asking_the_user(query, working_memory, depth)
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            self._log("Answers by asking the user: " + answer.text, depth)
             return answer
 
         if depth > 0:
             working_memory = WorkingMemory()
-
             if text_has_say_command(query.text):
                 answer = self.__process_say_command(query.text)
                 return answer
@@ -114,25 +118,25 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            self._log("Answer found by executing the rules: " + answer.text, depth)
             return answer
 
         answer = self._look_for_answer_in_common_sense(query, depth)
-        print("FACTS:", answer)
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            self._log("Answer in common sense: " + answer.text, depth)
             return answer
 
         return selected_answer(candidate_answers)
 
     def _look_for_answer_in_rules(self, query, working_memory, depth, inverted_rule):
         rules = self._knowledge.ask_for_rule_backward(query)
-        print("RULES:", rules)
         for rule in rules:
             index = 0
             substitutions = {}
 
             rule_effect_text = rule.effect.text
-
+            self._log(f"Trying rule with trigger: {rule_effect_text}", depth)
             if rule.effect.is_question:
                 self._validate_question_in_effects(
                     rule.effect, query.text, substitutions
@@ -147,29 +151,23 @@ class BackwardInference:
 
             for cause in rule.causes:
                 cause_text = cause.text.strip()
+                self._log("clause: " + cause_text, depth)
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
-
-                print("CAUSE")
-
                 if working_memory.is_in_prior_failed_clauses(cause_text):
-                    print("IN FAILED CLAUSES")
+                    self._log("This clause failed before", depth)
                     continue
 
                 if text_has_say_command(cause_text):
-                    print("SAY")
                     answer = self.__process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
-                    print("REMEMBER")
                     answer = self.__process_remember_command(cause_text)
 
                 elif text_is_code(cause_text):
-                    print("CODE")
                     answer = self.__process_code(cause_text, substitutions)
 
                 else:
-                    print("QUERY")
                     answer = self.__process_query(
                         cause_text,
                         cause.is_question,
@@ -207,12 +205,12 @@ class BackwardInference:
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts:
-            print("QUERY:", query)
-            print("TEXT:", text)
+            self._log(f"Answer within facts: The query is {query.text}")
+            self._log(f"Answer within facts: The context is {text}")
             answer = self._qa.ask(query, text)
             working_memory.add_story(text)
             answer = process_unknown_answer(answer)
-            print("ANSWER:", answer)
+            self._log(f"Answer within facts: The answer is {answer.text}")
             return answer
 
     def _look_for_answer_in_common_sense(self, query, depth):
@@ -291,9 +289,9 @@ class BackwardInference:
 
     def _validate_question_in_effects(self, effect, query_text, substitutions):
         answer = self._qa.ask(effect, query_text)
-        print("QUESTION")
-        print("FINAL answer:", answer)
-        print("FINAL query:", query_text)
+        self._log("Validating question in the rule trigger.")
+        self._log(f"The query is {query_text}")
+        self._log(f"The answer is {answer.text}")
 
         if answer.is_false():
             return False
@@ -305,16 +303,19 @@ class BackwardInference:
 
     def __process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
+        self._log(f"Uttering: {utterance}")
         self._interface.output(utterance)
         answer = Answer(text="True")
         return answer
 
     def __process_remember_command(self, cause_text):
         utterance = cause_text[8:].strip().capitalize()
+        self._log(f"Remembering: {utterance}")
         self._knowledge.add(utterance)
         return Answer(text="True")
 
     def __process_new_working_memory_command(self):
+        self._log(f"Erasing working memory")
         return Answer(text="True")
 
     def __validate_fact_in_effects(self, rule_effect_text, query, substitutions):
@@ -323,10 +324,9 @@ class BackwardInference:
                 rule_effect_text = rule_effect_text.replace(key, value)
 
         answer = self._qa.ask(query, rule_effect_text)
-        print("FACT")
-        print("FINAL answer:", answer)
-        print("FINAL rule_effect_text:", rule_effect_text)
-        print("FINAL query:", query)
+        self._log("Validating the statement in the rule trigger.")
+        self._log(f"The query is {rule_effect_text}")
+        self._log(f"The answer is {answer.text}")
 
         if answer.is_true():
             return answer
@@ -348,10 +348,10 @@ class BackwardInference:
                 to_execute = add_function_arguments(to_execute)
 
             working_memory = WorkingMemory()
+            self._log(f"Executing code: {to_execute}")
             # working_memory is used as argument of the code in eval()
-            print("EXECUTING", to_execute)
             result = eval(f"self._module.{to_execute}")
-            print("RESULT", result)
+            self._log(f"Execution result: {result}")
 
         except (CloseConversation, InterruptTask) as e:
             _logger.warning(str(e))
@@ -376,6 +376,7 @@ class BackwardInference:
     def __process_query(
         self, cause_text, cause_is_question, working_memory, depth, inverted_rule
     ):
+        self._log("Processing clause as a query", depth)
         if "=" in cause_text:
             variable, text = cause_text.split("=")
             variable = variable.strip()
@@ -391,5 +392,12 @@ class BackwardInference:
         answer = self._compute_recursively(
             new_query, working_memory, depth + 1, inverted_rule
         )
-
+        self._log(f"The answer to the query is {answer.text}", depth)
         return answer
+
+    def _log(self, text, depth=None):
+        if self._logger:
+            if depth:
+                self._logger.set_depth(depth)
+
+            self._logger.write(f"BackwardInference: {text}", self._logger.level.INFO)

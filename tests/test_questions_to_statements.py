@@ -37,5 +37,4 @@ class TestQuestionsToStatements(TestCase):
         query = Query("is this bot ok?", is_question=True)
         qa = QA()
         prediction = qa.ask(query, text)
-        print(prediction)
         self.assertEqual("yes", prediction.text.lower())

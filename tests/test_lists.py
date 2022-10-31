@@ -83,7 +83,6 @@ class TestNew(TestCase):
         conversation.input()
         conversation.input()
         output = "\n".join(interface.utterances)
-        print(interface.utterances)
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
     def test__add_item_to_list_as_function(self):
@@ -106,7 +105,6 @@ class TestNew(TestCase):
         while conversation.input():
             pass
 
-        print(interface.utterances)
         assert (
             interface.utterances[-1]
             == "The shopping list contains: apples, bananas, strawberries"

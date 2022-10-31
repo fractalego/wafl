@@ -29,7 +29,7 @@ class VoiceInterface(BaseInterface):
         self._speaker = FairSeqSpeaker()
         self._listener = WhisperListener(self.listener_model_name)
         self._listener.set_timeout(0.6)
-        self._listener.set_threshold(0.9)
+        self._listener.set_threshold(0.7)
         self._bot_has_spoken = False
         self._check_understanding = True
 
@@ -59,7 +59,6 @@ class VoiceInterface(BaseInterface):
         while not text:
             text = self._listener.input()
             hotword = self._listener.get_hotword_if_present()
-            print("HOTWORD", hotword)
             if hotword:
                 text = f"[{hotword}] {text}"
 

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="wafl",
-    version="0.0.6",
+    version="0.0.7",
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
     author_email="alberto@fractalego.io",
@@ -31,7 +31,9 @@ setup(
         "flask==2.0.1",
         "flask-cors==3.0.10",
         "flask_dropzone==1.6.0",
-        "transformers==4.21.2",
+        "transformers==4.23.1",
+        "accelerate==0.13.2",
+        "bitsandbytes==0.35.3",
         "sentence_transformers==2.2.2",
         "torch==1.12.1",
         "nltk==3.6.2",

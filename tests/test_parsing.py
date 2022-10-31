@@ -53,7 +53,6 @@ class TestParsing(TestCase):
                 Fact(text="the user is happy", is_question=False),
             ]
         )
-        print(facts_and_rules["facts"])
         assert str(facts_and_rules["facts"]) == expected
 
     def test_knowledge_facts(self):

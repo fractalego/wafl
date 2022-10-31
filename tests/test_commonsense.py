@@ -57,5 +57,4 @@ class TestCommonSense(TestCase):
         )
         conversation.input()
         expected = "No thanks is not a shopping item"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected
