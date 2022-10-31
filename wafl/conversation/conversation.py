@@ -17,10 +17,11 @@ class Conversation:
         interface: "BaseInterface",
         code_path=None,
         config=None,
+        logger=None,
     ):
         self._knowledge = knowledge
         self._interface = interface
-        self._inference = BackwardInference(self._knowledge, interface, code_path)
+        self._inference = BackwardInference(self._knowledge, interface, code_path, logger)
         if not config:
             self._config = Configuration.load_local_config()
         else:

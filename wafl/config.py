@@ -28,6 +28,8 @@ def create_initial_files():
     with open("testcases.txt", "w") as file:
         file.write(_testcases_template.read())
 
+    os.mkdir("logs/")
+
     print("Done.")
 
 
