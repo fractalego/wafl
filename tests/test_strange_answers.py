@@ -125,7 +125,6 @@ class TestExceptions(TestCase):
 
         conversation.input()
         expected = "It is a bot name for a computer"
-        print(interface.utterances[-1])
         assert interface.utterances[-1].lower() == expected
 
     def test_double_lower_case_questions_are_answered_correctly(self):

@@ -46,7 +46,7 @@ class TestVoice(TestCase):
         interface.add_hotwords_from_knowledge(
             Knowledge(_wafl_example), count_threshold=1
         )
-        expected = ['jane', 'name is', 'is jane', 'says', 'says their', 'their name']
+        expected = ["jane", "name is", "is jane", "says", "says their", "their name"]
         assert interface._listener._hotwords == expected
 
     def test_sound_file_is_translated_correctly(self):
@@ -55,7 +55,6 @@ class TestVoice(TestCase):
         listener = WhisperListener("tiny.en")
         result = listener.input_waveform(waveform)
         result = _normalize_utterance(result)
-        print(result)
         expected = "DELETE BATTERIES FROM THE GROCERY LIST"
         assert result == expected
 
@@ -64,7 +63,6 @@ class TestVoice(TestCase):
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
         listener = WhisperListener("tiny.en")
         result = listener.input_waveform(waveform)
-        print(result)
         expected = ""
         assert result == expected
 

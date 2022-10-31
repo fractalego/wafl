@@ -48,5 +48,4 @@ class TestNegations(TestCase):
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         conversation.input()
         expected = "do you want to see the shopping list"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected

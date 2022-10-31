@@ -14,7 +14,10 @@ def run_from_command_line():
     wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
-        Knowledge(wafl_rules), interface=interface, code_path="functions"
+        Knowledge(wafl_rules, logger=_logger),
+        interface=interface,
+        code_path="functions",
+        logger=_logger,
     )
     conversation.output("Hello. How may I help you?")
 
@@ -29,12 +32,15 @@ def run_from_command_line():
 
 def run_from_audio():
     config = Configuration.load_local_config()
-    knowledge = Knowledge(open("rules.wafl").read())
+    knowledge = Knowledge(open("rules.wafl").read(), logger=_logger)
     interface = VoiceInterface(config)
     interface.check_understanding(False)
-
     conversation = Conversation(
-        knowledge, interface=interface, code_path="functions", config=config, logger=_logger
+        knowledge,
+        interface=interface,
+        code_path="functions",
+        config=config,
+        logger=_logger,
     )
     conversation.output("Please say 'Computer' to activate me")
 

@@ -59,7 +59,6 @@ class VoiceInterface(BaseInterface):
         while not text:
             text = self._listener.input()
             hotword = self._listener.get_hotword_if_present()
-            print("HOTWORD", hotword)
             if hotword:
                 text = f"[{hotword}] {text}"
 

@@ -16,8 +16,8 @@ _logger = logging.getLogger(__file__)
 
 
 class QA:
-    def __init__(self):
-        self._entailer = Entailer()
+    def __init__(self, logger=None):
+        self._entailer = Entailer(logger)
         self._qa = ConvQA("fractalego/conversation-qa")
         self._entailer_to_qa_mapping = {
             "True": "Yes",

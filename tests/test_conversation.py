@@ -3,6 +3,9 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
+from wafl.logger.local_file_logger import LocalFileLogger
+
+_logger = LocalFileLogger()
 
 _wafl_example = """
 
@@ -58,32 +61,46 @@ This bot is doing well
 class TestConversation(TestCase):
     def test__single_utterance(self):
         interface = DummyInterface()
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_example, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         assert interface.utterances[0] == utterance
 
     def test__say_command(self):
         interface = DummyInterface()
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_example, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         input_from_user = "hello!".capitalize()
         conversation.add(input_from_user)
         expected = "Hello to you, bob!"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected
 
     def test_input_during_inference(self):
         interface = DummyInterface(to_utter=["test@example.com"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_example, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         expected = "Test@example.com has been added to the newsletter"
-        print(interface.utterances)
         assert interface.utterances[-1] == expected
 
     def test__remember_command(self):
         interface = DummyInterface(to_utter=["test@example.com"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_example, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         answer = conversation.add("What is the email of the user")
@@ -91,7 +108,11 @@ class TestConversation(TestCase):
 
     def test__knowledge_insertion(self):
         interface = DummyInterface(to_utter=["test@example.com"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_example, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         input_from_user = "the user's mother is called Ada"
         conversation.add(input_from_user)
         answer = conversation.add("How is the user's mum called")
@@ -99,27 +120,37 @@ class TestConversation(TestCase):
 
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        print(interface.utterances)
         assert interface.utterances[-1].lower() == "albert"
 
     def test__greeting_with_alberto_as_name(self):
         interface = DummyInterface(["My name is Albert0", "What is my name"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        print(interface.utterances)
         assert interface.utterances[-1].lower() == "albert0"
 
     def test__yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -128,7 +159,11 @@ class TestConversation(TestCase):
 
     def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -137,7 +172,11 @@ class TestConversation(TestCase):
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -145,7 +184,11 @@ class TestConversation(TestCase):
 
     def test__yes_no_questions_from_bot_with_answer_no(self):
         interface = DummyInterface(["I want to join the club", "no"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -153,21 +196,28 @@ class TestConversation(TestCase):
 
     def test__hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_greetings, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        print(interface.utterances)
         assert interface.utterances[-1] == "Nice to meet you, albert!"
 
     def test__conversation_input_returns_false_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])
-        conversation = Conversation(Knowledge(""), interface=interface)
+        conversation = Conversation(Knowledge("", logger=_logger), interface=interface, logger=_logger)
         result = conversation.input()
         assert not result
 
     def test__how_are_you(self):
         interface = DummyInterface(["How are you?"])
-        conversation = Conversation(Knowledge(_wafl_how_are_you), interface=interface)
+        conversation = Conversation(
+            Knowledge(_wafl_how_are_you, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
         conversation.input()
         assert "doing well" in interface.utterances[-1]

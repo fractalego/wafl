@@ -1,9 +1,7 @@
 import re
+
 from typing import List
-
 from fuzzywuzzy import process
-
-from wafl.facts import Fact
 from wafl.qa.dataclasses import Answer
 
 

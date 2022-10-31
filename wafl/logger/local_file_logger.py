@@ -23,4 +23,5 @@ class LocalFileLogger(BaseLogger):
 
     def write(self, text: str, log_level=LogLevels.INFO):
         if log_level >= self._log_level:
-            self._file.write(" " * self._depth + text)
+            self._file.write(" " * self._depth + text + "\n")
+            self._file.flush()

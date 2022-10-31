@@ -128,7 +128,6 @@ class WhisperListener:
 
         tokenizer = get_tokenizer(multilingual=False, task="transcribe", language="en")
         hotword_tokens = torch.tensor([tokenizer.encode(f" {hotword}")])
-        print("CHECKING FOR", hotword)
 
         task = DecodingTask(self._model, self._options)
         audio = whisper.load_audio(self._temp_filename)
@@ -153,7 +152,6 @@ class WhisperListener:
         for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
             sum_logp += logp[index]
 
-        print("SUM_LOGP", sum_logp)
         return sum_logp > -8
 
 

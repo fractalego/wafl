@@ -21,11 +21,17 @@ class Conversation:
     ):
         self._knowledge = knowledge
         self._interface = interface
-        self._inference = BackwardInference(self._knowledge, interface, code_path, logger)
+        self._inference = BackwardInference(
+            self._knowledge, interface, code_path, logger=logger
+        )
         if not config:
             self._config = Configuration.load_local_config()
         else:
             self._config = config
+
+        self._logger = logger
+        if logger:
+            self._logger.set_depth(0)
 
     def output(self, text: str):
         self._interface.output(text)
@@ -75,12 +81,11 @@ class Conversation:
             activation_word, text
         ):
             self._interface.check_understanding(True)
-            print("ACTIVATING", text)
-            text = self.__remove_activation_word_and_normalize(activation_word, text)
-            print(f"|{normalized(text)}|")
-            print(f"|{normalized(activation_word)}|")
+            self._logger.write(f"Activation word found {text}", depth=0)
             if normalized(text) == normalized(activation_word):
                 return True
+
+            text = self.__remove_activation_word_and_normalize(activation_word, text)
 
         if self._interface.check_understanding():
             answer = self.add(text)
