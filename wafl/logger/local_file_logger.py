@@ -7,6 +7,9 @@ from wafl.logger.base_logger import LogLevels, BaseLogger
 
 class LocalFileLogger(BaseLogger):
     def __init__(self, directory: str = "logs/"):
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+
         filename = hashlib.md5(str(time.time()).encode("utf8")).hexdigest() + ".log"
         self._file = open(os.path.join(directory, filename), "w")
         self._depth = 0

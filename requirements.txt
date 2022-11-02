@@ -19,4 +19,3 @@ g2p_en==2.1.0
 fuzzywuzzy==0.18.0
 PyAudio==0.2.11
 huggingface-hub==0.10.0
-git+https://github.com/openai/whisper@9f70a352f9f8630ab3aa0d06af5cb9532bd8c21d#egg=whisper
