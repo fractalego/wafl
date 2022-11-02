@@ -244,9 +244,10 @@ class BackwardInference:
         if depth > 0 and query.is_question:
 
             while True:
+                self._log(f"Asking the user: {query.text}")
                 self._interface.output(query.text)
                 user_input_text = self._interface.input()
-
+                self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
                     get_answer_using_text(self, self._interface, user_input_text)
 
@@ -264,6 +265,7 @@ class BackwardInference:
                     f"When asked '{query.text}', the user says: '{user_input_text}.'"
                 )
                 user_answer = self._qa.ask(query, story)
+                self._log(f"The answer that is understood: {user_answer.text}")
 
                 if is_yes_no_question(query.text):
                     user_answer = project_answer(user_answer, ["yes", "no"])
