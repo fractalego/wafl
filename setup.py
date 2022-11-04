@@ -42,7 +42,7 @@ setup(
         "sklearn==0.0",
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
-        "conversation-qa==0.0.13",
+        "conversation-qa==0.0.15",
         "creak-sense==0.0.4",
         "protobuf==4.21.5",
         "fairseq==0.12.2",
