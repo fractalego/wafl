@@ -23,6 +23,7 @@ class WhisperListener:
         self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
             device
         )
+        self._model.half()
         self._processor = WhisperProcessor.from_pretrained(model_name)
         self._hotwords = list()
         self.is_active = False
@@ -92,9 +93,11 @@ class WhisperListener:
 
     def input_waveform(self, waveform):
         self._last_waveform = waveform
-        input_features = self._processor(waveform, return_tensors="pt").input_features
+        input_features = self._processor(
+            waveform, return_tensors="pt", sampling_rate=16_000
+        ).input_features
         output = self._model.generate(
-            input_features.to(device),
+            input_features.to(device).half(),
             num_beams=2,
             return_dict_in_generate=True,
             output_scores=True,
@@ -130,7 +133,7 @@ class WhisperListener:
         input_ids = torch.tensor([starting_tokens]).to(device)
         for _ in range(hotword_tokens.shape[1]):
             logits = self._model(
-                input_features.to(device),
+                input_features.to(device).half(),
                 decoder_input_ids=input_ids,
             ).logits
             new_token = torch.argmax(logits, dim=-1)
