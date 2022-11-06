@@ -1,13 +1,13 @@
-from logger.local_file_logger import LocalFileLogger
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
+from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
 
-_logger = LocalFileLogger(__file__)
+_logger = LocalFileLogger()
 
 
 def run_from_command_line():

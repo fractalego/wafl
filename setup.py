@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="wafl",
-    version="0.0.7",
+    version="0.0.14",
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
     author_email="alberto@fractalego.io",
@@ -19,6 +19,7 @@ setup(
         "wafl.interface",
         "wafl.knowledge",
         "wafl.listener",
+        "wafl.logger",
         "wafl.parsing",
         "wafl.qa",
         "wafl.speaker",
@@ -41,7 +42,7 @@ setup(
         "sklearn==0.0",
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
-        "conversation-qa==0.0.13",
+        "conversation-qa==0.0.15",
         "creak-sense==0.0.4",
         "protobuf==4.21.5",
         "fairseq==0.12.2",

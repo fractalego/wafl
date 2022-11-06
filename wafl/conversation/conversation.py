@@ -81,7 +81,8 @@ class Conversation:
             activation_word, text
         ):
             self._interface.check_understanding(True)
-            self._logger.write(f"Activation word found {text}", depth=0)
+            self._logger.set_depth(0)
+            self._logger.write(f"Activation word found {text}")
             if normalized(text) == normalized(activation_word):
                 return True
 

@@ -11,12 +11,9 @@ class LocalFileLogger(BaseLogger):
             os.mkdir(directory)
 
         filename = hashlib.md5(str(time.time()).encode("utf8")).hexdigest() + ".log"
-        self._file = open(os.path.join(directory, filename), "w")
+        self._filename = os.path.join(directory, filename)
         self._depth = 0
         self._log_level = LogLevels.INFO
-
-    def __del__(self):
-        self._file.close()
 
     def set_depth(self, depth: int):
         self._depth = depth
@@ -25,6 +22,7 @@ class LocalFileLogger(BaseLogger):
         self._log_level = log_level
 
     def write(self, text: str, log_level=LogLevels.INFO):
-        if log_level >= self._log_level:
-            self._file.write(" " * self._depth + text + "\n")
-            self._file.flush()
+        with open(self._filename, "a") as file:
+            if log_level >= self._log_level:
+                file.write(" " * self._depth + text + "\n")
+                file.flush()
