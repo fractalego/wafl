@@ -1,7 +1,7 @@
 flask==2.0.1
 flask-cors==3.0.10
 flask_dropzone==1.6.0
-transformers==4.23.1
+transformers==4.24.0
 accelerate==0.13.2
 bitsandbytes==0.35.3
 sentence_transformers==2.2.2
