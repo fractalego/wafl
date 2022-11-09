@@ -14,6 +14,7 @@ class WhisperListener:
     _channels = 1
     _rate = 16000
     _range = 32768
+    _generation_max_length = 40
 
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
@@ -101,6 +102,7 @@ class WhisperListener:
             num_beams=2,
             return_dict_in_generate=True,
             output_scores=True,
+            max_length=self._generation_max_length,
         )
         transcription = self._processor.batch_decode(
             output.sequences, skip_special_tokens=True
@@ -126,7 +128,7 @@ class WhisperListener:
             )
 
         input_features = self._processor(
-            self._last_waveform, return_tensors="pt"
+            self._last_waveform, return_tensors="pt", sampling_rate=16_000
         ).input_features
         hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
         starting_tokens = [50257, 50362]
