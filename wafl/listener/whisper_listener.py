@@ -19,9 +19,10 @@ class WhisperListener:
 
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
-        self._threshold = 1
+        self._volume_threshold = 1
         self._timeout = 1
         self._max_timeout = 4
+        self._hotword_threshold = -8
         self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
             device
         )
@@ -43,8 +44,11 @@ class WhisperListener:
     def set_timeout(self, timeout):
         self._timeout = timeout
 
-    def set_threshold(self, threshold):
-        self._threshold = threshold
+    def set_volume_threshold(self, threshold):
+        self._volume_threshold = threshold
+
+    def set_hotword_threshold(self, threshold):
+        self._hotword_threshold = threshold
 
     def record(self, start_with):
         rec = list()
@@ -56,7 +60,7 @@ class WhisperListener:
 
         while current <= end and current < upper_limit_end:
             data = self.stream.read(self._chunk)
-            if _rms(data) >= self._threshold:
+            if _rms(data) >= self._volume_threshold:
                 end = time.time() + self._timeout
 
             current = time.time()
@@ -89,7 +93,7 @@ class WhisperListener:
         while True:
             inp = self.stream.read(self._chunk)
             rms_val = _rms(inp)
-            if rms_val > self._threshold:
+            if rms_val > self._volume_threshold:
                 waveform = self.record(start_with=inp)
                 self.deactivate()
                 return self.input_waveform(waveform)
@@ -151,7 +155,7 @@ class WhisperListener:
         for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
             sum_logp += logp[index]
 
-        return sum_logp > -8
+        return sum_logp > self._hotword_threshold
 
 
 def _rms(frame):
