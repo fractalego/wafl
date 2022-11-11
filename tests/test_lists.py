@@ -64,6 +64,11 @@ item = what does the user want to add to the shopping list?
 the user wants to know what is in the shopping list
   items = get_shopping_list_in_english()
   SAY The shopping list contains: {items}
+  
+the user wants to delete the shopping list
+  Do you want to delete the current shopping list
+  reset_shopping_list()
+  SAY The shopping list has been deleted
 """
 
 
@@ -107,5 +112,56 @@ class TestNew(TestCase):
 
         assert (
             interface.utterances[-1]
-            == "The shopping list contains: apples, bananas, strawberries"
+            == "The shopping list contains: strawberries, apples, bananas"
+        )
+
+    def test__yes_please_means_yes(self):
+        interface = DummyInterface(
+            [
+                "Please delete the shopping list",
+                "yes please",
+                "add apples to the shopping list",
+                "yes please",
+                "strawberries",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+
+        print(interface.utterances)
+        assert (
+            interface.utterances[-1]
+            == "The shopping list contains: strawberries, apples"
+        )
+
+    def test__yes_I_do_means_yes(self):
+        interface = DummyInterface(
+            [
+                "Please delete the shopping list",
+                "yes I do",
+                "add apples to the shopping list",
+                "yes I do",
+                "strawberries",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+        print(interface.utterances)
+        assert (
+            interface.utterances[-1]
+            == "The shopping list contains: strawberries, apples"
         )

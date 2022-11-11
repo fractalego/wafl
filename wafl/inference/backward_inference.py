@@ -7,6 +7,7 @@ from wafl.conversation.utils import (
     is_yes_no_question,
 )
 from wafl.conversation.working_memory import WorkingMemory
+from wafl.deixis import from_bot_to_bot
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import *
 from wafl.inference.utils import (
@@ -264,7 +265,9 @@ class BackwardInference:
                 story = (
                     f"When asked '{query.text}', the user says: '{user_input_text}.'"
                 )
+                query.text = from_bot_to_bot(query.text)
                 user_answer = self._qa.ask(query, story)
+
                 self._log(f"The answer that is understood: {user_answer.text}")
 
                 if is_yes_no_question(query.text):

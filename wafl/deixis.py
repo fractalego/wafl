@@ -49,3 +49,16 @@ def from_bot_to_user(text):
     text = re.sub("the user is", "you are", text, flags=re.IGNORECASE)
     text = re.sub("the user", "you", text, flags=re.IGNORECASE)
     return text
+
+
+def from_bot_to_bot(text):
+    text = re.sub("I don't", "The bot doesn't", text, flags=re.IGNORECASE)
+    text = re.sub("I do not", "The bot does not", text, flags=re.IGNORECASE)
+    text = re.sub("I do not", "The bot does not", text, flags=re.IGNORECASE)
+    text = re.sub("you do", "uhe user does", text, flags=re.IGNORECASE)
+    text = re.sub("your", "the user's", text, flags=re.IGNORECASE)
+    text = re.sub("do you", "does the user", text, flags=re.IGNORECASE)
+    text = re.sub("are you", "is the user", text, flags=re.IGNORECASE)
+    text = re.sub("you are", "the user is", text, flags=re.IGNORECASE)
+    text = re.sub("you", "the user", text, flags=re.IGNORECASE)
+    return text
