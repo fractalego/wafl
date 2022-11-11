@@ -23,6 +23,9 @@ def not_good_enough(text):
     if not text:
         return True
 
+    if "[unclear]" in text:
+        return True
+
     if normalized(text) != "no" and len(text.strip().replace(" ", "")) < 3:
         return True
 

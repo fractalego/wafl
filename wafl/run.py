@@ -1,3 +1,5 @@
+import random
+
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation
@@ -61,7 +63,7 @@ def run_from_audio():
                 and not result
                 and not interface.bot_has_spoken()
             ):
-                interface.play_deny_sound()
+                interface.output(random.choice(["Sorry?", "Can you repeat?"]))
                 num_misses += 1
                 if num_misses >= max_misses:
                     interface.check_understanding(False)

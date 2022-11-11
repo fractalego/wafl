@@ -1,4 +1,13 @@
 ### TODO
+/* Confidence in listener results
+/* lists should filter the items
+/* a list cannot contain itself, you should check the name
+/* Yes/No questions should be more flexible
+/* voice thresholds should be in config (write test about them)
+* numbers in speaker should be translated to English
+* computer name triggers a "faulty" sound
+* creak sense and fact retrieval should work in python space as well
+* remove Batches output in prediction
 * Do lists as hard-coded
 * Do arbiter with QA
 * y/n questions are never searched in working memory. Is this the right behavior?

@@ -8,10 +8,6 @@ def rules_are_too_different(retriever, rules):
         dot_products.append(
             retriever.get_dot_product(item.effect.text, rules[0].effect.text)
         )
-        print(
-            "DOT PRODUCT:",
-            retriever.get_dot_product(item.effect.text, rules[0].effect.text),
-        )
 
     if dot_products and min(dot_products) < 0.39:
         return False

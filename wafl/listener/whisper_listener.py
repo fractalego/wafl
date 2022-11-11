@@ -14,12 +14,15 @@ class WhisperListener:
     _channels = 1
     _rate = 16000
     _range = 32768
+    _generation_max_length = 40
+    _starting_tokens = [50257, 50362]
 
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
-        self._threshold = 1
+        self._volume_threshold = 1
         self._timeout = 1
         self._max_timeout = 4
+        self._hotword_threshold = -8
         self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
             device
         )
@@ -41,8 +44,11 @@ class WhisperListener:
     def set_timeout(self, timeout):
         self._timeout = timeout
 
-    def set_threshold(self, threshold):
-        self._threshold = threshold
+    def set_volume_threshold(self, threshold):
+        self._volume_threshold = threshold
+
+    def set_hotword_threshold(self, threshold):
+        self._hotword_threshold = threshold
 
     def record(self, start_with):
         rec = list()
@@ -54,7 +60,7 @@ class WhisperListener:
 
         while current <= end and current < upper_limit_end:
             data = self.stream.read(self._chunk)
-            if _rms(data) >= self._threshold:
+            if _rms(data) >= self._volume_threshold:
                 end = time.time() + self._timeout
 
             current = time.time()
@@ -87,8 +93,9 @@ class WhisperListener:
         while True:
             inp = self.stream.read(self._chunk)
             rms_val = _rms(inp)
-            if rms_val > self._threshold:
+            if rms_val > self._volume_threshold:
                 waveform = self.record(start_with=inp)
+                self.deactivate()
                 return self.input_waveform(waveform)
 
     def input_waveform(self, waveform):
@@ -101,14 +108,17 @@ class WhisperListener:
             num_beams=2,
             return_dict_in_generate=True,
             output_scores=True,
+            max_length=self._generation_max_length,
         )
         transcription = self._processor.batch_decode(
             output.sequences, skip_special_tokens=True
         )[0]
 
         if torch.exp(output.sequences_scores) > 0.6:
-            self.deactivate()
             return transcription
+
+        if torch.exp(output.sequences_scores) > 0.3:
+            return "[unclear]"
 
         return ""
 
@@ -126,11 +136,11 @@ class WhisperListener:
             )
 
         input_features = self._processor(
-            self._last_waveform, return_tensors="pt"
+            self._last_waveform, return_tensors="pt", sampling_rate=16_000
         ).input_features
         hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
-        starting_tokens = [50257, 50362]
-        input_ids = torch.tensor([starting_tokens]).to(device)
+
+        input_ids = torch.tensor([self._starting_tokens]).to(device)
         for _ in range(hotword_tokens.shape[1]):
             logits = self._model(
                 input_features.to(device).half(),
@@ -145,7 +155,7 @@ class WhisperListener:
         for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
             sum_logp += logp[index]
 
-        return sum_logp > -8
+        return sum_logp > self._hotword_threshold
 
 
 def _rms(frame):
