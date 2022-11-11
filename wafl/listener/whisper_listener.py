@@ -117,7 +117,7 @@ class WhisperListener:
         if torch.exp(output.sequences_scores) > 0.6:
             return transcription
 
-        if torch.exp(output.sequences_scores) > 0.45:
+        if torch.exp(output.sequences_scores) > 0.3:
             return "[unclear]"
 
         return ""
