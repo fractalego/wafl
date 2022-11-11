@@ -51,6 +51,7 @@ setup(
         "PyAudio==0.2.11",
         "pyctcdecode==0.2.1",
         "huggingface-hub==0.10.0",
+        "num2words==0.5.12",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

@@ -6,6 +6,7 @@ import torch
 from fairseq.checkpoint_utils import load_model_ensemble_and_task_from_hf_hub
 from fairseq.models.text_to_speech.hub_interface import TTSHubInterface
 from wafl.speaker.base_speaker import BaseSpeaker
+from wafl.speaker.utils import convert_numbers_to_words
 
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -25,6 +26,7 @@ class FairSeqSpeaker(BaseSpeaker):
         self._generator.vocoder.model.to(_device)
 
     def speak(self, text):
+        text = convert_numbers_to_words(text)
         sample = TTSHubInterface.get_model_input(self._task, text)
         sample["net_input"]["src_tokens"] = sample["net_input"]["src_tokens"].to(
             _device
