@@ -15,6 +15,7 @@ class WhisperListener:
     _rate = 16000
     _range = 32768
     _generation_max_length = 40
+    _starting_tokens = [50257, 50362]
 
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
@@ -134,8 +135,8 @@ class WhisperListener:
             self._last_waveform, return_tensors="pt", sampling_rate=16_000
         ).input_features
         hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
-        starting_tokens = [50257, 50362]
-        input_ids = torch.tensor([starting_tokens]).to(device)
+
+        input_ids = torch.tensor([self._starting_tokens]).to(device)
         for _ in range(hotword_tokens.shape[1]):
             logits = self._model(
                 input_features.to(device).half(),

@@ -210,7 +210,6 @@ class BackwardInference:
             self._log(f"Answer within facts: The context is {text}")
             answer = self._qa.ask(query, text)
             working_memory.add_story(text)
-            answer = process_unknown_answer(answer)
             self._log(f"Answer within facts: The answer is {answer.text}")
             return answer
 
