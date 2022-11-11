@@ -1,4 +1,5 @@
 import os
+import random
 
 from wafl.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
@@ -64,7 +65,7 @@ class VoiceInterface(BaseInterface):
 
         while self._check_understanding and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
-            self.output("I did not quite understand that")
+            self.output(random.choice(["Sorry?", "Can you repeat?"]))
             text = self._listener.input()
 
         text = text.lower().capitalize()

@@ -90,6 +90,7 @@ class WhisperListener:
             rms_val = _rms(inp)
             if rms_val > self._threshold:
                 waveform = self.record(start_with=inp)
+                self.deactivate()
                 return self.input_waveform(waveform)
 
     def input_waveform(self, waveform):
@@ -109,8 +110,10 @@ class WhisperListener:
         )[0]
 
         if torch.exp(output.sequences_scores) > 0.6:
-            self.deactivate()
             return transcription
+
+        if torch.exp(output.sequences_scores) > 0.45:
+            return "[unclear]"
 
         return ""
 

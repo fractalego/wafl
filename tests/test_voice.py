@@ -77,7 +77,6 @@ class TestVoice(TestCase):
         listener = WhisperListener("openai/whisper-tiny.en")
         listener.input_waveform(waveform)
         result = listener.hotword_is_present("computer")
-
         assert result
 
     def test__hotword_listener_is_not_activated_using_recording_of_not_hotword(self):
@@ -86,7 +85,6 @@ class TestVoice(TestCase):
         listener = WhisperListener("openai/whisper-tiny.en")
         listener.input_waveform(waveform)
         result = listener.hotword_is_present("computer")
-
         assert not result
 
 
