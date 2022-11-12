@@ -4,6 +4,8 @@
 /* a list cannot contain itself, you should check the name
 /* Yes/No questions should be more flexible
 /* voice thresholds should be in config (write test about them)
+* ADD VERSION NUMBER WHEN STARTING UP
+* check tests.test_working_memory.TestWorkingMemory.test_working_memory_works_for_yes_questions
 * numbers in speaker should be translated to English
 * computer name triggers a "faulty" sound
 * creak sense and fact retrieval should work in python space as well

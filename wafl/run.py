@@ -48,13 +48,18 @@ def run_from_audio():
 
     activation_word = "computer"
     interface.add_hotwords(activation_word)
+    num_misses = 0
     max_misses = 3
+    interactions = 0
     while True:
+        if not interface.check_understanding():
+            interactions = 0
+            num_misses = 0
+
         try:
             result = conversation.input(activation_word=activation_word)
-            num_misses = 0
             _logger.write(f"Conversation Result {result}", log_level=_logger.level.INFO)
-
+            interactions += 1
             if result:
                 interface.check_understanding(True)
 
@@ -63,8 +68,8 @@ def run_from_audio():
                 and not result
                 and not interface.bot_has_spoken()
             ):
-                if num_misses == 0:
-                    interface.output(random.choice(["What do you need?", "What can I do for you?"]))
+                if interactions <= 1:
+                    interface.output(random.choice(["Hi", "I was sleeping", "what?"]))
 
                 else:
                     interface.output(random.choice(["Sorry?", "Can you repeat?"]))
