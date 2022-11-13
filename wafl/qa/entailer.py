@@ -15,7 +15,9 @@ class Entailer:
         self._model = AutoModelForSequenceClassification.from_pretrained(model_name).to(
             _device
         )
-        self._model.half()
+        if torch.cuda.is_available():
+            self._model.half()
+
         self._logger = logger
 
     def get_relation(self, premise: str, hypothesis: str) -> Dict[str, float]:

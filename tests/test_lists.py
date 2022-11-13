@@ -1,7 +1,6 @@
 import os
 from unittest import TestCase
 
-
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
@@ -72,7 +71,7 @@ the user wants to delete the shopping list
 """
 
 
-class TestNew(TestCase):
+class TestLists(TestCase):
     def test__second_rule_is_not_run_if_prior_clause_fails(self):
         interface = DummyInterface(
             [
@@ -165,3 +164,19 @@ class TestNew(TestCase):
             interface.utterances[-1]
             == "The shopping list contains: strawberries, apples"
         )
+
+    def test__hotword_is_ignored_in_instructions(self):
+        interface = DummyInterface(
+            [
+                "computer add apples to the shopping list",
+                "no",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_rules), interface=interface, code_path="functions"
+        )
+        hotword = "Computer"
+        conversation.input(activation_word=hotword)
+        expected = "apples has been added to the list"
+        print(interface.utterances)
+        self.assertEqual(interface.utterances[-2].lower(), expected)

@@ -26,7 +26,9 @@ class WhisperListener:
         self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
             device
         )
-        self._model.half()
+        if torch.cuda.is_available():
+            self._model.half()
+
         self._processor = WhisperProcessor.from_pretrained(model_name)
         self._hotwords = list()
         self.is_active = False

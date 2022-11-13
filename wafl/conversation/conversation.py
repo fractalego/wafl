@@ -1,4 +1,6 @@
 import os
+import re
+
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
@@ -86,8 +88,7 @@ class Conversation:
             if normalized(text) == normalized(activation_word, lower_case=True):
                 return True
 
-            text = self.__remove_activation_word_and_normalize(activation_word, text)
-
+        text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.check_understanding():
             answer = self.add(text)
             if answer and answer.text != "False":
@@ -106,4 +107,6 @@ class Conversation:
 
     def __remove_activation_word_and_normalize(self, activation_word, text):
         to_remove = f"[{activation_word}]"
-        return text.replace(to_remove, "").strip()
+        text = text.replace(to_remove, "").strip()
+        text = re.sub(f"^{activation_word}", "", text, flags=re.IGNORECASE)
+        return text
