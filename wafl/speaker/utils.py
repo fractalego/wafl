@@ -10,7 +10,7 @@ def convert_numbers_to_words(text):
         new_word = word
         try:
             if any(number in word for number in "1234567890"):
-                new_word = num2words(word)
+                new_word = num2words(word.replace("-", " "))
 
         except decimal.InvalidOperation as e:
             pass

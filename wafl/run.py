@@ -8,11 +8,19 @@ from wafl.interface.voice_interface import VoiceInterface
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
+from variables import get_variables
 
 _logger = LocalFileLogger()
 
 
+def print_incipit():
+    print()
+    print(f"Running WAFL version {get_variables()['version']}.")
+    print()
+
+
 def run_from_command_line():
+    print_incipit()
     wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
@@ -33,6 +41,7 @@ def run_from_command_line():
 
 
 def run_from_audio():
+    print_incipit()
     config = Configuration.load_local_config()
     knowledge = Knowledge(open("rules.wafl").read(), logger=_logger)
     interface = VoiceInterface(config)
@@ -44,17 +53,22 @@ def run_from_audio():
         config=config,
         logger=_logger,
     )
-    conversation.output("Please say 'Computer' to activate me")
 
-    activation_word = "computer"
+    activation_word = config.get_value("waking_up_word")
+    conversation.output(f"Please say '{activation_word}' to activate me")
     interface.add_hotwords(activation_word)
+    num_misses = 0
     max_misses = 3
+    interactions = 0
     while True:
+        if not interface.check_understanding():
+            interactions = 0
+            num_misses = 0
+
         try:
             result = conversation.input(activation_word=activation_word)
-            num_misses = 0
             _logger.write(f"Conversation Result {result}", log_level=_logger.level.INFO)
-
+            interactions += 1
             if result:
                 interface.check_understanding(True)
 
@@ -63,14 +77,18 @@ def run_from_audio():
                 and not result
                 and not interface.bot_has_spoken()
             ):
-                interface.output(random.choice(["Sorry?", "Can you repeat?"]))
+                if interactions <= 1:
+                    interface.output(random.choice(["Hi", "Hello", "What?"]))
+
+                else:
+                    interface.output(random.choice(["Sorry?", "Can you repeat?"]))
+
                 num_misses += 1
                 if num_misses >= max_misses:
                     interface.check_understanding(False)
 
         except CloseConversation:
             _logger.write(f"Closing the conversation", log_level=_logger.level.INFO)
-            activation_word = "computer"
             interface.check_understanding(False)
             continue
 

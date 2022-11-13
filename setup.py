@@ -1,3 +1,4 @@
+from wafl.variables import get_variables
 from setuptools import setup
 
 with open("README.md", "r") as fh:
@@ -5,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="wafl",
-    version="0.0.16",
+    version=get_variables()["version"],
     url="http://github.com/fractalego/wafl",
     author="Alberto Cetoli",
     author_email="alberto@fractalego.io",

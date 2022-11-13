@@ -14,7 +14,7 @@ class WhisperListener:
     _channels = 1
     _rate = 16000
     _range = 32768
-    _generation_max_length = 40
+    _generation_max_length = 15
     _starting_tokens = [50257, 50362]
 
     def __init__(self, model_name):
@@ -26,7 +26,9 @@ class WhisperListener:
         self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
             device
         )
-        self._model.half()
+        if torch.cuda.is_available():
+            self._model.half()
+
         self._processor = WhisperProcessor.from_pretrained(model_name)
         self._hotwords = list()
         self.is_active = False
@@ -105,7 +107,7 @@ class WhisperListener:
         ).input_features
         output = self._model.generate(
             input_features.to(device).half(),
-            num_beams=2,
+            num_beams=3,
             return_dict_in_generate=True,
             output_scores=True,
             max_length=self._generation_max_length,
