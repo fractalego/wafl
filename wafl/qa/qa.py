@@ -32,6 +32,9 @@ class QA:
 
         if query.is_question and is_yes_no_question(query_text):
             query_text = get_sentence_from_yn_question(query_text)
+            if "the user says: 'yes" in text.lower():
+                return Answer(text="Yes")
+
             return self.__check_fact(text, query_text, threshold=0.5)
 
         return self.__check_fact(query_text, text, threshold=0.5)
