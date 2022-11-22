@@ -9,13 +9,23 @@ from wafl.conversation.utils import (
 from wafl.conversation.working_memory import WorkingMemory
 from wafl.deixis import from_bot_to_bot
 from wafl.exceptions import InterruptTask, CloseConversation
-from wafl.inference.utils import *
 from wafl.inference.utils import (
-    process_unknown_answer,
     cluster_facts,
     selected_answer,
     fact_relates_to_user,
     project_answer,
+    text_has_new_working_memory_command,
+    text_has_say_command,
+    text_has_remember_command,
+    text_is_code,
+    check_negation,
+    apply_substitutions,
+    normalized,
+    update_substitutions_from_answer,
+    add_function_arguments,
+    invert_answer,
+    text_has_assigmnent,
+    update_substitutions_from_results,
 )
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
