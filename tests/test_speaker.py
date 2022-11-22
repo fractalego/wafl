@@ -24,6 +24,13 @@ class TestSpeaker(TestCase):
         )
         speaker.speak(text)
 
+    def test_number_pronunciation(self):
+        speaker = FairSeqSpeaker()
+        text = (
+            "The time is 54 past 8"
+        )
+        speaker.speak(text)
+
     def test_on_sound(self):
         speaker = SoundFileSpeaker()
         speaker.speak(os.path.join(_path, "../wafl/sounds/activation.wav"))

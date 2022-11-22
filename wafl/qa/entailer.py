@@ -31,7 +31,11 @@ class Entailer:
         return prediction
 
     def entails(
-        self, premise: str, hypothesis: str, threshold=0.75, contradiction_threshold=0.65
+        self,
+        premise: str,
+        hypothesis: str,
+        threshold=0.75,
+        contradiction_threshold=0.65,
     ) -> str:
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
