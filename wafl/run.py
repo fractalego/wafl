@@ -8,7 +8,7 @@ from wafl.interface.voice_interface import VoiceInterface
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
-from variables import get_variables
+from wafl.variables import get_variables
 
 _logger = LocalFileLogger()
 

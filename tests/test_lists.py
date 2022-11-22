@@ -92,6 +92,8 @@ class TestLists(TestCase):
     def test__add_item_to_list_as_function(self):
         interface = DummyInterface(
             [
+                "Please delete the shopping list",
+                "yes",
                 "add apples to the shopping list",
                 "yes",
                 "strawberries",
@@ -108,7 +110,7 @@ class TestLists(TestCase):
         )
         while conversation.input():
             pass
-
+        print(interface.utterances)
         assert (
             interface.utterances[-1]
             == "The shopping list contains: strawberries, apples, bananas"

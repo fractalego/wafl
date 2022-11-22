@@ -11,6 +11,7 @@
 /* ADD VERSION NUMBER WHEN STARTING UP
 /* check tests.test_working_memory.TestWorkingMemory.test_working_memory_works_for_yes_questions
 /* computer name triggers a "faulty" sound
+* separate items added to list with "and"
 * creak sense and fact retrieval should work in python space as well
 * remove Batches output in prediction
 * Do lists as hard-coded
