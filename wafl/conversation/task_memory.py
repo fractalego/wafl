@@ -1,4 +1,4 @@
-class WorkingMemory:
+class TaskMemory:
     def __init__(self):
         self._story = ""
         self._questions = []

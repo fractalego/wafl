@@ -78,7 +78,7 @@ def run_from_audio():
                 and not interface.bot_has_spoken()
             ):
                 if interactions <= 1:
-                    interface.output(random.choice(["Hi", "Hello", "What?"]))
+                    interface.output(random.choice(["Hello there", "Hello", "What?"]))
 
                 else:
                     interface.output(random.choice(["Sorry?", "Can you repeat?"]))

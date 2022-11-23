@@ -3,7 +3,7 @@ import re
 from nltk import pos_tag
 from nltk import word_tokenize
 
-from wafl.conversation.working_memory import WorkingMemory
+from wafl.conversation.task_memory import TaskMemory
 from wafl.inference.utils import normalized
 from wafl.qa.dataclasses import Query
 
@@ -107,7 +107,7 @@ def get_sentence_from_yn_question(text):
 
 
 def get_answer_using_text(inference, interface, text):
-    working_memory = WorkingMemory()
+    working_memory = TaskMemory()
     text = text.capitalize()
     if not is_question(text):
         query_text = f"The user says: '{text}.'"
@@ -126,7 +126,7 @@ def get_answer_using_text(inference, interface, text):
             is_question=is_question(text),
             variable="name",
         )
-        working_memory = WorkingMemory()
+        working_memory = TaskMemory()
         working_memory.add_story(query.text)
         interface.bot_has_spoken(False)
         answer = inference.compute(query, working_memory)

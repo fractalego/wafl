@@ -20,15 +20,15 @@ def create_preprocessed(module: str):
         text = file.read()
         text = text.replace('{f"%', 'inference.get_inference_answer(f"')
         text = text.replace('{"%', 'inference.get_inference_answer(f"')
-        text = text.replace('%"}', '", working_memory)')
+        text = text.replace('%"}', '", task_memory)')
 
         for name in function_names:
             text = re.sub(
                 f"({name}\([0-9a-zA-Z,\s:]+)\)",
-                "\\1, inference, working_memory)",
+                "\\1, inference, task_memory)",
                 text,
             )
-            text = re.sub(f"({name})\(\)", "\\1(inference, working_memory)", text)
+            text = re.sub(f"({name})\(\)", "\\1(inference, task_memory)", text)
 
     with open(preprocessed_prefix + filename, "w") as file:
         file.write(text)

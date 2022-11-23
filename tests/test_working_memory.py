@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
-from wafl.conversation.working_memory import WorkingMemory
+from wafl.conversation.task_memory import TaskMemory
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
@@ -28,7 +28,7 @@ _ask_another_item
 
 class TestWorkingMemory(TestCase):
     def test_working_memory_class(self):
-        working_memory = WorkingMemory()
+        working_memory = TaskMemory()
         working_memory.add_question("What is the color of Bob's dress")
         working_memory.add_answer("Red")
         working_memory.add_question("Who is talking")
