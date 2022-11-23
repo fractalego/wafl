@@ -43,5 +43,5 @@ jobs:
         cp tests/config.json ./
         rm tests/test_speaker.py
         rm tests/test_voice.py
-        rm tests/test_[a-m]*.py
+        rm tests/test_[n-z]*.py
         python -m unittest discover tests/
