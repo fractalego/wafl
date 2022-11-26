@@ -10,7 +10,7 @@
 * Do lists as hard-coded
 * Do arbiter with QA
 * y/n questions are never searched in working memory. Is this the right behavior?
-
+* test_testcases blocks the tests. RESOLVE THIS!!
 
 /* numbers in speaker should be translated to English
 /* remove computer as first word

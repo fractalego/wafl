@@ -86,7 +86,7 @@ class TestLists(TestCase):
         )
         conversation.input()
         conversation.input()
-        output = "\n".join(interface.utterances)
+        output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
     def test__add_item_to_list_as_function(self):
@@ -112,8 +112,8 @@ class TestLists(TestCase):
             pass
 
         assert (
-            interface.utterances[-1]
-            == "The shopping list contains: strawberries, apples, bananas"
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: strawberries, apples, bananas"
         )
 
     def test__yes_please_means_yes(self):
@@ -137,8 +137,8 @@ class TestLists(TestCase):
             pass
 
         assert (
-            interface.utterances[-1]
-            == "The shopping list contains: strawberries, apples"
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: strawberries, apples"
         )
 
     def test__yes_I_do_means_yes(self):
@@ -162,8 +162,8 @@ class TestLists(TestCase):
             pass
 
         assert (
-            interface.utterances[-1]
-            == "The shopping list contains: strawberries, apples"
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: strawberries, apples"
         )
 
     def test__hotword_is_ignored_in_instructions(self):
@@ -178,5 +178,5 @@ class TestLists(TestCase):
         )
         hotword = "Computer"
         conversation.input(activation_word=hotword)
-        expected = "apples has been added to the list"
-        self.assertEqual(interface.utterances[-2].lower(), expected)
+        expected = "bot: apples has been added to the list"
+        self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

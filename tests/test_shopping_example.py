@@ -83,5 +83,5 @@ class TestNew(TestCase):
         )
         conversation.input()
         conversation.input()
-        output = "\n".join(interface.utterances)
+        output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1

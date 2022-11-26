@@ -45,7 +45,5 @@ class TestLanguageInFunctions(TestCase):
             code_path="preprocess_test_functions",
         )
         conversation.input()
-        expected = [
-            "Hello",
-        ]
-        assert interface.utterances == expected
+        expected = "bot: Hello"
+        assert interface.get_utterances_list()[-1] == expected

@@ -29,7 +29,7 @@ class TestEmptyInput(TestCase):
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        assert interface.utterances[-1] == "Nice to meet you, albert!"
+        assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_empty_input_does_nothing(self):
         interface = DummyInterface(["computer"])
@@ -37,4 +37,4 @@ class TestEmptyInput(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input(activation_word="computer")
-        assert interface.utterances != ["Hello there!"]
+        assert interface.get_utterances_list() != ["bot: Hello there!"]

@@ -69,8 +69,8 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Hello, bob!"
-        assert interface.utterances[0] == expected
+        expected = "bot: Hello, bob!"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test__hello_does_not_get_into_working_memory(self):
         interface = DummyInterface(to_utter=["hello", "Albert"])
@@ -78,8 +78,8 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Hello, albert!"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Hello, albert!"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test__working_memory_does_not_propagate_down_for_depth2(self):
         interface = DummyInterface(
@@ -94,8 +94,8 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Bananas has been added to the list"
-        assert interface.utterances[-2] == expected
+        expected = "bot: Bananas has been added to the list"
+        assert interface.get_utterances_list()[-3] == expected
 
     def test__working_memory_does_not_propagate_down_for_depth3(self):
         interface = DummyInterface(
@@ -112,8 +112,8 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Bananas has been added to the list"
-        assert interface.utterances[-2] == expected
+        expected = "bot: Bananas has been added to the list"
+        assert interface.get_utterances_list()[-3] == expected
 
     def test__working_memory_works_for_yes_questions(self):
         interface = DummyInterface(
@@ -127,8 +127,8 @@ A:
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Bananas has been added to the list"
-        assert interface.utterances[-2] == expected
+        expected = "bot: Bananas has been added to the list"
+        assert interface.get_utterances_list()[-3] == expected
 
     def test__prior_list_name_is_remembered(self):
         interface = DummyInterface(
@@ -143,6 +143,7 @@ A:
             Knowledge(memory_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "The shopping list contains: bananas, apples"
-        print(interface.utterances)
-        assert interface.utterances[-1] == expected
+        conversation.input()
+        expected = "bot: The shopping list contains: bananas, apples"
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == expected

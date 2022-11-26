@@ -124,8 +124,8 @@ class TestExceptions(TestCase):
         conversation.output(utterance)
 
         conversation.input()
-        expected = "It is a bot name for a computer"
-        assert interface.utterances[-1].lower() == expected
+        expected = "bot: it is a bot name for a computer"
+        assert interface.get_utterances_list()[-1].lower() == expected
 
     def test_double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
@@ -133,7 +133,7 @@ class TestExceptions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert "asks:" not in interface.utterances[0]
+        assert "asks:" not in interface.get_utterances_list()[0]
 
     def test_clause_does_not_return_unknown(self):
         interface = DummyInterface(["is the jubili line running"])
@@ -141,7 +141,7 @@ class TestExceptions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert "unknown" not in interface.utterances[-1]
+        assert "unknown" not in interface.get_utterances_list()[-1]
 
     def test_no_answer_if_retrieval_is_too_sparse(self):
         interface = DummyInterface(["I will i"])
@@ -149,4 +149,4 @@ class TestExceptions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert "unknown" not in interface.utterances[-1]
+        assert "unknown" not in interface.get_utterances_list()[-1]

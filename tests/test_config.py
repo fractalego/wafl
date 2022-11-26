@@ -24,7 +24,7 @@ class TestConfig(TestCase):
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        assert interface.utterances[-1] == "Unknown"
+        assert interface.get_utterances_list()[-1] == "bot: Unknown"
 
     def test__listener_accepts_threshold_for_hotword_logp(self):
         config = Configuration.load_local_config()

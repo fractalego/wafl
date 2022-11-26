@@ -1,12 +1,15 @@
 class BaseInterface:
     def output(self, text: str):
-        raise NotImplemented
+        raise NotImplementedError
 
     def input(self) -> str:
-        raise NotImplemented
+        raise NotImplementedError
 
     def bot_has_spoken(self, to_set: bool = None):
-        raise NotImplemented
+        raise NotImplementedError
 
     def check_understanding(self, do_the_check: bool):
-        raise NotImplemented
+        raise NotImplementedError
+
+    def get_utterances_list(self):
+        raise NotImplementedError

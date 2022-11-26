@@ -30,15 +30,15 @@ class TestVoice(TestCase):
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         conversation.check_understanding(True)
         conversation.input(activation_word="computer")
-        expected = "Nice to meet you!"
-        assert interface.utterances[0] == expected
+        expected = "bot: Nice to meet you!"
+        assert interface.get_utterances_list()[0] == expected
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         conversation.check_understanding(False)
         conversation.input(activation_word="computer")
-        assert interface.utterances == []
+        assert interface.get_utterances_list() == []
 
     def test_hotwords_as_input(self):
         config = Configuration.load_local_config()
