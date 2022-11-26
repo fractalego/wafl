@@ -110,7 +110,7 @@ class TestLists(TestCase):
         )
         while conversation.input():
             pass
-        print(interface.utterances)
+
         assert (
             interface.utterances[-1]
             == "The shopping list contains: strawberries, apples, bananas"
@@ -136,7 +136,6 @@ class TestLists(TestCase):
         while conversation.input():
             pass
 
-        print(interface.utterances)
         assert (
             interface.utterances[-1]
             == "The shopping list contains: strawberries, apples"
@@ -161,7 +160,7 @@ class TestLists(TestCase):
         )
         while conversation.input():
             pass
-        print(interface.utterances)
+
         assert (
             interface.utterances[-1]
             == "The shopping list contains: strawberries, apples"
@@ -180,5 +179,4 @@ class TestLists(TestCase):
         hotword = "Computer"
         conversation.input(activation_word=hotword)
         expected = "apples has been added to the list"
-        print(interface.utterances)
         self.assertEqual(interface.utterances[-2].lower(), expected)
