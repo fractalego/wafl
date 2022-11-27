@@ -28,7 +28,7 @@ class Knowledge(BaseKnowledge):
     _threshold_for_questions_from_user = 0.6
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.505
-    _threshold_for_facts = 0.58
+    _threshold_for_facts = 0.4
     _threshold_for_partial_facts = 0.48
 
     def __init__(self, rules_text=None, logger=None):

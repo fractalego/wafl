@@ -26,9 +26,7 @@ class TestSpeaker(TestCase):
 
     def test_number_pronunciation(self):
         speaker = FairSeqSpeaker()
-        text = (
-            "The time is 54 past 8"
-        )
+        text = "The time is 54 past 8"
         speaker.speak(text)
 
     def test_on_sound(self):

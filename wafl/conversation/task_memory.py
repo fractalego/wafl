@@ -17,6 +17,9 @@ class TaskMemory:
         return discussion
 
     def add_story(self, text):
+        if not text:
+            return
+
         if text[-1] != ".":
             text += "."
 

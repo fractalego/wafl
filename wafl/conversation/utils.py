@@ -106,8 +106,9 @@ def get_sentence_from_yn_question(text):
     return " ".join(new_word_list)
 
 
-def get_answer_using_text(inference, interface, text):
+def get_answer_using_text(inference, interface, text, prior_conversation):
     working_memory = TaskMemory()
+    working_memory.add_story(prior_conversation)
     text = text.capitalize()
     if not is_question(text):
         query_text = f"The user says: '{text}.'"

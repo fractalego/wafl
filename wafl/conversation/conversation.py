@@ -1,6 +1,7 @@
 import os
 import re
 
+from wafl.conversation.narrator import Narrator
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
@@ -31,6 +32,8 @@ class Conversation:
         else:
             self._config = config
 
+        self._narrator = Narrator()
+
         self._logger = logger
         if logger:
             self._logger.set_depth(0)
@@ -45,7 +48,12 @@ class Conversation:
         text_is_question = is_question(text)
 
         try:
-            answer = get_answer_using_text(self._inference, self._interface, text)
+            prior_conversation = self._narrator.summarize_dialogue(
+                self._interface.get_utterances_list()[-3:-1]
+            )
+            answer = get_answer_using_text(
+                self._inference, self._interface, text, prior_conversation
+            )
 
         except InterruptTask:
             self._interface.output("Task interrupted")

@@ -204,7 +204,8 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        assert interface.get_utterances_list()[-1] == "Nice to meet you, albert!"
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__conversation_input_returns_false_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])

@@ -54,7 +54,9 @@ class TestExecutables(TestCase):
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
-        expected = "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
+        expected = (
+            "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
+        )
         assert interface.get_utterances_list()[-1] == expected
 
     def test_add_to_list(self):

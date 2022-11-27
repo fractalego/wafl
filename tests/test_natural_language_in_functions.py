@@ -77,7 +77,7 @@ class TestLanguageInFunctions(TestCase):
             "bot: Please say: 'hello'",
             "bot: Your input is recorded",
         ]
-        print(interface.get_utterances_list())
+
         assert interface.get_utterances_list()[1] == expected[0]
         assert interface.get_utterances_list()[2] == expected[1]
         assert interface.get_utterances_list()[3] == expected[2]
@@ -89,4 +89,7 @@ class TestLanguageInFunctions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert interface.get_utterances_list()[-1] == "bot: The victoria line is running normally"
+        assert (
+            interface.get_utterances_list()[-1]
+            == "bot: The victoria line is running normally"
+        )
