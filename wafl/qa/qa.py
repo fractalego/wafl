@@ -2,6 +2,8 @@ import logging
 import os
 
 from conversation_qa import QA as ConvQA, Dialogue
+
+from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import (
     is_question,
     is_yes_no_question,
@@ -19,6 +21,7 @@ class QA:
     def __init__(self, logger=None):
         self._entailer = Entailer(logger)
         self._qa = ConvQA("fractalego/conversation-qa")
+        self._narrator = Narrator()
         self._entailer_to_qa_mapping = {
             "True": "Yes",
             "False": "No",
@@ -82,13 +85,11 @@ class QA:
             if not event or len(event) < 2:
                 continue
 
-            if "the user says" not in event:
-                event = f"The user says '{event}.'."
-
             answer = normalized(self._qa.get_answer(event, dialogue_text, query_text))
+            answer_context = self._narrator.get_relevant_query_answer_context(text, query_text, answer)
             has_entailment = self._entailer.entails(
                 event,
-                f"when asked '{query_text}' the user says '{answer}'",
+                answer_context,
                 threshold=0.6,
             )
             if answer != "unknown" and has_entailment == "True":
@@ -98,7 +99,7 @@ class QA:
                 continue
 
             has_entailment = self._entailer.entails(
-                f"when asked '{query_text}' the user says '{answer}'",
+                answer_context,
                 event,
                 threshold=0.6,
             )

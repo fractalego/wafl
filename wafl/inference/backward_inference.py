@@ -1,6 +1,7 @@
 import logging
 import traceback
 
+from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import (
     is_question,
     get_answer_using_text,
@@ -55,6 +56,7 @@ class BackwardInference:
         self._interface = interface
         self._qa = QA(logger)
         self._common_sense = CommonSense()
+        self._narrator = Narrator()
         self._logger = logger
 
         if module_name:
@@ -218,6 +220,7 @@ class BackwardInference:
         for text in texts:
             self._log(f"Answer within facts: The query is {query.text}")
             self._log(f"Answer within facts: The context is {text}")
+            text = self._narrator.get_context_for_facts(text)
             answer = self._qa.ask(query, text)
             task_memory.add_story(text)
             self._log(f"Answer within facts: The answer is {answer.text}")
@@ -231,7 +234,6 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(self, query, task_memory, depth):
         if depth > 0 and task_memory.get_story() and query.is_question:
             answer = self._qa.ask(query, task_memory.get_story())
-
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
