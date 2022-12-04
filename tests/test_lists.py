@@ -110,10 +110,10 @@ class TestLists(TestCase):
         )
         while conversation.input():
             pass
-
+        print(interface.get_utterances_list())
         assert (
             interface.get_utterances_list()[-1]
-            == "bot: The shopping list contains: strawberries, apples, bananas"
+            == "bot: The shopping list contains: apples, bananas, strawberries"
         )
 
     def test__yes_please_means_yes(self):
@@ -138,7 +138,7 @@ class TestLists(TestCase):
 
         assert (
             interface.get_utterances_list()[-1]
-            == "bot: The shopping list contains: strawberries, apples"
+            == "bot: The shopping list contains: apples, strawberries"
         )
 
     def test__yes_I_do_means_yes(self):
@@ -163,7 +163,7 @@ class TestLists(TestCase):
 
         assert (
             interface.get_utterances_list()[-1]
-            == "bot: The shopping list contains: strawberries, apples"
+            == "bot: The shopping list contains: apples, strawberries"
         )
 
     def test__hotword_is_ignored_in_instructions(self):

@@ -32,14 +32,6 @@ class QA:
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(query_text, query.variable, text)
-            has_entailment = self._entailer.entails(
-                text,
-                f"when asked '{query_text}' the user says '{answer.text}.'",
-                threshold=0.75,
-            )
-            if not has_entailment:
-                return Answer(text="Unknown")
-
             return answer
 
         if query.is_question and is_yes_no_question(query_text):
@@ -67,7 +59,8 @@ class QA:
 
     def _check_fact(self, query_text, text, threshold):
         if not is_question(text):
-            answer = self._entailer.entails(query_text, text, threshold=threshold)
+            query_context = self._narrator.get_relevant_fact_context(text, query_text)
+            answer = self._entailer.entails(query_context, text, threshold=threshold)
             return Answer(text=self._entailer_to_qa_mapping[answer])
 
         dialogue = Dialogue()
@@ -80,17 +73,19 @@ class QA:
     def _get_answer_by_iterating_over_prior_events_in_the_story(
         self, text, dialogue_text, query_text
     ):
-        for event in text.split(".")[::-1]:
+        for event in text.split(". ")[::-1]:
             event = event.strip()
             if not event or len(event) < 2:
                 continue
 
             answer = normalized(self._qa.get_answer(event, dialogue_text, query_text))
-            answer_context = self._narrator.get_relevant_query_answer_context(text, query_text, answer)
+            answer_context = self._narrator.get_relevant_query_answer_context(
+                text, query_text, answer
+            )
             has_entailment = self._entailer.entails(
-                event,
+                event.replace(".'.", "").replace(".'", ""),
                 answer_context,
-                threshold=0.6,
+                threshold=0.75,
             )
             if answer != "unknown" and has_entailment == "True":
                 return answer
@@ -100,8 +95,8 @@ class QA:
 
             has_entailment = self._entailer.entails(
                 answer_context,
-                event,
-                threshold=0.6,
+                event.replace(".'.", "").replace(".'", ""),
+                threshold=0.55,
             )
             if answer != "unknown" and has_entailment == "True":
                 return answer

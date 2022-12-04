@@ -41,6 +41,18 @@ class Narrator:
             return f"when asked '{query_text}' the bot says '{answer}'"
 
         if "the bot remembers:" in text.lower():
-            return f"when asked '{query_text}' the bot says '{answer}'"
+            return f"when asked '{query_text}' the bot remembers '{answer}'"
 
         return f"the answer to '{query_text}' is '{answer}'"
+
+    def get_relevant_fact_context(self, text, answer):
+        if "the user says:" in text.lower():
+            return f"the user says '{answer}'"
+
+        if "the bot says:" in text.lower():
+            return f"the bot says '{answer}'"
+
+        if "the bot remembers:" in text.lower():
+            return f"the bot remembers '{answer}'"
+
+        return answer

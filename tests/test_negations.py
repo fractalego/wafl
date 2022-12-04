@@ -36,7 +36,8 @@ class TestNegations(TestCase):
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         conversation.input()
         expected = "bot: do you want to see the shopping list"
-        assert interface.get_utterances_list()[-1] == expected
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-2] == expected
 
     def test_no_thanks(self):
         interface = DummyInterface(

@@ -233,6 +233,7 @@ class BackwardInference:
 
     def _look_for_answer_in_task_memory(self, query, task_memory, depth):
         if depth > 0 and task_memory.get_story() and query.is_question:
+            query.text = from_bot_to_bot(query.text)
             answer = self._qa.ask(query, task_memory.get_story())
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
@@ -250,6 +251,7 @@ class BackwardInference:
             ]:
                 if answer.text[-1] == ".":
                     answer.text = answer.text[:-1]
+
                 return answer
 
     def _look_for_answer_by_asking_the_user(self, query, task_memory, depth):
@@ -261,7 +263,12 @@ class BackwardInference:
                 user_input_text = self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
-                    get_answer_using_text(self, self._interface, user_input_text)
+                    prior_conversation = self._narrator.summarize_dialogue(
+                        self._interface.get_utterances_list()[-3:-1]
+                    )
+                    get_answer_using_text(
+                        self, self._interface, user_input_text, prior_conversation
+                    )
 
                 else:
                     break

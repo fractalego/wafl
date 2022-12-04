@@ -24,6 +24,7 @@
 * Do arbiter with QA
 * y/n questions are never searched in working memory. Is this the right behavior?
 * test_testcases blocks the tests. RESOLVE THIS!!
+* fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
 
 /* numbers in speaker should be translated to English
 /* remove computer as first word

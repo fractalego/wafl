@@ -62,7 +62,8 @@ class Conversation:
         if (
             self._config.get_value("accept_random_facts")
             and not text_is_question
-            and answer.text == "False"
+            and answer.text != "True"
+            and answer.text != "Yes"
             and not self._interface.bot_has_spoken()
         ):
             self._knowledge.add(text)

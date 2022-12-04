@@ -104,6 +104,7 @@ class TestConversation(TestCase):
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         answer = conversation.add("What is the email of the user")
+        print(answer)
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
@@ -116,6 +117,7 @@ class TestConversation(TestCase):
         input_from_user = "the user's mother is called Ada"
         conversation.add(input_from_user)
         answer = conversation.add("How is the user's mum called")
+        print(answer)
         assert answer.text.lower() == "ada"
 
     def test__greeting(self):
@@ -192,7 +194,9 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        assert interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
+        assert (
+            interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
+        )
 
     def test__hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])

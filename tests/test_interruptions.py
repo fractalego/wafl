@@ -42,7 +42,7 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        assert "The time is" in interface.get_utterances_list()[-3]
+        assert "The time is" in interface.get_utterances_list()[-4]
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_time_shut_up_does_interrupt(self):
