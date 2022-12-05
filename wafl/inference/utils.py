@@ -57,7 +57,7 @@ def text_has_remember_command(text):
     return normalized(text).find("remember") == 0
 
 
-def text_has_new_working_memory_command(text):
+def text_has_new_task_memory_command(text):
     return normalized(text).find("erase memory") == 0
 
 
@@ -72,9 +72,9 @@ def update_substitutions_from_answer(answer, substitutions):
 
 def add_function_arguments(text: str) -> str:
     text = re.sub(
-        "(.*\([\"'0-9a-zA-Z@?':\-\.,\s]+)\)$", "\\1, self, working_memory)", text
+        "(.*\([\"'0-9a-zA-Z@?':\-\.,\s]+)\)$", "\\1, self, task_memory)", text
     )
-    text = re.sub("(.*)\(\)$", "\\1(self, working_memory)", text)
+    text = re.sub("(.*)\(\)$", "\\1(self, task_memory)", text)
     return text
 
 

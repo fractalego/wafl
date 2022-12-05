@@ -1,4 +1,4 @@
-class WorkingMemory:
+class ConversationalMemory:
     def __init__(self):
         self._story = ""
         self._questions = []

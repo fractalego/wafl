@@ -36,6 +36,7 @@ class VoiceInterface(BaseInterface):
         self._listener.set_hotword_threshold(config.get_value("listener_hotword_logp"))
         self._bot_has_spoken = False
         self._check_understanding = True
+        self._utterances = []
 
     def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
@@ -54,6 +55,7 @@ class VoiceInterface(BaseInterface):
     def output(self, text: str):
         self._listener.activate()
         text = from_bot_to_user(text)
+        self._utterances.append(f"bot: {text}")
         print(COLOR_START + "bot> " + text + COLOR_END)
         self._speaker.speak(text)
         self.bot_has_spoken(True)
@@ -73,7 +75,9 @@ class VoiceInterface(BaseInterface):
 
         text = text.lower().capitalize()
         print(COLOR_START + "user> " + text + COLOR_END)
-        return from_user_to_bot(text)
+        utterance = from_user_to_bot(text)
+        self._utterances.append(f"user: {utterance}")
+        return utterance
 
     def bot_has_spoken(self, to_set: bool = None):
         if to_set != None:
@@ -95,6 +99,9 @@ class VoiceInterface(BaseInterface):
 
     def play_deny_sound(self):
         self._sound_speaker.speak(self._deny_sound_filename)
+
+    def get_utterances_list(self):
+        return self._utterances
 
     def __get_activation_sound_from_config(self, config):
         if config.get_value("waking_up_sound"):

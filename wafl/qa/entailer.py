@@ -39,6 +39,11 @@ class Entailer:
     ) -> str:
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
+            if self._logger:
+                self._logger.write(f"Entailment: The premise is {premise}")
+                self._logger.write(f"Entailment: The hypothesis is {hypothesis}")
+                self._logger.write(f"Entailment: The results are {str(prediction)}")
+
             return "True"
 
         if prediction["contradiction"] < contradiction_threshold:

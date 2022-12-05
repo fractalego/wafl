@@ -58,8 +58,8 @@ class TestLanguageInFunctions(TestCase):
         )
         conversation.input()
         conversation.input()
-        expected = "The shopping list contains: apples, bananas"
-        assert interface.utterances[-1] == expected
+        expected = "bot: The shopping list contains: apples, bananas"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_say_twice_in_python_space(self):
         interface = DummyInterface(
@@ -72,12 +72,16 @@ class TestLanguageInFunctions(TestCase):
         )
         conversation.input()
         expected = [
-            "Please say: 'hello'",
-            "Your input is recorded",
-            "Please say: 'hello'",
-            "Your input is recorded",
+            "bot: Please say: 'hello'",
+            "bot: Your input is recorded",
+            "bot: Please say: 'hello'",
+            "bot: Your input is recorded",
         ]
-        assert interface.utterances == expected
+
+        assert interface.get_utterances_list()[1] == expected[0]
+        assert interface.get_utterances_list()[2] == expected[1]
+        assert interface.get_utterances_list()[3] == expected[2]
+        assert interface.get_utterances_list()[4] == expected[3]
 
     def test_double_fuctions(self):
         interface = DummyInterface(["Is the victoria line running"])
@@ -85,4 +89,7 @@ class TestLanguageInFunctions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert interface.utterances[-1] == "The victoria line is running normally"
+        assert (
+            interface.get_utterances_list()[-1]
+            == "bot: The victoria line is running normally"
+        )

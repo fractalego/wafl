@@ -31,4 +31,4 @@ class TestRecursion(TestCase):
         while conversation.input():
             pass
 
-        assert interface.utterances[-1] == "Jubilee"
+        assert interface.get_utterances_list()[-1] == "bot: Jubilee"

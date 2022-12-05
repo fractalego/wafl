@@ -23,8 +23,8 @@ class TestNegations(TestCase):
         )
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         conversation.input()
-        expected = "So you do want to see it!"
-        assert interface.utterances[-1] == expected
+        expected = "bot: So you do want to see it!"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_simple_no(self):
         interface = DummyInterface(
@@ -35,8 +35,9 @@ class TestNegations(TestCase):
         )
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         conversation.input()
-        expected = "do you want to see the shopping list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: do you want to see the shopping list"
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-2] == expected
 
     def test_no_thanks(self):
         interface = DummyInterface(
@@ -47,5 +48,5 @@ class TestNegations(TestCase):
         )
         conversation = Conversation(Knowledge(wafl_example), interface=interface)
         conversation.input()
-        expected = "do you want to see the shopping list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: do you want to see the shopping list"
+        assert interface.get_utterances_list()[-2] == expected

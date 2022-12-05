@@ -43,8 +43,8 @@ class TestCommonSense(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Apples will be added"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Apples will be added"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_sentences_can_filter_items_negative(self):
         interface = DummyInterface(
@@ -56,5 +56,5 @@ class TestCommonSense(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "No thanks is not a shopping item"
-        assert interface.utterances[-1] == expected
+        expected = "bot: No thanks is not a shopping item"
+        assert interface.get_utterances_list()[-1] == expected
