@@ -1,16 +1,16 @@
 ### TODO
 
-* Do the conversational memory (start with test_working_memory.py)
- * done but you need to refine the interaction with the narrator class (events are splitted manually in qa.py)
-    * RUN TESTS!!!
-    * START WITH test_conversation (many tests are failing)
-        * The issue is in "the user says" (line 85 in qa.py)
-            - The system should be able to understand if the the user is speaking or the user
-            - possibly if the question is from the user (like in working memory) add "user says"
-            - what would you add when the fact comes from the knowledge base?
-                - should you change the hypothesys "when -> says?" (line 91 and 101)
-
-    * USE LOGGER IN CONVERSATION() TO SPEED UP DEBUGGING!
+/* Do the conversational memory (start with test_working_memory.py)
+/ * done but you need to refine the interaction with the narrator class (events are splitted manually in qa.py)
+/    * RUN TESTS!!!
+/    * START WITH test_conversation (many tests are failing)
+/        * The issue is in "the user says" (line 85 in qa.py)
+/            - The system should be able to understand if the the user is speaking or the user
+/            - possibly if the question is from the user (like in working memory) add "user says"
+/            - what would you add when the fact comes from the knowledge base?
+/                - should you change the hypothesys "when -> says?" (line 91 and 101)
+/
+/    * USE LOGGER IN CONVERSATION() TO SPEED UP DEBUGGING!
 
 
 * Make infinite recursion impossible (set max limit or check for repetitions)
@@ -18,6 +18,7 @@
 
 
 * separate items added to list with "and"
+* y/n questions should only accept yes or no (and loop if there is something else)
 * creak sense and fact retrieval should work in python space as well
 * remove Batches output in prediction
 * Do lists as hard-coded
@@ -25,6 +26,7 @@
 * y/n questions are never searched in working memory. Is this the right behavior?
 * test_testcases blocks the tests. RESOLVE THIS!!
 * fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
+
 
 /* numbers in speaker should be translated to English
 /* remove computer as first word

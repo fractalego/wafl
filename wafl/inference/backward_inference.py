@@ -48,7 +48,7 @@ class BackwardInference:
         knowledge: "Knowledge",
         interface: "Interface",
         module_name=None,
-        max_depth: int = 10,
+        max_depth: int = 5,
         logger=None,
     ):
         self._max_depth = max_depth
