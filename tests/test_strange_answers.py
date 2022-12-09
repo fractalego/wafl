@@ -116,7 +116,7 @@ the user wants to stop
 """.strip()
 
 
-class TestExceptions(TestCase):
+class TestEdgeCases(TestCase):
     def test_double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
         conversation = Conversation(

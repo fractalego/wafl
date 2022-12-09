@@ -94,6 +94,12 @@ def invert_answer(answer):
     if answer.text == "True":
         return Answer(text="False")
 
+    if answer.text == "No":
+        return Answer(text="Yes")
+
+    if answer.text == "Yes":
+        return Answer(text="No")
+
     return answer
 
 

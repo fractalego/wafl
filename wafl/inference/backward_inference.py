@@ -13,7 +13,6 @@ from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import (
     cluster_facts,
     selected_answer,
-    fact_relates_to_user,
     project_answer,
     text_has_new_task_memory_command,
     text_has_say_command,
@@ -30,7 +29,6 @@ from wafl.inference.utils import (
 )
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
-from wafl.qa.common_sense import CommonSense
 from wafl.qa.qa import QA
 from wafl.qa.dataclasses import Query, Answer
 from inspect import getmembers, isfunction
@@ -48,14 +46,13 @@ class BackwardInference:
         knowledge: "Knowledge",
         interface: "Interface",
         module_name=None,
-        max_depth: int = 10,
+        max_depth: int = 5,
         logger=None,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
         self._qa = QA(logger)
-        self._common_sense = CommonSense()
         self._narrator = Narrator()
         self._logger = logger
 
@@ -91,6 +88,12 @@ class BackwardInference:
             return Answer(text="False")
 
         candidate_answers = []
+        answer = self._look_for_answer_in_entailment(query, depth)
+        candidate_answers.append(answer)
+        if answer and answer_is_informative(answer):
+            self._log("Answer in entailment: " + answer.text, depth)
+            return answer
+
         answer = self._look_for_answer_in_facts(query, task_memory, depth)
         candidate_answers.append(answer)
         if answer and not answer.is_neutral():
@@ -132,12 +135,6 @@ class BackwardInference:
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
             self._log("Answer found by executing the rules: " + answer.text, depth)
-            return answer
-
-        answer = self._look_for_answer_in_common_sense(query, depth)
-        candidate_answers.append(answer)
-        if answer and answer_is_informative(answer):
-            self._log("Answer in common sense: " + answer.text, depth)
             return answer
 
         return selected_answer(candidate_answers)
@@ -226,10 +223,15 @@ class BackwardInference:
             self._log(f"Answer within facts: The answer is {answer.text}")
             return answer
 
-    def _look_for_answer_in_common_sense(self, query, depth):
-        if depth > 0 and not query.is_question and not fact_relates_to_user(query.text):
-            answer = self._common_sense.claim_makes_sense(query.text)
-            return answer
+    def _look_for_answer_in_entailment(self, query, depth):
+        if "->" not in query.text:
+            return None
+
+        premise, hypothesis = query.text.split("->")
+        answer = self._qa.ask(
+            Query(text=premise, is_question=is_question(premise)), hypothesis
+        )
+        return answer
 
     def _look_for_answer_in_task_memory(self, query, task_memory, depth):
         if depth > 0 and task_memory.get_story() and query.is_question:
