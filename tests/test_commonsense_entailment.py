@@ -1,38 +1,23 @@
 from unittest import TestCase
 
 from wafl.knowledge.knowledge import Knowledge
-
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-
-from wafl.qa.common_sense import CommonSense
 
 wafl_example = """
 
 item = what does the user want to add to the shopping list?
-  '{item}' can be a part of a grocery list
+  the user adds something to a grocery list -> The user adds {item} to a list 
   SAY {item} will be added
 
 item = what does the user want to add to the shopping list?
-  ! {item} can be a part of a grocery list
+  ! the user adds something to a grocery list -> The user adds {item} to a list
   SAY {item} is not a shopping item
 
 """
 
 
 class TestCommonSense(TestCase):
-    def test_common_sense_positive(self):
-        claim = "'pasta' can be a part of a grocery list"
-        common_sense = CommonSense()
-        answer = common_sense.claim_makes_sense(claim)
-        assert answer.text == "True"
-
-    def test_common_sense_negative(self):
-        claim = "'no thanks' can be a part of a grocery list"
-        common_sense = CommonSense()
-        answer = common_sense.claim_makes_sense(claim)
-        assert answer.text == "False"
-
     def test_sentences_can_filter_items_positive(self):
         interface = DummyInterface(
             to_utter=[

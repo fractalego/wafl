@@ -1,5 +1,6 @@
 import os
 import re
+import wafl.conversation.suppress_huggingface_logger
 
 from wafl.conversation.narrator import Narrator
 from wafl.inference.utils import normalized
@@ -8,7 +9,6 @@ from wafl.config import Configuration
 from wafl.conversation.utils import is_question, get_answer_using_text, input_is_valid
 from wafl.exceptions import InterruptTask
 from wafl.inference.backward_inference import BackwardInference
-
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
