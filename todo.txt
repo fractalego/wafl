@@ -15,7 +15,7 @@
 
 * Make infinite recursion impossible (set max limit or check for repetitions)
 * Use entailer for common sense? Creak sense does not work very well
-
+* Create answering class on top of the conversation
 
 * separate items added to list with "and"
 * y/n questions should only accept yes or no (and loop if there is something else)
