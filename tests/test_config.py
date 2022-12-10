@@ -16,7 +16,7 @@ class TestConfig(TestCase):
         config = Configuration.load_local_config()
         config.set_value("accept_random_facts", False)
 
-        interface = DummyInterface(["My name is Albert", "What is my name"])
+        interface = DummyInterface(["Albert is here", "What is my name"])
         conversation = Conversation(
             Knowledge(_wafl_greetings), interface=interface, config=config
         )

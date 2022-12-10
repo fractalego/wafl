@@ -1,5 +1,23 @@
 ### TODO
 
+* Create answering class on top of the conversation
+  * create arbiter class
+    * This should solve the test_executables failing tests
+  * is the dialogue part really needed? if not, you can use a simple qa system
+
+* separate items added to list with "and"
+* y/n questions should only accept yes or no (and loop if there is something else)
+* fact retrieval should work in python space as well
+* rules and functions should be in a folder.
+  * Think about ability to install
+* remove Batches output in prediction
+* Do lists as hard-coded
+* y/n questions are never searched in working memory. Is this the right behavior?
+* test_testcases blocks the tests. RESOLVE THIS!!
+* fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
+
+/* Use entailer for common sense? Creak sense does not work very well
+/* Make infinite recursion impossible (set max limit or check for repetitions)
 /* Do the conversational memory (start with test_working_memory.py)
 / * done but you need to refine the interaction with the narrator class (events are splitted manually in qa.py)
 /    * RUN TESTS!!!
@@ -11,23 +29,6 @@
 /                - should you change the hypothesys "when -> says?" (line 91 and 101)
 /
 /    * USE LOGGER IN CONVERSATION() TO SPEED UP DEBUGGING!
-
-
-* Make infinite recursion impossible (set max limit or check for repetitions)
-* Use entailer for common sense? Creak sense does not work very well
-* Create answering class on top of the conversation
-
-* separate items added to list with "and"
-* y/n questions should only accept yes or no (and loop if there is something else)
-* creak sense and fact retrieval should work in python space as well
-* remove Batches output in prediction
-* Do lists as hard-coded
-* Do arbiter with QA
-* y/n questions are never searched in working memory. Is this the right behavior?
-* test_testcases blocks the tests. RESOLVE THIS!!
-* fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
-
-
 /* numbers in speaker should be translated to English
 /* remove computer as first word
 /* Confidence in listener results
