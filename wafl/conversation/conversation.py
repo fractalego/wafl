@@ -1,15 +1,12 @@
 import os
 import re
-import wafl.conversation.suppress_huggingface_logger
-from wafl.conversation.answerer import Answerer
 
-from wafl.conversation.narrator import Narrator
+from wafl.answerer.arbiter_answerer import ArbiterAnswerer
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
-from wafl.conversation.utils import is_question, get_answer_using_text, input_is_valid
+from wafl.conversation.utils import is_question, input_is_valid
 from wafl.exceptions import InterruptTask
-from wafl.inference.backward_inference import BackwardInference, answer_is_informative
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
@@ -23,18 +20,15 @@ class Conversation:
         config=None,
         logger=None,
     ):
-        self._answerer = Answerer(logger)
+        self._answerer = ArbiterAnswerer.create_answerer(
+            knowledge, interface, code_path, logger
+        )
         self._knowledge = knowledge
         self._interface = interface
-        self._inference = BackwardInference(
-            self._knowledge, interface, code_path, logger=logger
-        )
         if not config:
             self._config = Configuration.load_local_config()
         else:
             self._config = config
-
-        self._narrator = Narrator()
 
         self._logger = logger
         if logger:
@@ -52,15 +46,7 @@ class Conversation:
         text_is_question = is_question(text)
 
         try:
-            prior_conversation = self._narrator.summarize_dialogue(
-                self._interface.get_utterances_list()[-3:-1]
-            )
-            ### The following lines shoule be within an arbiter function
-            answer = get_answer_using_text(
-                self._inference, self._interface, text, prior_conversation
-            )
-            if not answer_is_informative(answer) or answer.is_false():
-                answer = self._answerer.answer(prior_conversation, text)
+            answer = self._answerer.answer(text)
 
         except InterruptTask:
             self._interface.output("Task interrupted")
@@ -69,8 +55,7 @@ class Conversation:
         if (
             self._config.get_value("accept_random_facts")
             and not text_is_question
-            and answer.text != "True"
-            and answer.text != "Yes"
+            and not answer.is_true()
             and not self._interface.bot_has_spoken()
         ):
             self._knowledge.add(text)

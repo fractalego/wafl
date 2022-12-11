@@ -2,7 +2,11 @@ from wafl.conversation.utils import is_question
 
 
 class Narrator:
-    def summarize_dialogue(self, dialogue_list):
+    def __init__(self, interface):
+        self._interface = interface
+
+    def summarize_dialogue(self):
+        dialogue_list = self._interface.get_utterances_list()[-3:-1]
         summary = ""
         for line in dialogue_list:
             speaker = self.get_speaker(line)

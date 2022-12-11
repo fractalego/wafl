@@ -10,6 +10,13 @@
 * fact retrieval should work in python space as well
 * rules and functions should be in a folder.
   * Think about ability to install
+
+* add ability to create rules through text "->"
+* main conversation loop should be scheduler
+  * Add functions that can trigger rules
+
+
+
 * remove Batches output in prediction
 * Do lists as hard-coded
 * y/n questions are never searched in working memory. Is this the right behavior?

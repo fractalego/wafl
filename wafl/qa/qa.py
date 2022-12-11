@@ -2,8 +2,6 @@ import logging
 import os
 
 from conversation_qa import QA as ConvQA, Dialogue
-
-from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import (
     is_question,
     is_yes_no_question,
@@ -18,10 +16,10 @@ _logger = logging.getLogger(__file__)
 
 
 class QA:
-    def __init__(self, logger=None):
+    def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
         self._qa = ConvQA("fractalego/conversation-qa")
-        self._narrator = Narrator()
+        self._narrator = narrator
         self._entailer_to_qa_mapping = {
             "True": "Yes",
             "False": "No",

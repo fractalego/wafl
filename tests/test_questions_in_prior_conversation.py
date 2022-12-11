@@ -33,9 +33,7 @@ class TestAnswerInConversation(TestCase):
 
     def test__random_name_is_remembered(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
-        conversation = Conversation(
-            Knowledge(_wafl_example), interface=interface
-        )
+        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()

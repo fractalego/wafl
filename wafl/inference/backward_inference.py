@@ -1,10 +1,9 @@
 import logging
 import traceback
 
-from wafl.conversation.narrator import Narrator
+from wafl.answerer.inference_answerer import get_answer_using_text
 from wafl.conversation.utils import (
     is_question,
-    get_answer_using_text,
     is_yes_no_question,
 )
 from wafl.conversation.task_memory import TaskMemory
@@ -45,6 +44,7 @@ class BackwardInference:
         self,
         knowledge: "Knowledge",
         interface: "Interface",
+        narrator: "Narrator",
         module_name=None,
         max_depth: int = 5,
         logger=None,
@@ -52,8 +52,8 @@ class BackwardInference:
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
-        self._qa = QA(logger)
-        self._narrator = Narrator()
+        self._qa = QA(narrator, logger)
+        self._narrator = narrator
         self._logger = logger
 
         if module_name:
@@ -268,6 +268,7 @@ class BackwardInference:
                     prior_conversation = self._narrator.summarize_dialogue(
                         self._interface.get_utterances_list()[-3:-1]
                     )
+                    self._in
                     get_answer_using_text(
                         self, self._interface, user_input_text, prior_conversation
                     )
