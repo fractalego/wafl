@@ -1,6 +1,8 @@
 from unittest import TestCase
 
+from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import is_question
+from wafl.interface.dummy_interface import DummyInterface
 from wafl.qa.qa import QA
 from wafl.qa.dataclasses import Query
 
@@ -20,7 +22,7 @@ class TestQuestions(TestCase):
             "When asked 'is the user satisfied with this', the user says: 'yes I am.'"
         )
 
-        qa = QA()
+        qa = QA(Narrator(DummyInterface))
         answer = qa.ask(query, user_answer)
 
         assert answer.is_true()

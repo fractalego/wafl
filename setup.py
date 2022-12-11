@@ -15,6 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=[
         "wafl",
+        "wafl.answerer",
         "wafl.conversation",
         "wafl.inference",
         "wafl.interface",

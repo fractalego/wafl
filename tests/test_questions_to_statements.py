@@ -1,6 +1,9 @@
 import os
 from unittest import TestCase
+
+from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import get_sentence_from_yn_question
+from wafl.interface.dummy_interface import DummyInterface
 from wafl.qa.dataclasses import Query
 from wafl.qa.qa import QA
 
@@ -35,6 +38,6 @@ class TestQuestionsToStatements(TestCase):
     def test__yn_questions_use_entailer_for_positive_answers(self):
         text = "This bot is doing well"
         query = Query("is this bot ok?", is_question=True)
-        qa = QA()
+        qa = QA(Narrator(DummyInterface))
         prediction = qa.ask(query, text)
         self.assertEqual("yes", prediction.text.lower())

@@ -18,7 +18,7 @@ item = what does the user want to add to the shopping list?
 
 
 class TestCommonSense(TestCase):
-    def test_sentences_can_filter_items_positive(self):
+    def test__sentences_can_filter_items_positive(self):
         interface = DummyInterface(
             to_utter=[
                 "Please add apples to the shopping list",
@@ -31,7 +31,21 @@ class TestCommonSense(TestCase):
         expected = "bot: Apples will be added"
         assert interface.get_utterances_list()[-1] == expected
 
-    def test_sentences_can_filter_items_negative(self):
+    def test__sentences_can_filter_items_positive2(self):
+        interface = DummyInterface(
+            to_utter=[
+                "Please add bananas to the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "bot: Bananas will be added"
+        assert interface.get_utterances_list()[-1] == expected
+
+
+    def test__sentences_can_filter_items_negative(self):
         interface = DummyInterface(
             to_utter=[
                 "Please add no thanks to the shopping list",

@@ -94,6 +94,9 @@ class BackwardInference:
             self._log("Answer in entailment: " + answer.text, depth)
             return answer
 
+        if " -> " in query.text:
+            return selected_answer(candidate_answers)
+
         answer = self._look_for_answer_in_facts(query, task_memory, depth)
         candidate_answers.append(answer)
         if answer and not answer.is_neutral():
@@ -265,10 +268,7 @@ class BackwardInference:
                 user_input_text = self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
-                    prior_conversation = self._narrator.summarize_dialogue(
-                        self._interface.get_utterances_list()[-3:-1]
-                    )
-                    self._in
+                    prior_conversation = self._narrator.summarize_dialogue()
                     get_answer_using_text(
                         self, self._interface, user_input_text, prior_conversation
                     )

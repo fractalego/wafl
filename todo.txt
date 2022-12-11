@@ -15,13 +15,15 @@
 * main conversation loop should be scheduler
   * Add functions that can trigger rules
 
-
+* InferenceAnswerer can be broken down into simpler answerer
+  * within backward inference there is the need for an answerer (when tasks are interrupted)
 
 * remove Batches output in prediction
 * Do lists as hard-coded
 * y/n questions are never searched in working memory. Is this the right behavior?
 * test_testcases blocks the tests. RESOLVE THIS!!
 * fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
+* functions use inference from depth_level = 1. This can induce infinite recursion
 
 /* Use entailer for common sense? Creak sense does not work very well
 /* Make infinite recursion impossible (set max limit or check for repetitions)
