@@ -26,10 +26,12 @@ class QA:
             "Unknown": "Unknown",
         }
 
-    def ask(self, query: "Query", text: str):
+    def ask(self, query: "Query", text: str, task_memory=None):
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
-            answer = self._answer_question(query_text, query.variable, text)
+            answer = self._answer_question(
+                query_text, query.variable, text, task_memory
+            )
             return answer
 
         if query.is_question and is_yes_no_question(query_text):
@@ -41,14 +43,14 @@ class QA:
 
         return self._check_fact(query_text, text, threshold=0.5)
 
-    def _answer_question(self, query_text, variable_name, text: str):
+    def _answer_question(self, query_text, variable_name, text: str, task_memory):
         if query_text[-1] != "?":
             query_text += "?"
 
         dialogue = Dialogue()
 
         answer = self._get_answer_by_iterating_over_prior_events_in_the_story(
-            text, dialogue.get_text(), query_text
+            text, dialogue.get_text(), query_text, task_memory
         )
         if answer and answer[-1] in [".", ",", "!"]:
             answer = answer[:-1]
@@ -69,7 +71,7 @@ class QA:
         return Answer(text="No")
 
     def _get_answer_by_iterating_over_prior_events_in_the_story(
-        self, text, dialogue_text, query_text
+        self, text, dialogue_text, query_text, task_memory
     ):
         for event in text.split(". ")[::-1]:
             event = event.strip()
@@ -77,6 +79,9 @@ class QA:
                 continue
 
             answer = normalized(self._qa.get_answer(event, dialogue_text, query_text))
+            if task_memory and task_memory.text_is_in_prior_answers(answer):
+                continue
+
             answer_context = self._narrator.get_relevant_query_answer_context(
                 text, query_text, answer
             )

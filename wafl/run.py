@@ -77,15 +77,18 @@ def run_from_audio():
                 and not result
                 and not interface.bot_has_spoken()
             ):
+                num_misses += 1
+                if num_misses >= max_misses:
+                    interface.check_understanding(False)
+
                 if interactions <= 1:
-                    interface.output(random.choice(["Hello there", "Hello", "What?"]))
+                    interface.output(random.choice(["What can I do for you?"]))
 
                 else:
                     interface.output(random.choice(["Sorry?", "Can you repeat?"]))
 
-                num_misses += 1
-                if num_misses >= max_misses:
-                    interface.check_understanding(False)
+            else:
+                num_misses = 0
 
         except CloseConversation:
             _logger.write(f"Closing the conversation", log_level=_logger.level.INFO)

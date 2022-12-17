@@ -6,7 +6,7 @@ class Narrator:
         self._interface = interface
 
     def summarize_dialogue(self):
-        dialogue_list = self._interface.get_utterances_list()[-3:-1]
+        dialogue_list = self._interface.get_utterances_list()[-7:-1]
         summary = ""
         for line in dialogue_list:
             speaker = self.get_speaker(line)

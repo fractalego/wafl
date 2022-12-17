@@ -154,5 +154,24 @@ A:
         conversation.input()
         conversation.input()
         expected = "bot: Bananas has been added to the list"
-        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__prior_list_name_is_remembered_second_time(self):
+        interface = DummyInterface(
+            to_utter=[
+                "Add tangerines to the shopping list",
+                "add bananas as well",
+                "ok now add apples",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(memory_example),
+            interface=interface,
+            code_path="functions",
+            logger=LocalFileLogger(),
+        )
+        conversation.input()
+        conversation.input()
+        conversation.input()
+        expected = "bot: Apples has been added to the list"
         assert interface.get_utterances_list()[-1] == expected

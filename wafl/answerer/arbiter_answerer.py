@@ -32,7 +32,9 @@ class ArbiterAnswerer(BaseAnswerer):
             [
                 InferenceAnswerer(
                     interface,
-                    BackwardInference(knowledge, interface, narrator, code_path, logger=logger),
+                    BackwardInference(
+                        knowledge, interface, narrator, code_path, logger=logger
+                    ),
                     logger,
                 ),
                 SimpleAnswerer(narrator, logger),

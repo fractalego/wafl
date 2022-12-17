@@ -44,7 +44,6 @@ class TestCommonSense(TestCase):
         expected = "bot: Bananas will be added"
         assert interface.get_utterances_list()[-1] == expected
 
-
     def test__sentences_can_filter_items_negative(self):
         interface = DummyInterface(
             to_utter=[

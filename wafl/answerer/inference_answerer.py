@@ -24,10 +24,7 @@ class InferenceAnswerer(BaseAnswerer):
                 f"InferenceAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        return get_answer_using_text(self._inference,
-                                     self._interface,
-                                     query_text,
-                                     text)
+        return get_answer_using_text(self._inference, self._interface, query_text, text)
 
 
 def get_answer_using_text(inference, interface, text, prior_conversation):
