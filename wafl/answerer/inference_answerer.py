@@ -53,5 +53,4 @@ def get_answer_using_text(inference, interface, text, prior_conversation):
         interface.bot_has_spoken(False)
         answer = inference.compute(query, working_memory)
 
-
     return answer

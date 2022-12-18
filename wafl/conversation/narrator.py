@@ -35,6 +35,7 @@ class Narrator:
         return line.split(":")[1]
 
     def get_context_for_facts(self, text):
+        text = text.strip()
         return f"The bot remembers: '{text}'"
 
     def get_relevant_query_answer_context(self, text, query_text, answer):
@@ -50,6 +51,8 @@ class Narrator:
         return f"the answer to '{query_text}' is '{answer}'"
 
     def get_relevant_fact_context(self, text, answer):
+        text = text.strip()
+        answer = answer.strip()
         if "the user says:" in text.lower():
             return f"the user says '{answer}'"
 

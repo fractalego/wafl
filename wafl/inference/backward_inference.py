@@ -46,7 +46,7 @@ class BackwardInference:
         interface: "Interface",
         narrator: "Narrator",
         module_name=None,
-        max_depth: int = 5,
+        max_depth: int = 10,
         logger=None,
     ):
         self._max_depth = max_depth
@@ -83,6 +83,8 @@ class BackwardInference:
         self, query: "Query", task_memory, depth, inverted_rule=False
     ):
         self._log(f"The query is {query.text}", depth)
+        self._log(f"The depth is {depth}", depth)
+        self._log(f"The max depth is {self._max_depth}", depth)
 
         if depth > self._max_depth:
             return Answer(text="False")
@@ -151,9 +153,10 @@ class BackwardInference:
             rule_effect_text = rule.effect.text
             self._log(f"Trying rule with trigger: {rule_effect_text}", depth)
             if rule.effect.is_question:
-                self._validate_question_in_effects(
+                if not self._validate_question_in_effects(
                     rule.effect, query.text, substitutions
-                )
+                ):
+                    continue
 
             elif not needs_substitutions(rule.effect):
                 answer = self.__validate_fact_in_effects(
@@ -321,7 +324,7 @@ class BackwardInference:
         self._log(f"The query is {query_text}")
         self._log(f"The answer is {answer.text}")
 
-        if answer.is_false():
+        if answer.is_false() or not answer_is_informative(answer):
             return False
 
         if answer.variable:
