@@ -68,8 +68,14 @@ class Conversation:
             if text_is_question and answer.text not in ["True", "False"]:
                 self.output(answer.text)
 
-            if text_is_question and answer.text == "False":
+            if text_is_question and answer.is_false():
                 self.output("Unknown")
+
+            if not text_is_question and answer.is_false() and not self._interface.bot_has_spoken():
+                self._interface.output("negative")
+
+            if not text_is_question and answer.is_true() and not self._interface.bot_has_spoken():
+                self._interface.output("affermative")
 
         return answer
 

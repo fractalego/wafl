@@ -29,6 +29,7 @@ class TestCommonSense(TestCase):
         )
         conversation.input()
         expected = "bot: Apples will be added"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__sentences_can_filter_items_positive2(self):

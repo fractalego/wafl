@@ -104,7 +104,6 @@ class TestConversation(TestCase):
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
         answer = conversation.add("What is the email of the user")
-        print(answer)
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
