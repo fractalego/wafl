@@ -173,13 +173,7 @@ class Knowledge(BaseKnowledge):
             if item[1] > self._threshold_for_partial_facts
         ]
 
-        rules_and_scores = [
-            item
-            for item in sorted(
-                fact_rules + question_rules + incomplete_rules, key=lambda x: -x[1]
-            )
-        ]
-
+        rules_and_scores = fact_rules + question_rules + incomplete_rules
         rules = [item[0] for item in rules_and_scores]
         if rules_are_too_different(self._rules_fact_retriever, rules):
             return []
