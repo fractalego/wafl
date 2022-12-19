@@ -76,7 +76,9 @@ class QA:
 
         answers_and_scores = []
 
+        penalty = -0.05
         for event in text.split(". ")[::-1]:
+            penalty += 0.05
             event = event.strip()
             if not event or len(event) < 2:
                 continue
@@ -95,7 +97,7 @@ class QA:
                 return_threshold=True,
             )
             if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score))
+                answers_and_scores.append((answer, entailment_score - penalty))
 
             if "when asked" not in event.lower():
                 continue
@@ -107,7 +109,7 @@ class QA:
                 return_threshold=True,
             )
             if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score))
+                answers_and_scores.append((answer, entailment_score - penalty))
 
         if answers_and_scores:
             return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]

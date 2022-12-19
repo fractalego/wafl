@@ -108,7 +108,7 @@ class BackwardInference:
         if depth > 0:
             if text_has_new_task_memory_command(query.text):
                 task_memory.erase()
-                return self.__process_new_task_memory_command()
+                return self._process_new_task_memory_command()
 
         answer = self._look_for_answer_in_task_memory(query, task_memory, depth)
         candidate_answers.append(answer)
@@ -125,14 +125,14 @@ class BackwardInference:
         if depth > 0:
             task_memory = TaskMemory()
             if text_has_say_command(query.text):
-                answer = self.__process_say_command(query.text)
+                answer = self._process_say_command(query.text)
                 return answer
 
             elif text_has_remember_command(query.text):
-                return self.__process_remember_command(query.text)
+                return self._process_remember_command(query.text)
 
             elif text_is_code(query.text):
-                return self.__process_code(query.text, {})
+                return self._process_code(query.text, {})
 
         answer = self._look_for_answer_in_rules(
             query, task_memory, depth, inverted_rule
@@ -159,7 +159,7 @@ class BackwardInference:
                     continue
 
             elif not needs_substitutions(rule.effect):
-                answer = self.__validate_fact_in_effects(
+                answer = self._validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
                 if answer.is_false():
@@ -175,16 +175,16 @@ class BackwardInference:
                     continue
 
                 if text_has_say_command(cause_text):
-                    answer = self.__process_say_command(cause_text)
+                    answer = self._process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
-                    answer = self.__process_remember_command(cause_text)
+                    answer = self._process_remember_command(cause_text)
 
                 elif text_is_code(cause_text):
-                    answer = self.__process_code(cause_text, substitutions)
+                    answer = self._process_code(cause_text, substitutions)
 
                 else:
-                    answer = self.__process_query(
+                    answer = self._process_query(
                         cause_text,
                         cause.is_question,
                         task_memory,
@@ -205,7 +205,7 @@ class BackwardInference:
                 index += 1
 
             if index == len(rule.causes):
-                answer = self.__validate_fact_in_effects(
+                answer = self._validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
 
@@ -332,24 +332,24 @@ class BackwardInference:
 
         return True
 
-    def __process_say_command(self, cause_text):
+    def _process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._log(f"Uttering: {utterance}")
         self._interface.output(utterance)
         answer = Answer(text="True")
         return answer
 
-    def __process_remember_command(self, cause_text):
+    def _process_remember_command(self, cause_text):
         utterance = cause_text[8:].strip().capitalize()
         self._log(f"Remembering: {utterance}")
         self._knowledge.add(utterance)
         return Answer(text="True")
 
-    def __process_new_task_memory_command(self):
+    def _process_new_task_memory_command(self):
         self._log(f"Erasing working memory")
         return Answer(text="True")
 
-    def __validate_fact_in_effects(self, rule_effect_text, query, substitutions):
+    def _validate_fact_in_effects(self, rule_effect_text, query, substitutions):
         for key, value in substitutions.items():
             if key and value:
                 rule_effect_text = rule_effect_text.replace(key, value)
@@ -364,7 +364,7 @@ class BackwardInference:
 
         return answer
 
-    def __process_code(self, cause_text, substitutions):
+    def _process_code(self, cause_text, substitutions):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -404,7 +404,7 @@ class BackwardInference:
 
         return answer
 
-    def __process_query(
+    def _process_query(
         self, cause_text, cause_is_question, task_memory, depth, inverted_rule
     ):
         self._log("Processing clause as a query", depth)
