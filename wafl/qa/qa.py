@@ -73,6 +73,9 @@ class QA:
     def _get_answer_by_iterating_over_prior_events_in_the_story(
         self, text, dialogue_text, query_text, task_memory
     ):
+
+        answers_and_scores = []
+
         for event in text.split(". ")[::-1]:
             event = event.strip()
             if not event or len(event) < 2:
@@ -85,23 +88,28 @@ class QA:
             answer_context = self._narrator.get_relevant_query_answer_context(
                 text, query_text, answer
             )
-            has_entailment = self._entailer.entails(
+            entailment_score = self._entailer.entails(
                 event.replace(".'.", "").replace(".'", ""),
                 answer_context,
                 threshold=0.75,
+                return_threshold=True,
             )
-            if answer != "unknown" and has_entailment == "True":
-                return answer
+            if answer != "unknown" and entailment_score:
+                answers_and_scores.append((answer, entailment_score))
 
             if "when asked" not in event.lower():
                 continue
 
-            has_entailment = self._entailer.entails(
+            entailment_score = self._entailer.entails(
                 answer_context,
                 event.replace(".'.", "").replace(".'", ""),
                 threshold=0.55,
+                return_threshold=True,
             )
-            if answer != "unknown" and has_entailment == "True":
-                return answer
+            if answer != "unknown" and entailment_score:
+                answers_and_scores.append((answer, entailment_score))
+
+        if answers_and_scores:
+            return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]
 
         return "unknown"

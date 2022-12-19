@@ -1,6 +1,7 @@
 ### TODO
 
 
+* rules are sorted by retriever but not by entailer!! Do that
 * Why does remember not work??!!!
 * move all thresholds to variables.py
 * y/n questions should only accept yes or no (and loop if there is something else)
