@@ -116,6 +116,7 @@ class TestConversation(TestCase):
         input_from_user = "the user's mother is called Ada"
         conversation.add(input_from_user)
         answer = conversation.add("How is the user's mum called")
+        print(answer)
         assert answer.text.lower() == "ada"
 
     def test__greeting(self):

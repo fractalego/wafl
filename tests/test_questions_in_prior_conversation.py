@@ -29,7 +29,8 @@ class TestAnswerInConversation(TestCase):
         )
         conversation.input()
         conversation.input()
-        assert interface.get_utterances_list()[-1] == "bot: 0 celsius"
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == "bot: cold"
 
     def test__random_name_is_remembered(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])

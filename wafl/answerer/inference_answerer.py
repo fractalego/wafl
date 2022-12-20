@@ -31,20 +31,15 @@ def get_answer_using_text(inference, interface, text, prior_conversation):
     working_memory = TaskMemory()
     working_memory.add_story(prior_conversation)
     text = text.capitalize()
-    if not is_question(text):
-        query_text = f"The user says: '{text}.'"
-        working_memory.add_story(query_text)
-
-    else:
-        query_text = text
-
+    query_text = f"The user says: '{text}.'"
+    working_memory.add_story(query_text)
     query = Query(text=query_text, is_question=is_question(text), variable="name")
     interface.bot_has_spoken(False)
     answer = inference.compute(query, working_memory)
 
-    if query.is_question and answer.is_false():
+    if query.is_question and (answer.is_false() or answer.is_neutral()):
         query = Query(
-            text=f"The user asks: '{text}.'",
+            text=f"The user asks: '{text}'",
             is_question=is_question(text),
             variable="name",
         )

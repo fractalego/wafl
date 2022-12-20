@@ -115,4 +115,5 @@ class TestInference(TestCase):
         )
         answer = inference.compute(query)
         expected = "peach tree"
+        print(answer)
         assert answer.text == expected

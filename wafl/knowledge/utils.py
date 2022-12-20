@@ -1,3 +1,6 @@
+from wafl.conversation.utils import get_sentence_from_yn_question
+
+
 def text_is_exact_string(text):
     return text.strip() and text.strip()[0] == "_"
 
@@ -47,16 +50,19 @@ def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
 
 def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
     new_rules_and_scores = []
-    for rule, _ in rules_and_scores:
-        score = entailer.entails(query.text, rule.effect.text, return_threshold=True)
+    for rule, score in rules_and_scores:
         if rule.effect.is_question:
             new_rules_and_scores.append((rule, score))
 
         elif needs_substitutions(rule.effect):
             new_rules_and_scores.append((rule, score))
 
-        elif score > 0:
-            new_rules_and_scores.append((rule, score))
+        else:
+            entailment_score = entailer.entails(
+                query.text, rule.effect.text, return_threshold=True
+            )
+            if entailment_score:
+                new_rules_and_scores.append((rule, score * entailment_score))
 
     return sorted(new_rules_and_scores, key=lambda x: -x[1])
 

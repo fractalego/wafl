@@ -18,7 +18,7 @@ class Narrator:
                 summary += f"when the {speaker} asks: '{utterance}' "
 
             else:
-                summary += f"the {speaker} says: '{utterance}'. "
+                summary += f"the {speaker} says: '{utterance}'; "
 
         return summary
 

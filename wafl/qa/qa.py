@@ -73,13 +73,12 @@ class QA:
     def _get_answer_by_iterating_over_prior_events_in_the_story(
         self, text, dialogue_text, query_text, task_memory
     ):
-
+        query_text = _clean_query_text(query_text)
         answers_and_scores = []
-
         penalty = -0.05
-        for event in text.split(". ")[::-1]:
+        for event in _split_text(text)[::-1]:
             penalty += 0.05
-            event = event.strip()
+            event = _clean_event(event.strip())
             if not event or len(event) < 2:
                 continue
 
@@ -115,3 +114,19 @@ class QA:
             return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]
 
         return "unknown"
+
+
+def _split_text(text):
+    return text.split("; ")
+
+
+def _clean_event(text):
+    text = text.strip()
+    text = text.replace(" \'s ", "\'s ")
+    return text
+
+
+def _clean_query_text(text):
+    text = text.replace(".'?", "?'")
+    text = text.replace("'?", "?'")
+    return text

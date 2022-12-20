@@ -25,7 +25,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Knowledge(BaseKnowledge):
-    _threshold_for_questions_from_user = 0.6
+    _threshold_for_questions_from_user = 0.55
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.505
     _threshold_for_facts = 0.4
@@ -163,7 +163,7 @@ class Knowledge(BaseKnowledge):
         question_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
-            if item[1] > 0
+            if item[1] > self._threshold_for_questions_in_rules
         ]
         question_rules = [item for item in sorted(question_rules, key=lambda x: -x[1])][
             : self._max_rules_per_type
@@ -177,7 +177,7 @@ class Knowledge(BaseKnowledge):
         incomplete_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
-            if item[1] > 0
+            if item[1] > self._threshold_for_partial_facts
         ]
         incomplete_rules = [
             item for item in sorted(incomplete_rules, key=lambda x: -x[1])
