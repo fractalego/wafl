@@ -37,11 +37,11 @@ class DenseRetriever(BaseRetriever):
         return self._embeddings_model.similar_by_vector(embeddings, topn=2)
 
     def _get_embeddings_from_text(self, text: str) -> "numpy.array":
-        return self._sentence_model.encode(text)
+        return self._sentence_model.encode(text, show_progress_bar=False)
 
     def get_dot_product(self, lhs: str, rhs: str) -> float:
-        lhs_vector = self._sentence_model.encode(lhs)
-        rhs_vector = self._sentence_model.encode(rhs)
+        lhs_vector = self._sentence_model.encode(lhs, show_progress_bar=False)
+        rhs_vector = self._sentence_model.encode(rhs, show_progress_bar=False)
         return (
             np.dot(lhs_vector, rhs_vector)
             / np.linalg.norm(lhs_vector)
