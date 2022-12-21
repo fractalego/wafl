@@ -17,6 +17,7 @@ the user wants you to remember
 
 """
 
+
 class TestRetrieval(TestCase):
     def test_retrieval(self):
         retriever = DenseRetriever("msmarco-distilbert-base-v3")
@@ -66,4 +67,3 @@ class TestRetrieval(TestCase):
         expected = "bot: I will remember that your name is alberto"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
-

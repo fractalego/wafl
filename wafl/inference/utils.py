@@ -2,6 +2,7 @@ import re
 
 from typing import List
 from fuzzywuzzy import process
+
 from wafl.qa.dataclasses import Answer
 
 
@@ -175,7 +176,7 @@ def fact_relates_to_user(text):
 
 
 def project_answer(answer: "Answer", candidates: List) -> "Answer":
-    if not candidates:
+    if not candidates or not answer_is_informative(answer):
         return Answer(text="unknown")
 
     extracted, score = process.extract(answer.text, candidates, limit=1)[0]
@@ -183,3 +184,7 @@ def project_answer(answer: "Answer", candidates: List) -> "Answer":
         return Answer(text="unknown")
 
     return Answer(text=extracted)
+
+
+def answer_is_informative(answer):
+    return not any(item == normalized(answer.text) for item in ["unknown"])

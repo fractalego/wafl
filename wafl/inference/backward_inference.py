@@ -25,6 +25,7 @@ from wafl.inference.utils import (
     invert_answer,
     text_has_assigmnent,
     update_substitutions_from_results,
+    answer_is_informative,
 )
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
@@ -33,10 +34,6 @@ from wafl.qa.dataclasses import Query, Answer
 from inspect import getmembers, isfunction
 
 _logger = logging.getLogger(__name__)
-
-
-def answer_is_informative(answer):
-    return not any(item == normalized(answer.text) for item in ["unknown"])
 
 
 class BackwardInference:
@@ -298,6 +295,11 @@ class BackwardInference:
 
                 if is_yes_no_question(query.text):
                     user_answer = project_answer(user_answer, ["yes", "no"])
+                    if user_answer.text not in ["yes", "no"]:
+                        self._interface.output("Yes or No?")
+                        user_answer = self._look_for_answer_by_asking_the_user(
+                            query, task_memory, depth
+                        )
 
                 if user_answer.is_true():
                     user_answer = Answer(text="True")
