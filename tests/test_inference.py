@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from wafl.conversation.narrator import Narrator
+from wafl.conversation.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
@@ -41,7 +43,10 @@ Bob's address is 42 Flinch road
 
 class TestInference(TestCase):
     def test__simple_question(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(text="What is this bot's name", is_question=True, variable="name")
         answer = inference.compute(query)
         expected = "fractalego"
@@ -49,7 +54,10 @@ class TestInference(TestCase):
         assert answer.variable == query.variable
 
     def test__fact_check_true(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
         )
@@ -57,19 +65,28 @@ class TestInference(TestCase):
         assert answer.is_true()
 
     def test__fact_check_false(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(text="The user is sad", is_question=False, variable="name")
         answer = inference.compute(query)
         assert answer.is_false()
 
     def test__simple_rule(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(text="The user says hello!", is_question=False, variable="name")
         answer = inference.compute(query)
         assert answer.is_true()
 
     def test__forward_substitution(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
         )
@@ -77,7 +94,10 @@ class TestInference(TestCase):
         assert answer.is_true()
 
     def test__backward_substitution(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"
         )
@@ -85,12 +105,17 @@ class TestInference(TestCase):
         assert answer.is_true()
 
     def test__forward_substution_2(self):
-        inference = BackwardInference(Knowledge(wafl_example), DummyInterface())
+        interface = DummyInterface()
+        inference = BackwardInference(
+            Knowledge(wafl_example), interface, Narrator(interface)
+        )
         query = Query(
             text="What type of tree is there at Bob's house",
             is_question=True,
             variable="name",
         )
-        answer = inference.compute(query)
+        task_memory = TaskMemory()
+        answer = inference._look_for_answer_in_rules(query, task_memory, 0, False)
         expected = "peach tree"
+        print(answer)
         assert answer.text == expected

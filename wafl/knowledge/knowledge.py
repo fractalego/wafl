@@ -25,11 +25,12 @@ _logger = logging.getLogger(__name__)
 
 
 class Knowledge(BaseKnowledge):
-    _threshold_for_questions_from_user = 0.6
+    _threshold_for_questions_from_user = 0.55
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.505
     _threshold_for_facts = 0.4
     _threshold_for_partial_facts = 0.48
+    _max_rules_per_type = 3
 
     def __init__(self, rules_text=None, logger=None):
         facts_and_rules = get_facts_and_rules_from_text(rules_text)
@@ -150,7 +151,10 @@ class Knowledge(BaseKnowledge):
         fact_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
-            if item[1] > self._threshold_for_facts
+            if item[1] > 0
+        ]
+        fact_rules = [item for item in sorted(fact_rules, key=lambda x: -x[1])][
+            : self._max_rules_per_type
         ]
 
         indices_and_scores = (
@@ -160,6 +164,9 @@ class Knowledge(BaseKnowledge):
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
             if item[1] > self._threshold_for_questions_in_rules
+        ]
+        question_rules = [item for item in sorted(question_rules, key=lambda x: -x[1])][
+            : self._max_rules_per_type
         ]
 
         indices_and_scores = (
@@ -172,14 +179,11 @@ class Knowledge(BaseKnowledge):
             for item in indices_and_scores
             if item[1] > self._threshold_for_partial_facts
         ]
+        incomplete_rules = [
+            item for item in sorted(incomplete_rules, key=lambda x: -x[1])
+        ][: self._max_rules_per_type]
 
-        rules_and_scores = [
-            item
-            for item in sorted(
-                fact_rules + question_rules + incomplete_rules, key=lambda x: -x[1]
-            )
-        ]
-
+        rules_and_scores = fact_rules + question_rules + incomplete_rules
         rules = [item[0] for item in rules_and_scores]
         if rules_are_too_different(self._rules_fact_retriever, rules):
             return []

@@ -30,7 +30,7 @@ class TestVoice(TestCase):
         conversation = Conversation(Knowledge(_wafl_example), interface=interface)
         conversation.check_understanding(True)
         conversation.input(activation_word="computer")
-        assert len(interface.get_utterances_list()) == 1
+        assert len(interface.get_utterances_list()) == 2
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])

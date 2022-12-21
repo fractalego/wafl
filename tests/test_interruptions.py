@@ -6,6 +6,7 @@ from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 _wafl_greetings = """
+This bot is here to answer the user unless asked to be silent
 
 The user says hi
   SAY Hello there!

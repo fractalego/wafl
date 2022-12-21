@@ -2,7 +2,11 @@ from wafl.conversation.utils import is_question
 
 
 class Narrator:
-    def summarize_dialogue(self, dialogue_list):
+    def __init__(self, interface):
+        self._interface = interface
+
+    def summarize_dialogue(self):
+        dialogue_list = self._interface.get_utterances_list()[-7:-1]
         summary = ""
         for line in dialogue_list:
             speaker = self.get_speaker(line)
@@ -14,7 +18,7 @@ class Narrator:
                 summary += f"when the {speaker} asks: '{utterance}' "
 
             else:
-                summary += f"the {speaker} says: '{utterance}'. "
+                summary += f"the {speaker} says: '{utterance}'; "
 
         return summary
 
@@ -31,6 +35,7 @@ class Narrator:
         return line.split(":")[1]
 
     def get_context_for_facts(self, text):
+        text = text.strip()
         return f"The bot remembers: '{text}'"
 
     def get_relevant_query_answer_context(self, text, query_text, answer):
@@ -46,6 +51,8 @@ class Narrator:
         return f"the answer to '{query_text}' is '{answer}'"
 
     def get_relevant_fact_context(self, text, answer):
+        text = text.strip()
+        answer = answer.strip()
         if "the user says:" in text.lower():
             return f"the user says '{answer}'"
 

@@ -106,35 +106,6 @@ def get_sentence_from_yn_question(text):
     return " ".join(new_word_list)
 
 
-def get_answer_using_text(inference, interface, text, prior_conversation):
-    working_memory = TaskMemory()
-    working_memory.add_story(prior_conversation)
-    text = text.capitalize()
-    if not is_question(text):
-        query_text = f"The user says: '{text}.'"
-        working_memory.add_story(query_text)
-
-    else:
-        query_text = text
-
-    query = Query(text=query_text, is_question=is_question(text), variable="name")
-    interface.bot_has_spoken(False)
-    answer = inference.compute(query, working_memory)
-
-    if query.is_question and answer.text == "False":
-        query = Query(
-            text=f"The user asks: '{text}.'",
-            is_question=is_question(text),
-            variable="name",
-        )
-        working_memory = TaskMemory()
-        working_memory.add_story(query.text)
-        interface.bot_has_spoken(False)
-        answer = inference.compute(query, working_memory)
-
-    return answer
-
-
 def input_is_valid(text):
     if not text.strip():
         return False

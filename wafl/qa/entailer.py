@@ -1,7 +1,7 @@
 import os
 import torch
 
-from typing import Dict
+from typing import Dict, Union
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
@@ -36,13 +36,17 @@ class Entailer:
         hypothesis: str,
         threshold=0.75,
         contradiction_threshold=0.65,
-    ) -> str:
+        return_threshold=False,
+    ) -> Union[str, float]:
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
             if self._logger:
                 self._logger.write(f"Entailment: The premise is {premise}")
                 self._logger.write(f"Entailment: The hypothesis is {hypothesis}")
                 self._logger.write(f"Entailment: The results are {str(prediction)}")
+
+            if return_threshold:
+                return prediction["entailment"]
 
             return "True"
 
@@ -56,7 +60,13 @@ class Entailer:
             self._logger.write(f"Entailment: The results are {str(prediction)}")
 
         if prediction["entailment"] > threshold:
+            if return_threshold:
+                return prediction["entailment"]
+
             return "True"
+
+        if return_threshold:
+            return 0
 
         if prediction["neutral"] > threshold:
             return "Unknown"

@@ -1,6 +1,7 @@
 .idea/
 .git/
 .env/
+tests/logs/
 build/
 dist/
 wafl.egg-info/

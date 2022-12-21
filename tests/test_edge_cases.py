@@ -67,7 +67,7 @@ the user wants to know what is in the shopping list
 
 # Check for trains
 the user wants to check if a line is running
-### WHY DOES IT WORK IF I PUT A ?
+### TESTING COMMENTS
   line_name = which line do you want to check?
   check_tfl_line(line_name)
 

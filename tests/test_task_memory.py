@@ -32,6 +32,9 @@ The user says hello
   name = What is the user's name
   SAY Hello, {name}!  
 
+the user wants to know what is in the shopping list
+  SAY the shopping list contains: nothing
+
 item = what does the user want to add to the shopping list?
   reset_shopping_list()
   shopping_list.append(item)
@@ -154,5 +157,46 @@ A:
         conversation.input()
         conversation.input()
         expected = "bot: Bananas has been added to the list"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__prior_list_name_is_remembered_second_time(self):
+        interface = DummyInterface(
+            to_utter=[
+                "add tangerines to the shopping list",
+                "add bananas as well",
+                "ok now add apples",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(memory_example),
+            interface=interface,
+            code_path="functions",
+            logger=LocalFileLogger(),
+        )
+        conversation.input()
+        conversation.input()
+        conversation.input()
+        expected = "bot: Apples has been added to the list"
         print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__prior_list_name_is_remembered_second_time_for_coffee_filters(self):
+        interface = DummyInterface(
+            to_utter=[
+                "What's in the shopping list?",
+                "ok add apples.",
+                "The shopping list",
+                "add coffee filters",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(memory_example),
+            interface=interface,
+            code_path="functions",
+            logger=LocalFileLogger(),
+        )
+        conversation.input()
+        conversation.input()
+        conversation.input()
+        expected = "bot: Coffee filters has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
