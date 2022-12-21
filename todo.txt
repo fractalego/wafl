@@ -1,8 +1,6 @@
 ### TODO
 
 
-* move all thresholds to variables.py
-* y/n questions should only accept yes or no (and loop if there is something else)
 * fact retrieval should work in python space as well
 * rules and functions should be in a folder.
   * Think about ability to install
@@ -28,8 +26,10 @@
    * you need a way to translate the logs into a coherent text
    * THIS WILL ADD INTROSPECTION!!
 
+* move all thresholds to variables.py
 * rules are sorted by retriever but not by entailer!! Do that
 
+/* y/n questions should only accept yes or no (and loop if there is something else)
 /* Why does remember not work??!!!
 /* separate items added to list with "and"
 /* The same answer cannot belong to more than one question in the same task! (it's an approx but needed)

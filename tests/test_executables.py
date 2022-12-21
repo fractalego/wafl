@@ -5,6 +5,8 @@ from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
 
 wafl_example = """
+Speed is space over time
+
 
 the user wants to register to the newsletter
   email = what is the user's email
@@ -43,6 +45,12 @@ the user asks for the time
     
 sentence = What does the user want to say
   say_text(sentence)
+  
+
+the user says "please define speed":
+    testing_fact_from_python_space()
+    SAY Test complete
+    
 """
 
 
@@ -160,4 +168,13 @@ class TestExecutables(TestCase):
         )
         conversation.input()
         expected = "bot: This is a test."
+        assert interface.get_utterances_list()[-1].lower() == expected.lower()
+
+    def test__facts_work_in_python_space(self):
+        interface = DummyInterface(to_utter=["Please define speed"])
+        conversation = Conversation(
+            Knowledge(wafl_example), interface=interface, code_path="functions"
+        )
+        conversation.input()
+        expected = "bot: Test complete"
         assert interface.get_utterances_list()[-1].lower() == expected.lower()

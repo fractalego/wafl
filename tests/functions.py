@@ -120,3 +120,7 @@ def add_shopping_list_as_function(item):
         shopping_list.append(item)
         {f"% SAY {item} has been added to the shopping list%"}
         {"%ERASE MEMORY%"}
+
+
+def testing_fact_from_python_space():
+    return {"% According to the definition, speed equals space over time %"}
