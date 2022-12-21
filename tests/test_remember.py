@@ -1,17 +1,21 @@
 from unittest import TestCase
 
+from wafl.conversation.conversation import Conversation
+from wafl.interface.dummy_interface import DummyInterface
+from wafl.knowledge.knowledge import Knowledge
+from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 
-_wafl_greetings = """
+_logger = LocalFileLogger()
+_wafl_remember_rules = """
 
-The user says their name
-  SAY Hello there!
-  username = What is the user's name
-  SAY Nice to meet you, {username}!
+the user wants you to remember 
+  sentence = What do you want me to remember?
+  REMEMBER sentence
+  SAY I will remember that {sentence}
 
-""".strip()
-
+"""
 
 class TestRetrieval(TestCase):
     def test_retrieval(self):
@@ -50,3 +54,16 @@ class TestRetrieval(TestCase):
         expected = []
         predicted = retriever.get_indices_and_scores_from_text(query)
         assert predicted == expected
+
+    def test_input_during_inference(self):
+        interface = DummyInterface(to_utter=["Please remember that my name is Alberto"])
+        conversation = Conversation(
+            Knowledge(_wafl_remember_rules, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
+        conversation.input()
+        expected = "bot: I will remember that your name is alberto"
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == expected
+
