@@ -122,7 +122,7 @@ def _split_text(text):
 
 def _clean_event(text):
     text = text.strip()
-    text = text.replace(" \'s ", "\'s ")
+    text = text.replace(" 's ", "'s ")
     return text
 
 

@@ -37,7 +37,7 @@ def get_answer_using_text(inference, interface, text, prior_conversation):
     interface.bot_has_spoken(False)
     answer = inference.compute(query, working_memory)
 
-    if query.is_question and (answer.is_false() or answer.is_neutral()):
+    if query.is_question and answer.is_false():
         query = Query(
             text=f"The user asks: '{text}'",
             is_question=is_question(text),

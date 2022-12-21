@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from wafl.conversation.narrator import Narrator
+from wafl.conversation.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
@@ -113,7 +114,8 @@ class TestInference(TestCase):
             is_question=True,
             variable="name",
         )
-        answer = inference.compute(query)
+        task_memory = TaskMemory()
+        answer = inference._look_for_answer_in_rules(query, task_memory, 0, False)
         expected = "peach tree"
         print(answer)
         assert answer.text == expected
