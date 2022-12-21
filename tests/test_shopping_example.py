@@ -1,14 +1,9 @@
 import os
-import wave
 from unittest import TestCase
 
-import numpy as np
-
 from wafl.conversation.conversation import Conversation
-from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
-from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
 from wafl.qa.dataclasses import Query
 
 _path = os.path.dirname(__file__)
@@ -72,7 +67,6 @@ class TestNew(TestCase):
                 is_question=False,
             )
         )
-        print(len(results))
         assert len(results) == 2
 
     def test_second_rule_is_not_run_if_prior_clause_fails(self):
@@ -89,6 +83,5 @@ class TestNew(TestCase):
         )
         conversation.input()
         conversation.input()
-        output = "\n".join(interface.utterances)
-        print(interface.utterances)
+        output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1

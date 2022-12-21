@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.9"]
 
     steps:
     - uses: actions/checkout@v3
@@ -40,7 +40,10 @@ jobs:
     - name: Test with pytest
       run: |
         cp tests/functions.py ./
+        cp tests/preprocess_test_functions.py ./
         cp tests/config.json ./
         rm tests/test_speaker.py
         rm tests/test_voice.py
+        rm tests/test_[a-m]*.py
+        rm tests/test_[p-z]*.py
         python -m unittest discover tests/

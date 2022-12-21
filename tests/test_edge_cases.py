@@ -3,7 +3,9 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
+from wafl.logger.local_file_logger import LocalFileLogger
 
+_logger = LocalFileLogger()
 _wafl_greetings = """
 
 # Simple initial facts
@@ -65,7 +67,7 @@ the user wants to know what is in the shopping list
 
 # Check for trains
 the user wants to check if a line is running
-### WHY DOES IT WORK IF I PUT A ?
+### TESTING COMMENTS
   line_name = which line do you want to check?
   check_tfl_line(line_name)
 
@@ -114,34 +116,29 @@ the user wants to stop
 """.strip()
 
 
-class TestExceptions(TestCase):
-    def test_runtime_warning_escapes_python_space(self):
-        interface = DummyInterface(["How are you!"])
-        conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
-        )
-        utterance = "Welcome to the website. How may I help you?"
-        conversation.output(utterance)
-
-        conversation.input()
-        expected = "It is a bot name for a computer"
-        assert interface.utterances[-1] == expected
-
+class TestEdgeCases(TestCase):
     def test_double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
         conversation = Conversation(
-            Knowledge(_tube_line_rules), interface=interface, code_path="functions"
+            Knowledge(_tube_line_rules),
+            interface=interface,
+            code_path="functions",
+            logger=_logger,
         )
         conversation.input()
-        assert "asks:" not in interface.utterances[0]
+        assert "asks:" not in interface.get_utterances_list()[0]
 
     def test_clause_does_not_return_unknown(self):
         interface = DummyInterface(["is the jubili line running"])
         conversation = Conversation(
-            Knowledge(_tube_line_rules), interface=interface, code_path="functions"
+            Knowledge(_tube_line_rules),
+            interface=interface,
+            code_path="functions",
+            logger=_logger,
         )
         conversation.input()
-        assert "unknown" not in interface.utterances[-1]
+        print(interface.get_utterances_list())
+        assert "unknown" not in interface.get_utterances_list()[-1]
 
     def test_no_answer_if_retrieval_is_too_sparse(self):
         interface = DummyInterface(["I will i"])
@@ -149,4 +146,4 @@ class TestExceptions(TestCase):
             Knowledge(_tube_line_rules), interface=interface, code_path="functions"
         )
         conversation.input()
-        assert "unknown" not in interface.utterances[-1]
+        assert "unknown" not in interface.get_utterances_list()[-1]

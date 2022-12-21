@@ -68,10 +68,11 @@ class TestConversationalTestCases(TestCase):
         )
         conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
         conversation.input()
-        assert (
-            interface.utterances
-            == dialogue_data["test the greetings work"]["bot_lines"]
-        )
+        assert [
+            item.replace("bot: ", "")
+            for item in interface.get_utterances_list()
+            if "bot:" in item
+        ] == dialogue_data["test the greetings work"]["bot_lines"]
 
     def test_conversation_testcase_single_test_success(self):
         testcase = ConversationTestCases(

@@ -1,11 +1,12 @@
 {
   "accept_random_facts": false,
   "allow_interruptions": true,
-  "voice_hotwords": [
-    "COMPUTER"
-  ],
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
-  "listener_model": "facebook/data2vec-audio-large-960h"
+  "deny_sound": true,
+  "listener_model": "openai/whisper-tiny.en",
+  "listener_hotword_logp": -8,
+  "listener_volume_threshold": 0.6,
+  "listener_silence_timeout": 0.7
 }

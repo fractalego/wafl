@@ -54,8 +54,10 @@ class TestExecutables(TestCase):
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
-        expected = "Test@example.com has been added to the newsletter 'fake_newsletter'"
-        assert interface.utterances[-1] == expected
+        expected = (
+            "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
+        )
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_add_to_list(self):
         interface = DummyInterface(to_utter=["Please add apples to the shopping list"])
@@ -63,8 +65,8 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Apples has been added to the list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Apples has been added to the list"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_remove_from_list(self):
         interface = DummyInterface(
@@ -78,8 +80,8 @@ class TestExecutables(TestCase):
         )
         conversation.input()
         conversation.input()
-        expected = "Apples has been removed from the list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Apples has been removed from the list"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_list_the_items(self):
         interface = DummyInterface(
@@ -95,11 +97,12 @@ class TestExecutables(TestCase):
         conversation.input()
         conversation.input()
         conversation.input()
-        expected = "The shopping list contains: apples, bananas"
-        expected2 = "The shopping list contains: bananas, apples"
+        expected = "bot: The shopping list contains: apples, bananas"
+        expected2 = "bot: The shopping list contains: bananas, apples"
+        print(interface.get_utterances_list())
         assert (
-            interface.utterances[-1] == expected
-            or interface.utterances[-1] == expected2
+            interface.get_utterances_list()[-1] == expected
+            or interface.get_utterances_list()[-1] == expected2
         )
 
     def test_list_the_items2(self):
@@ -116,11 +119,11 @@ class TestExecutables(TestCase):
         conversation.input()
         conversation.input()
         conversation.input()
-        expected = "The shopping list contains: apples, bananas"
-        expected2 = "The shopping list contains: bananas, apples"
+        expected = "bot: The shopping list contains: apples, bananas"
+        expected2 = "bot: The shopping list contains: bananas, apples"
         assert (
-            interface.utterances[-1] == expected
-            or interface.utterances[-1] == expected2
+            interface.get_utterances_list()[-1] == expected
+            or interface.get_utterances_list()[-1] == expected2
         )
 
     def test_mispelled_items_are_added_to_the_shopping_list(self):
@@ -129,8 +132,8 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Add app list the shopping list has been added to the list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Add app list the shopping list has been added to the list"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_question_activates_inference(self):
         interface = DummyInterface(to_utter=["What time is it?"])
@@ -139,7 +142,7 @@ class TestExecutables(TestCase):
         )
         conversation.input()
         expected = "The time is"
-        assert expected in interface.utterances[-1]
+        assert expected in interface.get_utterances_list()[-1]
 
     def test_negation(self):
         interface = DummyInterface(to_utter=["add batteries to the test list"])
@@ -147,8 +150,8 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        expected = "Batteries cannot be added to the list"
-        assert interface.utterances[-1] == expected
+        expected = "bot: Batteries cannot be added to the list"
+        assert interface.get_utterances_list()[-1] == expected
 
     def test_say_command_in_functions(self):
         interface = DummyInterface(to_utter=["I want to say 'this is a test'"])
@@ -156,6 +159,5 @@ class TestExecutables(TestCase):
             Knowledge(wafl_example), interface=interface, code_path="functions"
         )
         conversation.input()
-        print(interface.utterances)
-        expected = "'this is a test.'"
-        assert interface.utterances[-1] == expected
+        expected = "bot: This is a test."
+        assert interface.get_utterances_list()[-1].lower() == expected.lower()

@@ -28,4 +28,4 @@ class TestEntailment(TestCase):
         hypothesis = "The user says their name"
 
         entailer = Entailer()
-        self.assertTrue(entailer.entails(premise, hypothesis))
+        self.assertEqual(entailer.entails(premise, hypothesis), "True")

@@ -3,7 +3,7 @@ import re
 from nltk import pos_tag
 from nltk import word_tokenize
 
-from wafl.conversation.working_memory import WorkingMemory
+from wafl.conversation.task_memory import TaskMemory
 from wafl.inference.utils import normalized
 from wafl.qa.dataclasses import Query
 
@@ -15,6 +15,9 @@ def is_question(text):
 
     if text[-1] == "?":
         return True
+
+    if ", the user says" in text:
+        return False
 
     text = re.sub("^Are", "are", text)
     text = re.sub("^Am", "am", text)
@@ -43,32 +46,64 @@ def is_yes_no_question(text):
     return False
 
 
-def get_answer_using_text(inference, interface, text):
-    working_memory = WorkingMemory()
-    text = text.capitalize()
-    if not is_question(text):
-        query_text = f"The user says: '{text}.'"
-        working_memory.add_story(query_text)
+def get_sentence_from_yn_question(text):
+    text = text.strip()
+    text = text.replace("?", "")
+    if not text:
+        return ""
 
-    else:
-        query_text = text
+    triggers_list = [
+        ("NN", "DT"),
+        ("NNP", "DT"),
+        ("NN", "JJ"),
+        ("NNP", "JJ"),
+        ("NN", "RB"),
+        ("NNP", "RB"),
+        ("NN", "VBG"),
+        ("NNP", "VBG"),
+        ("NN", "VB"),
+        ("NN", "VBP"),
+        ("NN", "VBD"),
+        ("NNP", "VB"),
+        ("NNP", "VBP"),
+        ("NN", "VBN"),
+        ("NNP", "VBN"),
+        ("NNP", "VBD"),
+        ("NNS", "DT"),
+        ("NNS", "JJ"),
+        ("NNS", "RB"),
+        ("NNS", "VBG"),
+        ("NNS", "VBN"),
+        ("NNS", "VBD"),
+        ("NNS", "VB"),
+        ("NNS", "VBP"),
+        ("PRP", "DT"),
+        ("PRP", "JJ"),
+        ("PRP", "RB"),
+        ("PRP", "VBG"),
+        ("PRP", "VBN"),
+        ("PRP", "VBD"),
+        ("PRP", "VB"),
+        ("PRP", "VBP"),
+    ]
 
-    query = Query(text=query_text, is_question=is_question(text), variable="name")
-    interface.bot_has_spoken(False)
-    answer = inference.compute(query, working_memory)
+    word_and_pos_list = pos_tag(word_tokenize(text))
+    first_word = word_and_pos_list[0][0].lower()
+    new_word_list = []
+    words_has_been_added = False
+    for index in range(1, len(word_and_pos_list[1:])):
+        new_word_list.append(word_and_pos_list[index][0])
+        curr_pos = word_and_pos_list[index][1]
+        next_pos = word_and_pos_list[index + 1][1]
+        if not words_has_been_added and (curr_pos, next_pos) in triggers_list:
+            new_word_list.append(first_word)
+            words_has_been_added = True
 
-    if query.is_question and answer.text == "False":
-        query = Query(
-            text=f"The user asks: '{text}.'",
-            is_question=is_question(text),
-            variable="name",
-        )
-        working_memory = WorkingMemory()
-        working_memory.add_story(query.text)
-        interface.bot_has_spoken(False)
-        answer = inference.compute(query, working_memory)
+    if not words_has_been_added:
+        new_word_list.append(first_word)
 
-    return answer
+    new_word_list.append(word_and_pos_list[-1][0])
+    return " ".join(new_word_list)
 
 
 def input_is_valid(text):

@@ -1,15 +1,9 @@
 import os
-import wave
 from unittest import TestCase
 
-import numpy as np
-
 from wafl.conversation.conversation import Conversation
-from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.knowledge import Knowledge
-from wafl.listener.wav2vec2_listener import Wav2Vec2Listener
-from wafl.qa.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
@@ -62,9 +56,23 @@ the user wants to know what is in the shopping list
 
 """
 
+_lists_in_functions_rules = """
+item = what does the user want to add to the shopping list?
+  add_shopping_list_as_function(item)
+  
+the user wants to know what is in the shopping list
+  items = get_shopping_list_in_english()
+  SAY The shopping list contains: {items}
+  
+the user wants to delete the shopping list
+  Do you want to delete the current shopping list
+  reset_shopping_list()
+  SAY The shopping list has been deleted
+"""
 
-class TestNew(TestCase):
-    def test_second_rule_is_not_run_if_prior_clause_fails(self):
+
+class TestLists(TestCase):
+    def test__second_rule_is_not_run_if_prior_clause_fails(self):
         interface = DummyInterface(
             [
                 "add apples to the shopping list",
@@ -78,6 +86,97 @@ class TestNew(TestCase):
         )
         conversation.input()
         conversation.input()
-        output = "\n".join(interface.utterances)
-        print(interface.utterances)
+        output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
+
+    def test__add_item_to_list_as_function(self):
+        interface = DummyInterface(
+            [
+                "Please delete the shopping list",
+                "yes",
+                "add apples to the shopping list",
+                "yes",
+                "strawberries",
+                "yes",
+                "bananas",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+        print(interface.get_utterances_list())
+        assert (
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: apples, bananas, strawberries"
+        )
+
+    def test__yes_please_means_yes(self):
+        interface = DummyInterface(
+            [
+                "Please delete the shopping list",
+                "yes please",
+                "add apples to the shopping list",
+                "yes please",
+                "strawberries",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+
+        assert (
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: apples, strawberries"
+        )
+
+    def test__yes_I_do_means_yes(self):
+        interface = DummyInterface(
+            [
+                "Please delete the shopping list",
+                "yes I do",
+                "add apples to the shopping list",
+                "yes I do",
+                "strawberries",
+                "no",
+                "what is in the shopping list",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_lists_in_functions_rules),
+            interface=interface,
+            code_path="functions",
+        )
+        while conversation.input():
+            pass
+
+        assert (
+            interface.get_utterances_list()[-1]
+            == "bot: The shopping list contains: apples, strawberries"
+        )
+
+    def test__hotword_is_ignored_in_instructions(self):
+        interface = DummyInterface(
+            [
+                "computer add apples to the shopping list",
+                "no",
+            ]
+        )
+        conversation = Conversation(
+            Knowledge(_rules), interface=interface, code_path="functions"
+        )
+        hotword = "Computer"
+        conversation.input(activation_word=hotword)
+        expected = "bot: apples has been added to the list"
+        self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

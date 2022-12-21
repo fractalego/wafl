@@ -11,13 +11,12 @@ wafl_example = """
 USER greets
   USER is called {username}
   SAY hello to you, {username}!
-
 USER says their name
   USER is called {username}
+  
   nice to meet you {username}
   
 BOT name is Fractalego
-
 the user is happy
 
 """.strip()

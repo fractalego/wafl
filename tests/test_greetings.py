@@ -71,8 +71,7 @@ class TestGreetings(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        print(interface.utterances)
-        assert interface.utterances[-1] == "Nice to meet you, albert!"
+        assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_hello_and_username2(self):
         interface = DummyInterface(["Hello, my name is unknown", "bob"])
@@ -80,4 +79,4 @@ class TestGreetings(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
-        assert interface.utterances[-1] == "Nice to meet you, bob!"
+        assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, bob!"
