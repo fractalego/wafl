@@ -9,3 +9,4 @@ sudo apt-get install portaudio19-dev ffmpeg
 pip install wafl
 ```
 
+<a rel="me" href="https://fractalego.social/@wafl">Mastodon</a>
