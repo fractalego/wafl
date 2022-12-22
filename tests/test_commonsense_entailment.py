@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 
@@ -25,7 +25,9 @@ class TestCommonSense(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         expected = "bot: Apples will be added"
@@ -39,7 +41,9 @@ class TestCommonSense(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         expected = "bot: Bananas will be added"
@@ -52,7 +56,9 @@ class TestCommonSense(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         expected = "bot: No thanks is not a shopping item"

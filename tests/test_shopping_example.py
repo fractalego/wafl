@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.qa.dataclasses import Query
 
 _path = os.path.dirname(__file__)
@@ -60,7 +60,7 @@ the user wants to know what is in the shopping list
 
 class TestNew(TestCase):
     def test_no_activation(self):
-        knowledge = Knowledge(_rules)
+        knowledge = SingleFileKnowledge(_rules)
         results = knowledge.ask_for_rule_backward(
             Query(
                 text="The user says: 'remove apples from the shopping list.'",
@@ -79,7 +79,7 @@ class TestNew(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="functions"
         )
         conversation.input()
         conversation.input()

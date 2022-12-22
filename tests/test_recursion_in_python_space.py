@@ -3,7 +3,7 @@ import os
 from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _rules = """
 "Is the {linename} running?"
@@ -25,7 +25,7 @@ class TestRecursion(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="functions"
         )
 
         while conversation.input():

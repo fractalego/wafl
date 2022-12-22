@@ -24,7 +24,7 @@ nltk.download("averaged_perceptron_tagger")
 _logger = logging.getLogger(__name__)
 
 
-class Knowledge(BaseKnowledge):
+class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_user = 0.55
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.505

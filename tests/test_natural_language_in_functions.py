@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.preprocess import (
     create_preprocessed,
     remove_preprocessed,
@@ -54,7 +54,9 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         conversation.input()
@@ -68,7 +70,9 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         expected = [
@@ -86,7 +90,9 @@ class TestLanguageInFunctions(TestCase):
     def test_double_fuctions(self):
         interface = DummyInterface(["Is the victoria line running"])
         conversation = Conversation(
-            Knowledge(_tube_line_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_tube_line_rules),
+            interface=interface,
+            code_path="functions",
         )
         conversation.input()
         assert (

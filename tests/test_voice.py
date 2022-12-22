@@ -9,7 +9,7 @@ from wafl.interface.voice_interface import VoiceInterface
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.listener.whisper_listener import WhisperListener
 
 _wafl_example = """
@@ -27,14 +27,18 @@ _path = os.path.dirname(__file__)
 class TestVoice(TestCase):
     def test_activation(self):
         interface = DummyInterface(to_utter=["computer my name is Jane"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_example), interface=interface
+        )
         conversation.check_understanding(True)
         conversation.input(activation_word="computer")
         assert len(interface.get_utterances_list()) == 2
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_example), interface=interface
+        )
         conversation.check_understanding(False)
         conversation.input(activation_word="computer")
         assert len(interface.get_utterances_list()) == 1
@@ -43,7 +47,7 @@ class TestVoice(TestCase):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
         interface.add_hotwords_from_knowledge(
-            Knowledge(_wafl_example), count_threshold=1
+            SingleFileKnowledge(_wafl_example), count_threshold=1
         )
         expected = ["jane", "name is", "is jane", "says", "says their", "their name"]
         assert interface._listener._hotwords == expected

@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.preprocess import (
     create_preprocessed,
     remove_preprocessed,
@@ -40,7 +40,7 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example),
+            SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="preprocess_test_functions",
         )

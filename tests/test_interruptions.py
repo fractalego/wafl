@@ -3,7 +3,7 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_greetings = """
 This bot is here to answer the user unless asked to be silent
@@ -29,7 +29,9 @@ INTERRUPTION the user wants to quit the task
 class TestInterruptions(TestCase):
     def test_time_request_does_not_interrupt(self):
         interface = DummyInterface(["Hello", "Albert"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_greetings), interface=interface
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -38,7 +40,9 @@ class TestInterruptions(TestCase):
     def test_time_request_does_interrupt(self):
         interface = DummyInterface(["Hello", "what's the time?", "Albert"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+            SingleFileKnowledge(_wafl_greetings),
+            interface=interface,
+            code_path="functions",
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
@@ -49,7 +53,9 @@ class TestInterruptions(TestCase):
     def test_time_shut_up_does_interrupt(self):
         interface = DummyInterface(["Hello", "shut up"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+            SingleFileKnowledge(_wafl_greetings),
+            interface=interface,
+            code_path="functions",
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
@@ -64,7 +70,9 @@ class TestInterruptions(TestCase):
     def test_task_interrupt_task_does_interrupt(self):
         interface = DummyInterface(["Hello", "I want to stop the task"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+            SingleFileKnowledge(_wafl_greetings),
+            interface=interface,
+            code_path="functions",
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)

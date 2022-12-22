@@ -3,7 +3,7 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_greetings = """
 
@@ -17,7 +17,9 @@ class TestExceptions(TestCase):
     def test_runtime_warning_escapes_python_space(self):
         interface = DummyInterface(["Good bye!"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+            SingleFileKnowledge(_wafl_greetings),
+            interface=interface,
+            code_path="functions",
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)

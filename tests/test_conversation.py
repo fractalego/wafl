@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 
 _logger = LocalFileLogger()
@@ -62,7 +62,7 @@ class TestConversation(TestCase):
     def test__single_utterance(self):
         interface = DummyInterface()
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -73,7 +73,7 @@ class TestConversation(TestCase):
     def test__say_command(self):
         interface = DummyInterface()
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -85,7 +85,7 @@ class TestConversation(TestCase):
     def test_input_during_inference(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -97,7 +97,7 @@ class TestConversation(TestCase):
     def test__remember_command(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -109,7 +109,7 @@ class TestConversation(TestCase):
     def test__knowledge_insertion(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -122,7 +122,7 @@ class TestConversation(TestCase):
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -135,7 +135,7 @@ class TestConversation(TestCase):
     def test__greeting_with_alberto_as_name(self):
         interface = DummyInterface(["My name is Albert0", "What is my name"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -148,7 +148,7 @@ class TestConversation(TestCase):
     def test__yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -161,7 +161,7 @@ class TestConversation(TestCase):
     def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -174,7 +174,7 @@ class TestConversation(TestCase):
     def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -186,7 +186,7 @@ class TestConversation(TestCase):
     def test__yes_no_questions_from_bot_with_answer_no(self):
         interface = DummyInterface(["I want to join the club", "no"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -200,7 +200,7 @@ class TestConversation(TestCase):
     def test__hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -212,7 +212,7 @@ class TestConversation(TestCase):
     def test__conversation_input_returns_false_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])
         conversation = Conversation(
-            Knowledge("", logger=_logger), interface=interface, logger=_logger
+            SingleFileKnowledge("", logger=_logger), interface=interface, logger=_logger
         )
         result = conversation.input()
         assert not result
@@ -220,7 +220,7 @@ class TestConversation(TestCase):
     def test__how_are_you(self):
         interface = DummyInterface(["How are you?"])
         conversation = Conversation(
-            Knowledge(_wafl_how_are_you, logger=_logger),
+            SingleFileKnowledge(_wafl_how_are_you, logger=_logger),
             interface=interface,
             logger=_logger,
         )

@@ -10,6 +10,20 @@ from wafl.parsing.utils import (
 from wafl.rules import Rule
 
 
+def get_dependency_list(text: str):
+    _command_name = "#using"
+    dependency_list = []
+
+    for line in text.split("\n"):
+        line = line.strip()
+        if _command_name in line:
+            dependency_list.extend(
+                [item.strip() for item in line[len(_command_name) :].split(",")]
+            )
+
+    return dependency_list
+
+
 def get_facts_and_rules_from_text(text: str):
     lines = get_lines_stripped_from_comments(text)
     lines.extend(["LAST"])

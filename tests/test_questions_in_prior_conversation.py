@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 
 _path = os.path.dirname(__file__)
@@ -23,7 +23,7 @@ class TestAnswerInConversation(TestCase):
     def test__temperature_is_remembered(self):
         interface = DummyInterface(["Hello!", "What is the temperature today?"])
         conversation = Conversation(
-            Knowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -34,7 +34,9 @@ class TestAnswerInConversation(TestCase):
 
     def test__random_name_is_remembered(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
-        conversation = Conversation(Knowledge(_wafl_example), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_example), interface=interface
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
