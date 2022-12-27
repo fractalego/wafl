@@ -115,7 +115,7 @@ class TestInference(TestCase):
             variable="name",
         )
         task_memory = TaskMemory()
-        answer = inference._look_for_answer_in_rules(query, task_memory, 0, False)
+        answer = inference._look_for_answer_in_rules(query, task_memory, "/", 0, False)
         expected = "peach tree"
         print(answer)
         assert answer.text == expected

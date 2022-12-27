@@ -7,11 +7,11 @@ from wafl.parsing.rules_parser import get_dependency_list
 
 class ProjectKnowledge(BaseKnowledge):
     def __init__(self, rules_filename, logger=None):
+        self._logger = logger
         self._dependency_dict = {}
         self._knowledge_dict = self._populate_knowledge_structure(
             rules_filename, self._dependency_dict
         )
-        self._logger = logger
 
     def add(self, text, knowledge_name=None):
         if not knowledge_name:

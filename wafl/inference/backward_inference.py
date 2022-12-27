@@ -315,7 +315,7 @@ class BackwardInference:
                     if user_answer.text not in ["yes", "no"]:
                         self._interface.output("Yes or No?")
                         user_answer = self._look_for_answer_by_asking_the_user(
-                            query, task_memory, depth
+                            query, task_memory, knowledge_name, depth
                         )
 
                 if user_answer.is_true():
