@@ -2,29 +2,51 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.knowledge.project_knowledge import ProjectKnowledge
 
 
 wafl_dependency = """
 #using greetings
 
 The user greets
-  person = who did the user greet
-  the user salutes {person}
+  person = who is greeting
+  the user wants {person} to greet back
 
 """.strip()
 
 
-class TestNegations(TestCase):
-    def test__(self):
+class TestDependencies(TestCase):
+    def test__knowledge_dependencies_are_populated(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        knowledge = ProjectKnowledge(tmp_filename)
+        self.assertEqual(
+            knowledge._dependency_dict, {"/": ["/greetings"], "/greetings": []}
+        )
+
+    def test__knowledge_dictionary_is_populated(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        knowledge = ProjectKnowledge(tmp_filename)
+        self.assertEqual(list(knowledge._knowledge_dict.keys()), ["/", "/greetings"])
+
+    def test__rules_are_called_from_dependency_list(self):
+        #### make this work
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
         interface = DummyInterface(
             to_utter=[
-                "Hello my friend",
+                "Hello my name is Albert",
             ]
         )
-        conversation = Conversation(
-            SingleFileKnowledge(wafl_dependency), interface=interface
-        )
+        conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
         conversation.input()
-        expected = "bot: Hello, my friend"
+        expected = "bot: Hello, albert!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

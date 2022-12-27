@@ -1,2 +1,2 @@
-person = who does the user salute?
-  SAY Hello, person!
+person = who does the user want to greet back?
+  SAY Hello, {person}!

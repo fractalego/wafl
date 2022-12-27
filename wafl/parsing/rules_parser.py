@@ -24,7 +24,7 @@ def get_dependency_list(text: str):
     return dependency_list
 
 
-def get_facts_and_rules_from_text(text: str):
+def get_facts_and_rules_from_text(text: str, knowledge_name=None):
     lines = get_lines_stripped_from_comments(text)
     lines.extend(["LAST"])
 
@@ -43,6 +43,7 @@ def get_facts_and_rules_from_text(text: str):
                 Fact(
                     text=text,
                     is_question=is_question(text),
+                    knowledge_name=knowledge_name,
                 )
             )
 
@@ -82,6 +83,7 @@ def get_facts_and_rules_from_text(text: str):
                 is_question=sentence_is_question,
                 variable=variable,
                 is_interruption=is_interruption,
+                knowledge_name=knowledge_name,
             )
 
     return {"facts": facts, "rules": rules}

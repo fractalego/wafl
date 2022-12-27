@@ -32,8 +32,11 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_partial_facts = 0.48
     _max_rules_per_type = 3
 
-    def __init__(self, rules_text=None, logger=None):
-        facts_and_rules = get_facts_and_rules_from_text(rules_text)
+    def __init__(self, rules_text=None, knowledge_name=None, logger=None):
+        knowledge_name = knowledge_name if knowledge_name else self.root_knowledge
+        facts_and_rules = get_facts_and_rules_from_text(
+            rules_text, knowledge_name=knowledge_name
+        )
         self._facts_dict = {
             f"F{index}": value for index, value in enumerate(facts_and_rules["facts"])
         }
@@ -52,9 +55,9 @@ class SingleFileKnowledge(BaseKnowledge):
         self._rules_string_retriever = StringRetriever()
         self._initialize_retrievers()
 
-    def add(self, text):
+    def add(self, text, knowledge_name="/"):
         fact_index = f"F{len(self._facts_dict)}"
-        self._facts_dict[fact_index] = Fact(text=text)
+        self._facts_dict[fact_index] = Fact(text=text, knowledge_name=knowledge_name)
         self._facts_retriever.add_text_and_index(
             clean_text_for_retrieval(text), fact_index
         )
@@ -74,7 +77,7 @@ class SingleFileKnowledge(BaseKnowledge):
         )
         return any(rule.effect.is_interruption for rule in rules)
 
-    def ask_for_facts(self, query, is_from_user=False):
+    def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         if query.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
@@ -105,7 +108,9 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    def ask_for_facts_with_threshold(self, query, is_from_user=False):
+    def ask_for_facts_with_threshold(
+        self, query, is_from_user=False, knowledge_name=None
+    ):
         if query.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
@@ -136,7 +141,7 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    def ask_for_rule_backward(self, query):
+    def ask_for_rule_backward(self, query, knowledge_name=None):
         if text_is_exact_string(query.text):
             indices_and_scores = (
                 self._rules_string_retriever.get_indices_and_scores_from_text(

@@ -5,8 +5,8 @@ from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
+from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
 
@@ -24,7 +24,7 @@ def run_from_command_line():
     wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
-        SingleFileKnowledge(wafl_rules, logger=_logger),
+        ProjectKnowledge(wafl_rules, logger=_logger),
         interface=interface,
         code_path="functions",
         logger=_logger,
@@ -43,7 +43,7 @@ def run_from_command_line():
 def run_from_audio():
     print_incipit()
     config = Configuration.load_local_config()
-    knowledge = SingleFileKnowledge(open("rules.wafl").read(), logger=_logger)
+    knowledge = ProjectKnowledge(open("rules.wafl").read(), logger=_logger)
     interface = VoiceInterface(config)
     interface.check_understanding(False)
     conversation = Conversation(
@@ -102,7 +102,7 @@ def run_from_audio():
 
 
 def run_testcases():
-    knowledge = SingleFileKnowledge(open("rules.wafl").read())
+    knowledge = ProjectKnowledge(open("rules.wafl").read())
     test_cases_text = open("testcases.txt").read()
     testcases = ConversationTestCases(test_cases_text, knowledge)
     testcases.run()
