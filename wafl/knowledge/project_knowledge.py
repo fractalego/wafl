@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, List
 
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -26,10 +26,9 @@ class ProjectKnowledge(BaseKnowledge):
         to_return = []
         for name in self._knowledge_dict.keys():
             if name in self._dependency_dict[knowledge_name]:
+                self._logger.write(f"Project Knowledge: Asking for facts in {name}")
                 to_return.extend(
-                    self._knowledge_dict[knowledge_name].ask_for_facts(
-                        query, is_from_user
-                    )
+                    self._knowledge_dict[name].ask_for_facts(query, is_from_user)
                 )
 
         return to_return
@@ -43,8 +42,9 @@ class ProjectKnowledge(BaseKnowledge):
         to_return = []
         for name in self._knowledge_dict.keys():
             if name in self._dependency_dict[knowledge_name]:
+                self._logger.write(f"Project Knowledge: Asking for facts in {name}")
                 to_return.extend(
-                    self._knowledge_dict[knowledge_name].ask_for_facts_with_threshold(
+                    self._knowledge_dict[name].ask_for_facts_with_threshold(
                         query, is_from_user
                     )
                 )
@@ -58,12 +58,28 @@ class ProjectKnowledge(BaseKnowledge):
         rules_list = []
 
         for name in self._knowledge_dict.keys():
+            self._logger.write(f"Project Knowledge: Asking for rules in {name}")
             if name in self._get_all_dependency_names(knowledge_name):
                 rules_list.extend(
                     self._knowledge_dict[name].ask_for_rule_backward(query)
                 )
 
         return rules_list
+
+    def has_better_match(self, query_text: str, knowledge_name: str = None) -> bool:
+        if not knowledge_name:
+            knowledge_name = self.root_knowledge
+
+        result_list = []
+
+        for name in self._knowledge_dict.keys():
+            self._logger.write(f"Project Knowledge: Asking for better match in {name}")
+            if name in self._get_all_dependency_names(knowledge_name):
+                result_list.append(
+                    self._knowledge_dict[name].has_better_match(query_text)
+                )
+
+        return any(result_list)
 
     def _populate_knowledge_structure(
         self, filename: str, dependency_dict: Dict[str, List[str]]

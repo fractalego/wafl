@@ -1,2 +1,4 @@
+this bot is doing well
+
 person = who does the user want to greet back?
   SAY Hello, {person}!

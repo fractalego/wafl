@@ -21,10 +21,9 @@ def print_incipit():
 
 def run_from_command_line():
     print_incipit()
-    wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
-        ProjectKnowledge(wafl_rules, logger=_logger),
+        ProjectKnowledge("rules.wafl", logger=_logger),
         interface=interface,
         code_path="functions",
         logger=_logger,
@@ -43,7 +42,7 @@ def run_from_command_line():
 def run_from_audio():
     print_incipit()
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge(open("rules.wafl").read(), logger=_logger)
+    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
     interface = VoiceInterface(config)
     interface.check_understanding(False)
     conversation = Conversation(
@@ -71,6 +70,10 @@ def run_from_audio():
             interactions += 1
             if result:
                 interface.check_understanding(True)
+
+            if interface.bot_has_spoken() and interactions == 1:
+                interface.check_understanding(False)
+                num_misses = 0
 
             if (
                 interface.check_understanding()
@@ -102,7 +105,7 @@ def run_from_audio():
 
 
 def run_testcases():
-    knowledge = ProjectKnowledge(open("rules.wafl").read())
+    knowledge = ProjectKnowledge("rules.wafl")
     test_cases_text = open("testcases.txt").read()
     testcases = ConversationTestCases(test_cases_text, knowledge)
     testcases.run()

@@ -65,15 +65,15 @@ class SingleFileKnowledge(BaseKnowledge):
             clean_text_for_retrieval(text), fact_index
         )
 
-    def has_better_match(self, answer: str) -> bool:
-        if any(normalized(answer).find(item) == 0 for item in ["yes", "no"]):
+    def has_better_match(self, query_text: str) -> bool:
+        if any(normalized(query_text).find(item) == 0 for item in ["yes", "no"]):
             return False
 
-        if any(normalized(answer).find(item) != -1 for item in [" yes ", " no "]):
+        if any(normalized(query_text).find(item) != -1 for item in [" yes ", " no "]):
             return False
 
         rules = self.ask_for_rule_backward(
-            Query(text=f"The user says to the bot: '{answer}.'", is_question=False)
+            Query(text=f"The user says to the bot: '{query_text}.'", is_question=False)
         )
         return any(rule.effect.is_interruption for rule in rules)
 
