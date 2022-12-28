@@ -10,16 +10,14 @@ from wafl.retriever.base_retriever import BaseRetriever
 
 _path = os.path.dirname(__file__)
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class DenseRetriever(BaseRetriever):
     _threshold_length = 5
 
     def __init__(self, model_name):
-        self._sentence_model = SentenceTransformer(model_name)
-        self._sentence_model = self._sentence_model.to(device)
-
+        self._sentence_model = SentenceTransformer(model_name, device=device)
         self._embeddings_model = KeyedVectors(768)
 
     def add_text_and_index(self, text: str, index: str):
