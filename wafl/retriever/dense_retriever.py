@@ -1,6 +1,5 @@
 import os
 import torch
-import logging
 import numpy as np
 
 from typing import List, Tuple
@@ -10,7 +9,6 @@ from sentence_transformers import SentenceTransformer
 from wafl.retriever.base_retriever import BaseRetriever
 
 _path = os.path.dirname(__file__)
-_logger = logging.getLogger(__file__)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

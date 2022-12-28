@@ -35,7 +35,7 @@ class TestInterruptionsToCloseConversation(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         try:
             conversation.input()
@@ -55,7 +55,7 @@ class TestInterruptionsToCloseConversation(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         try:
             conversation.input()
@@ -75,7 +75,7 @@ class TestInterruptionsToCloseConversation(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         try:
             conversation.input()

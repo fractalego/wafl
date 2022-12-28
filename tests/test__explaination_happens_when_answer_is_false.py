@@ -27,7 +27,7 @@ class TestInterruptions(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_wafl_greetings),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)

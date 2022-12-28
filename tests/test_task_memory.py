@@ -72,7 +72,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -84,7 +84,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Hello, albert!"
@@ -102,7 +102,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Bananas has been added to the list"
@@ -122,7 +122,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Bananas has been added to the list"
@@ -139,7 +139,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -157,7 +157,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -176,7 +176,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -198,7 +198,7 @@ A:
         conversation = Conversation(
             SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()

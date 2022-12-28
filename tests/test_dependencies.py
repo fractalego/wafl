@@ -22,9 +22,12 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         knowledge = ProjectKnowledge(tmp_filename)
-        self.assertEqual(
-            knowledge._dependency_dict, {"/": ["/greetings"], "/greetings": []}
-        )
+        expected = {
+            "/": ["/greetings"],
+            "/greetings": ["/facts"],
+            "/greetings/facts": [],
+        }
+        self.assertEqual(expected, knowledge._dependency_dict)
 
     def test__knowledge_dictionary_is_populated(self):
         tmp_filename = "test.wafl"
@@ -32,7 +35,8 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         knowledge = ProjectKnowledge(tmp_filename)
-        self.assertEqual(list(knowledge._knowledge_dict.keys()), ["/", "/greetings"])
+        expected = ["/", "/greetings", "/greetings/facts"]
+        self.assertEqual(expected, list(knowledge._knowledge_dict.keys()))
 
     def test__rules_are_called_from_dependency_list(self):
         tmp_filename = "test.wafl"
@@ -49,7 +53,7 @@ class TestDependencies(TestCase):
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
-    def test__facts_are_answered_from_dependency_list(self):
+    def test__facts_are_answered_from_dependency_list_one_level_deep(self):
         tmp_filename = "test.wafl"
         with open(tmp_filename, "w") as file:
             file.write(wafl_dependency)
@@ -62,4 +66,39 @@ class TestDependencies(TestCase):
         conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
         conversation.input()
         expected = "bot: doing well"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__facts_are_answered_from_dependency_list_two_levels_deep(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        interface = DummyInterface(
+            to_utter=[
+                "how is the sun",
+            ]
+        )
+        conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
+        conversation.input()
+        expected = "bot: shiny"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__functions_can_be_called_from_a_dependency(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        interface = DummyInterface(
+            to_utter=[
+                "What time is it",
+            ]
+        )
+        knowledge = ProjectKnowledge(tmp_filename)
+        conversation = Conversation(
+            ProjectKnowledge(tmp_filename),
+            interface=interface,
+            code_path=knowledge.get_dependencies_list(),
+        )
+        conversation.input()
+        expected = "bot: The time is now!"
         assert interface.get_utterances_list()[-1] == expected

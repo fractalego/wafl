@@ -25,7 +25,7 @@ def run_from_command_line():
     conversation = Conversation(
         ProjectKnowledge("rules.wafl", logger=_logger),
         interface=interface,
-        code_path="functions",
+        code_path="/",
         logger=_logger,
     )
     conversation.output("Hello. How may I help you?")
@@ -48,7 +48,7 @@ def run_from_audio():
     conversation = Conversation(
         knowledge,
         interface=interface,
-        code_path="functions",
+        code_path=knowledge.get_dependencies_list(),
         config=config,
         logger=_logger,
     )

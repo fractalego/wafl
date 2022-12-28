@@ -57,7 +57,13 @@ def get_facts_and_rules_from_text(text: str, knowledge_name=None):
                     facts.append(current_fact)
 
                 else:
-                    rules.append(Rule(effect=current_fact, causes=causes))
+                    rules.append(
+                        Rule(
+                            effect=current_fact,
+                            causes=causes,
+                            knowledge_name=knowledge_name,
+                        )
+                    )
 
                 causes = []
                 rule_length = 0

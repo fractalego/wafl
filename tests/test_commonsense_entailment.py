@@ -27,7 +27,7 @@ class TestCommonSense(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Apples will be added"
@@ -43,7 +43,7 @@ class TestCommonSense(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Bananas will be added"
@@ -58,7 +58,7 @@ class TestCommonSense(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: No thanks is not a shopping item"

@@ -122,7 +122,7 @@ class TestEdgeCases(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=_logger,
         )
         conversation.input()
@@ -133,7 +133,7 @@ class TestEdgeCases(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=_logger,
         )
         conversation.input()
@@ -145,7 +145,7 @@ class TestEdgeCases(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         assert "unknown" not in interface.get_utterances_list()[-1]

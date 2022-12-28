@@ -21,7 +21,7 @@ class TestEntailmentInRules(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_wafl_greetings),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: You want to buy fruit!"

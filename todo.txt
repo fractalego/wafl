@@ -1,5 +1,10 @@
 ### TODO
 
+* implement functions within each dependency
+* create errors within parser
+   * dependency does not exist
+   * . is allowes in dependency, / is not
+
 This and next week:
  * rules in folder
  * distill gpt2 from gpt-JT onto the CoQA dataset

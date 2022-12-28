@@ -82,7 +82,7 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            SingleFileKnowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         conversation.input()
         conversation.input()
@@ -106,7 +106,7 @@ class TestLists(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -131,7 +131,7 @@ class TestLists(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -156,7 +156,7 @@ class TestLists(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -174,7 +174,7 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            SingleFileKnowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
         conversation.input(activation_word=hotword)

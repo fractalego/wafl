@@ -26,7 +26,9 @@ class ProjectKnowledge(BaseKnowledge):
         to_return = []
         for name in self._knowledge_dict.keys():
             if name in self._dependency_dict[knowledge_name]:
-                self._logger.write(f"Project Knowledge: Asking for facts in {name}")
+                if self._logger:
+                    self._logger.write(f"Project Knowledge: Asking for facts in {name}")
+
                 to_return.extend(
                     self._knowledge_dict[name].ask_for_facts(query, is_from_user)
                 )
@@ -41,8 +43,10 @@ class ProjectKnowledge(BaseKnowledge):
 
         to_return = []
         for name in self._knowledge_dict.keys():
-            if name in self._dependency_dict[knowledge_name]:
-                self._logger.write(f"Project Knowledge: Asking for facts in {name}")
+            if name in self._get_all_dependency_names(knowledge_name):
+                if self._logger:
+                    self._logger.write(f"Project Knowledge: Asking for facts in {name}")
+
                 to_return.extend(
                     self._knowledge_dict[name].ask_for_facts_with_threshold(
                         query, is_from_user
@@ -58,8 +62,10 @@ class ProjectKnowledge(BaseKnowledge):
         rules_list = []
 
         for name in self._knowledge_dict.keys():
-            self._logger.write(f"Project Knowledge: Asking for rules in {name}")
             if name in self._get_all_dependency_names(knowledge_name):
+                if self._logger:
+                    self._logger.write(f"Project Knowledge: Asking for rules in {name}")
+
                 rules_list.extend(
                     self._knowledge_dict[name].ask_for_rule_backward(query)
                 )
@@ -73,7 +79,11 @@ class ProjectKnowledge(BaseKnowledge):
         result_list = []
 
         for name in self._knowledge_dict.keys():
-            self._logger.write(f"Project Knowledge: Asking for better match in {name}")
+            if self._logger:
+                self._logger.write(
+                    f"Project Knowledge: Asking for better match in {name}"
+                )
+
             if name in self._get_all_dependency_names(knowledge_name):
                 result_list.append(
                     self._knowledge_dict[name].has_better_match(query_text)
@@ -81,12 +91,17 @@ class ProjectKnowledge(BaseKnowledge):
 
         return any(result_list)
 
+    def get_dependencies_list(self):
+        return self._get_all_dependency_names(self.root_knowledge)
+
     def _populate_knowledge_structure(
         self, filename: str, dependency_dict: Dict[str, List[str]]
     ) -> Dict[str, SingleFileKnowledge]:
         knowledge_structure = {}
-        text = open(filename).read()
-        name = "/" + "/".join(filename.split("/")[:-1])
+        with open(filename) as file:
+            text = file.read()
+
+        name = _get_module_name_from_filename(filename)
         knowledge_structure[name] = SingleFileKnowledge(
             text, knowledge_name=name, logger=self._logger
         )
@@ -98,7 +113,7 @@ class ProjectKnowledge(BaseKnowledge):
         for dependency_name in dependencies:
             knowledge_structure.update(
                 self._populate_knowledge_structure(
-                    f"{dependency_name}/rules.wafl", dependency_dict
+                    f".{name}/{dependency_name}/rules.wafl", dependency_dict
                 )
             )
 
@@ -110,8 +125,19 @@ class ProjectKnowledge(BaseKnowledge):
         while len(all_dependencies) != old_len:
             for dependency in all_dependencies:
                 if dependency in self._dependency_dict:
-                    all_dependencies.extend(self._dependency_dict[dependency])
+                    new_dependency_names = [
+                        dependency + item for item in self._dependency_dict[dependency]
+                    ]
+                    new_dependency_names = [
+                        item.replace("//", "/") for item in new_dependency_names
+                    ]
+                    all_dependencies.extend(new_dependency_names)
 
             old_len = len(all_dependencies)
 
         return all_dependencies
+
+
+def _get_module_name_from_filename(filename):
+    filename = filename.replace("//", "/")
+    return "/" + "/".join(filename.split("/")[1:-1])

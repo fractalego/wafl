@@ -42,7 +42,7 @@ class BackwardInference:
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
         narrator: "Narrator",
-        module_name=None,
+        module_names=None,
         max_depth: int = 10,
         logger=None,
     ):
@@ -52,11 +52,10 @@ class BackwardInference:
         self._qa = QA(narrator, logger)
         self._narrator = narrator
         self._logger = logger
-
-        if module_name:
-            create_preprocessed(module_name)
-            self._module = import_module(module_name)
-            self._functions = [item[0] for item in getmembers(self._module, isfunction)]
+        self._module = {}
+        self._functions = {}
+        if module_names:
+            self._init_python_modules(module_names)
 
     def get_inference_answer(self, text, task_memory=TaskMemory()):
         query = Query(text=text, is_question=is_question(text))
@@ -136,7 +135,7 @@ class BackwardInference:
                 return self._process_remember_command(query.text, knowledge_name)
 
             elif text_is_code(query.text):
-                return self._process_code(query.text, {})
+                return self._process_code(query.text, knowledge_name, {})
 
         answer = self._look_for_answer_in_rules(
             query, task_memory, knowledge_name, depth, inverted_rule
@@ -190,7 +189,9 @@ class BackwardInference:
                     answer = self._process_remember_command(cause_text, knowledge_name)
 
                 elif text_is_code(cause_text):
-                    answer = self._process_code(cause_text, substitutions)
+                    answer = self._process_code(
+                        cause_text, knowledge_name, substitutions
+                    )
 
                 else:
                     answer = self._process_query(
@@ -383,7 +384,7 @@ class BackwardInference:
 
         return answer
 
-    def _process_code(self, cause_text, substitutions):
+    def _process_code(self, cause_text, knowledge_name, substitutions):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -394,13 +395,15 @@ class BackwardInference:
             to_execute = cause_text.strip()
 
         try:
-            if any(item + "(" in to_execute for item in self._functions):
+            if any(
+                item + "(" in to_execute for item in self._functions[knowledge_name]
+            ):
                 to_execute = add_function_arguments(to_execute)
 
             task_memory = TaskMemory()
             self._log(f"Executing code: {to_execute}")
             # task_memory is used as argument of the code in eval()
-            result = eval(f"self._module.{to_execute}")
+            result = eval(f"self._module['{knowledge_name}'].{to_execute}")
             self._log(f"Execution result: {result}")
 
         except (CloseConversation, InterruptTask) as e:
@@ -457,3 +460,14 @@ class BackwardInference:
                 self._logger.set_depth(depth)
 
             self._logger.write(f"BackwardInference: {text}", self._logger.level.INFO)
+
+    def _init_python_modules(self, module_names):
+        if type(module_names) == str:
+            module_names = [module_names]
+
+        for module_name in module_names:
+            create_preprocessed(module_name)
+            self._module[module_name] = import_module(module_name)
+            self._functions[module_name] = [
+                item[0] for item in getmembers(self._module[module_name], isfunction)
+            ]

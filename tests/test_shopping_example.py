@@ -79,7 +79,7 @@ class TestNew(TestCase):
             ]
         )
         conversation = Conversation(
-            SingleFileKnowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         conversation.input()
         conversation.input()

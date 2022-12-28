@@ -60,7 +60,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
@@ -74,7 +74,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Apples has been added to the list"
@@ -90,7 +90,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -108,7 +108,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -132,7 +132,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -149,7 +149,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Add app list the shopping list has been added to the list"
@@ -160,7 +160,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "The time is"
@@ -171,7 +171,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Batteries cannot be added to the list"
@@ -182,7 +182,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: This is a test."
@@ -193,7 +193,7 @@ class TestExecutables(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Test complete"
