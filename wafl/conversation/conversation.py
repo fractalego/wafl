@@ -95,25 +95,22 @@ class Conversation:
         except IndexError:
             return False
 
-        if not self._interface.check_understanding() and self.__activation_word_in_text(
+        if not self._interface.is_listening() and self.__activation_word_in_text(
             activation_word, text
         ):
-            self._interface.check_understanding(True)
+            self._interface.activate()
             self._logger.set_depth(0)
             self._logger.write(f"Activation word found {text}")
             if normalized(text) == normalized(activation_word, lower_case=True):
                 return True
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
-        if self._interface.check_understanding():
+        if self._interface.is_listening():
             answer = self.add(text)
             if answer and answer.text != "False":
                 return True
 
         return False
-
-    def check_understanding(self, do_the_check=None):
-        return self._interface.check_understanding(do_the_check)
 
     def __activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):

@@ -30,7 +30,7 @@ class TestVoice(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
-        conversation.check_understanding(True)
+        interface.activate()
         conversation.input(activation_word="computer")
         assert len(interface.get_utterances_list()) == 2
 
@@ -39,7 +39,7 @@ class TestVoice(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
-        conversation.check_understanding(False)
+        interface.deactivate()
         conversation.input(activation_word="computer")
         assert len(interface.get_utterances_list()) == 1
 
