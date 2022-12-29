@@ -24,12 +24,12 @@ if __name__ == "__main__":
 
         if command == "run":
             run_from_command_line()
-            remove_preprocessed("functions")
+            remove_preprocessed("/")
 
         if command == "run-audio":
             run_from_audio()
-            remove_preprocessed("functions")
+            remove_preprocessed("/")
 
         if command == "test":
             run_testcases()
-            remove_preprocessed("functions")
+            remove_preprocessed("/")

@@ -16,7 +16,6 @@ class ConversationTestCases:
             raise RuntimeWarning(f"The testcase '{name}' does not exist")
 
         user_lines = self._testcase_data[name]["user_lines"]
-        bot_lines = self._testcase_data[name]["bot_lines"]
         test_lines = self._testcase_data[name]["lines"]
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
