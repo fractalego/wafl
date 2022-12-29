@@ -33,11 +33,15 @@ def clean_module_name(name):
     return name
 
 
-def create_preprocessed(module: str):
+def create_preprocessed(
+    module: str,
+    functions_standard_name=_functions_standard_name,
+    python_functions_standard_name=_python_functions_standard_name,
+):
     function_names = get_all_functions_names(
-        clean_module_name(module) + _functions_standard_name
+        clean_module_name(module) + functions_standard_name
     )
-    filename = "." + module + "/" + _python_functions_standard_name
+    filename = "." + module + "/" + python_functions_standard_name
     with open(filename) as file:
         print(f"Preprocessing {filename}.")
         text = file.read()
@@ -61,15 +65,21 @@ def create_preprocessed(module: str):
         file.write(text)
 
 
-def import_module(module_name):
+def import_module(
+    module_name,
+    preprocessed_prefix=_preprocessed_prefix,
+    functions_standard_name=_functions_standard_name,
+):
     module_name = (
-        clean_module_name(module_name) + _preprocessed_prefix + _functions_standard_name
+        clean_module_name(module_name) + preprocessed_prefix + functions_standard_name
     )
     return importlib.import_module(module_name)
 
 
-def remove_preprocessed(module):
+def remove_preprocessed(
+    module, python_functions_standard_name=_python_functions_standard_name
+):
     print("Removing preprocessed files")
-    filename = module + ".py"
+    filename = "." + module + "/" + _preprocessed_prefix + python_functions_standard_name
     if os.path.isfile(filename):
-        os.remove(_preprocessed_prefix + filename)
+        os.remove(filename)

@@ -3,6 +3,7 @@ import logging
 from fuzzywuzzy import process
 from datetime import datetime
 from wafl.exceptions import CloseConversation, InterruptTask
+from preprocess_test_functions import b, c
 
 _logger = logging.getLogger(__file__)
 
@@ -124,3 +125,14 @@ def add_shopping_list_as_function(item):
 
 def testing_fact_from_python_space():
     return {"% According to the definition, speed equals space over time %"}
+
+def a():
+    pass
+
+
+def b():
+    {"% SAY Hello %"}
+
+
+def c():
+    b()

@@ -59,7 +59,7 @@ class TestParsing(TestCase):
                             knowledge_name=None,
                         ),
                     ],
-                    knowledge_name="/",
+                    knowledge_name=None,
                 ),
                 Rule(
                     effect=Fact(
@@ -91,7 +91,7 @@ class TestParsing(TestCase):
                             knowledge_name=None,
                         ),
                     ],
-                    knowledge_name="/",
+                    knowledge_name=None,
                 ),
             ]
         )

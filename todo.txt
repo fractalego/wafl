@@ -1,6 +1,8 @@
 ### TODO
 
-* implement functions within each dependency
+* use int8 for gpt2 and entailer!!
+* take entailer and qa out of the __init__ in entailer.py and qa.py
+
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
@@ -56,6 +58,7 @@ Fourth week:
 
 * change {"%%"} into something more typeable
 
+/* implement functions within each dependency
 /* remove Batches output in prediction
 /* fact retrieval should work in python space as well
 /* y/n questions should only accept yes or no (and loop if there is something else)
