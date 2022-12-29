@@ -10,7 +10,21 @@ from wafl.parsing.utils import (
 from wafl.rules import Rule
 
 
-def get_facts_and_rules_from_text(text: str):
+def get_dependency_list(text: str):
+    _command_name = "#using"
+    dependency_list = []
+
+    for line in text.split("\n"):
+        line = line.strip()
+        if _command_name in line:
+            dependency_list.extend(
+                [item.strip() for item in line[len(_command_name) :].split(",")]
+            )
+
+    return dependency_list
+
+
+def get_facts_and_rules_from_text(text: str, knowledge_name=None):
     lines = get_lines_stripped_from_comments(text)
     lines.extend(["LAST"])
 
@@ -29,6 +43,7 @@ def get_facts_and_rules_from_text(text: str):
                 Fact(
                     text=text,
                     is_question=is_question(text),
+                    knowledge_name=knowledge_name,
                 )
             )
 
@@ -42,7 +57,13 @@ def get_facts_and_rules_from_text(text: str):
                     facts.append(current_fact)
 
                 else:
-                    rules.append(Rule(effect=current_fact, causes=causes))
+                    rules.append(
+                        Rule(
+                            effect=current_fact,
+                            causes=causes,
+                            knowledge_name=knowledge_name,
+                        )
+                    )
 
                 causes = []
                 rule_length = 0
@@ -68,6 +89,7 @@ def get_facts_and_rules_from_text(text: str):
                 is_question=sentence_is_question,
                 variable=variable,
                 is_interruption=is_interruption,
+                knowledge_name=knowledge_name,
             )
 
     return {"facts": facts, "rules": rules}

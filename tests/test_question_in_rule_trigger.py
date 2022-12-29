@@ -3,7 +3,7 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 
 wafl_example = """
@@ -36,7 +36,9 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         try:
             conversation.input()
@@ -54,7 +56,9 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         try:
             conversation.input()
@@ -72,7 +76,9 @@ class TestLanguageInFunctions(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         try:
             conversation.input()

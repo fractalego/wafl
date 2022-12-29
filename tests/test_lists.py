@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 
@@ -82,7 +82,7 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         conversation.input()
         conversation.input()
@@ -104,9 +104,9 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -129,9 +129,9 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -154,9 +154,9 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
         while conversation.input():
             pass
@@ -174,7 +174,7 @@ class TestLists(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
         conversation.input(activation_word=hotword)

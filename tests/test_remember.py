@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
@@ -59,7 +59,7 @@ class TestRetrieval(TestCase):
     def test_input_during_inference(self):
         interface = DummyInterface(to_utter=["Please remember that my name is Alberto"])
         conversation = Conversation(
-            Knowledge(_wafl_remember_rules, logger=_logger),
+            SingleFileKnowledge(_wafl_remember_rules, logger=_logger),
             interface=interface,
             logger=_logger,
         )

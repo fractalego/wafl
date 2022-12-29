@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_greetings = """
 # Simple initial facts
@@ -67,7 +67,9 @@ the user wants to stop
 class TestGreetings(TestCase):
     def test_hello_and_username(self):
         interface = DummyInterface(["Hello, my name is unknown", "Albert"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_greetings), interface=interface
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
@@ -75,7 +77,9 @@ class TestGreetings(TestCase):
 
     def test_hello_and_username2(self):
         interface = DummyInterface(["Hello, my name is unknown", "bob"])
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
+        conversation = Conversation(
+            SingleFileKnowledge(_wafl_greetings), interface=interface
+        )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()

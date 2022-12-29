@@ -13,12 +13,13 @@ from wafl.qa.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
+_convqa = ConvQA("fractalego/conversation-qa")
 
 
 class QA:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
-        self._qa = ConvQA("fractalego/conversation-qa")
+        self._qa = _convqa
         self._narrator = narrator
         self._entailer_to_qa_mapping = {
             "True": "Yes",

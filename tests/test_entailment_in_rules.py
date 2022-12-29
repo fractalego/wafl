@@ -1,7 +1,7 @@
 import os
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from unittest import TestCase
 
 _path = os.path.dirname(__file__)
@@ -19,7 +19,9 @@ class TestEntailmentInRules(TestCase):
     def test__entailment_in_rule_returns_true(self):
         interface = DummyInterface(["I want to buy apples"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, code_path="functions"
+            SingleFileKnowledge(_wafl_greetings),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: You want to buy fruit!"

@@ -69,28 +69,28 @@ class Conversation:
                 self.output(answer.text)
 
             if text_is_question and answer.is_false():
-                self.output("Unknown")
+                self.output("I don't know")
 
             if (
                 not text_is_question
                 and answer.is_false()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("negative")
+                self._interface.output("Ok")
 
             if (
                 not text_is_question
                 and answer.is_true()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("affermative")
+                self._interface.output("Yes")
 
         return answer
 
     def input(self, activation_word: str = "") -> bool:
         try:
             text = self._interface.input()
-
+            text = text.replace("'", r"\'")
         except IndexError:
             return False
 

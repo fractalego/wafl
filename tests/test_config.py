@@ -4,7 +4,7 @@ from wafl.config import Configuration
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.interface.voice_interface import VoiceInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_greetings = """
   
@@ -18,13 +18,13 @@ class TestConfig(TestCase):
 
         interface = DummyInterface(["Albert is here", "What is my name"])
         conversation = Conversation(
-            Knowledge(_wafl_greetings), interface=interface, config=config
+            SingleFileKnowledge(_wafl_greetings), interface=interface, config=config
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         conversation.input()
         conversation.input()
-        assert interface.get_utterances_list()[-1] == "bot: Unknown"
+        assert interface.get_utterances_list()[-1] == "bot: I don't know"
 
     def test__listener_accepts_threshold_for_hotword_logp(self):
         config = Configuration.load_local_config()

@@ -5,8 +5,8 @@ from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
+from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
-from wafl.knowledge.knowledge import Knowledge
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
 
@@ -21,12 +21,11 @@ def print_incipit():
 
 def run_from_command_line():
     print_incipit()
-    wafl_rules = open("rules.wafl").read()
     interface = CommandLineInterface()
     conversation = Conversation(
-        Knowledge(wafl_rules, logger=_logger),
+        ProjectKnowledge("rules.wafl", logger=_logger),
         interface=interface,
-        code_path="functions",
+        code_path="/",
         logger=_logger,
     )
     conversation.output("Hello. How may I help you?")
@@ -43,13 +42,13 @@ def run_from_command_line():
 def run_from_audio():
     print_incipit()
     config = Configuration.load_local_config()
-    knowledge = Knowledge(open("rules.wafl").read(), logger=_logger)
+    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
     interface = VoiceInterface(config)
     interface.check_understanding(False)
     conversation = Conversation(
         knowledge,
         interface=interface,
-        code_path="functions",
+        code_path=knowledge.get_dependencies_list(),
         config=config,
         logger=_logger,
     )
@@ -71,6 +70,10 @@ def run_from_audio():
             interactions += 1
             if result:
                 interface.check_understanding(True)
+
+            if interface.bot_has_spoken() and interactions == 1:
+                interface.check_understanding(False)
+                num_misses = 0
 
             if (
                 interface.check_understanding()
@@ -102,7 +105,7 @@ def run_from_audio():
 
 
 def run_testcases():
-    knowledge = Knowledge(open("rules.wafl").read())
+    knowledge = ProjectKnowledge("rules.wafl")
     test_cases_text = open("testcases.txt").read()
     testcases = ConversationTestCases(test_cases_text, knowledge)
     testcases.run()

@@ -4,12 +4,11 @@ from wafl.conversation.conversation import Conversation
 from wafl.conversation.narrator import Narrator
 from wafl.conversation.utils import is_question
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.qa.qa import QA
 from wafl.qa.dataclasses import Query
 
 _wafl_example = """
-
 The user greets
   SAY Hello there!
   username = Are you fine?
@@ -41,7 +40,7 @@ class TestQuestions(TestCase):
     def test_yes_or_no_questions_only_accept_positive_or_negative_replies(self):
         interface = DummyInterface(["Hello", "Blue sky", "yes"])
         conversation = Conversation(
-            Knowledge(_wafl_example),
+            SingleFileKnowledge(_wafl_example),
             interface=interface,
         )
         conversation.input()

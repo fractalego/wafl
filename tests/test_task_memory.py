@@ -3,7 +3,7 @@ from unittest import TestCase
 from wafl.conversation.conversation import Conversation
 from wafl.conversation.task_memory import TaskMemory
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 
 wafl_example = """
@@ -70,9 +70,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example),
+            SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -82,7 +82,9 @@ A:
     def test__hello_does_not_get_into_task_memory(self):
         interface = DummyInterface(to_utter=["hello", "Albert"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Hello, albert!"
@@ -98,7 +100,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Bananas has been added to the list"
@@ -116,7 +120,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Bananas has been added to the list"
@@ -131,9 +137,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example),
+            SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -149,9 +155,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(memory_example),
+            SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -168,9 +174,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(memory_example),
+            SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()
@@ -190,9 +196,9 @@ A:
             ]
         )
         conversation = Conversation(
-            Knowledge(memory_example),
+            SingleFileKnowledge(memory_example),
             interface=interface,
-            code_path="functions",
+            code_path="/",
             logger=LocalFileLogger(),
         )
         conversation.input()

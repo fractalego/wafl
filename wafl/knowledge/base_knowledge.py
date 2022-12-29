@@ -1,9 +1,19 @@
 class BaseKnowledge:
+    root_knowledge = "/"
+
     def add(self, text):
-        raise NotImplemented()
+        raise NotImplementedError()
 
-    def ask_for_facts(self, query, is_from_user=False):
-        raise NotImplemented()
+    def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
+        raise NotImplementedError()
 
-    def ask_for_rule_backward(self, query):
-        raise NotImplemented()
+    def ask_for_facts_with_threshold(
+        self, query, is_from_user=False, knowledge_name=None
+    ):
+        raise NotImplementedError()
+
+    def ask_for_rule_backward(self, query, knowledge_name=None):
+        raise NotImplementedError()
+
+    def has_better_match(self, query_text: str) -> bool:
+        raise NotImplementedError()

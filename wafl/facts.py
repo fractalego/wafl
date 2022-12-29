@@ -9,6 +9,7 @@ class Fact:
     is_interruption: bool = False
     source: str = None
     destination: str = None
+    knowledge_name: str = "/"
 
     def toJSON(self):
         return str(self)

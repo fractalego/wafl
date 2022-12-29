@@ -2,9 +2,11 @@ from unittest import TestCase
 
 from wafl.conversation.conversation import Conversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 wafl_example = """
+Speed is space over time
+
 
 the user wants to register to the newsletter
   email = what is the user's email
@@ -43,6 +45,12 @@ the user asks for the time
     
 sentence = What does the user want to say
   say_text(sentence)
+  
+
+the user says "please define speed":
+    testing_fact_from_python_space()
+    SAY Test complete
+    
 """
 
 
@@ -50,7 +58,9 @@ class TestExecutables(TestCase):
     def test_executables(self):
         interface = DummyInterface(to_utter=["test@example.com"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         conversation.add(input_from_user)
@@ -62,7 +72,9 @@ class TestExecutables(TestCase):
     def test_add_to_list(self):
         interface = DummyInterface(to_utter=["Please add apples to the shopping list"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Apples has been added to the list"
@@ -76,7 +88,9 @@ class TestExecutables(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -92,7 +106,9 @@ class TestExecutables(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -114,7 +130,9 @@ class TestExecutables(TestCase):
             ]
         )
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         conversation.input()
@@ -129,7 +147,9 @@ class TestExecutables(TestCase):
     def test_mispelled_items_are_added_to_the_shopping_list(self):
         interface = DummyInterface(to_utter=["add app list the shopping list"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Add app list the shopping list has been added to the list"
@@ -138,7 +158,9 @@ class TestExecutables(TestCase):
     def test_question_activates_inference(self):
         interface = DummyInterface(to_utter=["What time is it?"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "The time is"
@@ -147,7 +169,9 @@ class TestExecutables(TestCase):
     def test_negation(self):
         interface = DummyInterface(to_utter=["add batteries to the test list"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: Batteries cannot be added to the list"
@@ -156,8 +180,21 @@ class TestExecutables(TestCase):
     def test_say_command_in_functions(self):
         interface = DummyInterface(to_utter=["I want to say 'this is a test'"])
         conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
         conversation.input()
         expected = "bot: This is a test."
+        assert interface.get_utterances_list()[-1].lower() == expected.lower()
+
+    def test__facts_work_in_python_space(self):
+        interface = DummyInterface(to_utter=["Please define speed"])
+        conversation = Conversation(
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
+        )
+        conversation.input()
+        expected = "bot: Test complete"
         assert interface.get_utterances_list()[-1].lower() == expected.lower()

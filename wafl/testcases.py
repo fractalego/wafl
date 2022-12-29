@@ -19,9 +19,7 @@ class ConversationTestCases:
         bot_lines = self._testcase_data[name]["bot_lines"]
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
-        conversation = Conversation(
-            self._knowledge, interface=interface, code_path="functions"
-        )
+        conversation = Conversation(self._knowledge, interface=interface, code_path="/")
 
         print(f"Running test '{name}'...", end="")
 
