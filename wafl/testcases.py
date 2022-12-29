@@ -23,9 +23,10 @@ class ConversationTestCases:
 
         print(f"Running test '{name}'...", end="")
 
-        while True:
+        continue_conversations = True
+        while continue_conversations:
             try:
-                conversation.input()
+                continue_conversations = conversation.input()
 
             except (IndexError, CloseConversation):
                 break
