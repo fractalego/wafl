@@ -37,7 +37,7 @@ class Conversation:
     def output(self, text: str):
         self._interface.output(text)
 
-    def add(self, text: str):
+    def process_query(self, text: str):
         self._interface.bot_has_spoken(False)
 
         if not input_is_valid(text):
@@ -89,7 +89,7 @@ class Conversation:
 
     def next(self, activation_word: str = "") -> bool:
         try:
-            text = self._interface.next()
+            text = self._interface.input()
             text = text.replace("'", r"\'")
 
         except IndexError:
@@ -106,7 +106,7 @@ class Conversation:
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.is_listening():
-            answer = self.add(text)
+            answer = self.process_query(text)
             if answer and answer.text != "False":
                 return True
 

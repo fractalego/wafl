@@ -285,7 +285,7 @@ class BackwardInference:
             while True:
                 self._log(f"Asking the user: {query.text}")
                 self._interface.output(query.text)
-                user_input_text = self._interface.next()
+                user_input_text = self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
                     prior_conversation = self._narrator.summarize_dialogue()
@@ -400,9 +400,8 @@ class BackwardInference:
             ):
                 to_execute = add_function_arguments(to_execute)
 
-            task_memory = TaskMemory()
+            task_memory = TaskMemory()  # task_memory is used as argument of the code in eval()
             self._log(f"Executing code: {to_execute}")
-            # task_memory is used as argument of the code in eval()
             result = eval(f"self._module['{knowledge_name}'].{to_execute}")
             self._log(f"Execution result: {result}")
 

@@ -63,7 +63,7 @@ class TestExecutables(TestCase):
             code_path="/",
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.add(input_from_user)
+        conversation.process_query(input_from_user)
         expected = (
             "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
         )

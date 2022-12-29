@@ -78,7 +78,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "hello!".capitalize()
-        conversation.add(input_from_user)
+        conversation.process_query(input_from_user)
         expected = "bot: Hello to you, bob!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -90,7 +90,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.add(input_from_user)
+        conversation.process_query(input_from_user)
         expected = "bot: Test@example.com has been added to the newsletter"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -102,8 +102,8 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.add(input_from_user)
-        answer = conversation.add("What is the email of the user")
+        conversation.process_query(input_from_user)
+        answer = conversation.process_query("What is the email of the user")
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
@@ -114,8 +114,8 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "the user's mother is called Ada"
-        conversation.add(input_from_user)
-        answer = conversation.add("How is the user's mum called")
+        conversation.process_query(input_from_user)
+        answer = conversation.process_query("How is the user's mum called")
         print(answer)
         assert answer.text.lower() == "ada"
 
