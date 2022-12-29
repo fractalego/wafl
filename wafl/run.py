@@ -105,7 +105,13 @@ def run_from_audio():
 
 
 def run_testcases():
+    print("Running the testcases in testcases.txt\n")
     knowledge = ProjectKnowledge("rules.wafl")
     test_cases_text = open("testcases.txt").read()
-    testcases = ConversationTestCases(test_cases_text, knowledge)
+    testcases = ConversationTestCases(
+        test_cases_text,
+        knowledge,
+        code_path=knowledge.get_dependencies_list(),
+        logger=_logger,
+    )
     testcases.run()
