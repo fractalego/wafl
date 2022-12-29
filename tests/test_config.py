@@ -22,8 +22,8 @@ class TestConfig(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: I don't know"
 
     def test__listener_accepts_threshold_for_hotword_logp(self):

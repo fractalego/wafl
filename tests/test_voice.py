@@ -31,7 +31,7 @@ class TestVoice(TestCase):
             SingleFileKnowledge(_wafl_example), interface=interface
         )
         interface.activate()
-        conversation.input(activation_word="computer")
+        conversation.next(activation_word="computer")
         assert len(interface.get_utterances_list()) == 2
 
     def test_no_activation(self):
@@ -40,7 +40,7 @@ class TestVoice(TestCase):
             SingleFileKnowledge(_wafl_example), interface=interface
         )
         interface.deactivate()
-        conversation.input(activation_word="computer")
+        conversation.next(activation_word="computer")
         assert len(interface.get_utterances_list()) == 1
 
     def test_hotwords_as_input(self):

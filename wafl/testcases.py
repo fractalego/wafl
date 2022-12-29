@@ -37,7 +37,7 @@ class ConversationTestCases:
         continue_conversations = True
         while continue_conversations:
             try:
-                continue_conversations = conversation.input()
+                continue_conversations = conversation.next()
 
             except (IndexError, CloseConversation):
                 break

@@ -28,7 +28,7 @@ class TestRecursion(TestCase):
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
 
-        while conversation.input():
+        while conversation.next():
             pass
 
         assert interface.get_utterances_list()[-1] == "bot: Jubilee"

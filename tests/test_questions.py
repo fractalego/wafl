@@ -43,6 +43,6 @@ class TestQuestions(TestCase):
             SingleFileKnowledge(_wafl_example),
             interface=interface,
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: I am glad you are fine!"
         assert interface.get_utterances_list()[-1] == expected

@@ -54,8 +54,8 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         expected = "bot: The shopping list contains: apples, bananas"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -70,7 +70,7 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = [
             "bot: Please say: 'hello'",
             "bot: Your input is recorded",
@@ -90,7 +90,7 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The victoria line is running normally"

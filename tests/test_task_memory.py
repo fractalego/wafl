@@ -75,7 +75,7 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Hello, bob!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -86,7 +86,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -104,7 +104,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -124,7 +124,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -142,7 +142,7 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Bananas has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-3] == expected
@@ -160,8 +160,8 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -179,9 +179,9 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.input()
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
+        conversation.next()
         expected = "bot: Apples has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -201,8 +201,8 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.input()
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
+        conversation.next()
         expected = "bot: Coffee filters has been added to the list"
         assert interface.get_utterances_list()[-1] == expected

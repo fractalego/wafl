@@ -38,7 +38,7 @@ class TestInterruptionsToCloseConversation(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)
@@ -58,7 +58,7 @@ class TestInterruptionsToCloseConversation(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)
@@ -78,7 +78,7 @@ class TestInterruptionsToCloseConversation(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)

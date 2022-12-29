@@ -32,7 +32,7 @@ def run_from_command_line():
 
     while True:
         try:
-            conversation.input()
+            conversation.next()
         except (CloseConversation, KeyboardInterrupt, EOFError):
             break
 

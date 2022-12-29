@@ -36,7 +36,7 @@ class Scheduler:
                 num_misses = 0
 
             try:
-                result = self._conversation.input(activation_word=self._activation_word)
+                result = self._conversation.next(activation_word=self._activation_word)
                 self._logger.write(
                     f"Conversation Result {result}", log_level=self._logger.level.INFO
                 )
@@ -57,7 +57,7 @@ class Scheduler:
                     if num_misses >= max_misses:
                         self._interface.deactivate()
 
-                    if interactions <= 1:
+                    if interactions == 1:
                         self._interface.output(
                             random.choice(["What can I do for you?"])
                         )

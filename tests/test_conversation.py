@@ -128,8 +128,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert interface.get_utterances_list()[-1].lower() == "bot: albert"
 
     def test__greeting_with_alberto_as_name(self):
@@ -141,8 +141,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert interface.get_utterances_list()[-1].lower() == "bot: albert0"
 
     def test__yes(self):
@@ -154,8 +154,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert "yes" in interface.get_utterances_list()[-1].lower()
 
     def test__no(self):
@@ -167,8 +167,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert "no" in interface.get_utterances_list()[-1].lower()
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
@@ -180,7 +180,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: Welcome to the club!"
 
     def test__yes_no_questions_from_bot_with_answer_no(self):
@@ -192,7 +192,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert (
             interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
         )
@@ -206,7 +206,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__conversation_input_returns_false_for_trivial_input(self):
@@ -214,7 +214,7 @@ class TestConversation(TestCase):
         conversation = Conversation(
             SingleFileKnowledge("", logger=_logger), interface=interface, logger=_logger
         )
-        result = conversation.input()
+        result = conversation.next()
         assert not result
 
     def test__how_are_you(self):
@@ -224,5 +224,5 @@ class TestConversation(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation.input()
+        conversation.next()
         assert "doing well" in interface.get_utterances_list()[-1]

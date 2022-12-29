@@ -41,7 +41,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)
@@ -61,7 +61,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)
@@ -81,7 +81,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             self.assertTrue(True)

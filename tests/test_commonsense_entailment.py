@@ -29,7 +29,7 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Apples will be added"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -45,7 +45,7 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Bananas will be added"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -60,6 +60,6 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: No thanks is not a shopping item"
         assert interface.get_utterances_list()[-1] == expected

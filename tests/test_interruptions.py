@@ -34,7 +34,7 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_time_request_does_interrupt(self):
@@ -46,7 +46,7 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert "The time is" in interface.get_utterances_list()[-4]
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
@@ -60,7 +60,7 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             return
@@ -76,5 +76,5 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: Task interrupted"

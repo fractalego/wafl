@@ -87,9 +87,9 @@ class Conversation:
 
         return answer
 
-    def input(self, activation_word: str = "") -> bool:
+    def next(self, activation_word: str = "") -> bool:
         try:
-            text = self._interface.input()
+            text = self._interface.next()
             text = text.replace("'", r"\'")
 
         except IndexError:

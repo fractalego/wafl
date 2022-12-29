@@ -125,7 +125,7 @@ class TestEdgeCases(TestCase):
             code_path="/",
             logger=_logger,
         )
-        conversation.input()
+        conversation.next()
         assert "asks:" not in interface.get_utterances_list()[0]
 
     def test_clause_does_not_return_unknown(self):
@@ -136,7 +136,7 @@ class TestEdgeCases(TestCase):
             code_path="/",
             logger=_logger,
         )
-        conversation.input()
+        conversation.next()
         print(interface.get_utterances_list())
         assert "unknown" not in interface.get_utterances_list()[-1]
 
@@ -147,5 +147,5 @@ class TestEdgeCases(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         assert "unknown" not in interface.get_utterances_list()[-1]

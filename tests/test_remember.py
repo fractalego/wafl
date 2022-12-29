@@ -63,7 +63,7 @@ class TestRetrieval(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: I will remember that your name is alberto"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

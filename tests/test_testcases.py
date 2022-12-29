@@ -70,7 +70,7 @@ class TestConversationalTestCases(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )
-        conversation.input()
+        conversation.next()
         assert [
             item.replace("bot: ", "")
             for item in interface.get_utterances_list()

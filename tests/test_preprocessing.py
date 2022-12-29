@@ -48,6 +48,6 @@ class TestPreprocessing(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Hello"
         assert interface.get_utterances_list()[-1] == expected

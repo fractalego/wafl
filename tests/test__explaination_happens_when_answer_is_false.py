@@ -32,7 +32,7 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
         try:
-            conversation.input()
+            conversation.next()
 
         except CloseConversation:
             return False

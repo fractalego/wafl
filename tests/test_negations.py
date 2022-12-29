@@ -24,7 +24,7 @@ class TestNegations(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example), interface=interface
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: So you do want to see it!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -38,7 +38,7 @@ class TestNegations(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example), interface=interface
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: do you want to see the shopping list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-2] == expected
@@ -53,6 +53,6 @@ class TestNegations(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(wafl_example), interface=interface
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: do you want to see the shopping list"
         assert interface.get_utterances_list()[-2] == expected

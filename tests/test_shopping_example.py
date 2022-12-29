@@ -81,7 +81,7 @@ class TestNew(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1

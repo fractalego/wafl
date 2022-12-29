@@ -49,7 +49,7 @@ class TestDependencies(TestCase):
             ]
         )
         conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.input()
+        conversation.next()
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -64,7 +64,7 @@ class TestDependencies(TestCase):
             ]
         )
         conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.input()
+        conversation.next()
         expected = "bot: doing well"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -79,7 +79,7 @@ class TestDependencies(TestCase):
             ]
         )
         conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.input()
+        conversation.next()
         expected = "bot: shiny"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -99,6 +99,6 @@ class TestDependencies(TestCase):
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: The time is now!"
         assert interface.get_utterances_list()[-1] == expected

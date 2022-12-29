@@ -84,8 +84,8 @@ class TestLists(TestCase):
         conversation = Conversation(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
@@ -108,7 +108,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation.input():
+        while conversation.next():
             pass
         print(interface.get_utterances_list())
         assert (
@@ -133,7 +133,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation.input():
+        while conversation.next():
             pass
 
         assert (
@@ -158,7 +158,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation.input():
+        while conversation.next():
             pass
 
         assert (
@@ -177,6 +177,6 @@ class TestLists(TestCase):
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
-        conversation.input(activation_word=hotword)
+        conversation.next(activation_word=hotword)
         expected = "bot: apples has been added to the list"
         self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

@@ -27,8 +27,8 @@ class TestAnswerInConversation(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: cold"
 
@@ -39,6 +39,6 @@ class TestAnswerInConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         assert interface.get_utterances_list()[-1] == "bot: albert"

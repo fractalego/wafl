@@ -76,7 +76,7 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Apples has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -92,8 +92,8 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
         expected = "bot: Apples has been removed from the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -110,9 +110,9 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
+        conversation.next()
         expected = "bot: The shopping list contains: apples, bananas"
         expected2 = "bot: The shopping list contains: bananas, apples"
         print(interface.get_utterances_list())
@@ -134,9 +134,9 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
-        conversation.input()
-        conversation.input()
+        conversation.next()
+        conversation.next()
+        conversation.next()
         expected = "bot: The shopping list contains: apples, bananas"
         expected2 = "bot: The shopping list contains: bananas, apples"
         assert (
@@ -151,7 +151,7 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Add app list the shopping list has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -162,7 +162,7 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "The time is"
         assert expected in interface.get_utterances_list()[-1]
 
@@ -173,7 +173,7 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Batteries cannot be added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -184,7 +184,7 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: This is a test."
         assert interface.get_utterances_list()[-1].lower() == expected.lower()
 
@@ -195,6 +195,6 @@ class TestExecutables(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        conversation.next()
         expected = "bot: Test complete"
         assert interface.get_utterances_list()[-1].lower() == expected.lower()
