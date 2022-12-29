@@ -1,6 +1,6 @@
 ### TODO
 
-* use int8 for gpt2 and entailer!!
+* entailment should be :- instead of <-
 
 * create errors within parser
    * dependency does not exist

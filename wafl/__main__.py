@@ -22,7 +22,7 @@ if __name__ == "__main__":
             create_initial_files()
             download_models()
 
-        if command == "run":
+        if command == "run-cli":
             run_from_command_line()
             remove_preprocessed("/")
 

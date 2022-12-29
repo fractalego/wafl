@@ -30,6 +30,7 @@ def get_user_and_bot_lines_from_text(text: str):
                 to_negate = False
                 bot_lines = []
                 user_lines = []
+                all_lines = []
 
             line = line.strip()
             if line.find("!") == 0:
