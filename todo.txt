@@ -1,7 +1,6 @@
 ### TODO
 
-* use int8 for gpt2 and entailer!!
-* take entailer and qa out of the __init__ in entailer.py and qa.py
+* entailment should be :- instead of <-
 
 * create errors within parser
    * dependency does not exist
@@ -58,6 +57,7 @@ Fourth week:
 
 * change {"%%"} into something more typeable
 
+/* take entailer and qa out of the __init__ in entailer.py and qa.py
 /* implement functions within each dependency
 /* remove Batches output in prediction
 /* fact retrieval should work in python space as well

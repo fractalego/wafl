@@ -126,6 +126,7 @@ def add_shopping_list_as_function(item):
 def testing_fact_from_python_space():
     return {"% According to the definition, speed equals space over time %"}
 
+
 def a():
     pass
 

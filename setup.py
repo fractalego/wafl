@@ -58,6 +58,9 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
     ],
+    entry_points={
+        "console_scripts": ["wafl=wafl.command_line:main"],
+    },
     include_package_data=True,
     zip_safe=False,
 )

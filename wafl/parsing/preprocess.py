@@ -80,6 +80,8 @@ def remove_preprocessed(
     module, python_functions_standard_name=_python_functions_standard_name
 ):
     print("Removing preprocessed files")
-    filename = "." + module + "/" + _preprocessed_prefix + python_functions_standard_name
+    filename = (
+        "." + module + "/" + _preprocessed_prefix + python_functions_standard_name
+    )
     if os.path.isfile(filename):
         os.remove(filename)
