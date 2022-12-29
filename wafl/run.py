@@ -68,3 +68,9 @@ def run_testcases():
         logger=_logger,
     )
     testcases.run()
+
+
+def download_models():
+    import nltk
+
+    nltk.download("averaged_perceptron_tagger")

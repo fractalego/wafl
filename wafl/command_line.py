@@ -1,14 +1,9 @@
+import os
 import sys
 
 from wafl.config import create_initial_files
 from wafl.parsing.preprocess import remove_preprocessed
-from wafl.run import run_from_command_line, run_from_audio, run_testcases, print_incipit
-
-
-def download_models():
-    import nltk
-
-    nltk.download("averaged_perceptron_tagger")
+from wafl.run import run_from_command_line, run_from_audio, run_testcases, print_incipit, download_models
 
 
 def print_help():
@@ -20,7 +15,12 @@ def print_help():
     print()
 
 
+def add_cwd_to_syspath():
+    sys.path.append(os.getcwd())
+
+
 def main():
+    add_cwd_to_syspath()
     print_incipit()
 
     arguments = sys.argv
