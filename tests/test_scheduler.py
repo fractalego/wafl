@@ -16,7 +16,7 @@ class TestScheduler(TestCase):
     def test__scheduler_can_run(self):
         #### ADD EXTERNAL FUNCTIONS TO SCHEDULERS
         ####  - CREATE INTERFACE FOR THESE FUNCTIONS
-        ####  - HIBRID INTERFACE SHOULD USE LIST OF INTERFACES
+        ####  - HYBRID INTERFACE SHOULD USE LIST OF INTERFACES
         ####     - USE ASYNCIO
         ####
         #### ADD CAPABILITY OF ADDING AND REMOVING RULES

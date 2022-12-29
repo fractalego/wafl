@@ -46,6 +46,13 @@ class BackwardInference:
         max_depth: int = 10,
         logger=None,
     ):
+
+
+        import os
+        cwd = os.getcwd()
+        print("Current working directory: {0}".format(cwd))
+
+
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface

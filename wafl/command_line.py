@@ -31,19 +31,19 @@ def main():
             create_initial_files()
             download_models()
 
-        if command == "run-cli":
+        elif command == "run-cli":
             run_from_command_line()
             remove_preprocessed("/")
 
-        if command == "run-audio":
+        elif command == "run-audio":
             run_from_audio()
             remove_preprocessed("/")
 
-        if command == "run-tests":
+        elif command == "run-tests":
             run_testcases()
             remove_preprocessed("/")
 
-        if command == "help":
+        elif command == "help":
             print_help()
 
         else:
