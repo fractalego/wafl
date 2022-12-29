@@ -17,6 +17,7 @@ class ConversationTestCases:
 
         user_lines = self._testcase_data[name]["user_lines"]
         bot_lines = self._testcase_data[name]["bot_lines"]
+        test_lines = self._testcase_data[name]["lines"]
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
         conversation = Conversation(self._knowledge, interface=interface, code_path="/")
@@ -31,15 +32,24 @@ class ConversationTestCases:
             except (IndexError, CloseConversation):
                 break
 
-        if (bot_lines == interface.utterances and not is_negated) or (
-            bot_lines != interface.utterances and is_negated
-        ):
+        is_consistent = True
+        generated_lines = interface.get_utterances_list()
+        for test_line, generated_line in zip(test_lines, generated_lines):
+            if test_line != generated_line:  ####
+                print(f" [test_line] {test_line}")
+                print(f" [predicted_line] {generated_line}")
+                is_consistent = False
+                break
+
+        if (is_consistent and not is_negated) or (not is_consistent and is_negated):
             print(" [Success]")
             return True
 
         print(" [Fail]")
         print("This is how the dialogue went:")
-        print(interface.get_dialogue())
+        for line in interface.get_utterances_list():
+            print(line)
+
         return False
 
     def run(self):

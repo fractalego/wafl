@@ -91,6 +91,7 @@ class Conversation:
         try:
             text = self._interface.input()
             text = text.replace("'", r"\'")
+
         except IndexError:
             return False
 

@@ -20,18 +20,18 @@ The user greets
 _test_case_greetings = """
 
 test the greetings work
-  user> Hello
-  bot> Hello there!
-  bot> What is your name
-  user> Bob
-  bot> Nice to meet you, bob!
+  user: Hello
+  bot: Hello there!
+  bot: What is your name
+  user: Bob
+  bot: Nice to meet you, bob!
 
 ! test the greetings uses the correct name
-  user> Hello
-  bot> Hello there!
-  bot> What is your name
-  user> Bob
-  bot> Nice to meet you, unknown!
+  user: Hello
+  bot: Hello there!
+  bot: What is your name
+  user: Bob
+  bot: Nice to meet you, unknown!
 
 
 """.strip()
@@ -43,6 +43,7 @@ class TestConversationalTestCases(TestCase):
         assert list(dialogue_data["test the greetings work"].keys()) == [
             "bot_lines",
             "user_lines",
+            "lines",
             "negated",
         ]
 
