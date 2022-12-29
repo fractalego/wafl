@@ -20,7 +20,6 @@ def print_incipit():
 
 
 def run_from_command_line():
-    print_incipit()
     interface = CommandLineInterface()
     conversation = Conversation(
         ProjectKnowledge("rules.wafl", logger=_logger),
@@ -40,7 +39,6 @@ def run_from_command_line():
 
 
 def run_from_audio():
-    print_incipit()
     config = Configuration.load_local_config()
     knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
     interface = VoiceInterface(config)
