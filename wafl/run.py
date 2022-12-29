@@ -1,5 +1,3 @@
-import random
-
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.conversation.conversation import Conversation

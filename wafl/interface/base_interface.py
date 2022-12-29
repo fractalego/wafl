@@ -1,3 +1,6 @@
+from typing import List
+
+
 class BaseInterface:
     def __init__(self):
         self._is_listening = True
@@ -22,3 +25,6 @@ class BaseInterface:
 
     def get_utterances_list(self):
         raise NotImplementedError
+
+    def add_hotwords(self, hotwords: List[str]):
+        pass

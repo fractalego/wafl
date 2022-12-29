@@ -1,0 +1,4 @@
+#using greetings
+
+The user greets
+  keyboard_interrupt()

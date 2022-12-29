@@ -1,17 +1,17 @@
 ### TODO
 
-* entailment should be :- instead of <-
-
+* change {"%%"} into something more typeable
+* volume threshold should be sampled continously
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
 
 This and next week:
- * rules in folder
+ /* rules in folder
  * distill gpt2 from gpt-JT onto the CoQA dataset
 
 First week of the year:
- * Make test conversations work
+ /* Make test conversations work
  * Debugging with picture as output
 
 Second week of the year:
@@ -26,10 +26,10 @@ Fourth week:
  * Write demo paper
 
 
-* rules and functions should be in a folder.
-  * Think about ability to install
+/* rules and functions should be in a folder.
+/  * Think about ability to install
 
-* add ability to create rules through text "->"
+/* add ability to create rules through text "->"
 * main conversation loop should be scheduler
   * Add functions that can trigger rules
 
@@ -38,7 +38,7 @@ Fourth week:
 
 * Do lists as hard-coded
 * y/n questions are never searched in working memory. Is this the right behavior?
-* test_testcases blocks the tests. RESOLVE THIS!!
+/* test_testcases blocks the tests. RESOLVE THIS!!
 * fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
 * functions use inference from depth_level = 1. This can induce infinite recursion
 
@@ -55,8 +55,9 @@ Fourth week:
 * add error detection in parser.
   * for example ( without a closing ). same for {
 
-* change {"%%"} into something more typeable
 
+
+/* entailment should be :- instead of <-
 /* take entailer and qa out of the __init__ in entailer.py and qa.py
 /* implement functions within each dependency
 /* remove Batches output in prediction

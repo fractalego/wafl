@@ -26,6 +26,7 @@ setup(
         "wafl.qa",
         "wafl.speaker",
         "wafl.retriever",
+        "wafl.scheduler",
     ],
     package_data={
         "wafl": ["templates/*", "sounds/*", "models/*"],

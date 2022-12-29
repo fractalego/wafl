@@ -6,7 +6,6 @@ _path = os.path.dirname(__file__)
 
 def create_initial_files():
     _rules_template = open(os.path.join(_path, "templates/rules.wafl"))
-    _server_template = open(os.path.join(_path, "templates/server.py"))
     _functions_template = open(os.path.join(_path, "templates/functions.py"))
     _config_template = open(os.path.join(_path, "templates/config.json"))
     _testcases_template = open(os.path.join(_path, "templates/testcases.txt"))
@@ -15,9 +14,6 @@ def create_initial_files():
 
     with open("rules.wafl", "w") as file:
         file.write(_rules_template.read())
-
-    with open("server.py", "w") as file:
-        file.write(_server_template.read())
 
     with open("functions.py", "w") as file:
         file.write(_functions_template.read())

@@ -95,7 +95,7 @@ class Conversation:
         except IndexError:
             return False
 
-        if not self._interface.is_listening() and self.__activation_word_in_text(
+        if not self._interface.is_listening() and self._activation_word_in_text(
             activation_word, text
         ):
             self._interface.activate()
@@ -112,7 +112,7 @@ class Conversation:
 
         return False
 
-    def __activation_word_in_text(self, activation_word, text):
+    def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):
             return True
 
