@@ -93,7 +93,7 @@ class BackwardInference:
             self._log("Answer in entailment: " + answer.text, depth)
             return answer
 
-        if " -> " in query.text:
+        if ":-" in query.text:
             return selected_answer(candidate_answers)
 
         answer = self._look_for_answer_in_facts(
@@ -241,10 +241,10 @@ class BackwardInference:
             return answer
 
     def _look_for_answer_in_entailment(self, query, knowledge_name, depth):
-        if "->" not in query.text:
+        if ":-" not in query.text:
             return None
 
-        premise, hypothesis = query.text.split("->")
+        hypothesis, premise = query.text.split(":-")
         answer = self._qa.ask(
             Query(text=premise, is_question=is_question(premise)), hypothesis
         )

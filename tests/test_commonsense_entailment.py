@@ -7,11 +7,11 @@ from wafl.interface.dummy_interface import DummyInterface
 wafl_example = """
 
 item = what does the user want to add to the shopping list?
-  the user adds something to a grocery list -> The user adds {item} to a list 
+   The user adds {item} to a list :- the user adds something to a grocery list 
   SAY {item} will be added
 
 item = what does the user want to add to the shopping list?
-  ! the user adds something to a grocery list -> The user adds {item} to a list
+  ! The user adds {item} to a list :- the user adds something to a grocery list
   SAY {item} is not a shopping item
 
 """

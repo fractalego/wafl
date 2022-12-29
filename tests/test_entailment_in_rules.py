@@ -9,7 +9,7 @@ _wafl_greetings = """
 
 The user wants to buy something
   item = what does the user want to buy
-  the user wants to buy {item} -> the user wants to buy a fruit
+  the user wants to buy a fruit:-the user wants to buy {item}
   SAY You want to buy fruit!
 
 """.strip()
