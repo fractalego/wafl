@@ -1,9 +1,9 @@
+import asyncio
+
 from wafl.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
-
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-
 from wafl.parsing.testcase_parser import get_user_and_bot_lines_from_text
 from wafl.qa.entailer import Entailer
 

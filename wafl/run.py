@@ -1,3 +1,5 @@
+import asyncio
+
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
@@ -26,15 +28,15 @@ def run_from_command_line():
         code_path="/",
         logger=_logger,
     )
-    conversation.output("Hello. How may I help you?")
+    interface.output("Hello. How may I help you?")
 
     while True:
         try:
-            conversation.next()
+            asyncio.run(conversation_events.process_next())
         except (CloseConversation, KeyboardInterrupt, EOFError):
             break
 
-    conversation.output("Goodbye!")
+    interface.output("Goodbye!")
 
 
 def run_from_audio():
@@ -48,13 +50,13 @@ def run_from_audio():
         config=config,
         logger=_logger,
     )
-    scheduler = ConversationLoop(
+    conversation_loop = ConversationLoop(
         interface,
-        conversation,
+        conversation_events,
         _logger,
         activation_word=config.get_value("waking_up_word"),
     )
-    scheduler.run(max_misses=3)
+    asyncio.run(conversation_loop.run(max_misses=3))
 
 
 def run_testcases():

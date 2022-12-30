@@ -62,11 +62,6 @@ This bot is doing well
 class TestConversation(TestCase):
     def test__single_utterance(self):
         interface = DummyInterface()
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
-            interface=interface,
-            logger=_logger,
-        )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         assert interface.get_utterances_list()[0] == "bot: " + utterance
@@ -79,7 +74,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "hello!".capitalize()
-        conversation_events._process_query(input_from_user)
+        asyncio.run(conversation_events._process_query(input_from_user))
         expected = "bot: Hello to you, bob!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -91,7 +86,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation_events._process_query(input_from_user)
+        asyncio.run(conversation_events._process_query(input_from_user))
         expected = "bot: Test@example.com has been added to the newsletter"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -103,8 +98,8 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation_events._process_query(input_from_user)
-        answer = conversation_events._process_query("What is the email of the user")
+        asyncio.run(conversation_events._process_query(input_from_user))
+        answer = asyncio.run(conversation_events._process_query("What is the email of the user"))
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
@@ -115,8 +110,8 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         input_from_user = "the user's mother is called Ada"
-        conversation_events._process_query(input_from_user)
-        answer = conversation_events._process_query("How is the user's mum called")
+        asyncio.run(conversation_events._process_query(input_from_user))
+        answer = asyncio.run(conversation_events._process_query("How is the user's mum called"))
         print(answer)
         assert answer.text.lower() == "ada"
 

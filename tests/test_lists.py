@@ -178,6 +178,6 @@ class TestLists(TestCase):
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
-        conversation_events.process_next(activation_word=hotword)
+        asyncio.run(conversation_events.process_next(activation_word=hotword))
         expected = "bot: apples has been added to the list"
         self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

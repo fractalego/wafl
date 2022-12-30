@@ -64,7 +64,7 @@ class TestExecutables(TestCase):
             code_path="/",
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation_events._process_query(input_from_user)
+        asyncio.run(conversation_events._process_query(input_from_user))
         expected = (
             "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
         )
