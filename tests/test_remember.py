@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -63,7 +64,7 @@ class TestRetrieval(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: I will remember that your name is alberto"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

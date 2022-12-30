@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
@@ -48,8 +49,10 @@ class TestDependencies(TestCase):
                 "Hello my name is Albert",
             ]
         )
-        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation_events.process_next()
+        conversation_events = ConversationEvents(
+            ProjectKnowledge(tmp_filename), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -63,8 +66,10 @@ class TestDependencies(TestCase):
                 "How are you doing",
             ]
         )
-        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation_events.process_next()
+        conversation_events = ConversationEvents(
+            ProjectKnowledge(tmp_filename), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: doing well"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -78,8 +83,10 @@ class TestDependencies(TestCase):
                 "how is the sun",
             ]
         )
-        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation_events.process_next()
+        conversation_events = ConversationEvents(
+            ProjectKnowledge(tmp_filename), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: shiny"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -99,6 +106,6 @@ class TestDependencies(TestCase):
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: The time is now!"
         assert interface.get_utterances_list()[-1] == expected

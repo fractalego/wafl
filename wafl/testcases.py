@@ -37,7 +37,7 @@ class ConversationTestCases:
         continue_conversations = True
         while continue_conversations:
             try:
-                continue_conversations = conversation_events.process_next()
+                continue_conversations = asyncio.run(conversation_events.process_next())
 
             except (IndexError, CloseConversation):
                 break

@@ -14,7 +14,7 @@ class InferenceAnswerer(BaseAnswerer):
         self._interface = interface
         self._inference = inference
 
-    def answer(self, query_text):
+    async def answer(self, query_text):
         text = self._narrator.summarize_dialogue()
         if self._logger:
             self._logger.write(
@@ -24,10 +24,12 @@ class InferenceAnswerer(BaseAnswerer):
                 f"InferenceAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        return get_answer_using_text(self._inference, self._interface, query_text, text)
+        return await get_answer_using_text(
+            self._inference, self._interface, query_text, text
+        )
 
 
-def get_answer_using_text(inference, interface, text, prior_conversation):
+async def get_answer_using_text(inference, interface, text, prior_conversation):
     working_memory = TaskMemory()
     working_memory.add_story(prior_conversation)
     text = text.capitalize()
@@ -35,7 +37,7 @@ def get_answer_using_text(inference, interface, text, prior_conversation):
     working_memory.add_story(query_text)
     query = Query(text=query_text, is_question=is_question(text), variable="name")
     interface.bot_has_spoken(False)
-    answer = inference.compute(query, working_memory)
+    answer = await inference.compute(query, working_memory)
 
     if query.is_question and answer.is_false():
         query = Query(
@@ -46,6 +48,6 @@ def get_answer_using_text(inference, interface, text, prior_conversation):
         working_memory = TaskMemory()
         working_memory.add_story(query.text)
         interface.bot_has_spoken(False)
-        answer = inference.compute(query, working_memory)
+        answer = await inference.compute(query, working_memory)
 
     return answer

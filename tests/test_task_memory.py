@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.task_memory import TaskMemory
 from wafl.interface.dummy_interface import DummyInterface
@@ -75,7 +76,7 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, bob!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -86,7 +87,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -104,7 +105,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -124,7 +125,7 @@ A:
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -142,7 +143,7 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-3] == expected
@@ -160,8 +161,8 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -179,9 +180,9 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Apples has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -201,8 +202,8 @@ A:
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Coffee filters has been added to the list"
         assert interface.get_utterances_list()[-1] == expected

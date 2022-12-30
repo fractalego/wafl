@@ -1,7 +1,7 @@
 import os
 import re
 
-from wafl.answerer.arbiter_answerer import ArbiterAnswerer
+from wafl.answerer.list_answerer import ListAnswerer
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
@@ -20,7 +20,7 @@ class ConversationEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = ArbiterAnswerer.create_answerer(
+        self._answerer = ListAnswerer.create_answerer(
             knowledge, interface, code_path, logger
         )
         self._knowledge = knowledge
@@ -37,7 +37,7 @@ class ConversationEvents:
     def output(self, text: str):
         self._interface.output(text)
 
-    def _process_query(self, text: str):
+    async def _process_query(self, text: str):
         self._interface.bot_has_spoken(False)
 
         if not input_is_valid(text):
@@ -46,7 +46,7 @@ class ConversationEvents:
         text_is_question = is_question(text)
 
         try:
-            answer = self._answerer.answer(text)
+            answer = await self._answerer.answer(text)
 
         except InterruptTask:
             self._interface.output("Task interrupted")
@@ -87,7 +87,7 @@ class ConversationEvents:
 
         return answer
 
-    def process_next(self, activation_word: str = "") -> bool:
+    async def process_next(self, activation_word: str = "") -> bool:
         try:
             text = self._interface.input()
             text = text.replace("'", r"\'")
@@ -106,7 +106,7 @@ class ConversationEvents:
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.is_listening():
-            answer = self._process_query(text)
+            answer = await self._process_query(text)
             if answer and answer.text != "False":
                 return True
 

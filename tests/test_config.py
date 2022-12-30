@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
@@ -22,8 +23,8 @@ class TestConfig(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: I don't know"
 
     def test__listener_accepts_threshold_for_hotword_logp(self):

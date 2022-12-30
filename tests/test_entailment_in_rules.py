@@ -23,6 +23,6 @@ class TestEntailmentInRules(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: You want to buy fruit!"
         assert interface.get_utterances_list()[-1] == expected

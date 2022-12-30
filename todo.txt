@@ -7,6 +7,7 @@
    * dependency does not exist
    * . is allowes in dependency, / is not
 
+* rules should be added and removed
 
 This and next week:
  /* rules in folder

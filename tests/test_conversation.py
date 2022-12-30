@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -128,8 +129,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1].lower() == "bot: albert"
 
     def test__greeting_with_alberto_as_name(self):
@@ -141,8 +142,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1].lower() == "bot: albert0"
 
     def test__yes(self):
@@ -154,8 +155,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert "yes" in interface.get_utterances_list()[-1].lower()
 
     def test__no(self):
@@ -167,8 +168,8 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert "no" in interface.get_utterances_list()[-1].lower()
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
@@ -180,7 +181,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: Welcome to the club!"
 
     def test__yes_no_questions_from_bot_with_answer_no(self):
@@ -192,7 +193,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert (
             interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
         )
@@ -206,7 +207,7 @@ class TestConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__conversation_input_returns_false_for_trivial_input(self):
@@ -214,7 +215,7 @@ class TestConversation(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge("", logger=_logger), interface=interface, logger=_logger
         )
-        result = conversation_events.process_next()
+        result = asyncio.run(conversation_events.process_next())
         assert not result
 
     def test__how_are_you(self):
@@ -224,5 +225,5 @@ class TestConversation(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert "doing well" in interface.get_utterances_list()[-1]

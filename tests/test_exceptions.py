@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -24,7 +25,7 @@ class TestExceptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         try:
-            conversation_events.process_next()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             return

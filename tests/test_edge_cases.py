@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -125,7 +126,7 @@ class TestEdgeCases(TestCase):
             code_path="/",
             logger=_logger,
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert "asks:" not in interface.get_utterances_list()[0]
 
     def test_clause_does_not_return_unknown(self):
@@ -136,7 +137,7 @@ class TestEdgeCases(TestCase):
             code_path="/",
             logger=_logger,
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert "unknown" not in interface.get_utterances_list()[-1]
 
@@ -147,5 +148,5 @@ class TestEdgeCases(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert "unknown" not in interface.get_utterances_list()[-1]

@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.narrator import Narrator
 from wafl.events.utils import is_question
@@ -43,6 +44,6 @@ class TestQuestions(TestCase):
             SingleFileKnowledge(_wafl_example),
             interface=interface,
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: I am glad you are fine!"
         assert interface.get_utterances_list()[-1] == expected

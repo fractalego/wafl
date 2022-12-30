@@ -1,6 +1,7 @@
+import asyncio
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from wafl.events.narrator import Narrator
 from wafl.events.utils import get_sentence_from_yn_question
 from wafl.interface.dummy_interface import DummyInterface

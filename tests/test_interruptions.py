@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -34,7 +35,7 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_time_request_does_interrupt(self):
@@ -46,7 +47,7 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert "The time is" in interface.get_utterances_list()[-4]
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
@@ -60,7 +61,7 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         try:
-            conversation_events.process_next()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             return
@@ -76,5 +77,6 @@ class TestInterruptions(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Task interrupted"

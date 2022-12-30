@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -54,8 +55,8 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         expected = "bot: The shopping list contains: apples, bananas"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -70,7 +71,7 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = [
             "bot: Please say: 'hello'",
             "bot: Your input is recorded",
@@ -90,7 +91,7 @@ class TestLanguageInFunctions(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The victoria line is running normally"

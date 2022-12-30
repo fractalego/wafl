@@ -9,7 +9,7 @@ class SimpleAnswerer(BaseAnswerer):
         self._logger = logger
         self._narrator = narrator
 
-    def answer(self, query_text):
+    async def answer(self, query_text):
         text = self._narrator.summarize_dialogue()
         if self._logger:
             self._logger.write(

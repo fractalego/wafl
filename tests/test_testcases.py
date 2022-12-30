@@ -70,7 +70,7 @@ class TestConversationalTestCases(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         assert [
             item.replace("bot: ", "")
             for item in interface.get_utterances_list()

@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
@@ -29,7 +30,7 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Apples will be added"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -45,7 +46,7 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas will be added"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -60,6 +61,6 @@ class TestCommonSense(TestCase):
             interface=interface,
             code_path="/",
         )
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: No thanks is not a shopping item"
         assert interface.get_utterances_list()[-1] == expected

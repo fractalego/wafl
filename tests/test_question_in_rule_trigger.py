@@ -1,5 +1,6 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -41,7 +42,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation_events.process_next()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)
@@ -61,7 +62,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation_events.process_next()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)
@@ -81,7 +82,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         try:
-            conversation_events.process_next()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)

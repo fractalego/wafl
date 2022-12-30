@@ -1,6 +1,7 @@
+import asyncio
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -84,8 +85,8 @@ class TestLists(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
@@ -108,7 +109,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation_events.process_next():
+        while asyncio.run(conversation_events.process_next()):
             pass
         print(interface.get_utterances_list())
         assert (
@@ -133,7 +134,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation_events.process_next():
+        while asyncio.run(conversation_events.process_next()):
             pass
 
         assert (
@@ -158,7 +159,7 @@ class TestLists(TestCase):
             interface=interface,
             code_path="/",
         )
-        while conversation_events.process_next():
+        while asyncio.run(conversation_events.process_next()):
             pass
 
         assert (

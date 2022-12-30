@@ -3,17 +3,17 @@ import random
 from wafl.exceptions import CloseConversation
 
 
-class ConversationScheduler:
+class ConversationLoop:
     def __init__(self, interface, conversation, logger, activation_word=""):
         self._interface = interface
         self._conversation_events = conversation
         self._logger = logger
         self._activation_word = activation_word
 
-    def run(self, max_misses=3):
+    async def run(self, max_misses=3):
         self._say_initial_greetings()
         try:
-            self._main_loop(max_misses)
+            await self._main_loop(max_misses)
 
         except (KeyboardInterrupt, EOFError):
             self._interface.output("Good bye!")
@@ -27,7 +27,7 @@ class ConversationScheduler:
             self._interface.add_hotwords(self._activation_word)
             self._interface.deactivate()
 
-    def _main_loop(self, max_misses):
+    async def _main_loop(self, max_misses):
         num_misses = 0
         interactions = 0
         while True:
@@ -36,7 +36,9 @@ class ConversationScheduler:
                 num_misses = 0
 
             try:
-                result = self._conversation_events.process_next(activation_word=self._activation_word)
+                result = await self._conversation_events.process_next(
+                    activation_word=self._activation_word
+                )
                 self._logger.write(
                     f"Conversation Result {result}", log_level=self._logger.level.INFO
                 )

@@ -1,6 +1,7 @@
+import asyncio
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -27,8 +28,8 @@ class TestAnswerInConversation(TestCase):
             interface=interface,
             logger=_logger,
         )
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: cold"
 
@@ -39,6 +40,6 @@ class TestAnswerInConversation(TestCase):
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
-        conversation_events.process_next()
-        conversation_events.process_next()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: albert"

@@ -7,16 +7,16 @@ from wafl.inference.utils import answer_is_informative
 from wafl.qa.dataclasses import Answer
 
 
-class ArbiterAnswerer(BaseAnswerer):
+class ListAnswerer(BaseAnswerer):
     def __init__(self, answerers_list, interface, logger):
         self._answerers_list = answerers_list
         self._narrator = Narrator(interface)
         self._logger = logger
 
-    def answer(self, query_text):
+    async def answer(self, query_text):
         all_answers = []
         for answerer in self._answerers_list:
-            answer = answerer.answer(query_text)
+            answer = await answerer.answer(query_text)
             all_answers.append(answer)
             if answer_is_informative(answer) and not answer.is_false():
                 return answer
@@ -29,7 +29,7 @@ class ArbiterAnswerer(BaseAnswerer):
     @staticmethod
     def create_answerer(knowledge, interface, code_path, logger):
         narrator = Narrator(interface)
-        return ArbiterAnswerer(
+        return ListAnswerer(
             [
                 InferenceAnswerer(
                     interface,

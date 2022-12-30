@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from wafl.facts import Fact
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text, get_dependency_list

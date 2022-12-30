@@ -61,6 +61,7 @@ def say_twice():
 def close_conversation():
     raise CloseConversation()
 
+
 def keyboard_interrupt():
     raise KeyboardInterrupt()
 

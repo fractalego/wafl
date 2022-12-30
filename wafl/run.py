@@ -5,7 +5,7 @@ from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
-from wafl.scheduler.conversation_scheduler import ConversationScheduler
+from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
 
@@ -48,7 +48,7 @@ def run_from_audio():
         config=config,
         logger=_logger,
     )
-    scheduler = ConversationScheduler(
+    scheduler = ConversationLoop(
         interface,
         conversation,
         _logger,

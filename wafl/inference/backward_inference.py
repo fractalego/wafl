@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import traceback
 
@@ -70,11 +71,15 @@ class BackwardInference:
 
         return answer.text
 
-    def compute(self, query, task_memory=None, knowledge_name="/"):
+    async def compute(self, query, task_memory=None, knowledge_name="/"):
+        lock = asyncio.Lock()
+        await lock.acquire()
         if not task_memory:
             task_memory = TaskMemory()
 
-        return self._compute_recursively(query, task_memory, knowledge_name, depth=0)
+        result = self._compute_recursively(query, task_memory, knowledge_name, depth=0)
+        lock.release()
+        return result
 
     def _compute_recursively(
         self, query: "Query", task_memory, knowledge_name, depth, inverted_rule=False
@@ -288,9 +293,11 @@ class BackwardInference:
                 user_input_text = self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
-                    prior_conversation = self._narrator.summarize_dialogue()
-                    get_answer_using_text(
-                        self, self._interface, user_input_text, prior_conversation
+                    self._spin_up_another_inference_task(
+                        user_input_text,
+                        task_memory,
+                        knowledge_name,
+                        depth,
                     )
 
                 else:
@@ -400,7 +407,9 @@ class BackwardInference:
             ):
                 to_execute = add_function_arguments(to_execute)
 
-            task_memory = TaskMemory()  # task_memory is used as argument of the code in eval()
+            task_memory = (
+                TaskMemory()
+            )  # task_memory is used as argument of the code in eval()
             self._log(f"Executing code: {to_execute}")
             result = eval(f"self._module['{knowledge_name}'].{to_execute}")
             self._log(f"Execution result: {result}")
@@ -470,3 +479,24 @@ class BackwardInference:
             self._functions[module_name] = [
                 item[0] for item in getmembers(self._module[module_name], isfunction)
             ]
+
+    def _spin_up_another_inference_task(
+        self, input_text, task_memory, knowledge_name, depth
+    ):
+        prior_conversation = self._narrator.summarize_dialogue()
+        working_memory = TaskMemory()
+        working_memory.add_story(prior_conversation)
+        query_text = f"The user says: '{input_text}.'"
+        working_memory.add_story(query_text)
+        query = Query(
+            text=query_text,
+            is_question=is_question(query_text),
+            variable="name",
+        )
+        self._interface.bot_has_spoken(False)
+        self._compute_recursively(
+            query,
+            task_memory,
+            knowledge_name,
+            depth,
+        )

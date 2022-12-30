@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from unittest import TestCase
@@ -28,7 +29,7 @@ class TestRecursion(TestCase):
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
 
-        while conversation_events.process_next():
+        while asyncio.run(conversation_events.process_next()):
             pass
 
         assert interface.get_utterances_list()[-1] == "bot: Jubilee"
