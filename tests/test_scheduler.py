@@ -2,11 +2,11 @@ import os
 from unittest import TestCase
 
 from wafl.config import Configuration
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
-from wafl.scheduler.scheduler import Scheduler
+from wafl.scheduler.conversation_scheduler import ConversationScheduler
 
 _path = os.path.dirname(__file__)
 _logger = LocalFileLogger()
@@ -24,17 +24,17 @@ class TestScheduler(TestCase):
         config = Configuration.load_local_config()
         knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
         interface = DummyInterface(["hello!"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
             config=config,
             logger=_logger,
         )
-        scheduler = Scheduler(
+        conversation = ConversationScheduler(
             interface,
-            conversation,
+            conversation_events,
             _logger,
             activation_word="",
         )
-        scheduler.run(max_misses=3)
+        conversation.run(max_misses=3)

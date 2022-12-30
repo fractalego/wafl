@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -22,23 +22,23 @@ The user greets
 class TestAnswerInConversation(TestCase):
     def test__temperature_is_remembered(self):
         interface = DummyInterface(["Hello!", "What is the temperature today?"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: cold"
 
     def test__random_name_is_remembered(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
-        conversation.output(utterance)
-        conversation.next()
-        conversation.next()
+        interface.output(utterance)
+        conversation_events.process_next()
+        conversation_events.process_next()
         assert interface.get_utterances_list()[-1] == "bot: albert"

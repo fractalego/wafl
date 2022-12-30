@@ -1,4 +1,4 @@
-from wafl.conversation.utils import is_question
+from wafl.events.utils import is_question
 
 
 class Narrator:

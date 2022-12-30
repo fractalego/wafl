@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -49,13 +49,13 @@ class TestLanguageInFunctions(TestCase):
                 "What's in the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: The shopping list contains: apples, bananas"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -65,12 +65,12 @@ class TestLanguageInFunctions(TestCase):
                 "Please say hello twice",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = [
             "bot: Please say: 'hello'",
             "bot: Your input is recorded",
@@ -85,12 +85,12 @@ class TestLanguageInFunctions(TestCase):
 
     def test_double_fuctions(self):
         interface = DummyInterface(["Is the victoria line running"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The victoria line is running normally"

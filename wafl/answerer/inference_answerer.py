@@ -1,7 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.task_memory import TaskMemory
-from wafl.conversation.utils import is_question
+from wafl.events.narrator import Narrator
+from wafl.events.task_memory import TaskMemory
+from wafl.events.utils import is_question
 from wafl.qa.dataclasses import Query
 from wafl.qa.qa import QA
 

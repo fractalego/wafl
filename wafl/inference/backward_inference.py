@@ -2,11 +2,11 @@ import logging
 import traceback
 
 from wafl.answerer.inference_answerer import get_answer_using_text
-from wafl.conversation.utils import (
+from wafl.events.utils import (
     is_question,
     is_yes_no_question,
 )
-from wafl.conversation.task_memory import TaskMemory
+from wafl.events.task_memory import TaskMemory
 from wafl.deixis import from_bot_to_bot
 from wafl.exceptions import InterruptTask, CloseConversation
 from wafl.inference.utils import (

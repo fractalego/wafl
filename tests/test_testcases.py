@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.testcase_parser import get_user_and_bot_lines_from_text
@@ -67,10 +67,10 @@ class TestConversationalTestCases(TestCase):
         interface = DummyInterface(
             dialogue_data["test the greetings work"]["user_lines"]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )
-        conversation.next()
+        conversation_events.process_next()
         assert [
             item.replace("bot: ", "")
             for item in interface.get_utterances_list()

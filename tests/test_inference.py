@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.task_memory import TaskMemory
+from wafl.events.narrator import Narrator
+from wafl.events.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge

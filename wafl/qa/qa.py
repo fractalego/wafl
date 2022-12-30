@@ -2,7 +2,7 @@ import logging
 import os
 
 from conversation_qa import QA as ConvQA, Dialogue
-from wafl.conversation.utils import (
+from wafl.events.utils import (
     is_question,
     is_yes_no_question,
     get_sentence_from_yn_question,

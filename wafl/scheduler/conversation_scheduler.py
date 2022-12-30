@@ -3,10 +3,10 @@ import random
 from wafl.exceptions import CloseConversation
 
 
-class Scheduler:
+class ConversationScheduler:
     def __init__(self, interface, conversation, logger, activation_word=""):
         self._interface = interface
-        self._conversation = conversation
+        self._conversation_events = conversation
         self._logger = logger
         self._activation_word = activation_word
 
@@ -16,12 +16,12 @@ class Scheduler:
             self._main_loop(max_misses)
 
         except (KeyboardInterrupt, EOFError):
-            self._conversation.output("Good bye!")
+            self._interface.output("Good bye!")
 
     def _say_initial_greetings(self):
         self._interface.activate()
         if self._activation_word:
-            self._conversation.output(
+            self._interface.output(
                 f"Please say '{self._activation_word}' to activate me"
             )
             self._interface.add_hotwords(self._activation_word)
@@ -36,7 +36,7 @@ class Scheduler:
                 num_misses = 0
 
             try:
-                result = self._conversation.next(activation_word=self._activation_word)
+                result = self._conversation_events.process_next(activation_word=self._activation_word)
                 self._logger.write(
                     f"Conversation Result {result}", log_level=self._logger.level.INFO
                 )

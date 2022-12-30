@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -57,13 +57,13 @@ the user says "please define speed":
 class TestExecutables(TestCase):
     def test_executables(self):
         interface = DummyInterface(to_utter=["test@example.com"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
-        conversation.process_query(input_from_user)
+        conversation_events._process_query(input_from_user)
         expected = (
             "bot: Test@example.com has been added to the newsletter 'fake_newsletter'"
         )
@@ -71,12 +71,12 @@ class TestExecutables(TestCase):
 
     def test_add_to_list(self):
         interface = DummyInterface(to_utter=["Please add apples to the shopping list"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Apples has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -87,13 +87,13 @@ class TestExecutables(TestCase):
                 "Please delete apples from the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: Apples has been removed from the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -105,14 +105,14 @@ class TestExecutables(TestCase):
                 "What's in the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: The shopping list contains: apples, bananas"
         expected2 = "bot: The shopping list contains: bananas, apples"
         print(interface.get_utterances_list())
@@ -129,14 +129,14 @@ class TestExecutables(TestCase):
                 "What does the shopping list contain",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: The shopping list contains: apples, bananas"
         expected2 = "bot: The shopping list contains: bananas, apples"
         assert (
@@ -146,55 +146,55 @@ class TestExecutables(TestCase):
 
     def test_mispelled_items_are_added_to_the_shopping_list(self):
         interface = DummyInterface(to_utter=["add app list the shopping list"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Add app list the shopping list has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
     def test_question_activates_inference(self):
         interface = DummyInterface(to_utter=["What time is it?"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "The time is"
         assert expected in interface.get_utterances_list()[-1]
 
     def test_negation(self):
         interface = DummyInterface(to_utter=["add batteries to the test list"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Batteries cannot be added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
     def test_say_command_in_functions(self):
         interface = DummyInterface(to_utter=["I want to say 'this is a test'"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: This is a test."
         assert interface.get_utterances_list()[-1].lower() == expected.lower()
 
     def test__facts_work_in_python_space(self):
         interface = DummyInterface(to_utter=["Please define speed"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Test complete"
         assert interface.get_utterances_list()[-1].lower() == expected.lower()

@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.utils import is_question
+from wafl.events.conversation_events import ConversationEvents
+from wafl.events.narrator import Narrator
+from wafl.events.utils import is_question
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.qa.qa import QA
@@ -39,10 +39,10 @@ class TestQuestions(TestCase):
 
     def test_yes_or_no_questions_only_accept_positive_or_negative_replies(self):
         interface = DummyInterface(["Hello", "Blue sky", "yes"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example),
             interface=interface,
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: I am glad you are fine!"
         assert interface.get_utterances_list()[-1] == expected

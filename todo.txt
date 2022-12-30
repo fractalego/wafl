@@ -2,9 +2,11 @@
 
 * change {"%%"} into something more typeable
 * volume threshold should be sampled continously
+* add main.wafl
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
+
 
 This and next week:
  /* rules in folder

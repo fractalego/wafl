@@ -16,7 +16,7 @@ setup(
     packages=[
         "wafl",
         "wafl.answerer",
-        "wafl.conversation",
+        "wafl.events",
         "wafl.inference",
         "wafl.interface",
         "wafl.knowledge",

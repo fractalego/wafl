@@ -1,8 +1,8 @@
 import os
 from unittest import TestCase
 
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.utils import get_sentence_from_yn_question
+from wafl.events.narrator import Narrator
+from wafl.events.utils import get_sentence_from_yn_question
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.qa.dataclasses import Query
 from wafl.qa.qa import QA

@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -81,11 +81,11 @@ class TestLists(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
@@ -103,12 +103,12 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
-        while conversation.next():
+        while conversation_events.process_next():
             pass
         print(interface.get_utterances_list())
         assert (
@@ -128,12 +128,12 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
-        while conversation.next():
+        while conversation_events.process_next():
             pass
 
         assert (
@@ -153,12 +153,12 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
-        while conversation.next():
+        while conversation_events.process_next():
             pass
 
         assert (
@@ -173,10 +173,10 @@ class TestLists(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
-        conversation.next(activation_word=hotword)
+        conversation_events.process_next(activation_word=hotword)
         expected = "bot: apples has been added to the list"
         self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

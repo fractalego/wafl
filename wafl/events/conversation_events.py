@@ -5,13 +5,13 @@ from wafl.answerer.arbiter_answerer import ArbiterAnswerer
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
-from wafl.conversation.utils import is_question, input_is_valid
+from wafl.events.utils import is_question, input_is_valid
 from wafl.exceptions import InterruptTask
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 
-class Conversation:
+class ConversationEvents:
     def __init__(
         self,
         knowledge: "BaseKnowledge",
@@ -37,7 +37,7 @@ class Conversation:
     def output(self, text: str):
         self._interface.output(text)
 
-    def process_query(self, text: str):
+    def _process_query(self, text: str):
         self._interface.bot_has_spoken(False)
 
         if not input_is_valid(text):
@@ -87,7 +87,7 @@ class Conversation:
 
         return answer
 
-    def next(self, activation_word: str = "") -> bool:
+    def process_next(self, activation_word: str = "") -> bool:
         try:
             text = self._interface.input()
             text = text.replace("'", r"\'")
@@ -106,7 +106,7 @@ class Conversation:
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.is_listening():
-            answer = self.process_query(text)
+            answer = self._process_query(text)
             if answer and answer.text != "False":
                 return True
 

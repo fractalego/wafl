@@ -1,11 +1,11 @@
 from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.command_line_interface import CommandLineInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
-from wafl.scheduler.scheduler import Scheduler
+from wafl.scheduler.conversation_scheduler import ConversationScheduler
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
 
@@ -20,7 +20,7 @@ def print_incipit():
 
 def run_from_command_line():
     interface = CommandLineInterface()
-    conversation = Conversation(
+    conversation_events = ConversationEvents(
         ProjectKnowledge("rules.wafl", logger=_logger),
         interface=interface,
         code_path="/",
@@ -41,14 +41,14 @@ def run_from_audio():
     config = Configuration.load_local_config()
     knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
     interface = VoiceInterface(config)
-    conversation = Conversation(
+    conversation_events = ConversationEvents(
         knowledge,
         interface=interface,
         code_path=knowledge.get_dependencies_list(),
         config=config,
         logger=_logger,
     )
-    scheduler = Scheduler(
+    scheduler = ConversationScheduler(
         interface,
         conversation,
         _logger,

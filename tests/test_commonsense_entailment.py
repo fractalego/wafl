@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 
 wafl_example = """
@@ -24,12 +24,12 @@ class TestCommonSense(TestCase):
                 "Please add apples to the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Apples will be added"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -40,12 +40,12 @@ class TestCommonSense(TestCase):
                 "Please add bananas to the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Bananas will be added"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -55,11 +55,11 @@ class TestCommonSense(TestCase):
                 "Please add no thanks to the shopping list",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: No thanks is not a shopping item"
         assert interface.get_utterances_list()[-1] == expected

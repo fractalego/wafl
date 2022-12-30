@@ -8,6 +8,7 @@ from wafl.run import run_from_command_line, run_from_audio, run_testcases, print
 
 def print_help():
     print("\n")
+    print("These are the available commands:")
     print("> wafl init: Initialize the current folder")
     print("> wafl run-cli: Run a cli version of the chatbot")
     print("> wafl run-audio: Run a voice-powered version of the chatbot")

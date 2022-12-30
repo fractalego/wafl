@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 
@@ -48,8 +48,8 @@ class TestDependencies(TestCase):
                 "Hello my name is Albert",
             ]
         )
-        conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.next()
+        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
+        conversation_events.process_next()
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -63,8 +63,8 @@ class TestDependencies(TestCase):
                 "How are you doing",
             ]
         )
-        conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.next()
+        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
+        conversation_events.process_next()
         expected = "bot: doing well"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -78,8 +78,8 @@ class TestDependencies(TestCase):
                 "how is the sun",
             ]
         )
-        conversation = Conversation(ProjectKnowledge(tmp_filename), interface=interface)
-        conversation.next()
+        conversation_events = ConversationEvents(ProjectKnowledge(tmp_filename), interface=interface)
+        conversation_events.process_next()
         expected = "bot: shiny"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -94,11 +94,11 @@ class TestDependencies(TestCase):
             ]
         )
         knowledge = ProjectKnowledge(tmp_filename)
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             ProjectKnowledge(tmp_filename),
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: The time is now!"
         assert interface.get_utterances_list()[-1] == expected

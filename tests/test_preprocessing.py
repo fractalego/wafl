@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.preprocess import (
@@ -43,11 +43,11 @@ class TestPreprocessing(TestCase):
                 "Hello",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Hello"
         assert interface.get_utterances_list()[-1] == expected

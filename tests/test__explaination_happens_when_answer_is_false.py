@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -24,15 +24,15 @@ INTERRUPTION the user wants to quit the task
 class TestInterruptions(TestCase):
     def test_time_shut_up_does_not_interrupt_if_it_contraddicts_facts(self):
         interface = DummyInterface(["Hello", "shut up"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings),
             interface=interface,
             code_path="/",
         )
         utterance = "Welcome to the website. How may I help you?"
-        conversation.output(utterance)
+        interface.output(utterance)
         try:
-            conversation.next()
+            conversation_events.process_next()
 
         except CloseConversation:
             return False

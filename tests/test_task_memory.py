@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
-from wafl.conversation.task_memory import TaskMemory
+from wafl.events.conversation_events import ConversationEvents
+from wafl.events.task_memory import TaskMemory
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -69,24 +69,24 @@ A:
                 "Hello, my name is Bob",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Hello, bob!"
         assert interface.get_utterances_list()[-1] == expected
 
     def test__hello_does_not_get_into_task_memory(self):
         interface = DummyInterface(to_utter=["hello", "Albert"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Hello, albert!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -99,12 +99,12 @@ A:
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -119,12 +119,12 @@ A:
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-3] == expected
 
@@ -136,13 +136,13 @@ A:
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.next()
+        conversation_events.process_next()
         expected = "bot: Bananas has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-3] == expected
@@ -154,14 +154,14 @@ A:
                 "add bananas as well",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: Bananas has been added to the list"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -173,15 +173,15 @@ A:
                 "ok now add apples",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.next()
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: Apples has been added to the list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
@@ -195,14 +195,14 @@ A:
                 "add coffee filters",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
         )
-        conversation.next()
-        conversation.next()
-        conversation.next()
+        conversation_events.process_next()
+        conversation_events.process_next()
+        conversation_events.process_next()
         expected = "bot: Coffee filters has been added to the list"
         assert interface.get_utterances_list()[-1] == expected

@@ -1,7 +1,7 @@
 from wafl.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
 
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 
 from wafl.parsing.testcase_parser import get_user_and_bot_lines_from_text
@@ -28,7 +28,7 @@ class ConversationTestCases:
         test_lines = self._testcase_data[name]["lines"]
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             self._knowledge, interface=interface, code_path=self._code_path
         )
 
@@ -37,7 +37,7 @@ class ConversationTestCases:
         continue_conversations = True
         while continue_conversations:
             try:
-                continue_conversations = conversation.next()
+                continue_conversations = conversation_events.process_next()
 
             except (IndexError, CloseConversation):
                 break
