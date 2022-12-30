@@ -5,7 +5,7 @@ from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.qa.dataclasses import Query
+from wafl.extractor.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 

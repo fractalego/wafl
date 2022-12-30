@@ -6,8 +6,8 @@ from wafl.events.narrator import Narrator
 from wafl.events.utils import is_question
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.qa.qa import QA
-from wafl.qa.dataclasses import Query
+from wafl.extractor.extractor import Extractor
+from wafl.extractor.dataclasses import Query
 
 _wafl_example = """
 The user greets
@@ -33,8 +33,8 @@ class TestQuestions(TestCase):
             "When asked 'is the user satisfied with this', the user says: 'yes I am.'"
         )
 
-        qa = QA(Narrator(DummyInterface))
-        answer = qa.ask(query, user_answer)
+        qa = Extractor(Narrator(DummyInterface))
+        answer = qa.extract(query, user_answer)
 
         assert answer.is_true()
 

@@ -2,7 +2,6 @@ import asyncio
 import logging
 import traceback
 
-from wafl.answerer.inference_answerer import get_answer_using_text
 from wafl.events.utils import (
     is_question,
     is_yes_no_question,
@@ -30,8 +29,8 @@ from wafl.inference.utils import (
 )
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
-from wafl.qa.qa import QA
-from wafl.qa.dataclasses import Query, Answer
+from wafl.extractor.extractor import Extractor
+from wafl.extractor.dataclasses import Query, Answer
 from inspect import getmembers, isfunction
 
 _logger = logging.getLogger(__name__)
@@ -50,7 +49,7 @@ class BackwardInference:
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
-        self._qa = QA(narrator, logger)
+        self._extractor = Extractor(narrator, logger)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -240,7 +239,7 @@ class BackwardInference:
             self._log(f"Answer within facts: The query is {query.text}")
             self._log(f"Answer within facts: The context is {text}")
             text = self._narrator.get_context_for_facts(text)
-            answer = self._qa.ask(query, text)
+            answer = self._extractor.extract(query, text)
             task_memory.add_story(text)
             self._log(f"Answer within facts: The answer is {answer.text}")
             return answer
@@ -250,7 +249,7 @@ class BackwardInference:
             return None
 
         hypothesis, premise = query.text.split(":-")
-        answer = self._qa.ask(
+        answer = self._extractor.extract(
             Query(text=premise, is_question=is_question(premise)), hypothesis
         )
         return answer
@@ -260,7 +259,7 @@ class BackwardInference:
     ):
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
-            answer = self._qa.ask(query, task_memory.get_story(), task_memory)
+            answer = self._extractor.extract(query, task_memory.get_story(), task_memory)
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
@@ -314,7 +313,7 @@ class BackwardInference:
                     f"When asked '{query.text}', the user says: '{user_input_text}.'"
                 )
                 query.text = from_bot_to_bot(query.text)
-                user_answer = self._qa.ask(query, story)
+                user_answer = self._extractor.extract(query, story)
 
                 self._log(f"The answer that is understood: {user_answer.text}")
 
@@ -346,7 +345,7 @@ class BackwardInference:
                 return user_answer
 
     def _validate_question_in_effects(self, effect, query_text, substitutions):
-        answer = self._qa.ask(effect, query_text)
+        answer = self._extractor.extract(effect, query_text)
         self._log("Validating question in the rule trigger.")
         self._log(f"The query is {query_text}")
         self._log(f"The answer is {answer.text}")
@@ -381,7 +380,7 @@ class BackwardInference:
             if key and value:
                 rule_effect_text = rule_effect_text.replace(key, value)
 
-        answer = self._qa.ask(query, rule_effect_text)
+        answer = self._extractor.extract(query, rule_effect_text)
         self._log("Validating the statement in the rule trigger.")
         self._log(f"The query is {rule_effect_text}")
         self._log(f"The answer is {answer.text}")

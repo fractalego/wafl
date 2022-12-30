@@ -4,7 +4,7 @@ from wafl.answerer.simple_answerer import SimpleAnswerer
 from wafl.events.narrator import Narrator
 from wafl.inference.backward_inference import BackwardInference
 from wafl.inference.utils import answer_is_informative
-from wafl.qa.dataclasses import Answer
+from wafl.extractor.dataclasses import Answer
 
 
 class ListAnswerer(BaseAnswerer):

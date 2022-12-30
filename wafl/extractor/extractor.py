@@ -8,15 +8,15 @@ from wafl.events.utils import (
     get_sentence_from_yn_question,
 )
 from wafl.inference.utils import normalized
-from wafl.qa.dataclasses import Answer
-from wafl.qa.entailer import Entailer
+from wafl.extractor.dataclasses import Answer
+from wafl.extractor.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 _convqa = ConvQA("fractalego/conversation-qa")
 
 
-class QA:
+class Extractor:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
         self._qa = _convqa
@@ -27,7 +27,7 @@ class QA:
             "Unknown": "Unknown",
         }
 
-    def ask(self, query: "Query", text: str, task_memory=None):
+    def extract(self, query: "Query", text: str, task_memory=None):
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(

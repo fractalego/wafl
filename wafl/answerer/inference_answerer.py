@@ -2,13 +2,13 @@ from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
 from wafl.events.utils import is_question
-from wafl.qa.dataclasses import Query
-from wafl.qa.qa import QA
+from wafl.extractor.dataclasses import Query
+from wafl.extractor.extractor import Extractor
 
 
 class InferenceAnswerer(BaseAnswerer):
     def __init__(self, interface, inference, logger):
-        self._qa = QA(logger)
+        self._qa = Extractor(logger)
         self._logger = logger
         self._narrator = Narrator(interface)
         self._interface = interface

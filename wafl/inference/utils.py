@@ -3,7 +3,7 @@ import re
 from typing import List
 from fuzzywuzzy import process
 
-from wafl.qa.dataclasses import Answer
+from wafl.extractor.dataclasses import Answer
 
 
 def cause_is_negated(cause_text):

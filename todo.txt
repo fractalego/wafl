@@ -1,5 +1,6 @@
 ### TODO
 
+* buffer overrun > 1024 tokens
 * change {"%%"} into something more typeable
 * volume threshold should be sampled continously
 * add main.wafl
