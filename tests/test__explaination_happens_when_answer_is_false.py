@@ -5,6 +5,9 @@ from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.logger.local_file_logger import LocalFileLogger
+
+_logger = LocalFileLogger()
 
 _wafl_greetings = """
 This bot is here to answer the user
@@ -29,6 +32,7 @@ class TestInterruptions(TestCase):
             SingleFileKnowledge(_wafl_greetings),
             interface=interface,
             code_path="/",
+            logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)

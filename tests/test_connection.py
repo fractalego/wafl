@@ -20,4 +20,5 @@ class TestConnection(TestCase):
             text="The sky is blue", dialogue="", query="what color is the sky?"
         )
         expected = "blue"
+        print(answer_text)
         self.assertEqual(expected, answer_text)

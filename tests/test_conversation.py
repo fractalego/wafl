@@ -95,7 +95,6 @@ class TestConversation(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
-            logger=_logger,
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         asyncio.run(conversation_events._process_query(input_from_user))

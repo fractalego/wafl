@@ -1,7 +1,7 @@
 import logging
 import os
 
-from conversation_qa import QA as ConvQA, Dialogue
+from wafl.connectors.gptj_connector import GPTJConnector, Dialogue
 from wafl.events.utils import (
     is_question,
     is_yes_no_question,
@@ -13,13 +13,12 @@ from wafl.extractor.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
-_convqa = ConvQA("fractalego/conversation-qa")
 
 
 class Extractor:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
-        self._qa = _convqa
+        self._qa = GPTJConnector()
         self._narrator = narrator
         self._entailer_to_qa_mapping = {
             "True": "Yes",
@@ -45,9 +44,6 @@ class Extractor:
         return self._check_fact(query_text, text, threshold=0.5)
 
     def _answer_question(self, query_text, variable_name, text: str, task_memory):
-        if query_text[-1] != "?":
-            query_text += "?"
-
         dialogue = Dialogue()
 
         answer = self._get_answer_by_iterating_over_prior_events_in_the_story(

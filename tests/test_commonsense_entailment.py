@@ -8,7 +8,7 @@ from wafl.interface.dummy_interface import DummyInterface
 wafl_example = """
 
 item = what does the user want to add to the shopping list?
-   The user adds {item} to a list :- the user adds something to a grocery list 
+  The user adds {item} to a list :- the user adds something to a grocery list 
   SAY {item} will be added
 
 item = what does the user want to add to the shopping list?
@@ -48,12 +48,13 @@ class TestCommonSense(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas will be added"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__sentences_can_filter_items_negative(self):
         interface = DummyInterface(
             to_utter=[
-                "Please add no thanks to the shopping list",
+                "Please add skyscrapers to the shopping list",
             ]
         )
         conversation_events = ConversationEvents(
@@ -62,5 +63,6 @@ class TestCommonSense(TestCase):
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: No thanks is not a shopping item"
+        expected = "bot: A skyscraper is not a shopping item"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
