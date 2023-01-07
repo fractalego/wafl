@@ -259,7 +259,9 @@ class BackwardInference:
     ):
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
-            answer = self._extractor.extract(query, task_memory.get_story(), task_memory)
+            answer = self._extractor.extract(
+                query, task_memory.get_story(), task_memory
+            )
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 

@@ -99,7 +99,9 @@ class TestConversation(TestCase):
         )
         input_from_user = "Can I register to the newsletter?".capitalize()
         asyncio.run(conversation_events._process_query(input_from_user))
-        answer = asyncio.run(conversation_events._process_query("What is the email of the user"))
+        answer = asyncio.run(
+            conversation_events._process_query("What is the email of the user")
+        )
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
@@ -111,7 +113,9 @@ class TestConversation(TestCase):
         )
         input_from_user = "the user's mother is called Ada"
         asyncio.run(conversation_events._process_query(input_from_user))
-        answer = asyncio.run(conversation_events._process_query("How is the user's mum called"))
+        answer = asyncio.run(
+            conversation_events._process_query("How is the user's mum called")
+        )
         print(answer)
         assert answer.text.lower() == "ada"
 
