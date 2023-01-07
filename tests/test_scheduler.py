@@ -33,7 +33,7 @@ class TestScheduler(TestCase):
             activation_word="",
         )
         asyncio.run(conversation_loop.run(max_misses=3))
-        expected = ['user: hello !', 'bot: Good bye!']
+        expected = ["user: hello !", "bot: Good bye!"]
         self.assertEqual(expected, interface.get_utterances_list())
 
     def test__scheduler_can_run_with_conversation_loop(self):
@@ -55,5 +55,5 @@ class TestScheduler(TestCase):
         )
         scheduler = Scheduler([conversation_loop])
         scheduler.run()
-        expected = ['user: hello !', 'bot: Good bye!']
+        expected = ["user: hello !", "bot: Good bye!"]
         self.assertEqual(expected, interface.get_utterances_list())

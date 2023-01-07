@@ -8,5 +8,7 @@
   "listener_model": "openai/whisper-tiny.en",
   "listener_hotword_logp": -8,
   "listener_volume_threshold": 0.6,
-  "listener_silence_timeout": 0.7
+  "listener_silence_timeout": 0.7,
+  "model_host": "127.0.0.1",
+  "model_port": 8080
 }
