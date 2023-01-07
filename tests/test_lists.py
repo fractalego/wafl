@@ -162,6 +162,7 @@ class TestLists(TestCase):
         while asyncio.run(conversation_events.process_next()):
             pass
 
+        print(interface.get_utterances_list())
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The shopping list contains: apples, strawberries"

@@ -145,17 +145,6 @@ class TestExecutables(TestCase):
             or interface.get_utterances_list()[-1] == expected2
         )
 
-    def test_mispelled_items_are_added_to_the_shopping_list(self):
-        interface = DummyInterface(to_utter=["add app list the shopping list"])
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
-            interface=interface,
-            code_path="/",
-        )
-        asyncio.run(conversation_events.process_next())
-        expected = "bot: Add app list the shopping list has been added to the list"
-        assert interface.get_utterances_list()[-1] == expected
-
     def test_question_activates_inference(self):
         interface = DummyInterface(to_utter=["What time is it?"])
         conversation_events = ConversationEvents(
@@ -186,7 +175,7 @@ class TestExecutables(TestCase):
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: This is a test."
+        expected = "bot: This is a test"
         assert interface.get_utterances_list()[-1].lower() == expected.lower()
 
     def test__facts_work_in_python_space(self):

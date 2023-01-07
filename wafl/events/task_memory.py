@@ -40,7 +40,7 @@ class TaskMemory:
 
     def text_is_in_prior_answers(self, text: str):
         for answer in self._answers:
-            if text.lower() in answer.lower():
+            if text.lower() in answer.lower() or answer.lower() in text.lower():
                 return True
 
         return False

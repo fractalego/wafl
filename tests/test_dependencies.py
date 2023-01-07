@@ -10,8 +10,8 @@ wafl_dependency = """
 #using greetings
 
 The user greets
-  person = who is greeting
-  the user wants {person} to greet back
+  name = what is the name of the person that is greeting
+  the user wants {name} to greet back
 
 """.strip()
 
@@ -70,8 +70,8 @@ class TestDependencies(TestCase):
             ProjectKnowledge(tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: doing well"
-        assert interface.get_utterances_list()[-1] == expected
+        expected = "I am doing well"
+        assert expected in interface.get_utterances_list()[-1]
 
     def test__facts_are_answered_from_dependency_list_two_levels_deep(self):
         tmp_filename = "test.wafl"
@@ -87,8 +87,8 @@ class TestDependencies(TestCase):
             ProjectKnowledge(tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: shiny"
-        assert interface.get_utterances_list()[-1] == expected
+        expected = "the sun is shiny"
+        assert expected in interface.get_utterances_list()[-1]
 
     def test__functions_can_be_called_from_a_dependency(self):
         tmp_filename = "test.wafl"

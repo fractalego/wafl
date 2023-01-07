@@ -9,6 +9,7 @@ _tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 class GPTJConnector:
     _max_reply_length = 100
+    _num_prediction_tokens = 5
 
     def __init__(self, config=None):
         if not config:
@@ -24,21 +25,27 @@ class GPTJConnector:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
         r = requests.post(self._server_url, json=payload, verify=False)
         answer = json.loads(r.content.decode("utf-8"))
-        return _tokenizer.decode(answer)
+        return _tokenizer.decode(answer[-self._num_prediction_tokens])
 
     def get_answer(self, text, dialogue, query):
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
-        start = len(prompt) - 1
+        start = len(text)
         while (
-            all(item not in text[start:] for item in ["\n", "."])
+            all(item not in text[start:] for item in ["\n", ". "])
             and len(text) < start + self._max_reply_length
         ):
-            output = self.predict(text)
-            text += output[len(text) - 1 :]
+            text += self.predict(text)
 
-        end = max(text.find("\n", start), text.find(".", start))
-        return text[start:end].split(":")[-1].strip()
+        end_set = set()
+        end_set.add(text.find("\n", start))
+        end_set.add(text.find(". ", start))
+        if -1 in end_set:
+            end_set.remove(-1)
+
+        end = min(end_set)
+        candidate_answer = text[start:end].split(":")[-1].strip()
+        return candidate_answer
 
     def _get_answer_prompt(self, text, query, dialogue=None):
         text = text.strip()
@@ -47,7 +54,7 @@ class GPTJConnector:
 
         prompt = "In the text below two people are discussing a story.\n\n"
         prompt += "Story:\n" + text + "\n\n"
-        prompt += "Discussion:\n"
+        prompt += "The first person asks questions about the story and the second answers them:\n"
         if dialogue:
             dialogue = dialogue.strip()
             prompt += dialogue + "\n"

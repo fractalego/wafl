@@ -21,7 +21,7 @@ item = what does the user want to add to the shopping list?
 
 _ask_another_item
   does the user want to add another item
-  item = what do you want to add to the shopping list
+  item = what do you want to add
   SAY {item} has been added to the list
   _ask_another_item
 
@@ -49,7 +49,7 @@ the user wants to add something
 """
 
 
-class TestWorkingMemory(TestCase):
+class TestTaskMemory(TestCase):
     def test__task_memory_class(self):
         task_memory = TaskMemory()
         task_memory.add_question("What is the color of Bob's dress")

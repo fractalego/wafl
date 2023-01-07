@@ -12,7 +12,7 @@ _logger = LocalFileLogger()
 _wafl_remember_rules = """
 
 the user wants you to remember 
-  sentence = What do you want me to remember?
+  sentence = What piece of information do you want me to remember?
   REMEMBER sentence
   SAY I will remember that {sentence}
 
@@ -66,5 +66,4 @@ class TestRetrieval(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: I will remember that your name is alberto"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

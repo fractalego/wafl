@@ -23,7 +23,7 @@ color = What is the user's hair color
   
 {person} has a {type} tree in the garden
    person = what is the user's name
-   house_address = what is {person} house address
+   house_address = what is {person}'s address
    type = what is the tree type at {house_address}
 
 This bot name is Fractalego
