@@ -1,8 +1,7 @@
 ### TODO
 
-* make all tests pass
-* find way to connect to local ngrok from github
-
+* add event loop here to test_scheduler
+* create way to add rules
 
 * buffer overrun > 1024 tokens
 * change {"%%"} into something more typeable
@@ -16,15 +15,17 @@
 
 This and next week:
  /* rules in folder
- * distill gpt2 from gpt-JT onto the CoQA dataset
+ /* distill gpt2 from gpt-JT onto the CoQA dataset
+    -> not done, using gpt-jt directly
 
 First week of the year:
  /* Make test conversations work
  * Debugging with picture as output
+   -> not doing it now
 
 Second week of the year:
  * User-defined events
- * Scheduler
+ /* Scheduler
 
 Third week of the year:
  * Refactoring
@@ -32,6 +33,7 @@ Third week of the year:
 
 Fourth week:
  * Write demo paper
+   * Demo paper should include website with code editor (and connection to GPU)
 
 
 /* rules and functions should be in a folder.
@@ -64,7 +66,7 @@ Fourth week:
   * for example ( without a closing ). same for {
 
 
-
+/* find way to connect to local ngrok from github
 /* entailment should be :- instead of <-
 /* take entailer and qa out of the __init__ in entailer.py and qa.py
 /* implement functions within each dependency
