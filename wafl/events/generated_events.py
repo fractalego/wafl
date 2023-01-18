@@ -2,8 +2,9 @@ import os
 
 from wafl.answerer.inference_answerer import InferenceAnswerer
 from wafl.events.narrator import Narrator
+from wafl.events.utils import is_question
+from wafl.extractor.dataclasses import Query
 from wafl.inference.backward_inference import BackwardInference
-from wafl.events.utils import input_is_valid
 from wafl.exceptions import InterruptTask
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
@@ -19,12 +20,8 @@ class GeneratedEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = InferenceAnswerer(
-            interface,
-            BackwardInference(
-                knowledge, interface, Narrator(interface), code_path, logger=logger
-            ),
-            logger,
+        self._inference = BackwardInference(
+            knowledge, interface, Narrator(interface), code_path, logger=logger
         )
         self._knowledge = knowledge
         self._interface = interface
@@ -34,7 +31,8 @@ class GeneratedEvents:
         self._interface.output(text)
 
     async def _process_query(self, text: str):
-        await self._answerer.answer(text)
+        query = Query(text=text, is_question=is_question(text), variable="name")
+        await self._inference.compute(query)
 
     async def process_next(self, activation_word: str = "") -> bool:
         for event in self._generators.get():

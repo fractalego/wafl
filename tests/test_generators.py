@@ -14,7 +14,7 @@ _path = os.path.dirname(__file__)
 _logger = LocalFileLogger()
 
 _wafl_example = """
-It's five past seven
+It is 7,05
   SAY Hello there!
 """.strip()
 
@@ -30,7 +30,7 @@ def return_five_past_seven():
     return "the time is 7,05"
 
 
-def return_six_past_seven():
+def return_four_past_seven():
     return "the time is 7,04"
 
 
@@ -58,7 +58,7 @@ class TestGenerators(TestCase):
         interface = DummyInterface()
         generated_events = GeneratedEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
-            generators=StringGenerator([return_six_past_seven]),
+            generators=StringGenerator([return_four_past_seven]),
             interface=interface,
             logger=_logger,
         )
