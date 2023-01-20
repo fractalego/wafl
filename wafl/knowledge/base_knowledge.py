@@ -4,6 +4,9 @@ class BaseKnowledge:
     def add(self, text):
         raise NotImplementedError()
 
+    def add_rule(self, rule_text, knowledge_name=None):
+        raise NotImplementedError()
+
     def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         raise NotImplementedError()
 

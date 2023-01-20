@@ -1,7 +1,7 @@
 from typing import List, Any
 
 
-class StringGenerator:
+class GeneratorFromFunctionList:
     def __init__(self, functions: List[Any]):
         self._functions = functions
 

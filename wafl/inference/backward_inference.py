@@ -368,9 +368,19 @@ class BackwardInference:
         return answer
 
     def _process_remember_command(self, cause_text, knowledge_name):
-        utterance = cause_text[8:].strip().capitalize()
-        self._log(f"Remembering: {utterance}")
-        self._knowledge.add(utterance, knowledge_name=knowledge_name)
+        utterance = cause_text[8:].strip()
+        if ":-" in utterance:
+            self._log(
+                f"Adding the following Rule to the knowledge name {knowledge_name}: {utterance}"
+            )
+            self._knowledge.add_rule(utterance, knowledge_name=knowledge_name)
+
+        else:
+            self._log(
+                f"Adding the following Fact to the knowledge name {knowledge_name}: {utterance}"
+            )
+            self._knowledge.add(utterance, knowledge_name=knowledge_name)
+
         return Answer(text="True")
 
     def _process_new_task_memory_command(self):

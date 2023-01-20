@@ -8,5 +8,7 @@ class GeneratedEventLoop:
         try:
             await self._events.process_next()
 
-        except (KeyboardInterrupt, EOFError):
-            self._interface.output("Good bye!")
+        except (KeyboardInterrupt, EOFError) as e:
+            self._logger.write(
+                f"The Generated event loop has ended due to exception {str(e)}"
+            )

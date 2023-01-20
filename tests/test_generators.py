@@ -5,7 +5,8 @@ from datetime import datetime
 from unittest import TestCase
 
 from wafl.events.generated_events import GeneratedEvents
-from wafl.generators.string_generator import StringGenerator
+from wafl.generators.generator_from_function_list import GeneratorFromFunctionList
+from wafl.generators.generator_from_module_name import GeneratorFromModuleName
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -36,7 +37,7 @@ def return_four_past_seven():
 
 class TestGenerators(TestCase):
     def test__generator_correctly_uses_argument_functions(self):
-        generator = StringGenerator([function_that_returns_time])
+        generator = GeneratorFromFunctionList([function_that_returns_time])
         expected = function_that_returns_time()
         predicted = generator.get()[0]
         self.assertEqual(expected, predicted)
@@ -45,7 +46,7 @@ class TestGenerators(TestCase):
         interface = DummyInterface()
         generated_events = GeneratedEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
-            generators=StringGenerator([return_five_past_seven]),
+            generators=GeneratorFromFunctionList([return_five_past_seven]),
             interface=interface,
             logger=_logger,
         )
@@ -58,11 +59,22 @@ class TestGenerators(TestCase):
         interface = DummyInterface()
         generated_events = GeneratedEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
-            generators=StringGenerator([return_four_past_seven]),
+            generators=GeneratorFromFunctionList([return_four_past_seven]),
             interface=interface,
             logger=_logger,
         )
         asyncio.run(generated_events.process_next())
-
         expected = []
+        assert interface.get_utterances_list() == expected
+
+    def test__generator_functions_can_be_loaded_from_file(self):
+        interface = DummyInterface()
+        generated_events = GeneratedEvents(
+            SingleFileKnowledge(_wafl_example, logger=_logger),
+            generators=GeneratorFromModuleName("generators"),
+            interface=interface,
+            logger=_logger,
+        )
+        asyncio.run(generated_events.process_next())
+        expected = ['bot: Hello there!']
         assert interface.get_utterances_list() == expected
