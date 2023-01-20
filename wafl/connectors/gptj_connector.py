@@ -8,6 +8,7 @@ _tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 
 class GPTJConnector:
+    _max_tries = 3
     _max_reply_length = 100
     _num_prediction_tokens = 5
 
@@ -23,9 +24,16 @@ class GPTJConnector:
 
     def predict(self, prompt: str) -> str:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
-        r = requests.post(self._server_url, json=payload, verify=False)
-        answer = json.loads(r.content.decode("utf-8"))
-        return _tokenizer.decode(answer[-self._num_prediction_tokens])
+        for _ in range(self._max_tries):
+            try:
+                r = requests.post(self._server_url, json=payload, verify=False)
+                answer = json.loads(r.content.decode("utf-8"))
+                return _tokenizer.decode(answer[-self._num_prediction_tokens])
+
+            except ConnectionError:
+                continue
+
+        return "UNKNOWN"
 
     def get_answer(self, text, dialogue, query):
         prompt = self._get_answer_prompt(text, query, dialogue)
