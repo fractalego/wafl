@@ -1,3 +1,3 @@
 class BaseAnswerer:
-    def answer(self, query_text):
+    async def answer(self, query_text):
         raise NotImplementedError

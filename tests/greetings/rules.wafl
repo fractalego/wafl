@@ -1,0 +1,10 @@
+#using facts
+
+this bot is doing well
+
+person = who does the user want to greet back?
+  SAY Hello, {person}!
+
+the user wants to know the time
+  time = get_time()
+  SAY the time is {time}!

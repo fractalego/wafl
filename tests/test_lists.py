@@ -1,9 +1,10 @@
+import asyncio
 import os
-from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 
@@ -81,11 +82,11 @@ class TestLists(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation.input()
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1
 
@@ -103,12 +104,12 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
-        while conversation.input():
+        while asyncio.run(conversation_events.process_next()):
             pass
         print(interface.get_utterances_list())
         assert (
@@ -128,12 +129,12 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
-        while conversation.input():
+        while asyncio.run(conversation_events.process_next()):
             pass
 
         assert (
@@ -153,14 +154,15 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
-        conversation = Conversation(
-            Knowledge(_lists_in_functions_rules),
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_lists_in_functions_rules),
             interface=interface,
-            code_path="functions",
+            code_path="/",
         )
-        while conversation.input():
+        while asyncio.run(conversation_events.process_next()):
             pass
 
+        print(interface.get_utterances_list())
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The shopping list contains: apples, strawberries"
@@ -173,10 +175,10 @@ class TestLists(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(
-            Knowledge(_rules), interface=interface, code_path="functions"
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
-        conversation.input(activation_word=hotword)
+        asyncio.run(conversation_events.process_next(activation_word=hotword))
         expected = "bot: apples has been added to the list"
         self.assertEqual(interface.get_utterances_list()[-3].lower(), expected)

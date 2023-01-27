@@ -5,11 +5,11 @@ from wafl.interface.utils import not_good_enough
 
 class DummyInterface(BaseInterface):
     def __init__(self, to_utter=None):
+        super().__init__()
         self._utterances = []
         self._to_utter = to_utter
         self._bot_has_spoken = False
         self._dialogue = ""
-        self._check_understanding = True
 
     def output(self, text: str):
         self._dialogue += "bot> " + text + "\n"
@@ -18,9 +18,10 @@ class DummyInterface(BaseInterface):
 
     def input(self) -> str:
         text = self._to_utter.pop(0).strip()
-        while self._check_understanding and not_good_enough(text):
+        while self._is_listening and not_good_enough(text):
             self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
+
         self._dialogue += "user> " + text + "\n"
         utterance = from_user_to_bot(text)
         self._utterances.append(f"user: {utterance}")
@@ -34,12 +35,6 @@ class DummyInterface(BaseInterface):
 
     def get_dialogue(self):
         return self._dialogue
-
-    def check_understanding(self, do_the_check: bool = None):
-        if do_the_check == None:
-            return self._check_understanding
-
-        self._check_understanding = do_the_check
 
     def get_utterances_list(self):
         return self._utterances

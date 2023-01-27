@@ -1,23 +1,59 @@
 ### TODO
 
+* Add GENERATE
+    * Use it to get "1" from "one minute"
 
-* move all thresholds to variables.py
-* y/n questions should only accept yes or no (and loop if there is something else)
-* fact retrieval should work in python space as well
-* rules and functions should be in a folder.
-  * Think about ability to install
+* time needs to be pre-processed to trigger rules (5 past seven -> 7,05)
+* add event loop here to test_scheduler
+* create way to add rules
 
-* add ability to create rules through text "->"
+
+* buffer overrun > 1024 tokens
+* change {"%%"} into something more typeable
+* volume threshold should be sampled continously
+* add main.wafl
+* create errors within parser
+   * dependency does not exist
+   * . is allowes in dependency, / is not
+
+* rules should be added and removed
+
+This and next week:
+ /* rules in folder
+ /* distill gpt2 from gpt-JT onto the CoQA dataset
+    -> not done, using gpt-jt directly
+
+First week of the year:
+ /* Make test conversations work
+ * Debugging with picture as output
+   -> not doing it now
+
+Second week of the year:
+ * User-defined events
+ /* Scheduler
+
+Third week of the year:
+ * Refactoring
+ * Write up docs
+
+Fourth week:
+ * Write demo paper
+   * Demo paper should include website with code editor (and connection to GPU)
+
+
+/* rules and functions should be in a folder.
+/  * Think about ability to install
+
+/* add ability to create rules through text "->"
 * main conversation loop should be scheduler
   * Add functions that can trigger rules
 
 * InferenceAnswerer can be broken down into simpler answerer
   * within backward inference there is the need for an answerer (when tasks are interrupted)
 
-* remove Batches output in prediction
 * Do lists as hard-coded
 * y/n questions are never searched in working memory. Is this the right behavior?
-* test_testcases blocks the tests. RESOLVE THIS!!
+/* test_testcases blocks the tests. RESOLVE THIS!!
 * fine tune entailer to the tasks in this systems (the bot says: "", the user asks ""...)
 * functions use inference from depth_level = 1. This can induce infinite recursion
 
@@ -28,8 +64,20 @@
    * you need a way to translate the logs into a coherent text
    * THIS WILL ADD INTROSPECTION!!
 
+* move all thresholds to variables.py
 * rules are sorted by retriever but not by entailer!! Do that
 
+* add error detection in parser.
+  * for example ( without a closing ). same for {
+
+
+/* find way to connect to local ngrok from github
+/* entailment should be :- instead of <-
+/* take entailer and qa out of the __init__ in entailer.py and qa.py
+/* implement functions within each dependency
+/* remove Batches output in prediction
+/* fact retrieval should work in python space as well
+/* y/n questions should only accept yes or no (and loop if there is something else)
 /* Why does remember not work??!!!
 /* separate items added to list with "and"
 /* The same answer cannot belong to more than one question in the same task! (it's an approx but needed)

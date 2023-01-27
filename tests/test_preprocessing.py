@@ -1,8 +1,9 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.preprocess import (
     create_preprocessed,
     remove_preprocessed,
@@ -18,20 +19,24 @@ the user says hello
 """
 
 
-class TestLanguageInFunctions(TestCase):
+class TestPreprocessing(TestCase):
     def test__preprocessing_has_all_functions_names(self):
         predicted = get_all_functions_names("preprocess_test_functions")
         expected = ["a", "b", "c"]
         assert predicted == expected
 
     def test__preprocessing_runs(self):
-        create_preprocessed("preprocess_test_functions")
-        remove_preprocessed("preprocess_test_functions")
+        create_preprocessed(
+            "/", "preprocess_test_functions", "preprocess_test_functions.py"
+        )
+        remove_preprocessed("/", "preprocess_test_functions.py")
 
     def test__import_preprocessed_module(self):
-        create_preprocessed("preprocess_test_functions")
-        import_module("preprocess_test_functions")
-        remove_preprocessed("preprocess_test_functions")
+        create_preprocessed(
+            "/", "preprocess_test_functions", "preprocess_test_functions.py"
+        )
+        import_module("/", "", "preprocess_test_functions")
+        remove_preprocessed("/", "preprocess_test_functions.py")
 
     def test__functions_can_call_another_function(self):
         interface = DummyInterface(
@@ -39,11 +44,11 @@ class TestLanguageInFunctions(TestCase):
                 "Hello",
             ]
         )
-        conversation = Conversation(
-            Knowledge(wafl_example),
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example),
             interface=interface,
-            code_path="preprocess_test_functions",
+            code_path="/",
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Hello"
         assert interface.get_utterances_list()[-1] == expected

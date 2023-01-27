@@ -17,6 +17,7 @@ COLOR_END = "\033[0m"
 
 class VoiceInterface(BaseInterface):
     def __init__(self, config):
+        super().__init__()
         self._sound_speaker = SoundFileSpeaker()
         self._activation_sound_filename = self.__get_activation_sound_from_config(
             config
@@ -35,7 +36,6 @@ class VoiceInterface(BaseInterface):
         )
         self._listener.set_hotword_threshold(config.get_value("listener_hotword_logp"))
         self._bot_has_spoken = False
-        self._check_understanding = True
         self._utterances = []
 
     def add_hotwords_from_knowledge(
@@ -68,7 +68,7 @@ class VoiceInterface(BaseInterface):
             if hotword:
                 text = f"[{hotword}] {text}"
 
-        while self._check_understanding and not_good_enough(text):
+        while self._is_listening and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
             self.output(random.choice(["Sorry?", "Can you repeat?"]))
             text = self._listener.input()
@@ -85,17 +85,15 @@ class VoiceInterface(BaseInterface):
 
         return self._bot_has_spoken
 
-    def check_understanding(self, do_the_check=None):
-        if do_the_check == None:
-            return self._check_understanding
-
-        if do_the_check and not self._check_understanding:
+    def activate(self):
+        if not self._is_listening:
             self._sound_speaker.speak(self._activation_sound_filename)
+            super().activate()
 
-        if not do_the_check and self._check_understanding:
+    def deactivate(self):
+        if self._is_listening:
             self._sound_speaker.speak(self._deactivation_sound_filename)
-
-        self._check_understanding = do_the_check
+            super().deactivate()
 
     def play_deny_sound(self):
         self._sound_speaker.speak(self._deny_sound_filename)

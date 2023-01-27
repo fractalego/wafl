@@ -1,8 +1,9 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 wafl_example = """
   
@@ -21,8 +22,10 @@ class TestNegations(TestCase):
                 "yes",
             ]
         )
-        conversation = Conversation(Knowledge(wafl_example), interface=interface)
-        conversation.input()
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: So you do want to see it!"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -33,8 +36,10 @@ class TestNegations(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(Knowledge(wafl_example), interface=interface)
-        conversation.input()
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: do you want to see the shopping list"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-2] == expected
@@ -46,7 +51,9 @@ class TestNegations(TestCase):
                 "no thanks",
             ]
         )
-        conversation = Conversation(Knowledge(wafl_example), interface=interface)
-        conversation.input()
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         expected = "bot: do you want to see the shopping list"
         assert interface.get_utterances_list()[-2] == expected

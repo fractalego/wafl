@@ -1,13 +1,10 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
-from wafl.parsing.preprocess import (
-    create_preprocessed,
-    remove_preprocessed,
-    import_module,
-)
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+
 
 wafl_example = """
   
@@ -53,11 +50,13 @@ class TestLanguageInFunctions(TestCase):
                 "What's in the shopping list",
             ]
         )
-        conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
-        conversation.input()
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         expected = "bot: The shopping list contains: apples, bananas"
         assert interface.get_utterances_list()[-1] == expected
 
@@ -67,10 +66,12 @@ class TestLanguageInFunctions(TestCase):
                 "Please say hello twice",
             ]
         )
-        conversation = Conversation(
-            Knowledge(wafl_example), interface=interface, code_path="functions"
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(wafl_example),
+            interface=interface,
+            code_path="/",
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         expected = [
             "bot: Please say: 'hello'",
             "bot: Your input is recorded",
@@ -85,10 +86,12 @@ class TestLanguageInFunctions(TestCase):
 
     def test_double_fuctions(self):
         interface = DummyInterface(["Is the victoria line running"])
-        conversation = Conversation(
-            Knowledge(_tube_line_rules), interface=interface, code_path="functions"
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_tube_line_rules),
+            interface=interface,
+            code_path="/",
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The victoria line is running normally"

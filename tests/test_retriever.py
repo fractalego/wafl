@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 

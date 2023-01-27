@@ -1,24 +1,24 @@
 import logging
 import os
 
-from conversation_qa import QA as ConvQA, Dialogue
-from wafl.conversation.utils import (
+from wafl.connectors.gptj_connector import GPTJConnector, Dialogue
+from wafl.events.utils import (
     is_question,
     is_yes_no_question,
     get_sentence_from_yn_question,
 )
 from wafl.inference.utils import normalized
-from wafl.qa.dataclasses import Answer
-from wafl.qa.entailer import Entailer
+from wafl.extractor.dataclasses import Answer
+from wafl.extractor.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 
 
-class QA:
+class Extractor:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
-        self._qa = ConvQA("fractalego/conversation-qa")
+        self._qa = GPTJConnector()
         self._narrator = narrator
         self._entailer_to_qa_mapping = {
             "True": "Yes",
@@ -26,7 +26,7 @@ class QA:
             "Unknown": "Unknown",
         }
 
-    def ask(self, query: "Query", text: str, task_memory=None):
+    def extract(self, query: "Query", text: str, task_memory=None):
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(
@@ -44,9 +44,6 @@ class QA:
         return self._check_fact(query_text, text, threshold=0.5)
 
     def _answer_question(self, query_text, variable_name, text: str, task_memory):
-        if query_text[-1] != "?":
-            query_text += "?"
-
         dialogue = Dialogue()
 
         answer = self._get_answer_by_iterating_over_prior_events_in_the_story(

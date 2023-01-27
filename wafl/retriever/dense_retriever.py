@@ -1,6 +1,5 @@
 import os
 import torch
-import logging
 import numpy as np
 
 from typing import List, Tuple
@@ -10,18 +9,23 @@ from sentence_transformers import SentenceTransformer
 from wafl.retriever.base_retriever import BaseRetriever
 
 _path = os.path.dirname(__file__)
-_logger = logging.getLogger(__file__)
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cuda" if torch.cuda.is_available() else "cpu"
+_sentence_transfomers_dict = {
+    "msmarco-distilbert-base-v3": SentenceTransformer(
+        "msmarco-distilbert-base-v3", device=device
+    ),
+    "multi-qa-distilbert-dot-v1": SentenceTransformer(
+        "multi-qa-distilbert-dot-v1", device=device
+    ),
+}
 
 
 class DenseRetriever(BaseRetriever):
     _threshold_length = 5
 
     def __init__(self, model_name):
-        self._sentence_model = SentenceTransformer(model_name)
-        self._sentence_model = self._sentence_model.to(device)
-
+        self._sentence_model = _sentence_transfomers_dict[model_name]
         self._embeddings_model = KeyedVectors(768)
 
     def add_text_and_index(self, text: str, index: str):

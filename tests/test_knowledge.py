@@ -1,7 +1,8 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.knowledge.knowledge import Knowledge
-from wafl.qa.dataclasses import Query
+from unittest import TestCase
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.extractor.dataclasses import Query
 
 wafl_example = """
 
@@ -26,7 +27,7 @@ _ask_another_item
 
 class TestKnowledge(TestCase):
     def test_exact_string(self):
-        knowledge = Knowledge(wafl_example)
+        knowledge = SingleFileKnowledge(wafl_example)
         rules = knowledge.ask_for_rule_backward(
             Query(text="_ask_another_item", is_question=False)
         )

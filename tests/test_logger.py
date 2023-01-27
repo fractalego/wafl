@@ -1,6 +1,6 @@
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from wafl.logger.local_file_logger import LocalFileLogger
 
 _path = os.path.dirname(__file__)

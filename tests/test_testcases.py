@@ -1,8 +1,9 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.knowledge import Knowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.testcase_parser import get_user_and_bot_lines_from_text
 from wafl.testcases import ConversationTestCases
 
@@ -20,18 +21,18 @@ The user greets
 _test_case_greetings = """
 
 test the greetings work
-  user> Hello
-  bot> Hello there!
-  bot> What is your name
-  user> Bob
-  bot> Nice to meet you, bob!
+  user: Hello
+  bot: Hello there!
+  bot: What is your name
+  user: Bob
+  bot: Nice to meet you, bob!
 
 ! test the greetings uses the correct name
-  user> Hello
-  bot> Hello there!
-  bot> What is your name
-  user> Bob
-  bot> Nice to meet you, unknown!
+  user: Hello
+  bot: Hello there!
+  bot: What is your name
+  user: Bob
+  bot: Nice to meet you, unknown!
 
 
 """.strip()
@@ -43,6 +44,7 @@ class TestConversationalTestCases(TestCase):
         assert list(dialogue_data["test the greetings work"].keys()) == [
             "bot_lines",
             "user_lines",
+            "lines",
             "negated",
         ]
 
@@ -66,8 +68,10 @@ class TestConversationalTestCases(TestCase):
         interface = DummyInterface(
             dialogue_data["test the greetings work"]["user_lines"]
         )
-        conversation = Conversation(Knowledge(_wafl_greetings), interface=interface)
-        conversation.input()
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_greetings), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
         assert [
             item.replace("bot: ", "")
             for item in interface.get_utterances_list()
@@ -76,17 +80,19 @@ class TestConversationalTestCases(TestCase):
 
     def test_conversation_testcase_single_test_success(self):
         testcase = ConversationTestCases(
-            _test_case_greetings, Knowledge(_wafl_greetings)
+            _test_case_greetings, SingleFileKnowledge(_wafl_greetings)
         )
         assert testcase.test_single_case("test the greetings work")
 
     def test_conversation_testcase_single_test_failure(self):
         new_test_case = _test_case_greetings.replace("Bob", "Albert")
-        testcase = ConversationTestCases(new_test_case, Knowledge(_wafl_greetings))
+        testcase = ConversationTestCases(
+            new_test_case, SingleFileKnowledge(_wafl_greetings)
+        )
         assert not testcase.test_single_case("test the greetings work")
 
     def test_conversation_testcase_run_all(self):
         testcase = ConversationTestCases(
-            _test_case_greetings, Knowledge(_wafl_greetings)
+            _test_case_greetings, SingleFileKnowledge(_wafl_greetings)
         )
         assert testcase.run()

@@ -7,14 +7,15 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+_model_name = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
+_tokenizer = AutoTokenizer.from_pretrained(_model_name)
+_model = AutoModelForSequenceClassification.from_pretrained(_model_name).to(_device)
+
 
 class Entailer:
     def __init__(self, logger=None):
-        model_name = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
-        self._tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self._model = AutoModelForSequenceClassification.from_pretrained(model_name).to(
-            _device
-        )
+        self._tokenizer = _tokenizer
+        self._model = _model
         if torch.cuda.is_available():
             self._model.half()
 
