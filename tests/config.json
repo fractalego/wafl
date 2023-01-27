@@ -9,6 +9,6 @@
   "listener_hotword_logp": -8,
   "listener_volume_threshold": 0.6,
   "listener_silence_timeout": 0.7,
-  "model_host": "147e-79-66-49-231.eu.ngrok.io",
-  "model_port": 443
+  "model_host": "localhost",
+  "model_port": 8080
 }

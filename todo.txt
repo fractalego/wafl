@@ -1,5 +1,8 @@
 ### TODO
 
+* Add GENERATE
+    * Use it to get "1" from "one minute"
+
 * time needs to be pre-processed to trigger rules (5 past seven -> 7,05)
 * add event loop here to test_scheduler
 * create way to add rules

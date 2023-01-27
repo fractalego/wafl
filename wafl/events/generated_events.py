@@ -1,6 +1,5 @@
 import os
 
-from wafl.answerer.inference_answerer import InferenceAnswerer
 from wafl.events.narrator import Narrator
 from wafl.events.utils import is_question
 from wafl.extractor.dataclasses import Query
@@ -32,13 +31,15 @@ class GeneratedEvents:
 
     async def _process_query(self, text: str):
         query = Query(text=text, is_question=is_question(text), variable="name")
-        await self._inference.compute(query)
+        return await self._inference.compute(query)
 
     async def process_next(self, activation_word: str = "") -> bool:
-        for event in self._generators.get():
+        events = self._generators.get()
+        for event in events:
             try:
-                await self._process_query(event)
-                return True
+                answer = await self._process_query(event)
+                if answer.is_true():
+                    return True
 
             except InterruptTask:
                 self._interface.output("Task interrupted")

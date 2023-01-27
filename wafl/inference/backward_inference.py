@@ -471,6 +471,10 @@ class BackwardInference:
             new_query, task_memory, knowledge_name, depth + 1, inverted_rule
         )
         self._log(f"The answer to the query is {answer.text}", depth)
+
+        if answer.variable and answer.is_neutral():
+            return Answer(text="False", variable=answer.variable)
+
         return answer
 
     def _log(self, text, depth=None):

@@ -71,10 +71,11 @@ class TestGenerators(TestCase):
         interface = DummyInterface()
         generated_events = GeneratedEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
-            generators=GeneratorFromModuleName("generators"),
+            generators=GeneratorFromModuleName("events"),
             interface=interface,
             logger=_logger,
         )
         asyncio.run(generated_events.process_next())
-        expected = ['bot: Hello there!']
+        expected = ["bot: Hello there!"]
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list() == expected

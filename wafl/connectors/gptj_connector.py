@@ -30,7 +30,7 @@ class GPTJConnector:
                 answer = json.loads(r.content.decode("utf-8"))
                 return _tokenizer.decode(answer[-self._num_prediction_tokens])
 
-            except ConnectionError:
+            except requests.exceptions.ConnectionError:
                 continue
 
         return "UNKNOWN"
