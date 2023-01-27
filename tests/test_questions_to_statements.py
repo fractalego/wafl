@@ -1,11 +1,12 @@
+import asyncio
 import os
-from unittest import TestCase
 
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.utils import get_sentence_from_yn_question
+from unittest import TestCase
+from wafl.events.narrator import Narrator
+from wafl.events.utils import get_sentence_from_yn_question
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.qa.dataclasses import Query
-from wafl.qa.qa import QA
+from wafl.extractor.dataclasses import Query
+from wafl.extractor.extractor import Extractor
 
 _path = os.path.dirname(__file__)
 
@@ -38,6 +39,6 @@ class TestQuestionsToStatements(TestCase):
     def test__yn_questions_use_entailer_for_positive_answers(self):
         text = "This bot is doing well"
         query = Query("is this bot ok?", is_question=True)
-        qa = QA(Narrator(DummyInterface))
-        prediction = qa.ask(query, text)
+        qa = Extractor(Narrator(DummyInterface))
+        prediction = qa.extract(query, text)
         self.assertEqual("yes", prediction.text.lower())

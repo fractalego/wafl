@@ -1,6 +1,7 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -80,7 +81,7 @@ is the overground running?
   check_tfl_line("overground")
 
 
-# End the conversation
+# End the events
 _close
   close_conversation()
 
@@ -119,33 +120,33 @@ the user wants to stop
 class TestEdgeCases(TestCase):
     def test_double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
             code_path="/",
             logger=_logger,
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         assert "asks:" not in interface.get_utterances_list()[0]
 
     def test_clause_does_not_return_unknown(self):
         interface = DummyInterface(["is the jubili line running"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
             code_path="/",
             logger=_logger,
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert "unknown" not in interface.get_utterances_list()[-1]
 
     def test_no_answer_if_retrieval_is_too_sparse(self):
         interface = DummyInterface(["I will i"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
             interface=interface,
             code_path="/",
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         assert "unknown" not in interface.get_utterances_list()[-1]

@@ -1,6 +1,7 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -11,7 +12,7 @@ _logger = LocalFileLogger()
 _wafl_remember_rules = """
 
 the user wants you to remember 
-  sentence = What do you want me to remember?
+  sentence = What piece of information do you want me to remember?
   REMEMBER sentence
   SAY I will remember that {sentence}
 
@@ -58,12 +59,11 @@ class TestRetrieval(TestCase):
 
     def test_input_during_inference(self):
         interface = DummyInterface(to_utter=["Please remember that my name is Alberto"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_remember_rules, logger=_logger),
             interface=interface,
             logger=_logger,
         )
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
         expected = "bot: I will remember that your name is alberto"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

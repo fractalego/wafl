@@ -1,10 +1,11 @@
+import asyncio
 import os
-from unittest import TestCase
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.qa.dataclasses import Query
+from wafl.extractor.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
@@ -78,10 +79,10 @@ class TestNew(TestCase):
                 "no",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
-        conversation.input()
-        conversation.input()
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         output = "\n".join(interface.get_utterances_list())
         assert output.count("Do you want to remove apples from the shopping list") == 1

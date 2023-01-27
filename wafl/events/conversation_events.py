@@ -1,17 +1,17 @@
 import os
 import re
 
-from wafl.answerer.arbiter_answerer import ArbiterAnswerer
+from wafl.answerer.list_answerer import ListAnswerer
 from wafl.inference.utils import normalized
 
 from wafl.config import Configuration
-from wafl.conversation.utils import is_question, input_is_valid
+from wafl.events.utils import is_question, input_is_valid
 from wafl.exceptions import InterruptTask
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 
-class Conversation:
+class ConversationEvents:
     def __init__(
         self,
         knowledge: "BaseKnowledge",
@@ -20,7 +20,7 @@ class Conversation:
         config=None,
         logger=None,
     ):
-        self._answerer = ArbiterAnswerer.create_answerer(
+        self._answerer = ListAnswerer.create_answerer(
             knowledge, interface, code_path, logger
         )
         self._knowledge = knowledge
@@ -37,7 +37,7 @@ class Conversation:
     def output(self, text: str):
         self._interface.output(text)
 
-    def add(self, text: str):
+    async def _process_query(self, text: str):
         self._interface.bot_has_spoken(False)
 
         if not input_is_valid(text):
@@ -46,7 +46,7 @@ class Conversation:
         text_is_question = is_question(text)
 
         try:
-            answer = self._answerer.answer(text)
+            answer = await self._answerer.answer(text)
 
         except InterruptTask:
             self._interface.output("Task interrupted")
@@ -87,7 +87,7 @@ class Conversation:
 
         return answer
 
-    def input(self, activation_word: str = "") -> bool:
+    async def process_next(self, activation_word: str = "") -> bool:
         try:
             text = self._interface.input()
             text = text.replace("'", r"\'")
@@ -95,27 +95,24 @@ class Conversation:
         except IndexError:
             return False
 
-        if not self._interface.check_understanding() and self.__activation_word_in_text(
+        if not self._interface.is_listening() and self._activation_word_in_text(
             activation_word, text
         ):
-            self._interface.check_understanding(True)
+            self._interface.activate()
             self._logger.set_depth(0)
             self._logger.write(f"Activation word found {text}")
             if normalized(text) == normalized(activation_word, lower_case=True):
                 return True
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
-        if self._interface.check_understanding():
-            answer = self.add(text)
+        if self._interface.is_listening():
+            answer = await self._process_query(text)
             if answer and answer.text != "False":
                 return True
 
         return False
 
-    def check_understanding(self, do_the_check=None):
-        return self._interface.check_understanding(do_the_check)
-
-    def __activation_word_in_text(self, activation_word, text):
+    def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):
             return True
 

@@ -1,7 +1,7 @@
 import logging
 
 from fuzzywuzzy import process
-from datetime import datetime
+from datetime import datetime, timedelta
 from wafl.exceptions import CloseConversation, InterruptTask
 from preprocess_test_functions import b, c
 
@@ -62,6 +62,10 @@ def close_conversation():
     raise CloseConversation()
 
 
+def keyboard_interrupt():
+    raise KeyboardInterrupt()
+
+
 def close_task():
     raise InterruptTask()
 
@@ -117,7 +121,7 @@ def add_shopping_list(item):
 def add_shopping_list_as_function(item):
     shopping_list.append(item)
     while {"% Do you want to add anything else  %"}:
-        item = {"% What do you want to add?%"}
+        item = {"% What item do you want to add?%"}
         shopping_list.append(item)
         {f"% SAY {item} has been added to the shopping list%"}
         {"%ERASE MEMORY%"}
@@ -137,3 +141,21 @@ def b():
 
 def c():
     b()
+
+
+def get_integer_from_string(text):
+    words = text.split()
+    for word in words:
+        if word.isnumeric():
+            return int(word)
+
+    return None
+
+def get_time_in_future(minutes_from_now):
+    num_minutes = get_integer_from_string(minutes_from_now)
+    if not num_minutes:
+        return False
+
+    now = datetime.now()
+    final_time = now + timedelta(minutes=num_minutes)
+    return final_time.strftime("%H, %M")

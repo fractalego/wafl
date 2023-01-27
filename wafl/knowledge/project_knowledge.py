@@ -19,6 +19,14 @@ class ProjectKnowledge(BaseKnowledge):
 
         self._knowledge_dict[knowledge_name].add(text, knowledge_name=knowledge_name)
 
+    def add_rule(self, text, knowledge_name=None):
+        if not knowledge_name:
+            knowledge_name = self.root_knowledge
+
+        self._knowledge_dict[knowledge_name].add_rule(
+            text, knowledge_name=knowledge_name
+        )
+
     def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge

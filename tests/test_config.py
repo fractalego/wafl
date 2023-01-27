@@ -1,7 +1,8 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.config import Configuration
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -17,13 +18,13 @@ class TestConfig(TestCase):
         config.set_value("accept_random_facts", False)
 
         interface = DummyInterface(["Albert is here", "What is my name"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings), interface=interface, config=config
         )
         utterance = "Welcome to the website. How may I help you?"
-        conversation.output(utterance)
-        conversation.input()
-        conversation.input()
+        interface.output(utterance)
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: I don't know"
 
     def test__listener_accepts_threshold_for_hotword_logp(self):

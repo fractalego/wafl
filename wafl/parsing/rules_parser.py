@@ -1,4 +1,4 @@
-from wafl.conversation.utils import is_question
+from wafl.events.utils import is_question
 from wafl.deixis import from_user_to_bot
 from wafl.facts import Fact
 from wafl.parsing.utils import (

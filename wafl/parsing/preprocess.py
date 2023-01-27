@@ -51,11 +51,11 @@ def create_preprocessed(
 
         for name in function_names:
             text = re.sub(
-                f"({name}\([0-9a-zA-Z,\s:]+)\)",
-                "\\1, inference, task_memory)",
+                f" ({name}\([0-9a-zA-Z,\s:_]+)\)",
+                " \\1, inference, task_memory)",
                 text,
             )
-            text = re.sub(f"({name})\(\)", "\\1(inference, task_memory)", text)
+            text = re.sub(f" ({name})\(\)", " \\1(inference, task_memory)", text)
 
     preprocessed_filename = filename.replace(
         _python_functions_standard_name,

@@ -1,11 +1,11 @@
+import asyncio
 from unittest import TestCase
-
-from wafl.conversation.narrator import Narrator
-from wafl.conversation.task_memory import TaskMemory
+from wafl.events.narrator import Narrator
+from wafl.events.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.qa.dataclasses import Query
+from wafl.extractor.dataclasses import Query
 
 wafl_example = """
 
@@ -23,7 +23,7 @@ color = What is the user's hair color
   
 {person} has a {type} tree in the garden
    person = what is the user's name
-   house_address = what is {person} house address
+   house_address = what is {person}'s address
    type = what is the tree type at {house_address}
 
 This bot name is Fractalego
@@ -48,7 +48,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="What is this bot's name", is_question=True, variable="name")
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         expected = "fractalego"
         assert answer.text.lower() == expected
         assert answer.variable == query.variable
@@ -61,7 +61,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
         )
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         assert answer.is_true()
 
     def test__fact_check_false(self):
@@ -70,7 +70,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user is sad", is_question=False, variable="name")
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         assert answer.is_false()
 
     def test__simple_rule(self):
@@ -79,7 +79,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user says hello!", is_question=False, variable="name")
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         assert answer.is_true()
 
     def test__forward_substitution(self):
@@ -90,7 +90,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
         )
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         assert answer.is_true()
 
     def test__backward_substitution(self):
@@ -101,7 +101,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"
         )
-        answer = inference.compute(query)
+        answer = asyncio.run(inference.compute(query))
         assert answer.is_true()
 
     def test__forward_substution_2(self):

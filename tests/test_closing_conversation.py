@@ -1,6 +1,7 @@
-from unittest import TestCase
+import asyncio
 
-from wafl.conversation.conversation import Conversation
+from unittest import TestCase
+from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -32,13 +33,13 @@ class TestInterruptionsToCloseConversation(TestCase):
                 "Goodbye.",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
         try:
-            conversation.input()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)
@@ -52,13 +53,13 @@ class TestInterruptionsToCloseConversation(TestCase):
                 "Thank you",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
         try:
-            conversation.input()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)
@@ -72,13 +73,13 @@ class TestInterruptionsToCloseConversation(TestCase):
                 "Thanks.",
             ]
         )
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example),
             interface=interface,
             code_path="/",
         )
         try:
-            conversation.input()
+            asyncio.run(conversation_events.process_next())
 
         except CloseConversation:
             self.assertTrue(True)

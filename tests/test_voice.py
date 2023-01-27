@@ -1,13 +1,12 @@
+import asyncio
 import os
 import wave
 import numpy as np
 
 from unittest import TestCase
-
 from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
-
-from wafl.conversation.conversation import Conversation
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.listener.whisper_listener import WhisperListener
@@ -27,20 +26,20 @@ _path = os.path.dirname(__file__)
 class TestVoice(TestCase):
     def test_activation(self):
         interface = DummyInterface(to_utter=["computer my name is Jane"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
-        conversation.check_understanding(True)
-        conversation.input(activation_word="computer")
+        interface.activate()
+        asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 2
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
-        conversation = Conversation(
+        conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
-        conversation.check_understanding(False)
-        conversation.input(activation_word="computer")
+        interface.deactivate()
+        asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 1
 
     def test_hotwords_as_input(self):

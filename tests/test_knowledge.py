@@ -1,7 +1,8 @@
-from unittest import TestCase
+import asyncio
 
+from unittest import TestCase
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.qa.dataclasses import Query
+from wafl.extractor.dataclasses import Query
 
 wafl_example = """
 

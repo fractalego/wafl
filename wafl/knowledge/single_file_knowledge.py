@@ -11,9 +11,10 @@ from wafl.knowledge.utils import (
     filter_out_rules_that_are_too_dissimilar_to_query,
     filter_out_rules_through_entailment,
 )
+from wafl.parsing.line_rules_parser import parse_rule_from_single_line
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.qa.entailer import Entailer
-from wafl.qa.dataclasses import Query
+from wafl.extractor.entailer import Entailer
+from wafl.extractor.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
@@ -63,6 +64,15 @@ class SingleFileKnowledge(BaseKnowledge):
         )
         self._facts_retriever_for_questions.add_text_and_index(
             clean_text_for_retrieval(text), fact_index
+        )
+
+    def add_rule(self, rule_text, knowledge_name=None):
+        rule = parse_rule_from_single_line(rule_text, knowledge_name)
+        index = str(len(self._rules_dict))
+        index = f"R{index}"
+        self._rules_dict[index] = rule
+        self._rules_fact_retriever.add_text_and_index(
+            clean_text_for_retrieval(rule.effect.text), index=index
         )
 
     def has_better_match(self, query_text: str) -> bool:

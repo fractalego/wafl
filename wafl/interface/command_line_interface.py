@@ -8,8 +8,8 @@ COLOR_END = "\033[0m"
 
 class CommandLineInterface(BaseInterface):
     def __init__(self):
+        super().__init__()
         self._bot_has_spoken = False
-        self._check_understanding = True
         self._utterances = []
 
     def output(self, text: str):
@@ -32,12 +32,6 @@ class CommandLineInterface(BaseInterface):
             self._bot_has_spoken = to_set
 
         return self._bot_has_spoken
-
-    def check_understanding(self, do_the_check: bool = None):
-        if do_the_check == None:
-            return self._check_understanding
-
-        self._check_understanding = do_the_check
 
     def get_utterances_list(self):
         return self._utterances
