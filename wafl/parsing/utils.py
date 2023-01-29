@@ -34,3 +34,8 @@ def text_has_interruption(text):
 
 def clean_text(text):
     return text.replace("INTERRUPTION ", "")
+
+
+def concatenate_slashes_into_one_single_line(text):
+    text = text.replace("\\n", "")
+    return text

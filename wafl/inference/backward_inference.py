@@ -23,7 +23,8 @@ from wafl.inference.utils import (
     invert_answer,
     text_has_assigmnent,
     update_substitutions_from_results,
-    answer_is_informative, text_is_natural_language_task,
+    answer_is_informative,
+    text_is_natural_language_task,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -262,7 +263,11 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
-        if depth > 0 and task_memory.get_story() and wafl.simple_text_processing.questions.is_question:
+        if (
+            depth > 0
+            and task_memory.get_story()
+            and wafl.simple_text_processing.questions.is_question
+        ):
             query.text = from_bot_to_bot(query.text)
             answer = self._extractor.extract(
                 query, task_memory.get_story(), task_memory
