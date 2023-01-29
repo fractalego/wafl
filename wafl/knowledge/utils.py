@@ -1,4 +1,5 @@
-from wafl.events.utils import get_sentence_from_yn_question
+import wafl.simple_text_processing.questions
+from wafl.simple_text_processing.questions import get_sentence_from_yn_question
 
 
 def text_is_exact_string(text):
@@ -51,7 +52,7 @@ def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
 def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
     new_rules_and_scores = []
     for rule, score in rules_and_scores:
-        if rule.effect.is_question:
+        if wafl.simple_text_processing.questions.is_question:
             new_rules_and_scores.append((rule, score))
 
         elif needs_substitutions(rule.effect):

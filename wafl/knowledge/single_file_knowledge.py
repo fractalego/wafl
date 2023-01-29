@@ -1,8 +1,9 @@
 import logging
 import nltk
 
+import wafl.simple_text_processing.questions
 from wafl.facts import Fact
-from wafl.inference.utils import normalized
+from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,
@@ -13,8 +14,8 @@ from wafl.knowledge.utils import (
 )
 from wafl.parsing.line_rules_parser import parse_rule_from_single_line
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.extractor.entailer import Entailer
-from wafl.extractor.dataclasses import Query
+from wafl.extractors.entailer import Entailer
+from wafl.extractors.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval
@@ -88,7 +89,7 @@ class SingleFileKnowledge(BaseKnowledge):
         return any(rule.effect.is_interruption for rule in rules)
 
     def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
-        if query.is_question:
+        if wafl.simple_text_processing.questions.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
                     query.text
@@ -102,13 +103,13 @@ class SingleFileKnowledge(BaseKnowledge):
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
-                if query.is_question
+                if wafl.simple_text_processing.questions.is_question
                 else self._threshold_for_facts
             )
         else:
             threshold = (
                 self._threshold_for_questions_from_bot
-                if query.is_question
+                if wafl.simple_text_processing.questions.is_question
                 else self._threshold_for_facts
             )
 
@@ -121,7 +122,7 @@ class SingleFileKnowledge(BaseKnowledge):
     def ask_for_facts_with_threshold(
         self, query, is_from_user=False, knowledge_name=None
     ):
-        if query.is_question:
+        if wafl.simple_text_processing.questions.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
                     query.text
@@ -135,13 +136,13 @@ class SingleFileKnowledge(BaseKnowledge):
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
-                if query.is_question
+                if wafl.simple_text_processing.questions.is_question
                 else self._threshold_for_facts
             )
         else:
             threshold = (
                 self._threshold_for_questions_from_bot
-                if query.is_question
+                if wafl.simple_text_processing.questions.is_question
                 else self._threshold_for_facts
             )
 
@@ -246,7 +247,7 @@ class SingleFileKnowledge(BaseKnowledge):
                 )
                 continue
 
-            elif rule.effect.is_question:
+            elif wafl.simple_text_processing.questions.is_question:
                 self._rules_question_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )

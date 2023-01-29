@@ -1,8 +1,8 @@
 import os
 
 from wafl.events.narrator import Narrator
-from wafl.events.utils import is_question
-from wafl.extractor.dataclasses import Query
+from wafl.simple_text_processing.questions import is_question
+from wafl.extractors.dataclasses import Query
 from wafl.inference.backward_inference import BackwardInference
 from wafl.exceptions import InterruptTask
 

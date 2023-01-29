@@ -3,10 +3,10 @@ import os
 
 from unittest import TestCase
 from wafl.events.narrator import Narrator
-from wafl.events.utils import get_sentence_from_yn_question
+from wafl.simple_text_processing.questions import get_sentence_from_yn_question
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.extractor.dataclasses import Query
-from wafl.extractor.extractor import Extractor
+from wafl.extractors.dataclasses import Query
+from wafl.extractors.extractor import Extractor
 
 _path = os.path.dirname(__file__)
 

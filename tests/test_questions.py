@@ -3,11 +3,11 @@ import asyncio
 from unittest import TestCase
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.narrator import Narrator
-from wafl.events.utils import is_question
+from wafl.simple_text_processing.questions import is_question
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.extractor.extractor import Extractor
-from wafl.extractor.dataclasses import Query
+from wafl.extractors.extractor import Extractor
+from wafl.extractors.dataclasses import Query
 
 _wafl_example = """
 The user greets

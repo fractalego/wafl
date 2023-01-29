@@ -23,7 +23,7 @@ setup(
         "wafl.listener",
         "wafl.logger",
         "wafl.parsing",
-        "wafl.extractor",
+        "wafl.extractors",
         "wafl.speaker",
         "wafl.retriever",
         "wafl.scheduler",

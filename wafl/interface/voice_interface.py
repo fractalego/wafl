@@ -1,7 +1,7 @@
 import os
 import random
 
-from wafl.deixis import from_bot_to_user, from_user_to_bot
+from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import get_most_common_words, not_good_enough
 from wafl.listener.whisper_listener import WhisperListener

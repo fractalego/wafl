@@ -5,7 +5,7 @@ from wafl.events.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
-from wafl.extractor.dataclasses import Query
+from wafl.extractors.dataclasses import Query
 
 wafl_example = """
 

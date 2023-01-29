@@ -2,13 +2,12 @@ import asyncio
 import logging
 import traceback
 
-from wafl.events.utils import (
-    is_question,
-    is_yes_no_question,
-)
+import wafl.simple_text_processing.questions
+from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
-from wafl.deixis import from_bot_to_bot
+from wafl.simple_text_processing.deixis import from_bot_to_bot
 from wafl.exceptions import InterruptTask, CloseConversation
+from wafl.extractors.prompt_predictor import PromptPredictor
 from wafl.inference.utils import (
     cluster_facts,
     selected_answer,
@@ -19,18 +18,18 @@ from wafl.inference.utils import (
     text_is_code,
     check_negation,
     apply_substitutions,
-    normalized,
     update_substitutions_from_answer,
     add_function_arguments,
     invert_answer,
     text_has_assigmnent,
     update_substitutions_from_results,
-    answer_is_informative,
+    answer_is_informative, text_is_natural_language_task,
 )
+from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
 from wafl.parsing.preprocess import import_module, create_preprocessed
-from wafl.extractor.extractor import Extractor
-from wafl.extractor.dataclasses import Query, Answer
+from wafl.extractors.extractor import Extractor
+from wafl.extractors.dataclasses import Query, Answer
 from inspect import getmembers, isfunction
 
 _logger = logging.getLogger(__name__)
@@ -50,6 +49,7 @@ class BackwardInference:
         self._knowledge = knowledge
         self._interface = interface
         self._extractor = Extractor(narrator, logger)
+        self._prompt_predictor = PromptPredictor(logger)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -164,7 +164,7 @@ class BackwardInference:
             rule_effect_text = rule.effect.text
             knowledge_name = rule.knowledge_name
             self._log(f"Trying rule with trigger: {rule_effect_text}", depth)
-            if rule.effect.is_question:
+            if wafl.simple_text_processing.questions.is_question:
                 if not self._validate_question_in_effects(
                     rule.effect, query.text, substitutions
                 ):
@@ -197,10 +197,15 @@ class BackwardInference:
                         cause_text, knowledge_name, substitutions
                     )
 
+                elif text_is_natural_language_task(cause_text):
+                    answer = self._process_text_generation(
+                        cause_text, knowledge_name, substitutions
+                    )
+
                 else:
                     answer = self._process_query(
                         cause_text,
-                        cause.is_question,
+                        wafl.simple_text_processing.questions.is_question,
                         task_memory,
                         knowledge_name,
                         depth,
@@ -257,7 +262,7 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
-        if depth > 0 and task_memory.get_story() and query.is_question:
+        if depth > 0 and task_memory.get_story() and wafl.simple_text_processing.questions.is_question:
             query.text = from_bot_to_bot(query.text)
             answer = self._extractor.extract(
                 query, task_memory.get_story(), task_memory
@@ -270,7 +275,7 @@ class BackwardInference:
 
             task_memory.add_answer(answer.text)
 
-            if not query.is_question:
+            if not wafl.simple_text_processing.questions.is_question:
                 return answer
 
             if normalized(answer.text) not in [
@@ -286,7 +291,7 @@ class BackwardInference:
     def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, depth
     ):
-        if depth > 0 and query.is_question:
+        if depth > 0 and wafl.simple_text_processing.questions.is_question:
 
             while True:
                 self._log(f"Asking the user: {query.text}")
@@ -443,6 +448,17 @@ class BackwardInference:
         else:
             answer = Answer(text="False")
 
+        return answer
+
+    def _process_text_generation(self, cause_text, knowledge_name, substitutions):
+        if "=" not in cause_text:
+            return Answer(text="False")
+
+        variable, prompt = cause_text.split("=")
+        variable = variable.strip()
+        prompt = prompt.strip()
+        answer = self._prompt_predictor.predict(prompt)
+        update_substitutions_from_results(answer.text, variable, substitutions)
         return answer
 
     def _process_query(
