@@ -151,6 +151,7 @@ def get_integer_from_string(text):
 
     return None
 
+
 def get_time_in_future(minutes_from_now):
     num_minutes = get_integer_from_string(minutes_from_now)
     if not num_minutes:

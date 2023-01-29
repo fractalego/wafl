@@ -5,7 +5,7 @@ from unittest import TestCase
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.generated_events import GeneratedEvents
-from wafl.generators.generator_from_function_list import GeneratorFromFunctionList
+from wafl.events.events_from_function_list import EventsCreatorFromFunctionList
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -99,7 +99,7 @@ class TestScheduler(TestCase):
             interface,
             GeneratedEvents(
                 knowledge,
-                generators=GeneratorFromFunctionList([return_four_past_seven]),
+                events=EventsCreatorFromFunctionList([return_four_past_seven]),
                 interface=interface,
                 code_path=knowledge.get_dependencies_list(),
                 logger=_logger,
@@ -134,7 +134,7 @@ class TestScheduler(TestCase):
             interface,
             GeneratedEvents(
                 knowledge,
-                generators=GeneratorFromFunctionList([return_four_past_seven]),
+                events=EventsCreatorFromFunctionList([return_four_past_seven]),
                 code_path="/",
                 interface=interface,
                 logger=_logger,
