@@ -89,7 +89,7 @@ class SingleFileKnowledge(BaseKnowledge):
         return any(rule.effect.is_interruption for rule in rules)
 
     def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
-        if wafl.simple_text_processing.questions.is_question:
+        if query.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
                     query.text
@@ -103,13 +103,13 @@ class SingleFileKnowledge(BaseKnowledge):
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
-                if wafl.simple_text_processing.questions.is_question
+                if query.is_question
                 else self._threshold_for_facts
             )
         else:
             threshold = (
                 self._threshold_for_questions_from_bot
-                if wafl.simple_text_processing.questions.is_question
+                if query.is_question
                 else self._threshold_for_facts
             )
 
@@ -122,7 +122,7 @@ class SingleFileKnowledge(BaseKnowledge):
     def ask_for_facts_with_threshold(
         self, query, is_from_user=False, knowledge_name=None
     ):
-        if wafl.simple_text_processing.questions.is_question:
+        if query.is_question:
             indices_and_scores = (
                 self._facts_retriever_for_questions.get_indices_and_scores_from_text(
                     query.text
@@ -136,13 +136,13 @@ class SingleFileKnowledge(BaseKnowledge):
         if is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
-                if wafl.simple_text_processing.questions.is_question
+                if query.is_question
                 else self._threshold_for_facts
             )
         else:
             threshold = (
                 self._threshold_for_questions_from_bot
-                if wafl.simple_text_processing.questions.is_question
+                if query.is_question
                 else self._threshold_for_facts
             )
 
@@ -247,7 +247,7 @@ class SingleFileKnowledge(BaseKnowledge):
                 )
                 continue
 
-            elif wafl.simple_text_processing.questions.is_question:
+            elif rule.effect.is_question:
                 self._rules_question_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )

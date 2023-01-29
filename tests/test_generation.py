@@ -11,7 +11,7 @@ _path = os.path.dirname(__file__)
 
 wafl_rules = """
 The user says their name
-   name = who does the user greet?
+   name = what is the user's name?
    first_letter = return the first letter of the word. \
                   Examples: \
                   test, t; feast, f; {name},

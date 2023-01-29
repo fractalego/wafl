@@ -2,7 +2,6 @@ import asyncio
 import logging
 import traceback
 
-import wafl.simple_text_processing.questions
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -165,7 +164,7 @@ class BackwardInference:
             rule_effect_text = rule.effect.text
             knowledge_name = rule.knowledge_name
             self._log(f"Trying rule with trigger: {rule_effect_text}", depth)
-            if wafl.simple_text_processing.questions.is_question:
+            if is_question(rule_effect_text):
                 if not self._validate_question_in_effects(
                     rule.effect, query.text, substitutions
                 ):
@@ -206,7 +205,7 @@ class BackwardInference:
                 else:
                     answer = self._process_query(
                         cause_text,
-                        wafl.simple_text_processing.questions.is_question,
+                        cause.is_question,
                         task_memory,
                         knowledge_name,
                         depth,
@@ -263,11 +262,7 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
-        if (
-            depth > 0
-            and task_memory.get_story()
-            and wafl.simple_text_processing.questions.is_question
-        ):
+        if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             answer = self._extractor.extract(
                 query, task_memory.get_story(), task_memory
@@ -280,7 +275,7 @@ class BackwardInference:
 
             task_memory.add_answer(answer.text)
 
-            if not wafl.simple_text_processing.questions.is_question:
+            if not query.is_question:
                 return answer
 
             if normalized(answer.text) not in [
@@ -296,7 +291,7 @@ class BackwardInference:
     def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, depth
     ):
-        if depth > 0 and wafl.simple_text_processing.questions.is_question:
+        if depth > 0 and query.is_question:
 
             while True:
                 self._log(f"Asking the user: {query.text}")

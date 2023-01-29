@@ -29,18 +29,13 @@ class Extractor:
 
     def extract(self, query: "Query", text: str, task_memory=None):
         query_text = query.text.strip()
-        if (
-            wafl.simple_text_processing.questions.is_question
-            and not is_yes_no_question(query_text)
-        ):
+        if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(
                 query_text, query.variable, text, task_memory
             )
             return answer
 
-        if wafl.simple_text_processing.questions.is_question and is_yes_no_question(
-            query_text
-        ):
+        if query.is_question and is_yes_no_question(query_text):
             query_text = get_sentence_from_yn_question(query_text)
             if "the user says: 'yes" in text.lower():
                 return Answer(text="Yes")
