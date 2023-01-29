@@ -138,7 +138,6 @@ class TestEdgeCases(TestCase):
             logger=_logger,
         )
         asyncio.run(conversation_events.process_next())
-        print(interface.get_utterances_list())
         assert "unknown" not in interface.get_utterances_list()[-1]
 
     def test_no_answer_if_retrieval_is_too_sparse(self):

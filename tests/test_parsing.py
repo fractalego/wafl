@@ -94,7 +94,6 @@ class TestParsing(TestCase):
                 ),
             ]
         )
-        print(str(facts_and_rules["rules"]))
         assert str(facts_and_rules["rules"]) == expected
 
     def test__fact_parsing(self):
@@ -121,7 +120,6 @@ class TestParsing(TestCase):
                 ),
             ]
         )
-        print(str(facts_and_rules["facts"]))
         assert str(facts_and_rules["facts"]) == expected
 
     def test__knowledge_facts(self):
@@ -144,7 +142,6 @@ class TestParsing(TestCase):
         rules = knowledge.ask_for_rule_backward(
             Query("the user greets you", is_question=False)
         )
-        print(rules[0])
         assert str(rules[0]) == expected
 
     def test__dependency_list_is_extracted(self):

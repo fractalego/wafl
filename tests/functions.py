@@ -76,7 +76,6 @@ def normalize_name(linename):
 
 def normalize_name2(linename):
     extracted, score = process.extract(linename, lines_dict.keys(), limit=1)[0]
-    print("EXTRACTED!", extracted, score)
     if score < 60:
         {f"% SAY I did not quite get the line name %"}
         linename = {"% Which line do you want to check? %"}

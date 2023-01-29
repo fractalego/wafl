@@ -66,5 +66,4 @@ class TestReminders(TestCase):
             pass
 
         expected = ["bot: Hello there!", "bot: This rule was created"]
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-2:] == expected

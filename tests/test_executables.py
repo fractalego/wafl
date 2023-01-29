@@ -116,7 +116,6 @@ class TestExecutables(TestCase):
         asyncio.run(conversation_events.process_next())
         expected = "bot: The shopping list contains: apples, bananas"
         expected2 = "bot: The shopping list contains: bananas, apples"
-        print(interface.get_utterances_list())
         assert (
             interface.get_utterances_list()[-1] == expected
             or interface.get_utterances_list()[-1] == expected2
