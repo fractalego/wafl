@@ -1,15 +1,16 @@
 import logging
 import os
 
-from wafl.connectors.gptj_connector import GPTJConnector, Dialogue
-from wafl.events.utils import (
+import wafl.simple_text_processing.questions
+from wafl.connectors.gptj_qa_connector import GPTJQAConnector, Dialogue
+from wafl.simple_text_processing.questions import (
     is_question,
     is_yes_no_question,
     get_sentence_from_yn_question,
 )
-from wafl.inference.utils import normalized
-from wafl.extractor.dataclasses import Answer
-from wafl.extractor.entailer import Entailer
+from wafl.simple_text_processing.normalize import normalized
+from wafl.extractors.dataclasses import Answer
+from wafl.extractors.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
@@ -18,7 +19,7 @@ _logger = logging.getLogger(__file__)
 class Extractor:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
-        self._qa = GPTJConnector()
+        self._qa = GPTJQAConnector()
         self._narrator = narrator
         self._entailer_to_qa_mapping = {
             "True": "Yes",

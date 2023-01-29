@@ -2,7 +2,7 @@ from unittest import TestCase
 from wafl.facts import Fact
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text, get_dependency_list
-from wafl.extractor.dataclasses import Query
+from wafl.extractors.dataclasses import Query
 from wafl.rules import Rule
 
 wafl_example = """
@@ -94,7 +94,6 @@ class TestParsing(TestCase):
                 ),
             ]
         )
-        print(str(facts_and_rules["rules"]))
         assert str(facts_and_rules["rules"]) == expected
 
     def test__fact_parsing(self):
@@ -121,7 +120,6 @@ class TestParsing(TestCase):
                 ),
             ]
         )
-        print(str(facts_and_rules["facts"]))
         assert str(facts_and_rules["facts"]) == expected
 
     def test__knowledge_facts(self):
@@ -144,7 +142,6 @@ class TestParsing(TestCase):
         rules = knowledge.ask_for_rule_backward(
             Query("the user greets you", is_question=False)
         )
-        print(rules[0])
         assert str(rules[0]) == expected
 
     def test__dependency_list_is_extracted(self):

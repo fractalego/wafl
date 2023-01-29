@@ -2,10 +2,11 @@ import os
 import re
 
 from wafl.answerer.list_answerer import ListAnswerer
-from wafl.inference.utils import normalized
+from wafl.simple_text_processing.normalize import normalized
 
 from wafl.config import Configuration
-from wafl.events.utils import is_question, input_is_valid
+from wafl.events.utils import input_is_valid
+from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"

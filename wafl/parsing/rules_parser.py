@@ -1,11 +1,12 @@
-from wafl.events.utils import is_question
-from wafl.deixis import from_user_to_bot
+from wafl.simple_text_processing.questions import is_question
+from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.facts import Fact
 from wafl.parsing.utils import (
     get_lines_stripped_from_comments,
     is_quoted_text,
     text_has_interruption,
     clean_text,
+    concatenate_slashes_into_one_single_line,
 )
 from wafl.rules import Rule
 
@@ -25,6 +26,7 @@ def get_dependency_list(text: str):
 
 
 def get_facts_and_rules_from_text(text: str, knowledge_name=None):
+    text = concatenate_slashes_into_one_single_line(text)
     lines = get_lines_stripped_from_comments(text)
     lines.extend(["LAST"])
 

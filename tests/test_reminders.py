@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.generated_events import GeneratedEvents
-from wafl.generators.generator_from_module_name import GeneratorFromModuleName
+from wafl.events.events_from_module_name import EventsCreatorFromModuleName
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -30,7 +30,7 @@ class TestReminders(TestCase):
         knowledge = SingleFileKnowledge(_wafl_example)
         generated_events = GeneratedEvents(
             knowledge,
-            generators=GeneratorFromModuleName("events"),
+            events=EventsCreatorFromModuleName("events"),
             interface=interface,
         )
         conversation_events = ConversationEvents(
@@ -51,13 +51,11 @@ class TestReminders(TestCase):
         knowledge = SingleFileKnowledge(_wafl_example)
         generated_events = GeneratedEvents(
             knowledge,
-            generators=GeneratorFromModuleName("events"),
+            events=EventsCreatorFromModuleName("events"),
             interface=interface,
         )
         conversation_events = ConversationEvents(
-            knowledge,
-            interface=interface,
-            code_path="/"
+            knowledge, interface=interface, code_path="/"
         )
         input_from_user = "I want to set an alarm in one minute"
         asyncio.run(conversation_events._process_query(input_from_user))
@@ -68,5 +66,4 @@ class TestReminders(TestCase):
             pass
 
         expected = ["bot: Hello there!", "bot: This rule was created"]
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-2:] == expected

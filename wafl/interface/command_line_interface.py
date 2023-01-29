@@ -1,4 +1,4 @@
-from wafl.deixis import from_bot_to_user, from_user_to_bot
+from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 

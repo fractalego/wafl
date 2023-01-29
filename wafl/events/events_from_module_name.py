@@ -1,9 +1,10 @@
 from importlib import import_module
 from inspect import getmembers, isfunction
 from typing import List
+from wafl.events.BaseEventCreator import BaseEventsCreator
 
 
-class GeneratorFromModuleName:
+class EventsCreatorFromModuleName(BaseEventsCreator):
     def __init__(self, module_name):
         self._module = {}
         self._functions = {}

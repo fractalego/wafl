@@ -7,7 +7,7 @@ from wafl.config import Configuration
 _tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 
-class GPTJConnector:
+class GPTJQAConnector:
     _max_tries = 3
     _max_reply_length = 100
     _num_prediction_tokens = 5

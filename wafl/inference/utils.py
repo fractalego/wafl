@@ -2,8 +2,9 @@ import re
 
 from typing import List
 from fuzzywuzzy import process
-
-from wafl.extractor.dataclasses import Answer
+from wafl.extractors.dataclasses import Answer
+from wafl.simple_text_processing.normalize import normalized
+from wafl.simple_text_processing.questions import is_question
 
 
 def cause_is_negated(cause_text):
@@ -115,20 +116,6 @@ def process_unknown_answer(answer):
     return answer
 
 
-def normalized(text, lower_case=True):
-    text = text.strip()
-    if not text:
-        return ""
-
-    if text[-1] == ".":
-        text = text[:-1]
-
-    if lower_case:
-        text = text.lower()
-
-    return text.strip()
-
-
 def cluster_facts(facts_and_threshold):
     if not facts_and_threshold:
         return []
@@ -188,3 +175,16 @@ def project_answer(answer: "Answer", candidates: List) -> "Answer":
 
 def answer_is_informative(answer):
     return not any(item == normalized(answer.text) for item in ["unknown"])
+
+
+def text_is_natural_language_task(text):
+    if not "=" in text:
+        return False
+
+    if text_is_code(text):
+        return False
+
+    if is_question(text.split("=")[1]):
+        return False
+
+    return True

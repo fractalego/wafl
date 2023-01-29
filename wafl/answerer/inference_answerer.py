@@ -1,9 +1,9 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
-from wafl.events.utils import is_question
-from wafl.extractor.dataclasses import Query
-from wafl.extractor.extractor import Extractor
+from wafl.simple_text_processing.questions import is_question
+from wafl.extractors.dataclasses import Query
+from wafl.extractors.extractor import Extractor
 
 
 class InferenceAnswerer(BaseAnswerer):

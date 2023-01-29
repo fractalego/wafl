@@ -1,7 +1,7 @@
 import os
 
 from unittest import TestCase
-from wafl.extractor.entailer import Entailer
+from wafl.extractors.entailer import Entailer
 
 _path = os.path.dirname(__file__)
 
