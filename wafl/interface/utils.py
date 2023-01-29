@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-from wafl.inference.utils import normalized
+from wafl.simple_text_processing.normalize import normalized
 
 
 def get_most_common_words(text, max_num_words, count_threshold=1):

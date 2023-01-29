@@ -1,8 +1,9 @@
 import logging
 import nltk
 
+import wafl.simple_text_processing.questions
 from wafl.facts import Fact
-from wafl.inference.utils import normalized
+from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,
@@ -13,8 +14,8 @@ from wafl.knowledge.utils import (
 )
 from wafl.parsing.line_rules_parser import parse_rule_from_single_line
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.extractor.entailer import Entailer
-from wafl.extractor.dataclasses import Query
+from wafl.extractors.entailer import Entailer
+from wafl.extractors.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
 from wafl.text_utils import clean_text_for_retrieval

@@ -1,8 +1,8 @@
 import os
 
 from wafl.events.narrator import Narrator
-from wafl.events.utils import is_question
-from wafl.extractor.dataclasses import Query
+from wafl.simple_text_processing.questions import is_question
+from wafl.extractors.dataclasses import Query
 from wafl.inference.backward_inference import BackwardInference
 from wafl.exceptions import InterruptTask
 
@@ -14,7 +14,7 @@ class GeneratedEvents:
         self,
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
-        generators: "StringGenerator",
+        events: "BaseEventCreator",
         code_path=None,
         config=None,
         logger=None,
@@ -24,7 +24,7 @@ class GeneratedEvents:
         )
         self._knowledge = knowledge
         self._interface = interface
-        self._generators = generators
+        self._events = events
 
     def output(self, text: str):
         self._interface.output(text)
@@ -34,7 +34,7 @@ class GeneratedEvents:
         return await self._inference.compute(query)
 
     async def process_next(self, activation_word: str = "") -> bool:
-        events = self._generators.get()
+        events = self._events.get()
         for event in events:
             try:
                 answer = await self._process_query(event)

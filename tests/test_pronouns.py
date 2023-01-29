@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wafl.deixis import from_user_to_bot, from_bot_to_user
+from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 
 
 class TestInference(TestCase):

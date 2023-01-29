@@ -1,4 +1,4 @@
-from wafl.events.utils import is_question
+from wafl.simple_text_processing.questions import is_question
 
 
 class Narrator:

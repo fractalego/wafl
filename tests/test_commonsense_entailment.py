@@ -32,7 +32,6 @@ class TestCommonSense(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Apples will be added"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__sentences_can_filter_items_positive2(self):
@@ -48,7 +47,6 @@ class TestCommonSense(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas will be added"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__sentences_can_filter_items_negative(self):
@@ -64,5 +62,4 @@ class TestCommonSense(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Skyscrapers is not a shopping item"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

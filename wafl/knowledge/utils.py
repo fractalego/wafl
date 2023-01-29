@@ -1,4 +1,5 @@
-from wafl.events.utils import get_sentence_from_yn_question
+import wafl.simple_text_processing.questions
+from wafl.simple_text_processing.questions import get_sentence_from_yn_question
 
 
 def text_is_exact_string(text):

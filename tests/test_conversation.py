@@ -89,7 +89,6 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events._process_query(input_from_user))
         expected = "bot: Test@example.com has been added to the newsletter"
 
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__remember_command(self):
@@ -103,7 +102,6 @@ class TestConversation(TestCase):
         answer = asyncio.run(
             conversation_events._process_query("What is the email of the user")
         )
-        print(answer.text)
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
