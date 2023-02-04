@@ -1,7 +1,7 @@
 ### TODO
 
 
-* change {"%%"} into something more typeable (possibly "% %")
+/* change {"%%"} into something more typeable (possibly "% %")
 * add torchserve handler as a wafl init
 * volume threshold should be sampled continously
 * add main.wafl
