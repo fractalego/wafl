@@ -39,7 +39,7 @@ setup(
         "accelerate==0.13.2",
         "bitsandbytes==0.35.3",
         "sentence_transformers==2.2.2",
-        "torch==1.12.1",
+        "torch==1.13.1",
         "nltk==3.6.2",
         "gensim==4.0.1",
         "sklearn==0.0",

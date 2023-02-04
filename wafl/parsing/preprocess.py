@@ -45,10 +45,11 @@ def create_preprocessed(
     with open(filename) as file:
         print(f"Preprocessing {filename}.")
         text = file.read()
-        text = text.replace('{f"%', 'inference.get_inference_answer(f"')
-        text = text.replace('{"%', 'inference.get_inference_answer(f"')
-        text = text.replace('%"}', '", task_memory)')
-
+        text = re.sub(
+            r'f?"%(.*)%"',
+            'inference.get_inference_answer(f"\\1", task_memory)',
+            text,
+        )
         for name in function_names:
             text = re.sub(
                 f" ({name}\([0-9a-zA-Z,\s:_]+)\)",

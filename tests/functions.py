@@ -38,22 +38,22 @@ def reset_shopping_list():
 
 
 def append_until_user_is_done():
-    while {"% does the user want to add more items %"}:
-        item = {"% what does the user want to add %"}
+    while "% does the user want to add more items %":
+        item = "% what does the user want to add %"
         shopping_list.append(item)
 
 
 def say_text(text):
-    {f"% SAY {text} %"}
+    f"% SAY {text} %"
 
 
 def say_twice():
     index = 0
     utterances = ["HELLO", "HELLO"]
     while index < len(utterances):
-        {f"% SAY Please say: '{utterances[index]}' %"}
+        f"% SAY Please say: '{utterances[index]}' %"
 
-        {"% SAY Your input is recorded %"}
+        "% SAY Your input is recorded %"
 
         index += 1
 
@@ -77,9 +77,9 @@ def normalize_name(linename):
 def normalize_name2(linename):
     extracted, score = process.extract(linename, lines_dict.keys(), limit=1)[0]
     if score < 60:
-        {f"% SAY I did not quite get the line name %"}
-        linename = {"% Which line do you want to check? %"}
-        return {f"% normalize_name2('{linename}') %"}
+        f"% SAY I did not quite get the line name %"
+        linename = "% Which line do you want to check? %"
+        return f"% normalize_name2('{linename}') %"
 
     return extracted
 
@@ -95,7 +95,7 @@ lines_dict = {
 
 
 def check_tfl_line(linename):
-    {f"% SAY The {linename} line is running normally %"}
+    f"% SAY The {linename} line is running normally %"
 
 
 def remove_from_shopping_list(item):
@@ -104,10 +104,10 @@ def remove_from_shopping_list(item):
 
     extracted, score = process.extract(item, shopping_list, limit=1)[0]
     if score < 60:
-        {f"% SAY I did not quite get the item to remove %"}
+        f"% SAY I did not quite get the item to remove %"
         return
 
-    if not {f"% Do you want to remove {extracted} from the shopping list? %"}:
+    if not f"% Do you want to remove {extracted} from the shopping list? %":
         return False
 
     shopping_list.remove(extracted)
@@ -119,15 +119,15 @@ def add_shopping_list(item):
 
 def add_shopping_list_as_function(item):
     shopping_list.append(item)
-    while {"% Do you want to add anything else  %"}:
-        item = {"% What item do you want to add?%"}
+    while "% Do you want to add anything else  %":
+        item = "% What item do you want to add?%"
         shopping_list.append(item)
-        {f"% SAY {item} has been added to the shopping list%"}
-        {"%ERASE MEMORY%"}
+        f"% SAY {item} has been added to the shopping list%"
+        "%ERASE MEMORY%"
 
 
 def testing_fact_from_python_space():
-    return {"% According to the definition, speed equals space over time %"}
+    return "% According to the definition, speed equals space over time %"
 
 
 def a():
@@ -135,7 +135,7 @@ def a():
 
 
 def b():
-    {"% SAY Hello %"}
+    "% SAY Hello %"
 
 
 def c():
