@@ -10,6 +10,7 @@ def create_initial_files():
     _events_template = open(os.path.join(_path, "templates/events.py"))
     _config_template = open(os.path.join(_path, "templates/config.json"))
     _testcases_template = open(os.path.join(_path, "templates/testcases.txt"))
+    _docker_start = open(os.path.join(_path, "templates/start_llm.sh"))
 
     print("+ Initializing ... ", end="")
 
@@ -27,6 +28,9 @@ def create_initial_files():
 
     with open("events.py", "w") as file:
         file.write(_testcases_template.read())
+
+    with open("start_llm.sh", "w") as file:
+        file.write(_docker_start.read())
 
     os.mkdir("logs/")
 
