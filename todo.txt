@@ -2,9 +2,9 @@
 
 
 /* change {"%%"} into something more typeable (possibly "% %")
-* add torchserve handler as a wafl init
-* volume threshold should be sampled continously
+/* add torchserve handler as a wafl init
 * add main.wafl
+* volume threshold should be sampled continously
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
