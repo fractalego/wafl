@@ -5,7 +5,7 @@ from wafl.simple_text_processing.normalize import normalized
 
 def get_most_common_words(text, max_num_words, count_threshold=1):
     corpus = text.split("\n")
-    cv = CountVectorizer(ngram_range=[1, 2])
+    cv = CountVectorizer(ngram_range=(1, 2))
     words_count = cv.fit_transform(corpus).sum(axis=0)
     words_freq = [
         (word, words_count[0, index])

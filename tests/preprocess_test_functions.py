@@ -3,7 +3,7 @@ def a():
 
 
 def b():
-    {"% SAY Hello %"}
+    "% SAY Hello %"
 
 
 def c():
