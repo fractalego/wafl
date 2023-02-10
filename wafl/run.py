@@ -22,10 +22,11 @@ def print_incipit():
 
 def run_from_command_line():
     interface = CommandLineInterface()
+    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
     conversation_events = ConversationEvents(
-        ProjectKnowledge("rules.wafl", logger=_logger),
+        knowledge,
         interface=interface,
-        code_path="/",
+        code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
     interface.output("Hello. How may I help you?")
