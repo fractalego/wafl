@@ -20,7 +20,7 @@ class CommandLineInterface(BaseInterface):
 
     def input(self) -> str:
         text = from_user_to_bot(input("user> ")).strip()
-        while self._check_understanding and not_good_enough(text):
+        while not_good_enough(text):
             self.output("I did not quite understand that")
             text = from_user_to_bot(input("user> "))
 

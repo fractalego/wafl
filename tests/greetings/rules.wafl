@@ -1,4 +1,6 @@
 #using facts
+#using rules
+
 
 this bot is doing well
 
@@ -8,3 +10,7 @@ person = who does the user want to greet back?
 the user wants to know the time
   time = get_time()
   SAY the time is {time}!
+
+
+the user is italian
+  something needs to be said in italian

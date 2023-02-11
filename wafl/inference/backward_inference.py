@@ -113,6 +113,14 @@ class BackwardInference:
                 task_memory.erase()
                 return self._process_new_task_memory_command()
 
+        answer = self._look_for_answer_in_last_user_utterance(
+            query, task_memory, knowledge_name, depth
+        )
+        candidate_answers.append(answer)
+        if answer and answer_is_informative(answer):
+            self._log("Answers in working memory: " + answer.text, depth)
+            return answer
+
         answer = self._look_for_answer_in_task_memory(
             query, task_memory, knowledge_name, depth
         )
@@ -259,6 +267,41 @@ class BackwardInference:
         )
         return answer
 
+    def _look_for_answer_in_last_user_utterance(
+        self, query, task_memory, knowledge_name, depth
+    ):
+        if depth > 0 and task_memory.get_story() and query.is_question:
+            query.text = from_bot_to_bot(query.text)
+            user_utterances = [
+                item for item in self._interface.get_utterances_list() if "user:" in item
+            ]
+            if not user_utterances:
+                return None
+
+            answer = self._extractor.extract(
+                query, user_utterances[-1], task_memory
+            )
+            if task_memory.text_is_in_prior_questions(answer.text):
+                answer.text = "unknown"
+
+            if task_memory.text_is_in_prior_answers(answer.text):
+                answer.text = "unknown"
+
+            task_memory.add_answer(answer.text)
+
+            if not query.is_question:
+                return answer
+
+            if normalized(answer.text) not in [
+                "unknown",
+                "yes",
+                "no",
+            ]:
+                if answer.text[-1] == ".":
+                    answer.text = answer.text[:-1]
+
+                return answer
+
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
@@ -299,6 +342,7 @@ class BackwardInference:
                 user_input_text = self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
+                    self._log(f"Found a better match for {user_input_text}", depth)
                     self._spin_up_another_inference_task(
                         user_input_text,
                         task_memory,
@@ -525,6 +569,7 @@ class BackwardInference:
             variable="name",
         )
         self._interface.bot_has_spoken(False)
+        self._log(f"Spinning up another inference task", depth)
         self._compute_recursively(
             query,
             task_memory,
