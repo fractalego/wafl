@@ -63,8 +63,8 @@ class ConversationEvents:
             self.output("I will remember it.")
 
         if not self._interface.bot_has_spoken():
-            if not text_is_question and normalized(answer.text) in ["unknown"]:
-                self.output(answer.text)
+            if not text_is_question and answer.is_neutral():
+                self.output("")
 
             if text_is_question and answer.text not in ["True", "False"]:
                 self.output(answer.text)
@@ -77,7 +77,7 @@ class ConversationEvents:
                 and answer.is_false()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("Ok")
+                self._interface.output("I don't know what to reply")
 
             if (
                 not text_is_question

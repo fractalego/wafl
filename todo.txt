@@ -4,6 +4,16 @@
   * it should divide by
     * the user wants to do something
     * the user asks for information
+    * anything else
+
+* add a way for the answerer to access gpt information
+   * it should say "I believe ..."
+
+* the rules should be chosen by gptj according to the prior conversation
+  (possibly from bw_inference _look_for_answer_in_rules)
+
+* add docker compose for running server + interface
+  * add a flask interface for api
 
 * WHY IS RUN-AUDIO SLOW AND RUN-CLI FAST for "add something" command?
 
