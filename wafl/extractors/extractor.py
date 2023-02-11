@@ -47,8 +47,8 @@ class Extractor:
     def _answer_question(self, query_text, variable_name, text: str, task_memory):
         dialogue = Dialogue()
 
-        answer = self._get_answer_by_iterating_over_prior_events_in_the_story(
-            text, dialogue.get_text(), query_text, task_memory
+        answer = self._get_answer_and_check_it_with_entailer(
+            text, dialogue.get_text(), query_text
         )
         if answer and answer[-1] in [".", ",", "!"]:
             answer = answer[:-1]
@@ -68,45 +68,25 @@ class Extractor:
 
         return Answer(text="No")
 
-    def _get_answer_by_iterating_over_prior_events_in_the_story(
-        self, text, dialogue_text, query_text, task_memory
+    def _get_answer_and_check_it_with_entailer(
+        self, story, dialogue_text, query_text
     ):
         query_text = _clean_query_text(query_text)
+        answer = normalized(self._qa.get_answer(story, dialogue_text, query_text))
         answers_and_scores = []
-        penalty = -0.05
-        for event in _split_text(text)[::-1]:
-            penalty += 0.05
-            event = _clean_event(event.strip())
-            if not event or len(event) < 2:
-                continue
-
-            answer = normalized(self._qa.get_answer(event, dialogue_text, query_text))
-            if task_memory and task_memory.text_is_in_prior_answers(answer):
-                continue
-
+        for event in _split_events(story):
+            event = _clean_events(event)
             answer_context = self._narrator.get_relevant_query_answer_context(
-                text, query_text, answer
+                event, query_text, answer
             )
             entailment_score = self._entailer.entails(
-                event.replace(".'.", "").replace(".'", ""),
+                event,
                 answer_context,
                 threshold=0.75,
                 return_threshold=True,
             )
             if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score - penalty))
-
-            if "when asked" not in event.lower():
-                continue
-
-            entailment_score = self._entailer.entails(
-                answer_context,
-                event.replace(".'.", "").replace(".'", ""),
-                threshold=0.55,
-                return_threshold=True,
-            )
-            if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score - penalty))
+                answers_and_scores.append((answer, entailment_score))
 
         if answers_and_scores:
             return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]
@@ -114,13 +94,18 @@ class Extractor:
         return "unknown"
 
 
-def _split_text(text):
+def _split_events(text):
     return text.split("; ")
 
 
-def _clean_event(text):
+def _clean_events(text):
     text = text.strip()
     text = text.replace(" 's ", "'s ")
+    text = text.replace(".\'", "\'")
+    text = text.replace(".\"", "\"")
+    if text and text[-1] == ".":
+        text = text[:-1]
+
     return text
 
 
