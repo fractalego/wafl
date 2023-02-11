@@ -23,7 +23,7 @@ from wafl.inference.utils import (
     text_has_assigmnent,
     update_substitutions_from_results,
     answer_is_informative,
-    text_is_natural_language_task,
+    text_is_natural_language_task, escape_characters,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -470,6 +470,7 @@ class BackwardInference:
             task_memory = (
                 TaskMemory()
             )  # task_memory is used as argument of the code in eval()
+            to_execute = escape_characters(to_execute)
             self._log(f"Executing code: {to_execute}")
             result = eval(f"self._module['{knowledge_name}'].{to_execute}")
             self._log(f"Execution result: {result}")

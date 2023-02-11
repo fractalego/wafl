@@ -188,3 +188,8 @@ def text_is_natural_language_task(text):
         return False
 
     return True
+
+
+def escape_characters(text):
+    text.replace(r"'", r"\\'")
+    return text

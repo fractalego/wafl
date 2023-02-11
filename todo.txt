@@ -1,7 +1,12 @@
 ### TODO
 
-* WHY IS RUN-AUDIO SLOW AND RUN-CLI FAST for "add something" command?
 * add main.wafl
+  * it should divide by
+    * the user wants to do something
+    * the user asks for information
+
+* WHY IS RUN-AUDIO SLOW AND RUN-CLI FAST for "add something" command?
+
 * volume threshold should be sampled continously
 * create errors within parser
    * dependency does not exist
