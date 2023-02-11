@@ -12,7 +12,9 @@ wafl_dependency = """
 The user greets
   name = what is the name of the person that is greeting
   the user wants {name} to greet back
-
+  
+the user's name is alberto
+  the user is italian
 """.strip()
 
 
@@ -25,8 +27,9 @@ class TestDependencies(TestCase):
         knowledge = ProjectKnowledge(tmp_filename)
         expected = {
             "/": ["/greetings"],
-            "/greetings": ["/facts"],
+            "/greetings": ["/facts", "/rules"],
             "/greetings/facts": [],
+            "/greetings/rules": [],
         }
         self.assertEqual(expected, knowledge._dependency_dict)
 
@@ -36,7 +39,7 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         knowledge = ProjectKnowledge(tmp_filename)
-        expected = ["/", "/greetings", "/greetings/facts"]
+        expected = ["/", "/greetings", "/greetings/facts", "/greetings/rules"]
         self.assertEqual(expected, list(knowledge._knowledge_dict.keys()))
 
     def test__rules_are_called_from_dependency_list(self):
@@ -88,6 +91,7 @@ class TestDependencies(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "the sun is shiny"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__functions_can_be_called_from_a_dependency(self):
@@ -108,4 +112,25 @@ class TestDependencies(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: The time is now!"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__functions_can_be_called_from_a_2_level_deep_dependency(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        interface = DummyInterface(
+            to_utter=[
+                "My name is Alberto",
+            ]
+        )
+        knowledge = ProjectKnowledge(tmp_filename)
+        conversation_events = ConversationEvents(
+            ProjectKnowledge(tmp_filename),
+            interface=interface,
+            code_path=knowledge.get_dependencies_list(),
+        )
+        asyncio.run(conversation_events.process_next())
+        expected = "bot: Ciao!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

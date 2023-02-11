@@ -30,6 +30,7 @@ class TestAnswerInConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: 0 celsius"
 
     def test__random_name_is_remembered(self):
@@ -41,4 +42,5 @@ class TestAnswerInConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: albert"

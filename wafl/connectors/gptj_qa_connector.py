@@ -21,7 +21,10 @@ class GPTJQAConnector(BaseGPTJConnector):
         if -1 in end_set:
             end_set.remove(-1)
 
-        end = min(end_set)
+        end = len(text)
+        if end_set:
+            end = min(end_set)
+
         candidate_answer = text[start:end].split(":")[-1].strip()
         return candidate_answer
 

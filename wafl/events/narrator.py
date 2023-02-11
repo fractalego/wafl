@@ -20,6 +20,7 @@ class Narrator:
             else:
                 summary += f"the {speaker} says: '{utterance}'; "
 
+        summary = self._clean_summary(summary)
         return summary
 
     def get_speaker(self, line):
@@ -63,3 +64,7 @@ class Narrator:
             return f"the bot remembers '{answer}'"
 
         return answer
+
+    def _clean_summary(self, text):
+        text = text.replace(";.", ";")
+        return text

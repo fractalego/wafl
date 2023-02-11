@@ -163,6 +163,7 @@ A:
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "bot: Bananas has been added to the list"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__prior_list_name_is_remembered_second_time(self):

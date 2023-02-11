@@ -1,15 +1,24 @@
 ### TODO
 
-
-/* change {"%%"} into something more typeable (possibly "% %")
-/* add torchserve handler as a wafl init
+* WHY IS RUN-AUDIO SLOW AND RUN-CLI FAST for "add something" command?
 * add main.wafl
 * volume threshold should be sampled continously
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
 
-* rules should be added and removed
+* Clean conversation summary
+  * [computer] is in the summary
+  * Sorry? is in the summary
+  * repetitions are in the summary
+  * sentences that are said by the bot are treated the same as they were said by the user
+  * maybe questions can be asked at a summary level? Not just sentence by sentence.
+
+* rules should be added and REMOVED!
+
+
+/* change {"%%"} into something more typeable (possibly "% %")
+/* add torchserve handler as a wafl init
 
 /* Add GENERATE
 /    * Use it to get "1" from "one minute"
