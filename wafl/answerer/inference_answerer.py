@@ -1,5 +1,4 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.answerer.utils import remove_text_between_brackets
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.questions import is_question
@@ -24,8 +23,6 @@ class InferenceAnswerer(BaseAnswerer):
             self._logger.write(
                 f"InferenceAnswerer: The query is {query_text}", self._logger.level.INFO
             )
-
-        query_text = remove_text_between_brackets(query_text)
 
         return await get_answer_using_text(
             self._inference, self._interface, query_text, text

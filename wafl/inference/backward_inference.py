@@ -162,6 +162,7 @@ class BackwardInference:
     def _look_for_answer_in_rules(
         self, query, task_memory, query_knowledge_name, depth, inverted_rule
     ):
+        self._log(f"Looking for answers in rules")
         rules = self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
@@ -244,6 +245,7 @@ class BackwardInference:
                 return Answer(text="False")
 
     def _look_for_answer_in_facts(self, query, task_memory, knowledge_name, depth):
+        self._log(f"Looking for answers in facts")
         facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=depth == 0, knowledge_name=knowledge_name
         )
@@ -258,6 +260,7 @@ class BackwardInference:
             return answer
 
     def _look_for_answer_in_entailment(self, query, knowledge_name, depth):
+        self._log(f"Looking for answers in entailment")
         if ":-" not in query.text:
             return None
 
@@ -270,6 +273,7 @@ class BackwardInference:
     def _look_for_answer_in_last_user_utterance(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers in the user's last utterance")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             user_utterances = [
@@ -305,6 +309,7 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers in task memory")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             answer = self._extractor.extract(
@@ -334,6 +339,7 @@ class BackwardInference:
     def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers by asking the user")
         if depth > 0 and query.is_question:
 
             while True:

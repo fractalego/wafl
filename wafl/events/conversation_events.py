@@ -5,7 +5,7 @@ from wafl.answerer.list_answerer import ListAnswerer
 from wafl.simple_text_processing.normalize import normalized
 
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid
+from wafl.events.utils import input_is_valid, remove_text_between_brackets
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
@@ -47,7 +47,7 @@ class ConversationEvents:
         text_is_question = is_question(text)
 
         try:
-            answer = await self._answerer.answer(text)
+            answer = await self._answerer.answer(remove_text_between_brackets(text))
 
         except InterruptTask:
             self._interface.output("Task interrupted")

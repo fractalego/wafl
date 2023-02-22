@@ -21,6 +21,7 @@ class Extractor:
         self._entailer = Entailer(logger)
         self._qa = GPTJQAConnector()
         self._narrator = narrator
+        self._logger = logger
         self._entailer_to_qa_mapping = {
             "True": "Yes",
             "False": "No",
@@ -28,6 +29,10 @@ class Extractor:
         }
 
     def extract(self, query: "Query", text: str, task_memory=None):
+        if self._logger:
+            self._logger.write(f"Extractor: the query is {query}")
+            self._logger.write(f"Extractor: the text is {text}")
+
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(
@@ -72,7 +77,14 @@ class Extractor:
         self, story, dialogue_text, query_text
     ):
         query_text = _clean_query_text(query_text)
+        if self._logger:
+            self._logger.write(f"Extractor: answering the query {query_text}")
+
         answer = normalized(self._qa.get_answer(story, dialogue_text, query_text))
+
+        if self._logger:
+            self._logger.write(f"Extractor: the answer is {answer}")
+
         answers_and_scores = []
         for event in _split_events(story):
             event = _clean_events(event)
