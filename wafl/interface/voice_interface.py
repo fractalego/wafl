@@ -53,6 +53,9 @@ class VoiceInterface(BaseInterface):
         self._listener.add_hotwords(hotwords)
 
     def output(self, text: str):
+        if not text:
+            return
+
         self._listener.activate()
         text = from_bot_to_user(text)
         self._utterances.append(f"bot: {text}")
