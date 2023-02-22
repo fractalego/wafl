@@ -1,5 +1,7 @@
 ### TODO
 
+* volume threshold should be sampled continously
+
 * add main.wafl
   * it should divide by
     * the user wants to do something
@@ -15,9 +17,6 @@
 * add docker compose for running server + interface
   * add a flask interface for api
 
-* WHY IS RUN-AUDIO SLOW AND RUN-CLI FAST for "add something" command?
-
-* volume threshold should be sampled continously
 * create errors within parser
    * dependency does not exist
    * . is allowes in dependency, / is not
