@@ -23,7 +23,8 @@ from wafl.inference.utils import (
     text_has_assigmnent,
     update_substitutions_from_results,
     answer_is_informative,
-    text_is_natural_language_task, escape_characters,
+    text_is_natural_language_task,
+    escape_characters,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -277,14 +278,14 @@ class BackwardInference:
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             user_utterances = [
-                item for item in self._interface.get_utterances_list() if "user:" in item
+                item
+                for item in self._interface.get_utterances_list()
+                if "user:" in item
             ]
             if not user_utterances:
                 return None
 
-            answer = self._extractor.extract(
-                query, user_utterances[-1], task_memory
-            )
+            answer = self._extractor.extract(query, user_utterances[-1], task_memory)
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 

@@ -51,4 +51,3 @@ async def get_answer_using_text(inference, interface, text, prior_conversation):
         answer = await inference.compute(query, working_memory)
 
     return answer
-

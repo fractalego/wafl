@@ -33,6 +33,8 @@ def _make_safe(text):
     text = text.replace('"', "'")
     text = text.replace("''", "'")
     text = text.replace('""', '"')
+    text = text.replace(r"\"", '\\"')
+    text = text.replace(r"\'", "\\'")
     return text
 
 
@@ -191,5 +193,5 @@ def text_is_natural_language_task(text):
 
 
 def escape_characters(text):
-    text.replace(r"'", r"\\'")
+    text.replace(r"'", "\\'")
     return text

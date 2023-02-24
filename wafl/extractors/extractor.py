@@ -73,9 +73,7 @@ class Extractor:
 
         return Answer(text="No")
 
-    def _get_answer_and_check_it_with_entailer(
-        self, story, dialogue_text, query_text
-    ):
+    def _get_answer_and_check_it_with_entailer(self, story, dialogue_text, query_text):
         query_text = _clean_query_text(query_text)
         if self._logger:
             self._logger.write(f"Extractor: answering the query {query_text}")
@@ -85,7 +83,6 @@ class Extractor:
         if self._logger:
             self._logger.write(f"Extractor: the answer is {answer}")
 
-        answers_and_scores = []
         for event in _split_events(story):
             event = _clean_events(event)
             answer_context = self._narrator.get_relevant_query_answer_context(
@@ -98,10 +95,7 @@ class Extractor:
                 return_threshold=True,
             )
             if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score))
-
-        if answers_and_scores:
-            return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]
+                return answer
 
         return "unknown"
 
@@ -113,8 +107,8 @@ def _split_events(text):
 def _clean_events(text):
     text = text.strip()
     text = text.replace(" 's ", "'s ")
-    text = text.replace(".\'", "\'")
-    text = text.replace(".\"", "\"")
+    text = text.replace(".'", "'")
+    text = text.replace('."', '"')
     if text and text[-1] == ".":
         text = text[:-1]
 

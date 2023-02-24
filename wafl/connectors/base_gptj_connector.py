@@ -9,7 +9,7 @@ _tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 class BaseGPTJConnector:
     _max_tries = 3
-    _max_reply_length = 20
+    _max_reply_length = 50
     _num_prediction_tokens = 5
 
     def __init__(self, config=None):

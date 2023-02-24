@@ -20,6 +20,7 @@ class WhisperListener:
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
         self._volume_threshold = 1
+        self._original_volume_threshold = self._volume_threshold
         self._timeout = 1
         self._max_timeout = 4
         self._hotword_threshold = -8
@@ -48,6 +49,7 @@ class WhisperListener:
 
     def set_volume_threshold(self, threshold):
         self._volume_threshold = threshold
+        self._original_volume_threshold = self._volume_threshold
 
     def set_hotword_threshold(self, threshold):
         self._hotword_threshold = threshold
@@ -99,6 +101,10 @@ class WhisperListener:
                 waveform = self.record(start_with=inp)
                 self.deactivate()
                 return self.input_waveform(waveform)
+
+            else:
+                new_threshold = 2 * rms_val
+                self._volume_threshold = max(new_threshold, self._original_volume_threshold)
 
     def input_waveform(self, waveform):
         self._last_waveform = waveform
