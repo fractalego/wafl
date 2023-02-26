@@ -154,4 +154,3 @@ class TestEdgeCases(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         assert "unknown" not in interface.get_utterances_list()[-1]
-

@@ -104,7 +104,9 @@ class WhisperListener:
 
             else:
                 new_threshold = 2 * rms_val
-                self._volume_threshold = max(new_threshold, self._original_volume_threshold)
+                self._volume_threshold = max(
+                    new_threshold, self._original_volume_threshold
+                )
 
     def input_waveform(self, waveform):
         self._last_waveform = waveform

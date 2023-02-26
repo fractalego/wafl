@@ -20,7 +20,8 @@ class BaseGPTJConnector:
             f"https://{config.get_value('model_host')}:"
             f"{config.get_value('model_port')}/predictions/bot"
         )
-        self._check_connection()
+        if not self.check_connection():
+            raise RuntimeError("Cannot connect a running Language Model.")
 
     def predict(self, prompt: str) -> str:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
@@ -35,10 +36,11 @@ class BaseGPTJConnector:
 
         return "UNKNOWN"
 
-    def _check_connection(self):
+    def check_connection(self):
         try:
             payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
-            r = requests.post(self._server_url, json=payload, verify=False)
+            requests.post(self._server_url, json=payload, verify=False)
+            return True
 
         except requests.ConnectionError as e:
             print(e)
@@ -46,3 +48,4 @@ class BaseGPTJConnector:
             print("Is the wafl-llm running?")
             print("Please run 'bash start-llm.sh' (see docs for explanation).")
             print()
+            return False
