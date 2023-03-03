@@ -7,9 +7,9 @@ class GPTJGeneratedAnswerConnector(BaseGPTJConnector):
 
     def _get_answer_prompt(self, text, query, dialogue=None):
         prompt = (
-            "The user looks for an answer to the question:\n"
-            "Q: {text}\n"
-            "A: I believe"
+            f"The user looks for an answer to the question:\n"
+            f"Q: {query}\n"
+            f"A: I believe"
         )
 
         return prompt

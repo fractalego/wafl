@@ -53,7 +53,7 @@ class BaseGPTJConnector:
     def get_answer(self, text, dialogue, query):
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
-        start = len(text)
+        start = text.rfind(":") + 1
         while (
             all(item not in text[start:] for item in ["\n", ". "])
             and len(text) < start + self._max_reply_length

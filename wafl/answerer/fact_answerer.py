@@ -12,18 +12,24 @@ class FactAnswerer(BaseAnswerer):
         self._extractor = Extractor(narrator, logger)
 
     async def answer(self, query_text):
-        self._logger.write(f"Fact Answerer: the query is {query_text}")
+        if self._logger:
+            self._logger.write(f"Fact Answerer: the query is {query_text}")
+
         query = Query.create_from_text(query_text)
         facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=True, knowledge_name="/"
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts:
-            self._logger.write(f"Answer within facts: The query is {query_text}")
-            self._logger.write(f"Answer within facts: The context is {text}")
+            if self._logger:
+                self._logger.write(f"Answer within facts: The query is {query_text}")
+                self._logger.write(f"Answer within facts: The context is {text}")
+
             text = self._narrator.get_context_for_facts(text)
             answer = self._extractor.extract(query, text)
-            self._logger.write(f"Answer within facts: The answer is {answer.text}")
+            if self._logger:
+                self._logger.write(f"Answer within facts: The answer is {answer.text}")
+
             return answer
 
         text = self._narrator.summarize_dialogue()

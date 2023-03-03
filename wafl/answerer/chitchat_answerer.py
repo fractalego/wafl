@@ -1,5 +1,6 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.gptj_chitchat_answer_connector import GPTJChitChatAnswerConnector
+from wafl.extractors.dataclasses import Answer
 
 
 class ChitChatAnswerer(BaseAnswerer):
@@ -9,11 +10,15 @@ class ChitChatAnswerer(BaseAnswerer):
         self._connector = GPTJChitChatAnswerConnector()
 
     async def answer(self, query_text):
-        self._logger.write(f"Generated Answerer: the query is {query_text}")
+        if self._logger:
+            self._logger.write(f"Generated Answerer: the query is {query_text}")
+
         answer_text = self._connector.get_answer(
             text="",
-            dialogue=self._narrator.interface.get_utterances_list(),
+            dialogue=self._narrator._interface.get_utterances_list(),
             query=query_text,
         )
-        self._logger.write(f"Generated Answerer: the answer is {answer_text}")
-        return answer_text
+        if self._logger:
+            self._logger.write(f"Generated Answerer: the answer is {answer_text}")
+
+        return Answer(text=answer_text)

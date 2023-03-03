@@ -23,10 +23,10 @@ class ArbiterAnswerer(BaseAnswerer):
 
     async def answer(self, query_text):
         keys_and_scores = []
-        for key in self._answerers_dict.key():
+        for key in self._answerers_dict.keys():
             score = self._entailer.entails(
-                key,
                 f"The user says: {query_text}",
+                key,
                 return_threshold=True,
                 threshold=0.5,
             )
@@ -68,9 +68,7 @@ class ArbiterAnswerer(BaseAnswerer):
                     interface,
                     logger,
                 ),
-                "The user just wants to chat": [
-                    ChitChatAnswerer(narrator, logger),
-                ],
+                "The user chats": ChitChatAnswerer(narrator, logger),
             },
             interface,
             logger,
