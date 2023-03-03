@@ -1,7 +1,8 @@
 import logging
 import os
 
-from wafl.connectors.gptj_qa_connector import GPTJQAConnector, Dialogue
+from wafl.connectors.gptj_qa_connector import GPTJQAConnector
+from wafl.connectors.dialogue import Dialogue
 from wafl.simple_text_processing.questions import (
     is_question,
     is_yes_no_question,

@@ -1,11 +1,17 @@
 from dataclasses import dataclass
 
+from wafl.simple_text_processing.questions import is_question
+
 
 @dataclass
 class Query:
     text: str
     is_question: bool
     variable: str = None
+
+    @staticmethod
+    def create_from_text(text):
+        return Query(text=text, is_question=is_question(text))
 
 
 @dataclass

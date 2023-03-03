@@ -7,7 +7,7 @@ from wafl.simple_text_processing.normalize import normalized
 from wafl.simple_text_processing.questions import is_question
 
 
-def cause_is_negated(cause_text:str) -> bool:
+def cause_is_negated(cause_text: str) -> bool:
     return cause_text.find("!") == 0
 
 
@@ -82,7 +82,9 @@ def add_function_arguments(text: str) -> str:
     return text
 
 
-def update_substitutions_from_results(result: str, variable: str, substitutions: Dict[str, str]):
+def update_substitutions_from_results(
+    result: str, variable: str, substitutions: Dict[str, str]
+):
     safe_value = _make_safe(result)
     substitutions.update({f"{{{variable}}}": safe_value})
     substitutions.update({f"({variable})": f'("{safe_value}")'})
