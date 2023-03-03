@@ -1,7 +1,7 @@
 import os
 import re
 
-from wafl.answerer.list_answerer import ListAnswerer
+from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
 
 from wafl.config import Configuration
@@ -10,7 +10,6 @@ from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-
 
 class ConversationEvents:
     def __init__(
@@ -21,9 +20,7 @@ class ConversationEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = ListAnswerer.create_answerer(
-            knowledge, interface, code_path, logger
-        )
+        self._answerer = create_answerer(knowledge, interface, code_path, logger)
         self._knowledge = knowledge
         self._interface = interface
         if not config:

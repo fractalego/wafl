@@ -1,8 +1,5 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.answerer.inference_answerer import InferenceAnswerer
-from wafl.answerer.simple_answerer import SimpleAnswerer
 from wafl.events.narrator import Narrator
-from wafl.inference.backward_inference import BackwardInference
 from wafl.inference.utils import answer_is_informative
 from wafl.extractors.dataclasses import Answer
 
@@ -25,21 +22,3 @@ class ListAnswerer(BaseAnswerer):
             return Answer(text="False")
 
         return Answer(text="Unknown")
-
-    @staticmethod
-    def create_answerer(knowledge, interface, code_path, logger):
-        narrator = Narrator(interface)
-        return ListAnswerer(
-            [
-                InferenceAnswerer(
-                    interface,
-                    BackwardInference(
-                        knowledge, interface, narrator, code_path, logger=logger
-                    ),
-                    logger,
-                ),
-                SimpleAnswerer(narrator, logger),
-            ],
-            interface,
-            logger,
-        )
