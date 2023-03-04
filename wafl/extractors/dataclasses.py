@@ -28,6 +28,18 @@ class Answer:
     def is_neutral(self) -> bool:
         return normalized(self.text) in ["unknown"]
 
+    @staticmethod
+    def create_true():
+        return Answer(text="true")
+
+    @staticmethod
+    def create_false():
+        return Answer(text="false")
+
+    @staticmethod
+    def create_neutral():
+        return Answer(text="unknown")
+
 
 def normalized(text):
     text = text.strip()

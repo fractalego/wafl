@@ -222,6 +222,9 @@ class BackwardInference:
                         inverted_rule=invert_results,
                     )
 
+                if answer.is_neutral() and answer.variable:
+                    answer = Answer.create_false()
+
                 if invert_results:
                     answer = invert_answer(answer)
 
