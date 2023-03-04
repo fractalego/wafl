@@ -26,7 +26,7 @@ def add_cwd_to_syspath():
     sys.path.append(os.getcwd())
 
 
-def main():
+def process_cli():
     add_cwd_to_syspath()
     print_incipit()
 
@@ -58,5 +58,10 @@ def main():
             print_help()
 
 
-if __name__ == "__main__":
-    main()
+def main():
+    try:
+        process_cli()
+
+    except RuntimeError as e:
+        print(e)
+        print("WAFL ended due to the exception above.")

@@ -24,6 +24,7 @@ from wafl.inference.utils import (
     update_substitutions_from_results,
     answer_is_informative,
     text_is_natural_language_task,
+    escape_characters,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -162,6 +163,7 @@ class BackwardInference:
     def _look_for_answer_in_rules(
         self, query, task_memory, query_knowledge_name, depth, inverted_rule
     ):
+        self._log(f"Looking for answers in rules")
         rules = self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
@@ -220,6 +222,9 @@ class BackwardInference:
                         inverted_rule=invert_results,
                     )
 
+                if answer.is_neutral() and answer.variable:
+                    answer = Answer.create_false()
+
                 if invert_results:
                     answer = invert_answer(answer)
 
@@ -244,6 +249,7 @@ class BackwardInference:
                 return Answer(text="False")
 
     def _look_for_answer_in_facts(self, query, task_memory, knowledge_name, depth):
+        self._log(f"Looking for answers in facts")
         facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=depth == 0, knowledge_name=knowledge_name
         )
@@ -258,6 +264,7 @@ class BackwardInference:
             return answer
 
     def _look_for_answer_in_entailment(self, query, knowledge_name, depth):
+        self._log(f"Looking for answers in entailment")
         if ":-" not in query.text:
             return None
 
@@ -270,17 +277,18 @@ class BackwardInference:
     def _look_for_answer_in_last_user_utterance(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers in the user's last utterance")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             user_utterances = [
-                item for item in self._interface.get_utterances_list() if "user:" in item
+                item
+                for item in self._interface.get_utterances_list()
+                if "user:" in item
             ]
             if not user_utterances:
                 return None
 
-            answer = self._extractor.extract(
-                query, user_utterances[-1], task_memory
-            )
+            answer = self._extractor.extract(query, user_utterances[-1], task_memory)
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
@@ -305,6 +313,7 @@ class BackwardInference:
     def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers in task memory")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             answer = self._extractor.extract(
@@ -334,6 +343,7 @@ class BackwardInference:
     def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, depth
     ):
+        self._log(f"Looking for answers by asking the user")
         if depth > 0 and query.is_question:
 
             while True:
@@ -470,6 +480,7 @@ class BackwardInference:
             task_memory = (
                 TaskMemory()
             )  # task_memory is used as argument of the code in eval()
+            to_execute = escape_characters(to_execute)
             self._log(f"Executing code: {to_execute}")
             result = eval(f"self._module['{knowledge_name}'].{to_execute}")
             self._log(f"Execution result: {result}")

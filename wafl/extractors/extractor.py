@@ -1,8 +1,8 @@
 import logging
 import os
 
-import wafl.simple_text_processing.questions
-from wafl.connectors.gptj_qa_connector import GPTJQAConnector, Dialogue
+from wafl.connectors.gptj_qa_connector import GPTJQAConnector
+from wafl.connectors.dialogue import Dialogue
 from wafl.simple_text_processing.questions import (
     is_question,
     is_yes_no_question,
@@ -21,6 +21,7 @@ class Extractor:
         self._entailer = Entailer(logger)
         self._qa = GPTJQAConnector()
         self._narrator = narrator
+        self._logger = logger
         self._entailer_to_qa_mapping = {
             "True": "Yes",
             "False": "No",
@@ -28,6 +29,10 @@ class Extractor:
         }
 
     def extract(self, query: "Query", text: str, task_memory=None):
+        if self._logger:
+            self._logger.write(f"Extractor: the query is {query}")
+            self._logger.write(f"Extractor: the text is {text}")
+
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
             answer = self._answer_question(
@@ -68,12 +73,16 @@ class Extractor:
 
         return Answer(text="No")
 
-    def _get_answer_and_check_it_with_entailer(
-        self, story, dialogue_text, query_text
-    ):
+    def _get_answer_and_check_it_with_entailer(self, story, dialogue_text, query_text):
         query_text = _clean_query_text(query_text)
+        if self._logger:
+            self._logger.write(f"Extractor: answering the query {query_text}")
+
         answer = normalized(self._qa.get_answer(story, dialogue_text, query_text))
-        answers_and_scores = []
+
+        if self._logger:
+            self._logger.write(f"Extractor: the answer is {answer}")
+
         for event in _split_events(story):
             event = _clean_events(event)
             answer_context = self._narrator.get_relevant_query_answer_context(
@@ -86,10 +95,7 @@ class Extractor:
                 return_threshold=True,
             )
             if answer != "unknown" and entailment_score:
-                answers_and_scores.append((answer, entailment_score))
-
-        if answers_and_scores:
-            return sorted(answers_and_scores, key=lambda x: -x[1])[0][0]
+                return answer
 
         return "unknown"
 
@@ -101,8 +107,8 @@ def _split_events(text):
 def _clean_events(text):
     text = text.strip()
     text = text.replace(" 's ", "'s ")
-    text = text.replace(".\'", "\'")
-    text = text.replace(".\"", "\"")
+    text = text.replace(".'", "'")
+    text = text.replace('."', '"')
     if text and text[-1] == ".":
         text = text[:-1]
 

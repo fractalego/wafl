@@ -39,6 +39,9 @@ class Entailer:
         contradiction_threshold=0.65,
         return_threshold=False,
     ) -> Union[str, float]:
+        if self._logger:
+            self._logger.write("Starting entailment procedure.")
+
         prediction = self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
             if self._logger:

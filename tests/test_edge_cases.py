@@ -66,6 +66,11 @@ the user wants to know what is in the shopping list
   the user wants to know what is in the shopping list
 
 
+the user wants to add something
+  item = what does the user want to add?
+  list_name = which list?
+  the user wants to add {item} to {list_name}
+
 # Check for trains
 the user wants to check if a line is running
 ### TESTING COMMENTS
@@ -118,7 +123,7 @@ the user wants to stop
 
 
 class TestEdgeCases(TestCase):
-    def test_double_lower_case_questions_are_answered_correctly(self):
+    def test__double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
@@ -129,7 +134,7 @@ class TestEdgeCases(TestCase):
         asyncio.run(conversation_events.process_next())
         assert "asks:" not in interface.get_utterances_list()[0]
 
-    def test_clause_does_not_return_unknown(self):
+    def test__clause_does_not_return_unknown(self):
         interface = DummyInterface(["is the jubili line running"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
@@ -140,7 +145,7 @@ class TestEdgeCases(TestCase):
         asyncio.run(conversation_events.process_next())
         assert "unknown" not in interface.get_utterances_list()[-1]
 
-    def test_no_answer_if_retrieval_is_too_sparse(self):
+    def test__no_answer_if_retrieval_is_too_sparse(self):
         interface = DummyInterface(["I will i"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
