@@ -14,7 +14,7 @@ class Narrator:
             if not speaker or not utterance:
                 continue
 
-            if is_question(line):
+            if is_question(utterance):
                 summary += f"when the {speaker} asks: '{utterance}' "
 
             else:

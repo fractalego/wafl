@@ -54,6 +54,22 @@ class TestArbiterAnswerer(TestCase):
         expected = "bot: I believe it is Rome"
         self.assertEqual(expected, interface.get_utterances_list()[-1])
 
+    def test_generated_answer_from_conversation3(self):
+        interface = DummyInterface(
+            ["what is the capital of Italy .", "how tall is Micheal Jordan ."]
+        )
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_rules),
+            interface=interface,
+        )
+        interface.output("Please say computer to activate me.")
+        interface.output("What can I do for you?")
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
+        expected = "bot: I believe that Micheal Jordan is 6'7\" tall."
+        print(interface.get_utterances_list())
+        self.assertEqual(expected, interface.get_utterances_list()[-1])
+
     def test_fact_answer(self):
         interface = DummyInterface()
         answerer = ArbiterAnswerer.create_answerer(
