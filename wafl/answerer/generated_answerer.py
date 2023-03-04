@@ -1,6 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.gptj_generated_answer_connector import GPTJGeneratedAnswerConnector
 from wafl.extractors.dataclasses import Answer
+from wafl.extractors.entailer import Entailer
 
 
 class GeneratedAnswerer(BaseAnswerer):
@@ -8,6 +9,7 @@ class GeneratedAnswerer(BaseAnswerer):
         self._logger = logger
         self._narrator = narrator
         self._connector = GPTJGeneratedAnswerConnector()
+        self._entailer = Entailer(logger)
 
     async def answer(self, query_text):
         if self._logger:
@@ -19,4 +21,7 @@ class GeneratedAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Generated Answerer: the answer is {answer_text}")
 
-        return Answer(text=answer_text)
+        if self._entailer.is_neutral(self._narrator.summarize_dialogue(), answer_text):
+            return Answer(text=answer_text)
+
+        return Answer.create_neutral()

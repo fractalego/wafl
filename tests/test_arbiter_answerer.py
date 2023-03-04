@@ -4,6 +4,8 @@ import os
 from unittest import TestCase
 
 from wafl.answerer.arbiter_answerer import ArbiterAnswerer
+from wafl.events.answerer_creator import create_answerer
+from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -28,8 +30,29 @@ class TestArbiterAnswerer(TestCase):
         )
         answer = asyncio.run(answerer.answer("What color is the sky?"))
         expected = "I believe the sky is blue."
-        print(answer)
         self.assertEqual(expected, answer.text)
+
+    def test_generated_answer_from_conversation(self):
+        interface = DummyInterface()
+        answerer = create_answerer(
+            knowledge=SingleFileKnowledge(_wafl_rules),
+            interface=interface,
+            code_path="/",
+            logger=None,
+        )
+        answer = asyncio.run(answerer.answer("What color is the sky?"))
+        expected = "I believe the sky is blue."
+        self.assertEqual(expected, answer.text)
+
+    def test_generated_answer_from_conversation2(self):
+        interface = DummyInterface(["what is the capital of Italy?"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_rules),
+            interface=interface,
+        )
+        asyncio.run(conversation_events.process_next())
+        expected = "bot: I believe it is Rome"
+        self.assertEqual(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):
         interface = DummyInterface()
@@ -53,5 +76,13 @@ class TestArbiterAnswerer(TestCase):
         )
         answer = asyncio.run(answerer.answer("good good"))
         expected = "hi"
-        print(answer)
         self.assertEqual(expected, answer.text)
+
+    def test__conversation_input_returns_chitchat_for_trivial_input(self):
+        interface = DummyInterface(["uhm what"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(""), interface=interface
+        )
+        asyncio.run(conversation_events.process_next())
+        expected = "bot: I don't understand"
+        self.assertEqual(expected, interface.get_utterances_list()[-1])

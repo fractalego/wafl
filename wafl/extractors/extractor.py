@@ -97,6 +97,16 @@ class Extractor:
             if answer != "unknown" and entailment_score:
                 return answer
 
+            entailment_score = self._entailer.entails(
+                answer_context,
+                event,
+                threshold=0.95,
+                return_threshold=True,
+            )
+
+            if answer != "unknown" and entailment_score:
+                return answer
+
         return "unknown"
 
 

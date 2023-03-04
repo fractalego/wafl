@@ -29,7 +29,7 @@ class BaseGPTJConnector:
             try:
                 r = requests.post(self._server_url, json=payload, verify=False)
                 answer = json.loads(r.content.decode("utf-8"))
-                return _tokenizer.decode(answer[-self._num_prediction_tokens:])
+                return _tokenizer.decode(answer[-self._num_prediction_tokens :])
 
             except requests.exceptions.ConnectionError:
                 continue
