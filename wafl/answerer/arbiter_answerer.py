@@ -4,7 +4,6 @@ from wafl.answerer.fact_answerer import FactAnswerer
 from wafl.answerer.generated_answerer import GeneratedAnswerer
 from wafl.answerer.inference_answerer import InferenceAnswerer
 from wafl.answerer.list_answerer import ListAnswerer
-from wafl.answerer.simple_answerer import SimpleAnswerer
 from wafl.connectors.gptj_prompt_predictor_connector import GPTJPromptPredictorConnector
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
@@ -62,7 +61,6 @@ class ArbiterAnswerer(BaseAnswerer):
                 "The user asks for some information about something": ListAnswerer(
                     [
                         FactAnswerer(knowledge, narrator, logger),
-                        SimpleAnswerer(narrator, logger),
                         GeneratedAnswerer(narrator, logger),
                     ],
                     interface,

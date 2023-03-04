@@ -15,10 +15,7 @@ class ListAnswerer(BaseAnswerer):
         for answerer in self._answerers_list:
             answer = await answerer.answer(query_text)
             all_answers.append(answer)
-            if answer_is_informative(answer) and not answer.is_false():
+            if answer_is_informative(answer):
                 return answer
-
-        if any(answer.is_false() for answer in all_answers):
-            return Answer(text="False")
 
         return Answer(text="Unknown")

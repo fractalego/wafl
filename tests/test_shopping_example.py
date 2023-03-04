@@ -59,7 +59,7 @@ the user wants to know what is in the shopping list
 """
 
 
-class TestNew(TestCase):
+class TestShoppingList(TestCase):
     def test_no_activation(self):
         knowledge = SingleFileKnowledge(_rules)
         results = knowledge.ask_for_rule_backward(

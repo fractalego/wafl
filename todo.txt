@@ -1,6 +1,12 @@
 ### TODO
 
-* volume threshold should be sampled continously
+
+
+* Make chit chat work!
+  * should you take it out of arbiter? Maybe it should be the last item in ListAnswerer
+    in conversational_events
+
+* if answer is unknown in item = function() then that line should be considered False
 
 * add main.wafl
   * it should divide by
@@ -30,6 +36,7 @@
 
 * rules should be added and REMOVED!
 
+/* volume threshold should be sampled continously
 
 /* change {"%%"} into something more typeable (possibly "% %")
 /* add torchserve handler as a wafl init

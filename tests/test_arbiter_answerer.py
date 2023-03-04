@@ -2,6 +2,7 @@ import asyncio
 import os
 
 from unittest import TestCase
+
 from wafl.answerer.arbiter_answerer import ArbiterAnswerer
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge

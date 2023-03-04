@@ -1,6 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.gptj_chitchat_answer_connector import GPTJChitChatAnswerConnector
 from wafl.extractors.dataclasses import Answer
+from wafl.simple_text_processing.questions import is_question
 
 
 class ChitChatAnswerer(BaseAnswerer):
@@ -13,9 +14,15 @@ class ChitChatAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Generated Answerer: the query is {query_text}")
 
+        if is_question(query_text):
+            if self._logger:
+                self._logger.write(f"Generated Answerer: returning unknown")
+
+            return Answer(text="unknown")
+
         answer_text = self._connector.get_answer(
             text="",
-            dialogue=self._narrator._interface.get_utterances_list(),
+            dialogue="\n".join(self._narrator._interface.get_utterances_list()),
             query=query_text,
         )
         if self._logger:
