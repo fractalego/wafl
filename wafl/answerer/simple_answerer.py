@@ -1,15 +1,25 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.extractors.dataclasses import Query
+from wafl.extractors.dataclasses import Query, Answer
 from wafl.extractors.extractor import Extractor
+from wafl.simple_text_processing.questions import is_question
 
 
 class SimpleAnswerer(BaseAnswerer):
-    def __init__(self, narrator, logger):
+    def __init__(self, knowledge, narrator, logger):
         self._extractor = Extractor(narrator, logger)
         self._logger = logger
         self._narrator = narrator
+        self._knowledge = knowledge
 
     async def answer(self, query_text):
+        if not is_question(query_text):
+            return Answer(text="unknown")
+
+        if self._knowledge.ask_for_rule_backward(
+            Query.create_from_text(query_text), knowledge_name="/"
+        ):
+            return Answer(text="unknown")
+
         text = self._narrator.summarize_dialogue()
         if self._logger:
             self._logger.write(

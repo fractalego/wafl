@@ -1,11 +1,11 @@
 import os
 import re
 
-from wafl.answerer.list_answerer import ListAnswerer
+from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
 
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid
+from wafl.events.utils import input_is_valid, remove_text_between_brackets
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
@@ -21,9 +21,7 @@ class ConversationEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = ListAnswerer.create_answerer(
-            knowledge, interface, code_path, logger
-        )
+        self._answerer = create_answerer(knowledge, interface, code_path, logger)
         self._knowledge = knowledge
         self._interface = interface
         if not config:
@@ -47,7 +45,7 @@ class ConversationEvents:
         text_is_question = is_question(text)
 
         try:
-            answer = await self._answerer.answer(text)
+            answer = await self._answerer.answer(remove_text_between_brackets(text))
 
         except InterruptTask:
             self._interface.output("Task interrupted")
@@ -63,8 +61,8 @@ class ConversationEvents:
             self.output("I will remember it.")
 
         if not self._interface.bot_has_spoken():
-            if not text_is_question and normalized(answer.text) in ["unknown"]:
-                self.output(answer.text)
+            if not text_is_question and answer.is_neutral():
+                self.output("")
 
             if text_is_question and answer.text not in ["True", "False"]:
                 self.output(answer.text)
@@ -77,7 +75,7 @@ class ConversationEvents:
                 and answer.is_false()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("Ok")
+                self._interface.output("I don't know what to reply")
 
             if (
                 not text_is_question

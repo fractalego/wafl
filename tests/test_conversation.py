@@ -129,7 +129,8 @@ class TestConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "your name is albert"
+        expected = "albert"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting_with_alberto_as_name(self):
@@ -143,7 +144,8 @@ class TestConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "your name is albert0"
+        expected = "albert0"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__yes(self):

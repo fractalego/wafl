@@ -1,0 +1,8 @@
+#using greetings
+
+The user greets
+  name = what is the name of the person that is greeting
+  the user wants {name} to greet back
+  
+the user's name is alberto
+  the user is italian
