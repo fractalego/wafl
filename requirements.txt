@@ -19,3 +19,4 @@ fuzzywuzzy==0.18.0
 PyAudio==0.2.11
 huggingface-hub==0.10.0
 num2words==0.5.12
+word2number==1.1

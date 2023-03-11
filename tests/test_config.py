@@ -13,20 +13,6 @@ _wafl_greetings = """
 
 
 class TestConfig(TestCase):
-    def test__random_facts_are_not_accepted(self):
-        config = Configuration.load_local_config()
-        config.set_value("accept_random_facts", False)
-
-        interface = DummyInterface(["Albert is here", "What is my name"])
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface, config=config
-        )
-        utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
-        asyncio.run(conversation_events.process_next())
-        asyncio.run(conversation_events.process_next())
-        assert interface.get_utterances_list()[-1] == "bot: I don't know"
-
     def test__listener_accepts_threshold_for_hotword_logp(self):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)

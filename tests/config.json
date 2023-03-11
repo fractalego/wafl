@@ -1,5 +1,4 @@
 {
-  "accept_random_facts": true,
   "allow_interruptions": true,
   "waking_up_word": "computer",
   "waking_up_sound": true,

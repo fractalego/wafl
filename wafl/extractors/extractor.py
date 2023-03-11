@@ -78,26 +78,12 @@ class Extractor:
         if self._logger:
             self._logger.write(f"Extractor: answering the query {query_text}")
 
-        answer = normalized(self._qa.get_answer(story, dialogue_text, query_text))
+        answer_text = normalized(self._qa.get_answer(story, dialogue_text, query_text))
 
         if self._logger:
-            self._logger.write(f"Extractor: the answer is {answer}")
+            self._logger.write(f"Extractor: the answer is {answer_text}")
 
-        for event in _split_events(story):
-            event = _clean_events(event)
-            answer_context = self._narrator.get_relevant_query_answer_context(
-                event, query_text, answer
-            )
-            entailment_score = self._entailer.entails(
-                event,
-                answer_context,
-                threshold=0.75,
-                return_threshold=True,
-            )
-            if answer != "unknown" and entailment_score:
-                return answer
-
-        return "unknown"
+        return answer_text
 
 
 def _split_events(text):

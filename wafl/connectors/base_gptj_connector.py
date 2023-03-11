@@ -1,4 +1,6 @@
 import json
+import re
+
 import requests
 import transformers
 
@@ -9,7 +11,7 @@ _tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 class BaseGPTJConnector:
     _max_tries = 3
-    _max_reply_length = 50
+    _max_reply_length = 70
     _num_prediction_tokens = 5
 
     def __init__(self, config=None):
@@ -29,7 +31,7 @@ class BaseGPTJConnector:
             try:
                 r = requests.post(self._server_url, json=payload, verify=False)
                 answer = json.loads(r.content.decode("utf-8"))
-                return _tokenizer.decode(answer[-self._num_prediction_tokens:])
+                return _tokenizer.decode(answer[-self._num_prediction_tokens :])
 
             except requests.exceptions.ConnectionError:
                 continue
@@ -71,6 +73,7 @@ class BaseGPTJConnector:
             end = min(end_set)
 
         candidate_answer = text[start:end].split(":")[-1].strip()
+        candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         return candidate_answer
 
     def _get_answer_prompt(self, text, query, dialogue=None):

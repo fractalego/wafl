@@ -12,7 +12,7 @@ class DummyInterface(BaseInterface):
         self._dialogue = ""
 
     def output(self, text: str):
-        self._dialogue += "bot> " + text + "\n"
+        self._dialogue += "bot: " + text + "\n"
         self._utterances.append(f"bot: {from_bot_to_user(text)}")
         self.bot_has_spoken(True)
 
@@ -22,7 +22,7 @@ class DummyInterface(BaseInterface):
             self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
 
-        self._dialogue += "user> " + text + "\n"
+        self._dialogue += "user: " + text + "\n"
         utterance = from_user_to_bot(text)
         self._utterances.append(f"user: {utterance}")
         return utterance

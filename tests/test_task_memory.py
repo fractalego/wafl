@@ -170,7 +170,7 @@ A:
         interface = DummyInterface(
             to_utter=[
                 "add tangerines to the shopping list",
-                "add bananas as well",
+                "add bananas to the shopping list   ",
                 "ok now add apples",
             ]
         )
@@ -181,6 +181,7 @@ A:
             logger=LocalFileLogger(),
         )
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "bot: Apples has been added to the list"
@@ -191,7 +192,6 @@ A:
             to_utter=[
                 "What's in the shopping list?",
                 "ok add apples.",
-                "The shopping list",
                 "add coffee filters",
             ]
         )

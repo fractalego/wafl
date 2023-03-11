@@ -51,18 +51,9 @@ class ConversationEvents:
             self._interface.output("Task interrupted")
             return False
 
-        if (
-            self._config.get_value("accept_random_facts")
-            and not text_is_question
-            and not answer.is_true()
-            and not self._interface.bot_has_spoken()
-        ):
-            self._knowledge.add(text)
-            self.output("I will remember it.")
-
         if not self._interface.bot_has_spoken():
-            if not text_is_question and answer.is_neutral():
-                self.output("")
+            if not text_is_question and not answer.is_neutral():
+                self.output(answer.text)
 
             if text_is_question and answer.text not in ["True", "False"]:
                 self.output(answer.text)

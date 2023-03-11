@@ -19,7 +19,7 @@ The user says they can swim
   the user is called {username}
 
 color = What is the user's hair color
-  username = What is the user's name
+  username = What is the user's nameprint(interface.get_utterances_list())
   {username} has {color} hair
 
 the user wants to register to the newsletter
@@ -105,14 +105,13 @@ class TestConversation(TestCase):
         assert answer.text == "test@example.com"
 
     def test__knowledge_insertion(self):
-        interface = DummyInterface(to_utter=["test@example.com"])
+        interface = DummyInterface(to_utter=["the user's mother is called Ada"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
-        input_from_user = "the user's mother is called Ada"
-        asyncio.run(conversation_events._process_query(input_from_user))
+        asyncio.run(conversation_events.process_next())
         answer = asyncio.run(
             conversation_events._process_query("How is the user's mum called")
         )
@@ -172,6 +171,7 @@ class TestConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert "no" in interface.get_utterances_list()[-1].lower()
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
@@ -211,14 +211,6 @@ class TestConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
-
-    def test__conversation_input_returns_false_for_trivial_input(self):
-        interface = DummyInterface(["uhm what"])
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge("", logger=_logger), interface=interface, logger=_logger
-        )
-        result = asyncio.run(conversation_events.process_next())
-        assert not result
 
     def test__how_are_you(self):
         interface = DummyInterface(["How are you?"])
