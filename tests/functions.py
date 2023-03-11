@@ -1,7 +1,8 @@
 import logging
 
-from fuzzywuzzy import process
 from datetime import datetime, timedelta
+from fuzzywuzzy import process
+from word2number import w2n
 from wafl.exceptions import CloseConversation, InterruptTask
 from preprocess_test_functions import b, c
 
@@ -145,8 +146,9 @@ def c():
 def get_integer_from_string(text):
     words = text.split()
     for word in words:
-        if word.isnumeric():
-            return int(word)
+        number = w2n.word_to_num(word)
+        if number is not None:
+            return number
 
     return None
 

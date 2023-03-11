@@ -19,7 +19,7 @@ The user says they can swim
   the user is called {username}
 
 color = What is the user's hair color
-  username = What is the user's name
+  username = What is the user's nameprint(interface.get_utterances_list())
   {username} has {color} hair
 
 the user wants to register to the newsletter

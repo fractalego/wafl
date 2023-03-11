@@ -56,6 +56,7 @@ setup(
         "pyctcdecode==0.2.1",
         "huggingface-hub==0.10.0",
         "num2words==0.5.12",
+        "word2number==1.1",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

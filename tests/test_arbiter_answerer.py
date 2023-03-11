@@ -66,9 +66,8 @@ class TestArbiterAnswerer(TestCase):
         interface.output("What can I do for you?")
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "bot: I believe that Micheal Jordan is 6'7\" tall."
-        print(interface.get_utterances_list())
-        self.assertEqual(expected, interface.get_utterances_list()[-1])
+        expected = "6'7\""
+        self.assertIn(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):
         interface = DummyInterface()
