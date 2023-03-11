@@ -1,4 +1,6 @@
 import json
+import re
+
 import requests
 import transformers
 
@@ -71,6 +73,7 @@ class BaseGPTJConnector:
             end = min(end_set)
 
         candidate_answer = text[start:end].split(":")[-1].strip()
+        candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         return candidate_answer
 
     def _get_answer_prompt(self, text, query, dialogue=None):

@@ -171,6 +171,7 @@ class TestConversation(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert "no" in interface.get_utterances_list()[-1].lower()
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):

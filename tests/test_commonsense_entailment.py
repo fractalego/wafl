@@ -62,4 +62,5 @@ class TestCommonSense(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Skyscrapers is not a shopping item"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

@@ -1,5 +1,17 @@
 ### TODO
 
+* Try to use only GPTJ. Answer questions with dialogue and story.
+  Give few examples where the answer is unknown.
+
+
+* The simple answerer tends to repeat the last utterance.
+  This is because in the events sometimes there is "the bot says:..." without any explanation.
+  Perhaps "the bot says" shouls be excluded from simple answerer?
+  Unless it is as the answer to a question "when the user asks...."
+
+* add definions to arbiter (what is tea...?)
+
+* add the ability to ask questions to activate a trigger rule.
 
 
 * Make chit chat work!
