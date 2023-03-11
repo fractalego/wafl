@@ -281,7 +281,7 @@ class BackwardInference:
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
             user_utterances = [
-                item
+                item.replace("user:", "The user says:")
                 for item in self._interface.get_utterances_list()
                 if "user:" in item
             ]

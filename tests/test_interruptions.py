@@ -36,6 +36,7 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_time_request_does_interrupt(self):

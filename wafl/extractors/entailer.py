@@ -77,6 +77,34 @@ class Entailer:
 
         return "False"
 
+    def is_neutral(
+        self,
+        premise: str,
+        hypothesis: str,
+        threshold=0.75,
+    ) -> Union[str, float]:
+        if self._logger:
+            self._logger.write("Starting entailment neutral check.")
+
+        prediction = self.get_relation(premise, hypothesis)
+        if prediction["neutral"] > threshold:
+            if self._logger:
+                self._logger.write(f"Entailment: The premise is {premise}")
+                self._logger.write(f"Entailment: The hypothesis is {hypothesis}")
+                self._logger.write(f"Entailment: The results are {str(prediction)}")
+
+            return True
+
+        if self._logger:
+            self._logger.write(f"Entailment: The premise is {premise}")
+            self._logger.write(f"Entailment: The hypothesis is {hypothesis}")
+            self._logger.write(f"Entailment: The results are {str(prediction)}")
+
+        if prediction["neutral"] > threshold:
+            return True
+
+        return False
+
     def _add_presuppositions_to_premise(self, premise):
         premise = premise.replace("user says:", "user says to this bot:")
         premise = premise.replace("user asks:", "user asks to this bot:")
