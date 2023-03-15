@@ -16,7 +16,7 @@ class DummyInterface(BaseInterface):
         self._utterances.append(f"bot: {from_bot_to_user(text)}")
         self.bot_has_spoken(True)
 
-    def input(self) -> str:
+    async def input(self) -> str:
         text = self._to_utter.pop(0).strip()
         while self._is_listening and not_good_enough(text):
             self.output("I did not quite understand that")

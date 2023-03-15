@@ -12,5 +12,6 @@ class PromptPredictor:
     def __init__(self, logger=None):
         self._model = GPTJPromptPredictorConnector()
 
-    def predict(self, prompt: str):
-        return Answer(text=self._model.predict(prompt).strip())
+    async def predict(self, prompt: str):
+        prediction = await self._model.predict(prompt)
+        return Answer(text=prediction.strip())

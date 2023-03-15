@@ -34,7 +34,7 @@ class TestQuestions(TestCase):
         )
 
         qa = Extractor(Narrator(DummyInterface))
-        answer = qa.extract(query, user_answer)
+        answer = asyncio.run(qa.extract(query, user_answer))
 
         assert answer.is_true()
 

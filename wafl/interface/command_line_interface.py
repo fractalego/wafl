@@ -18,7 +18,7 @@ class CommandLineInterface(BaseInterface):
         self._utterances.append(f"bot: {utterance}")
         self.bot_has_spoken(True)
 
-    def input(self) -> str:
+    async def input(self) -> str:
         text = from_user_to_bot(input("user> ")).strip()
         while not_good_enough(text):
             self.output("I did not quite understand that")

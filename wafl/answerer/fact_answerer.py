@@ -26,7 +26,7 @@ class FactAnswerer(BaseAnswerer):
                 self._logger.write(f"Answer within facts: The context is {text}")
 
             text = self._narrator.get_context_for_facts(text)
-            answer = self._extractor.extract(query, text)
+            answer = await self._extractor.extract(query, text)
             if self._logger:
                 self._logger.write(f"Answer within facts: The answer is {answer.text}")
 
@@ -41,4 +41,4 @@ class FactAnswerer(BaseAnswerer):
                 f"SimpleAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        return self._extractor.extract(Query(query_text, is_question=True), text)
+        return await self._extractor.extract(Query(query_text, is_question=True), text)

@@ -1,3 +1,5 @@
+import asyncio
+
 import pyaudio
 import time
 import numpy as np
@@ -90,11 +92,12 @@ class WhisperListener:
             self.stream.close()
             self.is_active = False
 
-    def input(self):
+    async def input(self):
         if not self.is_active:
             self.activate()
 
         while True:
+            await asyncio.sleep(0)
             inp = self.stream.read(self._chunk)
             rms_val = _rms(inp)
             if rms_val > self._volume_threshold:

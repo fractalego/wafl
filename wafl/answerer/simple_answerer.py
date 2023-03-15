@@ -23,4 +23,4 @@ class SimpleAnswerer(BaseAnswerer):
                 f"SimpleAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        return self._extractor.extract(Query(query_text, is_question=True), text)
+        return await self._extractor.extract(Query(query_text, is_question=True), text)

@@ -76,7 +76,7 @@ class TestScheduler(TestCase):
         expected = ["user: hello !", "bot: Good bye!"]
         self.assertEqual(expected, interface.get_utterances_list())
 
-    def test__scheduler_can_run_with_conversation_and_event_loop__no_trigger_from_events(
+    async def test__scheduler_can_run_with_conversation_and_event_loop__no_trigger_from_events(
         self,
     ):
         config = Configuration.load_local_config()
@@ -106,12 +106,14 @@ class TestScheduler(TestCase):
             ),
             logger=_logger,
         )
-        scheduler = Scheduler([conversation_loop, event_loop])
-        scheduler.run()
-        expected = ["user: hello !", "bot: Good bye!"]
+        async with asyncio.timeout(3):
+            scheduler = Scheduler([conversation_loop, event_loop])
+            scheduler.run()
+            expected = ["user: hello !", "bot: Good bye!"]
+
         self.assertEqual(expected, interface.get_utterances_list())
 
-    def test__scheduler_can_run_with_conversation_and_event_loop__does_trigger_from_events(
+    async def test__scheduler_can_run_with_conversation_and_event_loop__does_trigger_from_events(
         self,
     ):
         config = Configuration.load_local_config()
@@ -141,7 +143,9 @@ class TestScheduler(TestCase):
             ),
             logger=_logger,
         )
-        scheduler = Scheduler([event_loop, conversation_loop])
-        scheduler.run()
-        expected = ["bot: It's 4 past seven!", "user: hello !", "bot: Good bye!"]
+        async with asyncio.timeout(3):
+            scheduler = Scheduler([event_loop, conversation_loop])
+            scheduler.run()
+            expected = ["bot: It's 4 past seven!", "user: hello !", "bot: Good bye!"]
+
         self.assertEqual(expected, interface.get_utterances_list())

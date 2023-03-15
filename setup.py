@@ -57,6 +57,7 @@ setup(
         "huggingface-hub==0.10.0",
         "num2words==0.5.12",
         "word2number==1.1",
+        "aiohttp==3.8.4",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

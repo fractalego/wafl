@@ -8,7 +8,7 @@ class BaseInterface:
     def output(self, text: str):
         raise NotImplementedError
 
-    def input(self) -> str:
+    async def input(self) -> str:
         raise NotImplementedError
 
     def bot_has_spoken(self, to_set: bool = None):
