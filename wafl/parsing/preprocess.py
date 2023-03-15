@@ -47,7 +47,7 @@ def create_preprocessed(
         text = file.read()
         text = re.sub(
             r'f?"%(.*)%"',
-            'inference.get_inference_answer(f"\\1", task_memory)',
+            'await inference.get_inference_answer(f"\\1", task_memory)',
             text,
         )
         for name in function_names:
@@ -57,6 +57,14 @@ def create_preprocessed(
                 text,
             )
             text = re.sub(f" ({name})\(\)", " \\1(inference, task_memory)", text)
+            text = re.sub(
+                f"(def {name}\()",
+                "async \\1",
+                text,
+            )
+            text = re.sub(f" ({name})\(", " await \\1(", text)
+
+        text = text.replace("def await", "def")
 
     preprocessed_filename = filename.replace(
         _python_functions_standard_name,

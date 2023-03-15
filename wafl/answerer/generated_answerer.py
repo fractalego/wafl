@@ -15,7 +15,7 @@ class GeneratedAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Generated Answerer: the query is {query_text}")
 
-        answer_text = self._connector.get_answer(
+        answer_text = await self._connector.get_answer(
             text="", dialogue=None, query=query_text
         )
         if self._logger:

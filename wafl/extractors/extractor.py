@@ -28,14 +28,14 @@ class Extractor:
             "Unknown": "Unknown",
         }
 
-    def extract(self, query: "Query", text: str, task_memory=None):
+    async def extract(self, query: "Query", text: str, task_memory=None):
         if self._logger:
             self._logger.write(f"Extractor: the query is {query}")
             self._logger.write(f"Extractor: the text is {text}")
 
         query_text = query.text.strip()
         if query.is_question and not is_yes_no_question(query_text):
-            answer = self._answer_question(
+            answer = await self._answer_question(
                 query_text, query.variable, text, task_memory
             )
             return answer
@@ -45,14 +45,14 @@ class Extractor:
             if "the user says: 'yes" in text.lower():
                 return Answer(text="Yes")
 
-            return self._check_fact(text, query_text, threshold=0.5)
+            return await self._check_fact(text, query_text, threshold=0.5)
 
-        return self._check_fact(query_text, text, threshold=0.5)
+        return await self._check_fact(query_text, text, threshold=0.5)
 
-    def _answer_question(self, query_text, variable_name, text: str, task_memory):
+    async def _answer_question(self, query_text, variable_name, text: str, task_memory):
         dialogue = Dialogue()
 
-        answer = self._get_answer_and_check_it_with_entailer(
+        answer = await self._get_answer(
             text, dialogue.get_text(), query_text
         )
         if answer and answer[-1] in [".", ",", "!"]:
@@ -60,25 +60,25 @@ class Extractor:
 
         return Answer(text=answer, variable=variable_name)
 
-    def _check_fact(self, query_text, text, threshold):
+    async def _check_fact(self, query_text, text, threshold):
         if not is_question(text):
             query_context = self._narrator.get_relevant_fact_context(text, query_text)
             answer = self._entailer.entails(query_context, text, threshold=threshold)
             return Answer(text=self._entailer_to_qa_mapping[answer])
 
         dialogue = Dialogue()
-        answer = normalized(self._qa.get_answer(query_text, dialogue.get_text(), text))
+        answer = normalized(await self._qa.get_answer(query_text, dialogue.get_text(), text))
         if answer != "unknown" and answer != "no":
             return Answer(text="Yes")
 
         return Answer(text="No")
 
-    def _get_answer_and_check_it_with_entailer(self, story, dialogue_text, query_text):
+    async def _get_answer(self, story, dialogue_text, query_text):
         query_text = _clean_query_text(query_text)
         if self._logger:
             self._logger.write(f"Extractor: answering the query {query_text}")
 
-        answer_text = normalized(self._qa.get_answer(story, dialogue_text, query_text))
+        answer_text = normalized(await self._qa.get_answer(story, dialogue_text, query_text))
 
         if self._logger:
             self._logger.write(f"Extractor: the answer is {answer_text}")

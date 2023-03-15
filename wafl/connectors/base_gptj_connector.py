@@ -1,7 +1,8 @@
+import asyncio
 import json
 import re
 
-import requests
+import aiohttp
 import transformers
 
 from wafl.config import Configuration
@@ -22,37 +23,37 @@ class BaseGPTJConnector:
             f"https://{config.get_value('model_host')}:"
             f"{config.get_value('model_port')}/predictions/bot"
         )
-        if not self.check_connection():
+        if not asyncio.run(self.check_connection()):
             raise RuntimeError("Cannot connect a running Language Model.")
 
-    def predict(self, prompt: str) -> str:
+    async def predict(self, prompt: str) -> str:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
         for _ in range(self._max_tries):
-            try:
-                r = requests.post(self._server_url, json=payload, verify=False)
-                answer = json.loads(r.content.decode("utf-8"))
-                return _tokenizer.decode(answer[-self._num_prediction_tokens :])
-
-            except requests.exceptions.ConnectionError:
-                continue
+            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+                async with session.post(self._server_url, json=payload) as response:
+                    data = await response.text()
+                    answer = json.loads(data)
+                    return _tokenizer.decode(answer[-self._num_prediction_tokens :])
 
         return "UNKNOWN"
 
-    def check_connection(self):
+    async def check_connection(self):
+        payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
         try:
-            payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
-            requests.post(self._server_url, json=payload, verify=False)
-            return True
+            async with aiohttp.ClientSession(conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+                async with session.post(self._server_url, json=payload) as response:
+                    await response.text()
+                    return True
 
-        except requests.ConnectionError as e:
-            print(e)
+        except aiohttp.client.InvalidURL:
             print()
             print("Is the wafl-llm running?")
             print("Please run 'bash start-llm.sh' (see docs for explanation).")
             print()
-            return False
 
-    def get_answer(self, text, dialogue, query):
+        return False
+
+    async def get_answer(self, text, dialogue, query):
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
         start = text.rfind(":") + 1
@@ -60,7 +61,7 @@ class BaseGPTJConnector:
             all(item not in text[start:] for item in ["\n", ". "])
             and len(text) < start + self._max_reply_length
         ):
-            text += self.predict(text)
+            text += await self.predict(text)
 
         end_set = set()
         end_set.add(text.find("\n", start))

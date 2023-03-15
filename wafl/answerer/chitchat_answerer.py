@@ -22,7 +22,7 @@ class ChitChatAnswerer(BaseAnswerer):
 
             return Answer(text="unknown")
 
-        answer_text = self._connector.get_answer(
+        answer_text = await self._connector.get_answer(
             text="",
             dialogue="\n".join(self._narrator._interface.get_utterances_list()),
             query=query_text,

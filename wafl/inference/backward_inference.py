@@ -58,10 +58,10 @@ class BackwardInference:
         if module_names:
             self._init_python_modules(module_names)
 
-    def get_inference_answer(self, text, task_memory=TaskMemory()):
+    async def get_inference_answer(self, text, task_memory=TaskMemory()):
         query = Query(text=text, is_question=is_question(text))
         knowledge_name = self._knowledge.root_knowledge
-        answer = self._compute_recursively(query, task_memory, knowledge_name, depth=1)
+        answer = await self._compute_recursively(query, task_memory, knowledge_name, depth=1)
 
         if answer.is_true():
             return True
@@ -77,11 +77,11 @@ class BackwardInference:
         if not task_memory:
             task_memory = TaskMemory()
 
-        result = self._compute_recursively(query, task_memory, knowledge_name, depth=0)
+        result = await self._compute_recursively(query, task_memory, knowledge_name, depth=0)
         lock.release()
         return result
 
-    def _compute_recursively(
+    async def _compute_recursively(
         self, query: "Query", task_memory, knowledge_name, depth, inverted_rule=False
     ):
         self._log(f"The query is {query.text}", depth)
@@ -92,7 +92,7 @@ class BackwardInference:
             return Answer(text="False")
 
         candidate_answers = []
-        answer = self._look_for_answer_in_entailment(query, knowledge_name, depth)
+        answer = await self._look_for_answer_in_entailment(query, knowledge_name, depth)
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
             self._log("Answer in entailment: " + answer.text, depth)
@@ -101,7 +101,7 @@ class BackwardInference:
         if ":-" in query.text:
             return selected_answer(candidate_answers)
 
-        answer = self._look_for_answer_in_facts(
+        answer = await self._look_for_answer_in_facts(
             query, task_memory, knowledge_name, depth
         )
         candidate_answers.append(answer)
@@ -112,9 +112,9 @@ class BackwardInference:
         if depth > 0:
             if text_has_new_task_memory_command(query.text):
                 task_memory.erase()
-                return self._process_new_task_memory_command()
+                return await self._process_new_task_memory_command()
 
-        answer = self._look_for_answer_in_last_user_utterance(
+        answer = await self._look_for_answer_in_last_user_utterance(
             query, task_memory, knowledge_name, depth
         )
         candidate_answers.append(answer)
@@ -122,7 +122,7 @@ class BackwardInference:
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
-        answer = self._look_for_answer_in_task_memory(
+        answer = await self._look_for_answer_in_task_memory(
             query, task_memory, knowledge_name, depth
         )
         candidate_answers.append(answer)
@@ -130,7 +130,7 @@ class BackwardInference:
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
-        answer = self._look_for_answer_by_asking_the_user(
+        answer = await self._look_for_answer_by_asking_the_user(
             query, task_memory, knowledge_name, depth
         )
         candidate_answers.append(answer)
@@ -141,16 +141,16 @@ class BackwardInference:
         if depth > 0:
             task_memory = TaskMemory()
             if text_has_say_command(query.text):
-                answer = self._process_say_command(query.text)
+                answer = await self._process_say_command(query.text)
                 return answer
 
             elif text_has_remember_command(query.text):
-                return self._process_remember_command(query.text, knowledge_name)
+                return await self._process_remember_command(query.text, knowledge_name)
 
             elif text_is_code(query.text):
-                return self._process_code(query.text, knowledge_name, {})
+                return await self._process_code(query.text, knowledge_name, {})
 
-        answer = self._look_for_answer_in_rules(
+        answer = await self._look_for_answer_in_rules(
             query, task_memory, knowledge_name, depth, inverted_rule
         )
         candidate_answers.append(answer)
@@ -160,7 +160,7 @@ class BackwardInference:
 
         return selected_answer(candidate_answers)
 
-    def _look_for_answer_in_rules(
+    async def _look_for_answer_in_rules(
         self, query, task_memory, query_knowledge_name, depth, inverted_rule
     ):
         self._log(f"Looking for answers in rules")
@@ -175,13 +175,13 @@ class BackwardInference:
             knowledge_name = rule.knowledge_name
             self._log(f"Trying rule with trigger: {rule_effect_text}", depth)
             if is_question(rule_effect_text):
-                if not self._validate_question_in_effects(
+                if not await self._validate_question_in_effects(
                     rule.effect, query.text, substitutions
                 ):
                     continue
 
             elif not needs_substitutions(rule.effect):
-                answer = self._validate_fact_in_effects(
+                answer = await self._validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
                 if answer.is_false():
@@ -197,23 +197,23 @@ class BackwardInference:
                     continue
 
                 if text_has_say_command(cause_text):
-                    answer = self._process_say_command(cause_text)
+                    answer = await self._process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
-                    answer = self._process_remember_command(cause_text, knowledge_name)
+                    answer = await self._process_remember_command(cause_text, knowledge_name)
 
                 elif text_is_code(cause_text):
-                    answer = self._process_code(
+                    answer = await self._process_code(
                         cause_text, knowledge_name, substitutions
                     )
 
                 elif text_is_natural_language_task(cause_text):
-                    answer = self._process_text_generation(
+                    answer = await self._process_text_generation(
                         cause_text, knowledge_name, substitutions
                     )
 
                 else:
-                    answer = self._process_query(
+                    answer = await self._process_query(
                         cause_text,
                         cause.is_question,
                         task_memory,
@@ -238,7 +238,7 @@ class BackwardInference:
                 index += 1
 
             if index == len(rule.causes):
-                answer = self._validate_fact_in_effects(
+                answer = await self._validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
 
@@ -248,7 +248,7 @@ class BackwardInference:
             if inverted_rule:
                 return Answer(text="False")
 
-    def _look_for_answer_in_facts(self, query, task_memory, knowledge_name, depth):
+    async def _look_for_answer_in_facts(self, query, task_memory, knowledge_name, depth):
         self._log(f"Looking for answers in facts")
         facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=depth == 0, knowledge_name=knowledge_name
@@ -258,23 +258,23 @@ class BackwardInference:
             self._log(f"Answer within facts: The query is {query.text}")
             self._log(f"Answer within facts: The context is {text}")
             text = self._narrator.get_context_for_facts(text)
-            answer = self._extractor.extract(query, text)
+            answer = await self._extractor.extract(query, text)
             task_memory.add_story(text)
             self._log(f"Answer within facts: The answer is {answer.text}")
             return answer
 
-    def _look_for_answer_in_entailment(self, query, knowledge_name, depth):
+    async def _look_for_answer_in_entailment(self, query, knowledge_name, depth):
         self._log(f"Looking for answers in entailment")
         if ":-" not in query.text:
             return None
 
         hypothesis, premise = query.text.split(":-")
-        answer = self._extractor.extract(
+        answer = await self._extractor.extract(
             Query(text=premise, is_question=is_question(premise)), hypothesis
         )
         return answer
 
-    def _look_for_answer_in_last_user_utterance(
+    async def _look_for_answer_in_last_user_utterance(
         self, query, task_memory, knowledge_name, depth
     ):
         self._log(f"Looking for answers in the user's last utterance")
@@ -288,7 +288,7 @@ class BackwardInference:
             if not user_utterances:
                 return None
 
-            answer = self._extractor.extract(query, user_utterances[-1], task_memory)
+            answer = await self._extractor.extract(query, user_utterances[-1], task_memory)
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
@@ -310,13 +310,13 @@ class BackwardInference:
 
                 return answer
 
-    def _look_for_answer_in_task_memory(
+    async def _look_for_answer_in_task_memory(
         self, query, task_memory, knowledge_name, depth
     ):
         self._log(f"Looking for answers in task memory")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
-            answer = self._extractor.extract(
+            answer = await self._extractor.extract(
                 query, task_memory.get_story(), task_memory
             )
             if task_memory.text_is_in_prior_questions(answer.text):
@@ -340,7 +340,7 @@ class BackwardInference:
 
                 return answer
 
-    def _look_for_answer_by_asking_the_user(
+    async def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, depth
     ):
         self._log(f"Looking for answers by asking the user")
@@ -353,7 +353,7 @@ class BackwardInference:
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
-                    self._spin_up_another_inference_task(
+                    await self._spin_up_another_inference_task(
                         user_input_text,
                         task_memory,
                         knowledge_name,
@@ -374,7 +374,7 @@ class BackwardInference:
                     f"When asked '{query.text}', the user says: '{user_input_text}.'"
                 )
                 query.text = from_bot_to_bot(query.text)
-                user_answer = self._extractor.extract(query, story)
+                user_answer = await self._extractor.extract(query, story)
 
                 self._log(f"The answer that is understood: {user_answer.text}")
 
@@ -382,7 +382,7 @@ class BackwardInference:
                     user_answer = project_answer(user_answer, ["yes", "no"])
                     if user_answer.text not in ["yes", "no"]:
                         self._interface.output("Yes or No?")
-                        user_answer = self._look_for_answer_by_asking_the_user(
+                        user_answer = await self._look_for_answer_by_asking_the_user(
                             query, task_memory, knowledge_name, depth
                         )
 
@@ -405,8 +405,8 @@ class BackwardInference:
                     user_answer.text = user_answer.text[:-1]
                 return user_answer
 
-    def _validate_question_in_effects(self, effect, query_text, substitutions):
-        answer = self._extractor.extract(effect, query_text)
+    async def _validate_question_in_effects(self, effect, query_text, substitutions):
+        answer = await self._extractor.extract(effect, query_text)
         self._log("Validating question in the rule trigger.")
         self._log(f"The query is {query_text}")
         self._log(f"The answer is {answer.text}")
@@ -419,14 +419,14 @@ class BackwardInference:
 
         return True
 
-    def _process_say_command(self, cause_text):
+    async def _process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._log(f"Uttering: {utterance}")
         self._interface.output(utterance)
         answer = Answer(text="True")
         return answer
 
-    def _process_remember_command(self, cause_text, knowledge_name):
+    async def _process_remember_command(self, cause_text, knowledge_name):
         utterance = cause_text[8:].strip()
         if ":-" in utterance:
             self._log(
@@ -442,16 +442,16 @@ class BackwardInference:
 
         return Answer(text="True")
 
-    def _process_new_task_memory_command(self):
+    async def _process_new_task_memory_command(self):
         self._log(f"Erasing working memory")
         return Answer(text="True")
 
-    def _validate_fact_in_effects(self, rule_effect_text, query, substitutions):
+    async def _validate_fact_in_effects(self, rule_effect_text, query, substitutions):
         for key, value in substitutions.items():
             if key and value:
                 rule_effect_text = rule_effect_text.replace(key, value)
 
-        answer = self._extractor.extract(query, rule_effect_text)
+        answer = await self._extractor.extract(query, rule_effect_text)
         self._log("Validating the statement in the rule trigger.")
         self._log(f"The query is {rule_effect_text}")
         self._log(f"The answer is {answer.text}")
@@ -461,7 +461,7 @@ class BackwardInference:
 
         return answer
 
-    def _process_code(self, cause_text, knowledge_name, substitutions):
+    async def _process_code(self, cause_text, knowledge_name, substitutions):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -483,6 +483,9 @@ class BackwardInference:
             to_execute = escape_characters(to_execute)
             self._log(f"Executing code: {to_execute}")
             result = eval(f"self._module['{knowledge_name}'].{to_execute}")
+            if result is not None:
+                result = await result
+
             self._log(f"Execution result: {result}")
 
         except (CloseConversation, InterruptTask) as e:
@@ -505,18 +508,18 @@ class BackwardInference:
 
         return answer
 
-    def _process_text_generation(self, cause_text, knowledge_name, substitutions):
+    async def _process_text_generation(self, cause_text, knowledge_name, substitutions):
         if "=" not in cause_text:
             return Answer(text="False")
 
         variable, prompt = cause_text.split("=")
         variable = variable.strip()
         prompt = prompt.strip()
-        answer = self._prompt_predictor.predict(prompt)
+        answer = await self._prompt_predictor.predict(prompt)
         update_substitutions_from_results(answer.text, variable, substitutions)
         return answer
 
-    def _process_query(
+    async def _process_query(
         self,
         cause_text,
         cause_is_question,
@@ -538,7 +541,7 @@ class BackwardInference:
         else:
             new_query = Query(text=cause_text, is_question=False)
 
-        answer = self._compute_recursively(
+        answer = await self._compute_recursively(
             new_query, task_memory, knowledge_name, depth + 1, inverted_rule
         )
         self._log(f"The answer to the query is {answer.text}", depth)
@@ -566,7 +569,7 @@ class BackwardInference:
                 item[0] for item in getmembers(self._module[module_name], isfunction)
             ]
 
-    def _spin_up_another_inference_task(
+    async def _spin_up_another_inference_task(
         self, input_text, task_memory, knowledge_name, depth
     ):
         prior_conversation = self._narrator.summarize_dialogue()
@@ -581,7 +584,7 @@ class BackwardInference:
         )
         self._interface.bot_has_spoken(False)
         self._log(f"Spinning up another inference task", depth)
-        self._compute_recursively(
+        await self._compute_recursively(
             query,
             task_memory,
             knowledge_name,
