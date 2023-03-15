@@ -1,3 +1,4 @@
+import asyncio
 import random
 
 from wafl.exceptions import CloseConversation
@@ -31,6 +32,7 @@ class ConversationLoop:
         num_misses = 0
         interactions = 0
         while True:
+            await asyncio.sleep(0)
             if not self._interface.is_listening():
                 interactions = 0
                 num_misses = 0

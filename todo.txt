@@ -1,8 +1,14 @@
 ### TODO
 
-* Try to use only GPTJ. Answer questions with dialogue and story.
-  Give few examples where the answer is unknown.
+* make alarm work on wafl_home.
+  * Make async work on wafl
+  * Do not forget to reinstate "what time is it" rule
 
+
+* BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
+   * [computer] confuse her
+
+* make it so one can change rules on the fly (reload when changed)
 
 * The simple answerer tends to repeat the last utterance.
   This is because in the events sometimes there is "the bot says:..." without any explanation.
@@ -47,6 +53,10 @@
   * maybe questions can be asked at a summary level? Not just sentence by sentence.
 
 * rules should be added and REMOVED!
+
+
+/* Try to use only GPTJ. Answer questions with dialogue and story.
+  Give few examples where the answer is unknown.
 
 /* volume threshold should be sampled continously
 

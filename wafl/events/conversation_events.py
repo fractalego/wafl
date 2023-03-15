@@ -79,7 +79,7 @@ class ConversationEvents:
 
     async def process_next(self, activation_word: str = "") -> bool:
         try:
-            text = self._interface.input()
+            text = await self._interface.input()
             text = text.replace("'", r"\'")
 
         except IndexError:

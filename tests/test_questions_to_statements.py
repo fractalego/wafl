@@ -40,5 +40,5 @@ class TestQuestionsToStatements(TestCase):
         text = "This bot is doing well"
         query = Query("is this bot ok?", is_question=True)
         qa = Extractor(Narrator(DummyInterface))
-        prediction = qa.extract(query, text)
+        prediction = asyncio.run(qa.extract(query, text))
         self.assertEqual("yes", prediction.text.lower())
