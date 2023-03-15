@@ -1,3 +1,6 @@
+import asyncio
+
+
 class GeneratedEventLoop:
     def __init__(self, interface, events, logger):
         self._interface = interface
@@ -6,7 +9,9 @@ class GeneratedEventLoop:
 
     async def run(self):
         try:
-            await self._events.process_next()
+            while True:
+                await self._events.process_next()
+                await asyncio.sleep(1)
 
         except (KeyboardInterrupt, EOFError) as e:
             self._logger.write(

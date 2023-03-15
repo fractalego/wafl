@@ -10,4 +10,3 @@ class Scheduler:
 
     async def _async_run(self):
         await asyncio.gather(*self._loops_to_run, return_exceptions=True)
-        await asyncio.sleep(1)
