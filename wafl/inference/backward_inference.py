@@ -61,7 +61,9 @@ class BackwardInference:
     async def get_inference_answer(self, text, task_memory=TaskMemory()):
         query = Query(text=text, is_question=is_question(text))
         knowledge_name = self._knowledge.root_knowledge
-        answer = await self._compute_recursively(query, task_memory, knowledge_name, depth=1)
+        answer = await self._compute_recursively(
+            query, task_memory, knowledge_name, depth=1
+        )
 
         if answer.is_true():
             return True
@@ -77,7 +79,9 @@ class BackwardInference:
         if not task_memory:
             task_memory = TaskMemory()
 
-        result = await self._compute_recursively(query, task_memory, knowledge_name, depth=0)
+        result = await self._compute_recursively(
+            query, task_memory, knowledge_name, depth=0
+        )
         lock.release()
         return result
 
@@ -200,7 +204,9 @@ class BackwardInference:
                     answer = await self._process_say_command(cause_text)
 
                 elif text_has_remember_command(cause_text):
-                    answer = await self._process_remember_command(cause_text, knowledge_name)
+                    answer = await self._process_remember_command(
+                        cause_text, knowledge_name
+                    )
 
                 elif text_is_code(cause_text):
                     answer = await self._process_code(
@@ -248,7 +254,9 @@ class BackwardInference:
             if inverted_rule:
                 return Answer(text="False")
 
-    async def _look_for_answer_in_facts(self, query, task_memory, knowledge_name, depth):
+    async def _look_for_answer_in_facts(
+        self, query, task_memory, knowledge_name, depth
+    ):
         self._log(f"Looking for answers in facts")
         facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=depth == 0, knowledge_name=knowledge_name
@@ -288,7 +296,9 @@ class BackwardInference:
             if not user_utterances:
                 return None
 
-            answer = await self._extractor.extract(query, user_utterances[-1], task_memory)
+            answer = await self._extractor.extract(
+                query, user_utterances[-1], task_memory
+            )
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 

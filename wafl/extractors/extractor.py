@@ -52,9 +52,7 @@ class Extractor:
     async def _answer_question(self, query_text, variable_name, text: str, task_memory):
         dialogue = Dialogue()
 
-        answer = await self._get_answer(
-            text, dialogue.get_text(), query_text
-        )
+        answer = await self._get_answer(text, dialogue.get_text(), query_text)
         if answer and answer[-1] in [".", ",", "!"]:
             answer = answer[:-1]
 
@@ -67,7 +65,9 @@ class Extractor:
             return Answer(text=self._entailer_to_qa_mapping[answer])
 
         dialogue = Dialogue()
-        answer = normalized(await self._qa.get_answer(query_text, dialogue.get_text(), text))
+        answer = normalized(
+            await self._qa.get_answer(query_text, dialogue.get_text(), text)
+        )
         if answer != "unknown" and answer != "no":
             return Answer(text="Yes")
 
@@ -78,7 +78,9 @@ class Extractor:
         if self._logger:
             self._logger.write(f"Extractor: answering the query {query_text}")
 
-        answer_text = normalized(await self._qa.get_answer(story, dialogue_text, query_text))
+        answer_text = normalized(
+            await self._qa.get_answer(story, dialogue_text, query_text)
+        )
 
         if self._logger:
             self._logger.write(f"Extractor: the answer is {answer_text}")

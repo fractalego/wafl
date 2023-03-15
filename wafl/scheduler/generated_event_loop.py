@@ -11,7 +11,7 @@ class GeneratedEventLoop:
         try:
             while True:
                 await self._events.process_next()
-                await asyncio.sleep(15)
+                await asyncio.sleep(20)
 
         except (KeyboardInterrupt, EOFError) as e:
             self._logger.write(

@@ -7,7 +7,9 @@ import transformers
 
 from wafl.config import Configuration
 
-_tokenizer = transformers.AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
+_tokenizer = transformers.AutoTokenizer.from_pretrained(
+    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
+)
 
 
 class BaseGPTJConnector:
@@ -29,10 +31,13 @@ class BaseGPTJConnector:
     async def predict(self, prompt: str) -> str:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
         for _ in range(self._max_tries):
-            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+            async with aiohttp.ClientSession(
+                connector=aiohttp.TCPConnector(verify_ssl=False)
+            ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     answer = json.loads(data)
+                    answer = [item for item in answer if item > 0]
                     return _tokenizer.decode(answer[-self._num_prediction_tokens :])
 
         return "UNKNOWN"
@@ -40,7 +45,9 @@ class BaseGPTJConnector:
     async def check_connection(self):
         payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
         try:
-            async with aiohttp.ClientSession(conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+            async with aiohttp.ClientSession(
+                conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
+            ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     await response.text()
                     return True
