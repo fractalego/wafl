@@ -349,7 +349,7 @@ class BackwardInference:
             while True:
                 self._log(f"Asking the user: {query.text}")
                 self._interface.output(query.text)
-                user_input_text = self._interface.input()
+                user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
