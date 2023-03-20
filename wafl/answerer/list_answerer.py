@@ -15,7 +15,7 @@ class ListAnswerer(BaseAnswerer):
         for answerer in self._answerers_list:
             answer = await answerer.answer(query_text, policy)
             all_answers.append(answer)
-            if answer_is_informative(answer) and await policy.accept(answer.text):
+            if answer_is_informative(answer):
                 return answer
 
         return Answer(text="Unknown")

@@ -17,7 +17,7 @@ class TaskExtractor:
         dialogue = "\n".join(self._interface.get_utterances_list())
         prediction = await self._connector.get_answer(
             "",
+            dialogue,
             query,
-            dialogue
         )
         return Answer(text=prediction.strip())

@@ -5,16 +5,32 @@ class GPTJTaskExtractorConnector(BaseGPTJConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
-    def _get_answer_prompt(self, text, query, dialogue=None):
-        if not dialogue:
-            return ""
-
-        dialogue_str = "\n".join(dialogue)
+    def _get_answer_prompt(self, text: str, query: str, dialogue: str = None):
         prompt = f"""
 The following conversation is taking place:
-{dialogue_str}
+user: I want to drive the car
 
-What is the task the user wants to accomplish?
+Say the user's intention: the user wants to drive the car 
+
+
+The following conversation is taking place:
+user: Hello
+
+Say the user's intention: the user greets
+
+
+The following conversation is taking place:
+bot: what is your name
+user: my name is Alberto
+
+Say the user's intention: the user says their name is Alberto
+
+
+The following conversation is taking place:
+{dialogue}
+user: {query}
+
+Say the user's intention: 
         """.strip()
 
         return prompt

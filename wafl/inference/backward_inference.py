@@ -3,6 +3,7 @@ import logging
 import traceback
 
 from wafl.extractors.task_extractor import TaskExtractor
+from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -60,11 +61,11 @@ class BackwardInference:
         if module_names:
             self._init_python_modules(module_names)
 
-    async def get_inference_answer(self, text, task_memory=TaskMemory()):
+    async def get_inference_answer(self, text, policy, task_memory=TaskMemory()):
         query = Query(text=text, is_question=is_question(text))
         knowledge_name = self._knowledge.root_knowledge
         answer = await self._compute_recursively(
-            query, task_memory, knowledge_name, depth=1
+            query, task_memory, knowledge_name, policy, depth=1
         )
 
         if answer.is_true():
@@ -161,10 +162,10 @@ class BackwardInference:
                 return await self._process_remember_command(query.text, knowledge_name)
 
             elif text_is_code(query.text):
-                return await self._process_code(query.text, knowledge_name, {})
+                return await self._process_code(query.text, knowledge_name, {}, policy)
 
         answer = await self._look_for_answer_in_rules(
-            query, task_memory, knowledge_name, depth, inverted_rule
+            query, task_memory, knowledge_name, policy, depth, inverted_rule
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
@@ -174,7 +175,7 @@ class BackwardInference:
         return selected_answer(candidate_answers)
 
     async def _look_for_answer_in_rules(
-        self, query, task_memory, query_knowledge_name, depth, inverted_rule
+        self, query, task_memory, query_knowledge_name, policy, depth, inverted_rule
     ):
         self._log(f"Looking for answers in rules")
         rules = self._knowledge.ask_for_rule_backward(
@@ -207,7 +208,7 @@ class BackwardInference:
                 cause_text = apply_substitutions(cause_text, substitutions)
                 if task_memory.is_in_prior_failed_clauses(cause_text):
                     self._log("This clause failed before", depth)
-                    continue
+                    break
 
                 if text_has_say_command(cause_text):
                     answer = await self._process_say_command(cause_text)
@@ -219,7 +220,7 @@ class BackwardInference:
 
                 elif text_is_code(cause_text):
                     answer = await self._process_code(
-                        cause_text, knowledge_name, substitutions
+                        cause_text, knowledge_name, substitutions, policy
                     )
 
                 elif text_is_natural_language_task(cause_text):
@@ -233,6 +234,7 @@ class BackwardInference:
                         cause.is_question,
                         task_memory,
                         knowledge_name,
+                        policy,
                         depth,
                         inverted_rule=invert_results,
                     )
@@ -480,7 +482,7 @@ class BackwardInference:
 
         return answer
 
-    async def _process_code(self, cause_text, knowledge_name, substitutions):
+    async def _process_code(self, cause_text, knowledge_name, substitutions, policy):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -544,6 +546,7 @@ class BackwardInference:
         cause_is_question,
         task_memory,
         knowledge_name,
+        policy,
         depth,
         inverted_rule,
     ):
@@ -561,7 +564,7 @@ class BackwardInference:
             new_query = Query(text=cause_text, is_question=False)
 
         answer = await self._compute_recursively(
-            new_query, task_memory, knowledge_name, depth + 1, inverted_rule
+            new_query, task_memory, knowledge_name, policy, depth + 1, inverted_rule
         )
         self._log(f"The answer to the query is {answer.text}", depth)
 

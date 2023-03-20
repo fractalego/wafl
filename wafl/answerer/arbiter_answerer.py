@@ -45,11 +45,7 @@ class ArbiterAnswerer(BaseAnswerer):
             answerer = self._answerers_dict[key]
             answer = await answerer.answer(query_text, policy)
             all_answers.append(answer)
-            if (
-                answer_is_informative(answer)
-                and not answer.is_false()
-                and await policy.accept(answer.text)
-            ):
+            if answer_is_informative(answer) and not answer.is_false():
                 return answer
 
         if any(answer.is_false() for answer in all_answers):
