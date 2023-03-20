@@ -12,7 +12,7 @@ class ChitChatAnswerer(BaseAnswerer):
         self._connector = GPTJChitChatAnswerConnector()
         self._entailer = Entailer(logger)
 
-    async def answer(self, query_text):
+    async def answer(self, query_text, policy):
         if self._logger:
             self._logger.write(f"Generated Answerer: the query is {query_text}")
 
@@ -30,7 +30,9 @@ class ChitChatAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Generated Answerer: the answer is {answer_text}")
 
-        if self._entailer.is_neutral(self._narrator.summarize_dialogue(), answer_text):
+        if self._entailer.is_neutral(
+            self._narrator.summarize_dialogue(), answer_text
+        ) and await policy.accept(answer_text):
             return Answer(text=answer_text)
 
         return Answer.create_neutral()

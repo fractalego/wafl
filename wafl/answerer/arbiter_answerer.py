@@ -22,7 +22,7 @@ class ArbiterAnswerer(BaseAnswerer):
         self._entailer = Entailer(logger)
         self._knowledge = knowledge
 
-    async def answer(self, query_text):
+    async def answer(self, query_text, policy):
         if self._knowledge.ask_for_rule_backward(
             Query.create_from_text(f"The user says: {query_text}"), knowledge_name="/"
         ):
@@ -43,9 +43,13 @@ class ArbiterAnswerer(BaseAnswerer):
         all_answers = []
         for key, _ in keys_and_scores:
             answerer = self._answerers_dict[key]
-            answer = await answerer.answer(query_text)
+            answer = await answerer.answer(query_text, policy)
             all_answers.append(answer)
-            if answer_is_informative(answer) and not answer.is_false():
+            if (
+                answer_is_informative(answer)
+                and not answer.is_false()
+                and await policy.accept(answer.text)
+            ):
                 return answer
 
         if any(answer.is_false() for answer in all_answers):

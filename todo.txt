@@ -1,9 +1,7 @@
 ### TODO
 
-* make alarm work on wafl_home.
-  * Make async work on wafl
-  * Do not forget to reinstate "what time is it" rule
 
+* Complete the task extractor + policy guidance on the whole of the answerer/inference tree
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her
@@ -54,6 +52,9 @@
 
 * rules should be added and REMOVED!
 
+/* make alarm work on wafl_home.
+/  * Make async work on wafl
+/  * Do not forget to reinstate "what time is it" rule
 
 /* Try to use only GPTJ. Answer questions with dialogue and story.
   Give few examples where the answer is unknown.

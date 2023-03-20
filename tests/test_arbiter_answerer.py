@@ -8,6 +8,7 @@ from wafl.events.answerer_creator import create_answerer
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.policy.answerer_policy import AnswerPolicy
 
 _path = os.path.dirname(__file__)
 
@@ -22,25 +23,27 @@ This bot is doing well
 class TestArbiterAnswerer(TestCase):
     def test_generated_answer(self):
         interface = DummyInterface()
+        policy = AnswerPolicy(interface)
         answerer = ArbiterAnswerer.create_answerer(
             knowledge=SingleFileKnowledge(_wafl_rules),
             interface=interface,
             code_path="/",
             logger=None,
         )
-        answer = asyncio.run(answerer.answer("What color is the sky?"))
+        answer = asyncio.run(answerer.answer("What color is the sky?", policy))
         expected = "I believe the sky is blue."
         self.assertEqual(expected, answer.text)
 
     def test_generated_answer_from_conversation(self):
         interface = DummyInterface()
+        policy = AnswerPolicy(interface)
         answerer = create_answerer(
             knowledge=SingleFileKnowledge(_wafl_rules),
             interface=interface,
             code_path="/",
             logger=None,
         )
-        answer = asyncio.run(answerer.answer("What color is the sky?"))
+        answer = asyncio.run(answerer.answer("What color is the sky?", policy))
         expected = "I believe the sky is blue."
         self.assertEqual(expected, answer.text)
 
@@ -71,25 +74,27 @@ class TestArbiterAnswerer(TestCase):
 
     def test_fact_answer(self):
         interface = DummyInterface()
+        policy = AnswerPolicy(interface)
         answerer = ArbiterAnswerer.create_answerer(
             knowledge=SingleFileKnowledge(_wafl_rules),
             interface=interface,
             code_path="/",
             logger=None,
         )
-        answer = asyncio.run(answerer.answer("What is the name of this bot"))
+        answer = asyncio.run(answerer.answer("What is the name of this bot", policy))
         expected = "computer"
         self.assertEqual(expected, answer.text)
 
     def test_chitchat(self):
         interface = DummyInterface()
+        policy = AnswerPolicy(interface)
         answerer = ArbiterAnswerer.create_answerer(
             knowledge=SingleFileKnowledge(_wafl_rules),
             interface=interface,
             code_path="/",
             logger=None,
         )
-        answer = asyncio.run(answerer.answer("good good"))
+        answer = asyncio.run(answerer.answer("good good", policy))
         expected = "hi"
         self.assertEqual(expected, answer.text)
 

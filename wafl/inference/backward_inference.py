@@ -2,6 +2,7 @@ import asyncio
 import logging
 import traceback
 
+from wafl.extractors.task_extractor import TaskExtractor
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -51,6 +52,7 @@ class BackwardInference:
         self._interface = interface
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
+        self._task_extractor = TaskExtractor(interface)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -73,20 +75,27 @@ class BackwardInference:
 
         return answer.text
 
-    async def compute(self, query, task_memory=None, knowledge_name="/"):
+    async def compute(self, query, task_memory=None, policy=None, knowledge_name="/"):
+        query.text = await self._task_extractor.extract(query.text).text
         lock = asyncio.Lock()
         await lock.acquire()
         if not task_memory:
             task_memory = TaskMemory()
 
         result = await self._compute_recursively(
-            query, task_memory, knowledge_name, depth=0
+            query, task_memory, knowledge_name, policy, depth=0
         )
         lock.release()
         return result
 
     async def _compute_recursively(
-        self, query: "Query", task_memory, knowledge_name, depth, inverted_rule=False
+        self,
+        query: "Query",
+        task_memory,
+        knowledge_name,
+        policy,
+        depth,
+        inverted_rule=False,
     ):
         self._log(f"The query is {query.text}", depth)
         self._log(f"The depth is {depth}", depth)
