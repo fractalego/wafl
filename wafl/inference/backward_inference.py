@@ -76,7 +76,7 @@ class BackwardInference:
         return answer.text
 
     async def compute(self, query, task_memory=None, policy=None, knowledge_name="/"):
-        query.text = await self._task_extractor.extract(query.text).text
+        query.text = (await self._task_extractor.extract(query.text)).text
         lock = asyncio.Lock()
         await lock.acquire()
         if not task_memory:
