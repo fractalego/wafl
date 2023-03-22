@@ -53,7 +53,7 @@ def create_preprocessed(
         for name in function_names:
             text = re.sub(
                 f" ({name}\([0-9a-zA-Z,\s:_]+)\)",
-                " \\1, inference, task_memory)",
+                " \\1, inference, policy, task_memory)",
                 text,
             )
             text = re.sub(
@@ -65,6 +65,7 @@ def create_preprocessed(
                 text,
             )
             text = re.sub(f" ({name})\(", " await \\1(", text)
+            text = re.sub(f'"[\s]*await ({name})\(', '"\\1(', text)
 
         text = text.replace("def await", "def")
 

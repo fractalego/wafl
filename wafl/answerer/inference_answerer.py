@@ -1,6 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
+from wafl.extractors.task_extractor import TaskExtractor
 from wafl.simple_text_processing.questions import is_question
 from wafl.extractors.dataclasses import Query
 from wafl.extractors.extractor import Extractor
@@ -13,6 +14,7 @@ class InferenceAnswerer(BaseAnswerer):
         self._narrator = Narrator(interface)
         self._interface = interface
         self._inference = inference
+        self._task_extractor = TaskExtractor(interface)
 
     async def answer(self, query_text, policy):
         text = self._narrator.summarize_dialogue()
@@ -25,11 +27,18 @@ class InferenceAnswerer(BaseAnswerer):
             )
 
         return await get_answer_using_text(
-            self._inference, self._interface, query_text, text, policy
+            self._inference,
+            self._interface,
+            self._task_extractor,
+            query_text,
+            text,
+            policy,
         )
 
 
-async def get_answer_using_text(inference, interface, text, prior_conversation, policy):
+async def get_answer_using_text(
+    inference, interface, task_extractor, text, prior_conversation, policy
+):
     working_memory = TaskMemory()
     working_memory.add_story(prior_conversation)
     text = text.capitalize()
@@ -39,9 +48,11 @@ async def get_answer_using_text(inference, interface, text, prior_conversation, 
     interface.bot_has_spoken(False)
     answer = await inference.compute(query, working_memory, policy=policy)
 
-    if query.is_question and answer.is_false():
+    if answer.is_neutral():
+        task_text = (await task_extractor.extract(text)).text
+        print("TASK:", text + " | " + task_text)
         query = Query(
-            text=f"The user asks: '{text}'",
+            text=task_text,
             is_question=is_question(text),
             variable="name",
         )

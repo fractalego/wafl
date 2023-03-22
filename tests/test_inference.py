@@ -7,6 +7,7 @@ from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.extractors.dataclasses import Query
 from wafl.logger.local_file_logger import LocalFileLogger
+from wafl.policy.answerer_policy import AnswerPolicy
 
 _logger = LocalFileLogger()
 
@@ -115,6 +116,7 @@ class TestInference(TestCase):
             Narrator(interface),
             logger=_logger,
         )
+        policy = AnswerPolicy(interface)
         query = Query(
             text="What type of tree is there at Bob's house",
             is_question=True,
@@ -122,7 +124,9 @@ class TestInference(TestCase):
         )
         task_memory = TaskMemory()
         answer = asyncio.run(
-            inference._look_for_answer_in_rules(query, task_memory, "/", 0, False)
+            inference._look_for_answer_in_rules(
+                query, task_memory, "/", policy, 0, False
+            )
         )
         expected = "peach"
         assert answer.text == expected

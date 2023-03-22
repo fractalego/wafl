@@ -2,8 +2,6 @@ import asyncio
 import logging
 import traceback
 
-from wafl.extractors.task_extractor import TaskExtractor
-from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -53,7 +51,6 @@ class BackwardInference:
         self._interface = interface
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
-        self._task_extractor = TaskExtractor(interface)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -77,7 +74,6 @@ class BackwardInference:
         return answer.text
 
     async def compute(self, query, task_memory=None, policy=None, knowledge_name="/"):
-        query.text = (await self._task_extractor.extract(query.text)).text
         lock = asyncio.Lock()
         await lock.acquire()
         if not task_memory:
@@ -145,7 +141,7 @@ class BackwardInference:
             return answer
 
         answer = await self._look_for_answer_by_asking_the_user(
-            query, task_memory, knowledge_name, depth
+            query, task_memory, knowledge_name, policy, depth
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
@@ -204,9 +200,10 @@ class BackwardInference:
             for cause in rule.causes:
                 cause_text = cause.text.strip()
                 self._log("clause: " + cause_text, depth)
+                original_cause_text = cause_text
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
-                if task_memory.is_in_prior_failed_clauses(cause_text):
+                if task_memory.is_in_prior_failed_clauses(original_cause_text):
                     self._log("This clause failed before", depth)
                     break
 
@@ -246,7 +243,7 @@ class BackwardInference:
                     answer = invert_answer(answer)
 
                 if answer.is_false():
-                    task_memory.add_failed_clause(cause_text)
+                    task_memory.add_failed_clause(original_cause_text)
                     break
 
                 if answer.variable:
@@ -362,7 +359,7 @@ class BackwardInference:
                 return answer
 
     async def _look_for_answer_by_asking_the_user(
-        self, query, task_memory, knowledge_name, depth
+        self, query, task_memory, knowledge_name, policy, depth
     ):
         self._log(f"Looking for answers by asking the user")
         if depth > 0 and query.is_question:
@@ -378,6 +375,7 @@ class BackwardInference:
                         user_input_text,
                         task_memory,
                         knowledge_name,
+                        policy,
                         depth,
                     )
 
@@ -404,7 +402,7 @@ class BackwardInference:
                     if user_answer.text not in ["yes", "no"]:
                         self._interface.output("Yes or No?")
                         user_answer = await self._look_for_answer_by_asking_the_user(
-                            query, task_memory, knowledge_name, depth
+                            query, task_memory, knowledge_name, policy, depth
                         )
 
                 if user_answer.is_true():
@@ -592,7 +590,7 @@ class BackwardInference:
             ]
 
     async def _spin_up_another_inference_task(
-        self, input_text, task_memory, knowledge_name, depth
+        self, input_text, task_memory, knowledge_name, policy, depth
     ):
         prior_conversation = self._narrator.summarize_dialogue()
         working_memory = TaskMemory()
@@ -610,5 +608,6 @@ class BackwardInference:
             query,
             task_memory,
             knowledge_name,
+            policy,
             depth,
         )

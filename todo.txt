@@ -2,6 +2,7 @@
 
 
 * Complete the task extractor + policy guidance on the whole of the answerer/inference tree
+  * Create test for different policies
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her
