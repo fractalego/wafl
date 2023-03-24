@@ -255,6 +255,8 @@ class BackwardInference:
                 answer = await self._validate_fact_in_effects(
                     rule_effect_text, query, substitutions
                 )
+                if answer.is_neutral():
+                    return answer.create_true()
 
                 if not answer.is_false():
                     return answer
@@ -474,10 +476,6 @@ class BackwardInference:
         self._log("Validating the statement in the rule trigger.")
         self._log(f"The query is {rule_effect_text}")
         self._log(f"The answer is {answer.text}")
-
-        if answer.is_true():
-            return answer
-
         return answer
 
     async def _process_code(self, cause_text, knowledge_name, substitutions, policy):
