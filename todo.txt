@@ -3,6 +3,12 @@
 
 * Complete the task extractor + policy guidance on the whole of the answerer/inference tree
   * Create test for different policies
+     * create test for "I didn't mean that"
+        * You need to log the rules that have been chosen.
+          This needs to part of the policy decision.
+          Dialogue alone is not enough.
+
+     * create test for "do it again"
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her

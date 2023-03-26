@@ -27,7 +27,6 @@ class TestNegations(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: So you do want to see it!"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test_simple_no(self):
