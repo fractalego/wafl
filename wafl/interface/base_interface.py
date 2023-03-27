@@ -26,5 +26,8 @@ class BaseInterface:
     def get_utterances_list(self):
         raise NotImplementedError
 
+    def get_utterances_list_with_timestamp(self):
+        raise NotImplementedError
+
     def add_hotwords(self, hotwords: List[str]):
         pass

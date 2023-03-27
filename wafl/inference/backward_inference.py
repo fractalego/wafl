@@ -259,6 +259,7 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
+                    task_memory.add_choice(f"The bot selected the clause with trigger {rule_effect_text}.")
                     return answer
 
             if inverted_rule:
