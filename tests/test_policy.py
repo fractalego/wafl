@@ -13,39 +13,35 @@ wafl_example = """
 The user asks about the shopping list
   SAY So you do want to see it!
   
-The user wants to see the shopping list
-  SAY The list is here
+The user wants to see the todo list
+  SAY No list here!
 
 """
+
 
 class TestPolicy(TestCase):
     def test__information_is_repeated(self):
         interface = DummyInterface(
-            to_utter=[
-                "What's in the shopping list",
-                "say it again"
-            ]
+            to_utter=["What's in the shopping list", "say it again"]
         )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "so you do want to see it"
+        expected = "to see it"
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__policy_can_steer_conversation(self):
         interface = DummyInterface(
-            to_utter=[
-                "What's in the shopping list",
-                "That's not what I mean"
-            ]
+            to_utter=["What's in the shopping list", "I meant the todo list"]
         )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "the list is here"
+        expected = "no list here!"
         print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
+

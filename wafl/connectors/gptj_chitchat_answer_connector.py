@@ -17,6 +17,8 @@ bot: I am fine
             dialogue = dialogue.strip()
             prompt += dialogue + "\n"
 
-        prompt += "user: " + query + "\n"
+        else:
+            prompt += "user: " + query + "\n"
+
         prompt += "bot:"
         return prompt

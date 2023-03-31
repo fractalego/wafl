@@ -1,6 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
+from wafl.extractors.entailer import Entailer
 from wafl.extractors.task_extractor import TaskExtractor
 from wafl.simple_text_processing.questions import is_question
 from wafl.extractors.dataclasses import Query
@@ -15,6 +16,7 @@ class InferenceAnswerer(BaseAnswerer):
         self._interface = interface
         self._inference = inference
         self._task_extractor = TaskExtractor(interface)
+        self._entailer = Entailer(logger)
 
     async def answer(self, query_text, policy):
         text = self._narrator.summarize_dialogue()
@@ -30,6 +32,7 @@ class InferenceAnswerer(BaseAnswerer):
             self._inference,
             self._interface,
             self._task_extractor,
+            self._entailer,
             query_text,
             text,
             policy,
@@ -37,7 +40,7 @@ class InferenceAnswerer(BaseAnswerer):
 
 
 async def get_answer_using_text(
-    inference, interface, task_extractor, text, prior_conversation, policy
+    inference, interface, task_extractor, entailer, text, prior_conversation, policy
 ):
     working_memory = TaskMemory()
     working_memory.add_story(prior_conversation)
@@ -51,6 +54,12 @@ async def get_answer_using_text(
     if answer.is_neutral():
         task_text = (await task_extractor.extract(text)).text
         print("TASK:", text + " | " + task_text)
+        if "not" in task_text:
+            return answer
+
+        if entailer.entails(query_text, task_text, return_threshold=True):
+            return answer
+
         query = Query(
             text=task_text,
             is_question=is_question(text),

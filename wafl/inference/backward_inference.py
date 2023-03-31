@@ -197,6 +197,9 @@ class BackwardInference:
                 if answer.is_false():
                     continue
 
+            if policy and not policy.accept(rule_effect_text, task_memory):
+                continue
+
             for cause in rule.causes:
                 cause_text = cause.text.strip()
                 self._log("clause: " + cause_text, depth)
@@ -259,7 +262,9 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
-                    task_memory.add_choice(f"The bot selected the clause with trigger {rule_effect_text}.")
+                    task_memory.add_choice(
+                        f"The bot selected the clause with trigger {rule_effect_text}."
+                    )
                     return answer
 
             if inverted_rule:
