@@ -12,7 +12,11 @@ class DummyInterface(BaseInterface):
         self._bot_has_spoken = False
         self._dialogue = ""
 
-    def output(self, text: str):
+    def output(self, text: str, silent: bool = False):
+        if silent:
+            print(text)
+            return
+
         self._dialogue += "bot: " + text + "\n"
         self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))
         self.bot_has_spoken(True)

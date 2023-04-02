@@ -13,7 +13,11 @@ class CommandLineInterface(BaseInterface):
         super().__init__()
         self._bot_has_spoken = False
 
-    def output(self, text: str):
+    def output(self, text: str, silent: bool = False):
+        if silent:
+            print(text)
+            return
+
         utterance = from_bot_to_user(text)
         print(COLOR_START + "bot> " + utterance + COLOR_END)
         self._utterances.append((time.time(), f"bot: {text}"))

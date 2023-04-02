@@ -9,7 +9,7 @@ class BaseInterface:
         self._choices = []
         self._utterances = []
 
-    def output(self, text: str):
+    def output(self, text: str, silent: bool = False):
         raise NotImplementedError
 
     def input(self) -> str:
@@ -32,6 +32,7 @@ class BaseInterface:
 
     def add_choice(self, text):
         self._choices.append((time.time(), text))
+        self.output(f"Making the choice: {text}", silent=True)
 
     def get_choices_and_timestamp(self):
         return self._choices

@@ -27,9 +27,16 @@ Say the user's intention: the user says goodbye
  
 
 The following conversation is taking place:
-user: my name is john
+user: hello
+user: the user's name is john
 
 Say the user's intention: the user says their name is John
+
+
+The following conversation is taking place:
+user: my dog's name is Fido
+
+Say the user's intention: the user says their dog's name is Fido
 
 
 The following conversation is taking place:
@@ -78,9 +85,9 @@ Say the user's intention: the user says their name is Alberto
 
 
 The following conversation is taking place:
-user: The user's name is John
+user: remember that I am an engineer
 
-Say the user's intention: the user says their name is John
+Say the user's intention: the user wants the bot to remember that they are an engineer
 
 
 The following conversation is taking place:
@@ -96,10 +103,24 @@ Say the user's intention: [list of actions] the user wants to know the time AND 
 
 
 The following conversation is taking place:
+user: what musing is playing
+
+Say the user's intention: the user wants to know which music is playing 
+
+
+The following conversation is taking place:
 user: what is the the weather like
 user: what is the time
 
 Say the user's intention: the user wants to know the time 
+
+
+The following conversation is taking place:
+user: add paper
+user: add scissors
+user: add stone
+
+Say the user's intention: the user wants to add stone 
 
 
 The following conversation is taking place:

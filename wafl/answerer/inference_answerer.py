@@ -31,15 +31,13 @@ class InferenceAnswerer(BaseAnswerer):
 
         query_text = f"The user says: '{query_text.capitalize()}'"
         task_texts = (await self._task_extractor.extract(query_text)).text
-        print("TASK_TEXTS:", task_texts)
         answers = []
         for task_text in split_tasks(task_texts):
-            print(f"The task is {task_text}")
+            print(task_text)
             result = self._entailer.entails(
                 task_text, query_text, return_threshold=True
             )
             if result:
-                print("entailer score:", result)
                 task_text = query_text
 
             answers.append(
@@ -59,7 +57,7 @@ class InferenceAnswerer(BaseAnswerer):
 
 
 def split_tasks(task_text):
-    return task_text.split("AND")
+    return [item.strip() for item in task_text.split("AND") if item]
 
 
 def perform_and(answers):
