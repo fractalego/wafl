@@ -8,7 +8,6 @@ from wafl.interface.utils import not_good_enough
 class DummyInterface(BaseInterface):
     def __init__(self, to_utter=None):
         super().__init__()
-        self._utterances = []
         self._to_utter = to_utter
         self._bot_has_spoken = False
         self._dialogue = ""
@@ -37,9 +36,3 @@ class DummyInterface(BaseInterface):
 
     def get_dialogue(self):
         return self._dialogue
-
-    def get_utterances_list(self):
-        return [item[1] for item in self._utterances]
-
-    def get_utterances_list_with_timestamp(self):
-        return self._utterances

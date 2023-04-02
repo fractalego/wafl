@@ -14,6 +14,31 @@ Say the user's intention: the user wants to drive the car
 
 
 The following conversation is taking place:
+bot: hello, how can I help
+user: Hello
+
+Say the user's intention: the user says hi 
+
+
+The following conversation is taking place:
+user: goodbye
+
+Say the user's intention: the user says goodbye
+ 
+
+The following conversation is taking place:
+user: my name is john
+
+Say the user's intention: the user says their name is John
+
+
+The following conversation is taking place:
+user: thank you
+
+Say the user's intention: the user thanks 
+
+
+The following conversation is taking place:
 user: I want to drive a car
 bot: do you have a driving license?
 user: no
@@ -50,6 +75,37 @@ bot: what is your name
 user: my name is Alberto
 
 Say the user's intention: the user says their name is Alberto
+
+
+The following conversation is taking place:
+user: The user's name is John
+
+Say the user's intention: the user says their name is John
+
+
+The following conversation is taking place:
+user: find the user a good restaurant and order a pizza
+
+Say the user's intention: [list of actions] the user wants this bot to find a good restaurant AND the user wants this bot to order a pizza
+
+
+The following conversation is taking place:
+user: what is the time and how long is it before 12
+
+Say the user's intention: [list of actions] the user wants to know the time AND the user to know how long it is before 12 
+
+
+The following conversation is taking place:
+user: what is the the weather like
+user: what is the time
+
+Say the user's intention: the user wants to know the time 
+
+
+The following conversation is taking place:
+user: what is the weather what is the temperature
+
+Say the user's intention: [list of actions] the user wants to know the weather AND the user wants to know the temperature
 
 
 The following conversation is taking place:

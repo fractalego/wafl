@@ -15,6 +15,9 @@ class TaskExtractor:
 
     async def extract(self, query: str):
         dialogue = "\n".join(self._interface.get_utterances_list())
+        if not dialogue:
+            dialogue = query
+
         prediction = await self._connector.get_answer(
             "",
             dialogue,

@@ -60,6 +60,7 @@ class ConversationLoop:
                     num_misses += 1
                     if num_misses >= max_misses:
                         self._interface.deactivate()
+                        self._interface.reset_history()
 
                     if interactions == 1:
                         self._interface.output(

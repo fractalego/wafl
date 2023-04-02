@@ -197,7 +197,9 @@ class BackwardInference:
                 if answer.is_false():
                     continue
 
-            if policy and not policy.accept(rule_effect_text, task_memory):
+            if policy and not await policy.accept(
+                f"The bot understands '{rule_effect_text}'"
+            ):
                 continue
 
             for cause in rule.causes:
@@ -262,7 +264,7 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
-                    task_memory.add_choice(
+                    self._interface.add_choice(
                         f"The bot selected the clause with trigger {rule_effect_text}."
                     )
                     return answer
@@ -565,6 +567,7 @@ class BackwardInference:
         else:
             new_query = Query(text=cause_text, is_question=False)
 
+        self._interface.add_choice(f"The bot tries the new query '{new_query.text}'")
         answer = await self._compute_recursively(
             new_query, task_memory, knowledge_name, policy, depth + 1, inverted_rule
         )

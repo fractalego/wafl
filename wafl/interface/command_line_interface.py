@@ -12,7 +12,6 @@ class CommandLineInterface(BaseInterface):
     def __init__(self):
         super().__init__()
         self._bot_has_spoken = False
-        self._utterances = []
 
     def output(self, text: str):
         utterance = from_bot_to_user(text)
@@ -34,9 +33,3 @@ class CommandLineInterface(BaseInterface):
             self._bot_has_spoken = to_set
 
         return self._bot_has_spoken
-
-    def get_utterances_list(self):
-        return [item[1] for item in self._utterances]
-
-    def get_utterances_list_with_timestamp(self):
-        return self._utterances

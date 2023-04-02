@@ -7,15 +7,10 @@ class AnswerPolicy:
         self._logger = logger
         self._connector = GPTJAnswerPolicyConnector()
 
-    async def accept(self, result: str, task_memory: "TaskMemory" = None):
+    async def accept(self, result: str):
         text = ""
         dialogue = self._interface.get_utterances_list_with_timestamp()
-        if task_memory:
-            choices = task_memory.get_choices_and_timestamp()
-
-        else:
-            choices = []
-
+        choices = self._interface.get_choices_and_timestamp()
         dialogue_and_choices = dialogue + choices
         dialogue_and_choices = sorted(dialogue_and_choices)
         dialogue_and_choices = [item[1] for item in dialogue_and_choices]

@@ -26,6 +26,7 @@ class TestRulesCreation(TestCase):
         expected = "bot: A rule was created"
         assert interface.get_utterances_list()[-1] == expected
 
+        interface.reset_history()
         input_from_user = "Hello"
         asyncio.run(conversation_events._process_query(input_from_user))
         expected = ["bot: Hello there!", "bot: This rule was created"]

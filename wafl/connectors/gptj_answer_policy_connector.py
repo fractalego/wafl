@@ -5,11 +5,10 @@ class GPTJAnswerPolicyConnector(BaseGPTJConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
-    def _get_answer_prompt(self, text, query, dialogue=None):
+    def _get_answer_prompt(self, text, query, dialogue: str = None):
         if not dialogue:
             return "Say yes 5 times: yes yes yes "
 
-        dialogue_str = "\n".join(dialogue)
         prompt = f"""
 The following conversation is taking place:
 user: I have a toy car
@@ -49,7 +48,16 @@ Please answer Yes or No: y
 
 
 The following conversation is taking place:
-{dialogue_str}
+user: blah blah
+
+Is the next item fit to continue the conversation?
+bot: the bot understands that the user says blah blah  
+
+Please answer Yes or No: y
+
+
+The following conversation is taking place:
+{dialogue}
 
 Is the next item fit to continue the conversation?
 bot: {query}

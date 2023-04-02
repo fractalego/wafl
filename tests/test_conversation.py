@@ -79,30 +79,34 @@ class TestConversation(TestCase):
         assert interface.get_utterances_list()[-1] == expected
 
     def test_input_during_inference(self):
-        interface = DummyInterface(to_utter=["test@example.com"])
+        interface = DummyInterface(
+            to_utter=["Can I register to the newsletter?", "test@example.com"]
+        )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
-        input_from_user = "Can I register to the newsletter?".capitalize()
-        asyncio.run(conversation_events._process_query(input_from_user))
+        asyncio.run(conversation_events.process_next())
         expected = "bot: Test@example.com has been added to the newsletter"
-
         assert interface.get_utterances_list()[-1] == expected
 
     def test__remember_command(self):
-        interface = DummyInterface(to_utter=["test@example.com"])
+        interface = DummyInterface(
+            to_utter=[
+                "Can I register to the newsletter?",
+                "test@example.com",
+                "What is the email of the user",
+            ]
+        )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
         )
-        input_from_user = "Can I register to the newsletter?".capitalize()
-        asyncio.run(conversation_events._process_query(input_from_user))
-        answer = asyncio.run(
-            conversation_events._process_query("What is the email of the user")
-        )
-        assert answer.text == "test@example.com"
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1] == "bot: test@example.com"
 
     def test__knowledge_insertion(self):
         interface = DummyInterface(to_utter=["the user's mother is called Ada"])

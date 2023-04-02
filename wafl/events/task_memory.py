@@ -1,9 +1,5 @@
-import time
-
-
 class TaskMemory:
     def __init__(self):
-        self._choices = []
         self._story = ""
         self._questions = []
         self._answers = []
@@ -60,9 +56,3 @@ class TaskMemory:
         self._questions = []
         self._answers = []
         self._failed_clauses = set()
-
-    def add_choice(self, text):
-        self._choices.append((time.time(), text))
-
-    def get_choices_and_timestamp(self):
-        return self._choices

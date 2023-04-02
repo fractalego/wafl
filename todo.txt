@@ -10,8 +10,9 @@
 
      * create test for "do it again"
        * FIND WAY TO EXTRACT TASK FROM DISCOURSE in arbiter_answerer
-       **** I have modified the default return from backward inference.
        Selected_answer() returns unknown if all answers are None
+       #### MAKE TESTS WORK!
+       #### why is "the user thanks this bot" not equivalent to "the user says 'thank you'"?
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her

@@ -44,4 +44,3 @@ class TestPolicy(TestCase):
         expected = "no list here!"
         print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
-
