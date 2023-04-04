@@ -1,6 +1,5 @@
 ### TODO
 
-
 * Complete the task extractor + policy guidance on the whole of the answerer/inference tree
   * Create test for different policies
      * create test for "I didn't mean that"
@@ -11,8 +10,7 @@
      * create test for "do it again"
        * FIND WAY TO EXTRACT TASK FROM DISCOURSE in arbiter_answerer
        Selected_answer() returns unknown if all answers are None
-       #### MAKE TESTS WORK!
-       #### why is "the user thanks this bot" not equivalent to "the user says 'thank you'"?
+       #### add task recognition to choices and make tests pass
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her

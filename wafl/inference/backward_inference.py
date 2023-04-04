@@ -2,6 +2,7 @@ import asyncio
 import logging
 import traceback
 
+from wafl.extractors.task_extractor import TaskExtractor
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -51,6 +52,7 @@ class BackwardInference:
         self._interface = interface
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
+        self._task_extractor = TaskExtractor(interface)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -381,12 +383,21 @@ class BackwardInference:
                 self._log(f"The user replies: {user_input_text}")
                 if self._knowledge.has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
+                    task_text = (
+                        await self._task_extractor.extract(user_input_text)
+                    ).text
+                    self._interface.add_choice(
+                        f"The bot tries to see if the new task can be '{task_text}'"
+                    )
                     await self._spin_up_another_inference_task(
                         user_input_text,
                         task_memory,
                         knowledge_name,
                         policy,
                         depth,
+                    )
+                    self._interface.add_choice(
+                        f"The task '{task_text}' did not bring any result."
                     )
 
                 else:
