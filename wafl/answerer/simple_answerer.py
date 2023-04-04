@@ -10,7 +10,7 @@ class SimpleAnswerer(BaseAnswerer):
         self._logger = logger
         self._narrator = narrator
 
-    async def answer(self, query_text):
+    async def answer(self, query_text, policy):
         if not is_question(query_text):
             return Answer(text="unknown")
 
@@ -23,4 +23,10 @@ class SimpleAnswerer(BaseAnswerer):
                 f"SimpleAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        return await self._extractor.extract(Query(query_text, is_question=True), text)
+        answer = await self._extractor.extract(
+            Query(query_text, is_question=True), text
+        )
+        if await policy.accept(answer.text):
+            return answer
+
+        return Answer.create_neutral()

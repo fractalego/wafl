@@ -1,14 +1,18 @@
+import time
+
 from typing import List
 
 
 class BaseInterface:
     def __init__(self):
         self._is_listening = True
+        self._choices = []
+        self._utterances = []
 
-    def output(self, text: str):
+    def output(self, text: str, silent: bool = False):
         raise NotImplementedError
 
-    async def input(self) -> str:
+    def input(self) -> str:
         raise NotImplementedError
 
     def bot_has_spoken(self, to_set: bool = None):
@@ -23,8 +27,22 @@ class BaseInterface:
     def deactivate(self):
         self._is_listening = False
 
-    def get_utterances_list(self):
+    def add_hotwords(self, hotwords: List[str]):
         raise NotImplementedError
 
-    def add_hotwords(self, hotwords: List[str]):
-        pass
+    def add_choice(self, text):
+        self._choices.append((time.time(), text))
+        self.output(f"Making the choice: {text}", silent=True)
+
+    def get_choices_and_timestamp(self):
+        return self._choices
+
+    def get_utterances_list(self):
+        return [item[1] for item in self._utterances]
+
+    def get_utterances_list_with_timestamp(self):
+        return self._utterances
+
+    def reset_history(self):
+        self._utterances = []
+        self._choices = []

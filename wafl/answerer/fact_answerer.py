@@ -11,7 +11,7 @@ class FactAnswerer(BaseAnswerer):
         self._narrator = narrator
         self._extractor = Extractor(narrator, logger)
 
-    async def answer(self, query_text):
+    async def answer(self, query_text, policy):
         if self._logger:
             self._logger.write(f"Fact Answerer: the query is {query_text}")
 
@@ -30,7 +30,8 @@ class FactAnswerer(BaseAnswerer):
             if self._logger:
                 self._logger.write(f"Answer within facts: The answer is {answer.text}")
 
-            return answer
+            if await policy.accept(answer.text):
+                return answer
 
         text = self._narrator.summarize_dialogue()
         if self._logger:

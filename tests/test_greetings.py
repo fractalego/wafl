@@ -67,7 +67,7 @@ the user wants to stop
 
 class TestGreetings(TestCase):
     def test_hello_and_username(self):
-        interface = DummyInterface(["Hello, my name is unknown", "Albert"])
+        interface = DummyInterface(["Hello", "Albert"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )
@@ -77,7 +77,7 @@ class TestGreetings(TestCase):
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_hello_and_username2(self):
-        interface = DummyInterface(["Hello, my name is unknown", "bob"])
+        interface = DummyInterface(["Hello", "bob"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )

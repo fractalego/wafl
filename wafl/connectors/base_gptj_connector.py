@@ -1,6 +1,7 @@
 import asyncio
 import json
 import re
+from typing import List
 
 import aiohttp
 import transformers
@@ -60,7 +61,7 @@ class BaseGPTJConnector:
 
         return False
 
-    async def get_answer(self, text, dialogue, query):
+    async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
         start = text.rfind(":") + 1

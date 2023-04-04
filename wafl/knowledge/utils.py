@@ -64,6 +64,13 @@ def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
             )
             if entailment_score:
                 new_rules_and_scores.append((rule, score * entailment_score))
+                continue
+
+            entailment_score = entailer.entails(
+                rule.effect.text, query.text, return_threshold=True
+            )
+            if entailment_score:
+                new_rules_and_scores.append((rule, score * entailment_score))
 
     return sorted(new_rules_and_scores, key=lambda x: -x[1])
 

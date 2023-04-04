@@ -21,7 +21,7 @@ INTERRUPTION the user wants to know the time
 INTERRUPTION the user says to shut up
   close_conversation()
 
-INTERRUPTION the user wants to quit the task
+INTERRUPTION the user wants to stop the task
   close_task()
   
 """.strip()
@@ -79,4 +79,5 @@ class TestInterruptions(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Task interrupted"

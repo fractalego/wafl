@@ -2,6 +2,7 @@ import os
 import re
 
 from wafl.events.answerer_creator import create_answerer
+from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
 
 from wafl.config import Configuration
@@ -24,14 +25,16 @@ class ConversationEvents:
         self._answerer = create_answerer(knowledge, interface, code_path, logger)
         self._knowledge = knowledge
         self._interface = interface
-        if not config:
-            self._config = Configuration.load_local_config()
-        else:
-            self._config = config
-
+        self._policy = AnswerPolicy(interface, logger)
         self._logger = logger
         if logger:
             self._logger.set_depth(0)
+
+        if not config:
+            self._config = Configuration.load_local_config()
+
+        else:
+            self._config = config
 
     def output(self, text: str):
         self._interface.output(text)
@@ -45,7 +48,9 @@ class ConversationEvents:
         text_is_question = is_question(text)
 
         try:
-            answer = await self._answerer.answer(remove_text_between_brackets(text))
+            answer = await self._answerer.answer(
+                remove_text_between_brackets(text), policy=self._policy
+            )
 
         except InterruptTask:
             self._interface.output("Task interrupted")
