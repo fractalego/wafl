@@ -53,7 +53,11 @@ class VoiceInterface(BaseInterface):
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
-    def output(self, text: str):
+    def output(self, text: str, silent: bool = False):
+        if silent:
+            print(text)
+            return
+
         if not text:
             return
 

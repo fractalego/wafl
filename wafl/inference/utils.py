@@ -76,9 +76,9 @@ def update_substitutions_from_answer(answer: "Answer", substitutions: Dict[str, 
 
 def add_function_arguments(text: str) -> str:
     text = re.sub(
-        "(.*\([\"'0-9a-zA-Z@?':\-_\.,\s]+)\)$", "\\1, self, task_memory)", text
+        "(.*\([\"'0-9a-zA-Z@?':\-_\.,\s]+)\)$", "\\1, self, policy, task_memory)", text
     )
-    text = re.sub("(.*)\(\)$", "\\1(self, task_memory)", text)
+    text = re.sub("(.*)\(\)$", "\\1(self, policy, task_memory)", text)
     return text
 
 
@@ -156,7 +156,7 @@ def selected_answer(candidate_answers: List["Answer"]) -> bool:
         if answer:
             return answer
 
-    return Answer(text="False")
+    return Answer.create_neutral()
 
 
 def fact_relates_to_user(text: str) -> bool:

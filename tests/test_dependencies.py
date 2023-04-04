@@ -47,16 +47,14 @@ class TestDependencies(TestCase):
         with open(tmp_filename, "w") as file:
             file.write(wafl_dependency)
 
-        interface = DummyInterface(
-            to_utter=[
-                "Hello my name is Albert",
-            ]
-        )
+        interface = DummyInterface(to_utter=["Hello", "albert"])
+        knowledge = ProjectKnowledge(tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename), interface=interface
+            knowledge, interface=interface, code_path=knowledge.get_dependencies_list()
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, albert!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__facts_are_answered_from_dependency_list_one_level_deep(self):

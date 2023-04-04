@@ -25,11 +25,12 @@ _path = os.path.dirname(__file__)
 
 class TestVoice(TestCase):
     def test_activation(self):
-        interface = DummyInterface(to_utter=["computer my name is Jane"])
+        interface = DummyInterface(to_utter=["computer", "my name is Jane"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example), interface=interface
         )
         interface.activate()
+        asyncio.run(conversation_events.process_next(activation_word="computer"))
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 2
 

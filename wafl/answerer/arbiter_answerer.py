@@ -8,6 +8,7 @@ from wafl.answerer.simple_answerer import SimpleAnswerer
 from wafl.connectors.gptj_prompt_predictor_connector import GPTJPromptPredictorConnector
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
+from wafl.extractors.task_extractor import TaskExtractor
 from wafl.inference.backward_inference import BackwardInference
 from wafl.inference.utils import answer_is_informative
 from wafl.extractors.dataclasses import Answer, Query
@@ -21,10 +22,19 @@ class ArbiterAnswerer(BaseAnswerer):
         self._gptj_connector = GPTJPromptPredictorConnector()
         self._entailer = Entailer(logger)
         self._knowledge = knowledge
+        self._task_extractor = TaskExtractor(interface)
 
-    async def answer(self, query_text):
+    async def answer(self, query_text, policy):
         if self._knowledge.ask_for_rule_backward(
             Query.create_from_text(f"The user says: {query_text}"), knowledge_name="/"
+        ):
+            return Answer(text="unknown")
+
+        if self._knowledge.ask_for_rule_backward(
+            Query.create_from_text(
+                (await self._task_extractor.extract(query_text)).text
+            ),
+            knowledge_name="/",
         ):
             return Answer(text="unknown")
 
@@ -43,7 +53,7 @@ class ArbiterAnswerer(BaseAnswerer):
         all_answers = []
         for key, _ in keys_and_scores:
             answerer = self._answerers_dict[key]
-            answer = await answerer.answer(query_text)
+            answer = await answerer.answer(query_text, policy)
             all_answers.append(answer)
             if answer_is_informative(answer) and not answer.is_false():
                 return answer

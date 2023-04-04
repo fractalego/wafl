@@ -32,6 +32,7 @@ class TestEmptyInput(TestCase):
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test_empty_input_does_nothing(self):

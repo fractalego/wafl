@@ -29,7 +29,7 @@ _logger = logging.getLogger(__name__)
 class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_user = 0.55
     _threshold_for_questions_from_bot = 0.6
-    _threshold_for_questions_in_rules = 0.505
+    _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.4
     _threshold_for_partial_facts = 0.48
     _max_rules_per_type = 3

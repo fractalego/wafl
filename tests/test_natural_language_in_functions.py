@@ -84,7 +84,7 @@ class TestLanguageInFunctions(TestCase):
         assert interface.get_utterances_list()[3] == expected[2]
         assert interface.get_utterances_list()[4] == expected[3]
 
-    def test_double_fuctions(self):
+    def test_double_functions(self):
         interface = DummyInterface(["Is the victoria line running"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_tube_line_rules),
@@ -92,6 +92,7 @@ class TestLanguageInFunctions(TestCase):
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert (
             interface.get_utterances_list()[-1]
             == "bot: The victoria line is running normally"
