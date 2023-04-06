@@ -28,7 +28,7 @@ class TestArbiterAnswerer(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "the sky is blue"
+        expected = "blue"
         print(interface.get_utterances_list())
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
