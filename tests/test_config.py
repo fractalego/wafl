@@ -1,11 +1,6 @@
-import asyncio
-
 from unittest import TestCase
 from wafl.config import Configuration
-from wafl.events.conversation_events import ConversationEvents
-from wafl.interface.dummy_interface import DummyInterface
 from wafl.interface.voice_interface import VoiceInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_greetings = """
   

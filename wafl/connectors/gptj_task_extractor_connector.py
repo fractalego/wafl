@@ -17,26 +17,26 @@ The following conversation is taking place:
 bot: hello, how can I help
 user: Hello
 
-Say the user's intention: the user says hi 
+Say the user's intention: [statement] the user says hi 
 
 
 The following conversation is taking place:
 user: goodbye
 
-Say the user's intention: the user says goodbye
+Say the user's intention: [statement] the user says goodbye
  
 
 The following conversation is taking place:
 user: hello
 user: the user's name is john
 
-Say the user's intention: the user says their name is John
+Say the user's intention: [statement] the user says their name is John
 
 
 The following conversation is taking place:
 user: my dog's name is Fido
 
-Say the user's intention: the user says their dog's name is Fido
+Say the user's intention: [statement] the user says their dog's name is Fido
 
 
 The following conversation is taking place:
@@ -81,7 +81,7 @@ The following conversation is taking place:
 bot: what is your name
 user: my name is Alberto
 
-Say the user's intention: the user says their name is Alberto
+Say the user's intention: [statement] the user says their name is Alberto
 
 
 The following conversation is taking place:
