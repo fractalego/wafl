@@ -1,7 +1,7 @@
 import asyncio
+import functools
 import json
 import re
-from typing import List
 
 import aiohttp
 import transformers
@@ -61,6 +61,7 @@ class BaseGPTJConnector:
 
         return False
 
+    @functools.lru_cache
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
