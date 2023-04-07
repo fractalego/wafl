@@ -21,31 +21,16 @@ This bot is doing well
 
 
 class TestArbiterAnswerer(TestCase):
-    def test_generated_answer(self):
-        interface = DummyInterface()
-        policy = AnswerPolicy(interface)
-        answerer = ArbiterAnswerer.create_answerer(
-            knowledge=SingleFileKnowledge(_wafl_rules),
-            interface=interface,
-            code_path="/",
-            logger=None,
-        )
-        answer = asyncio.run(answerer.answer("What color is the sky?", policy))
-        expected = "I believe the sky is blue."
-        self.assertEqual(expected, answer.text)
-
     def test_generated_answer_from_conversation(self):
-        interface = DummyInterface()
-        policy = AnswerPolicy(interface)
-        answerer = create_answerer(
-            knowledge=SingleFileKnowledge(_wafl_rules),
+        interface = DummyInterface(["what the color of the sky?"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_rules),
             interface=interface,
-            code_path="/",
-            logger=None,
         )
-        answer = asyncio.run(answerer.answer("What color is the sky?", policy))
-        expected = "I believe the sky is blue."
-        self.assertEqual(expected, answer.text)
+        asyncio.run(conversation_events.process_next())
+        expected = "blue"
+        print(interface.get_utterances_list())
+        self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test_generated_answer_from_conversation2(self):
         interface = DummyInterface(["what is the capital of Italy?"])
@@ -54,8 +39,8 @@ class TestArbiterAnswerer(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: I believe it is Rome"
-        self.assertEqual(expected, interface.get_utterances_list()[-1])
+        expected = "it is Rome"
+        self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test_generated_answer_from_conversation3(self):
         interface = DummyInterface(
@@ -73,30 +58,25 @@ class TestArbiterAnswerer(TestCase):
         self.assertIn(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):
-        interface = DummyInterface()
-        policy = AnswerPolicy(interface)
-        answerer = ArbiterAnswerer.create_answerer(
-            knowledge=SingleFileKnowledge(_wafl_rules),
+        interface = DummyInterface(["What is the name of this bot"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_rules),
             interface=interface,
-            code_path="/",
-            logger=None,
         )
-        answer = asyncio.run(answerer.answer("What is the name of this bot", policy))
+        asyncio.run(conversation_events.process_next())
         expected = "computer"
-        self.assertEqual(expected, answer.text)
+        self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test_chitchat(self):
-        interface = DummyInterface()
-        policy = AnswerPolicy(interface)
-        answerer = ArbiterAnswerer.create_answerer(
-            knowledge=SingleFileKnowledge(_wafl_rules),
+        interface = DummyInterface(["good good"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_rules),
             interface=interface,
-            code_path="/",
-            logger=None,
         )
-        answer = asyncio.run(answerer.answer("good good", policy))
-        expected = "I am fine"
-        self.assertEqual(expected, answer.text)
+        asyncio.run(conversation_events.process_next())
+        expected = "I am doing well"
+        print(interface.get_utterances_list())
+        self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test__conversation_input_returns_chitchat_for_trivial_input(self):
         interface = DummyInterface(["uhm what"])

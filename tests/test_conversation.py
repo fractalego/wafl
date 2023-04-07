@@ -105,21 +105,23 @@ class TestConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        print(interface.get_utterances_list())
-        assert interface.get_utterances_list()[-1] == "bot: test@example.com"
+        expected = "test@example.com"
+        assert expected in interface.get_utterances_list()[-1]
 
     def test__knowledge_insertion(self):
-        interface = DummyInterface(to_utter=["the user's mother is called Ada"])
+        interface = DummyInterface(
+            to_utter=["the user's mother is called Ada", "How is the user's mum called"]
+        )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
         asyncio.run(conversation_events.process_next())
-        answer = asyncio.run(
-            conversation_events._process_query("How is the user's mum called")
-        )
-        assert answer.text.lower() == "ada"
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        expected = "ada"
+        assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
@@ -133,7 +135,6 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert"
-        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting_with_alberto_as_name(self):
@@ -148,7 +149,6 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert0"
-        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__yes(self):

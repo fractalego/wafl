@@ -40,6 +40,10 @@ class Answer:
     def create_neutral():
         return Answer(text="unknown")
 
+    @staticmethod
+    def create_from_text(text):
+        return Answer(text=text)
+
 
 def normalized(text):
     text = text.strip()

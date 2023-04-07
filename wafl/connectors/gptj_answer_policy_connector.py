@@ -57,6 +57,15 @@ Please answer Yes or No: y
 
 
 The following conversation is taking place:
+the bot remembers: the user's name is John
+user: is my name Jane
+
+Is the next item fit to continue the conversation?
+bot: no
+
+Please answer Yes or No: y
+
+The following conversation is taking place:
 {dialogue}
 
 Is the next item fit to continue the conversation?
