@@ -1,7 +1,7 @@
 import asyncio
+import functools
 import json
 import re
-from typing import List
 
 import aiohttp
 import transformers

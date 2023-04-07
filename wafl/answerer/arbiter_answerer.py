@@ -1,10 +1,6 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.answerer.chitchat_answerer import ChitChatAnswerer
-from wafl.answerer.fact_answerer import FactAnswerer
-from wafl.answerer.generated_answerer import GeneratedAnswerer
+from wafl.answerer.dialogue_answerer import DialogueAnswerer
 from wafl.answerer.inference_answerer import InferenceAnswerer
-from wafl.answerer.list_answerer import ListAnswerer
-from wafl.answerer.simple_answerer import SimpleAnswerer
 from wafl.connectors.gptj_prompt_predictor_connector import GPTJPromptPredictorConnector
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
@@ -75,16 +71,10 @@ class ArbiterAnswerer(BaseAnswerer):
                     ),
                     logger,
                 ),
-                "The user asks for some information about something": ListAnswerer(
-                    [
-                        FactAnswerer(knowledge, narrator, logger),
-                        SimpleAnswerer(narrator, logger),
-                        GeneratedAnswerer(narrator, logger),
-                    ],
-                    interface,
-                    logger,
+                "The user asks for some information about something": DialogueAnswerer(
+                    knowledge, interface, logger
                 ),
-                "The user chats": ChitChatAnswerer(narrator, logger),
+                "The user chats": DialogueAnswerer(knowledge, interface, logger),
             },
             knowledge,
             interface,

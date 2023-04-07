@@ -1,16 +1,11 @@
 ### TODO
 
-* Complete the task extractor + policy guidance on the whole of the answerer/inference tree
-  * Create test for different policies
-     * create test for "I didn't mean that"
-        * You need to log the rules that have been chosen.
-          This needs to part of the policy decision.
-          Dialogue alone is not enough.
-
-     * create test for "do it again"
-       * FIND WAY TO EXTRACT TASK FROM DISCOURSE in arbiter_answerer
-       Selected_answer() returns unknown if all answers are None
-       #### add task recognition to choices and make tests pass
+* refactor everyting to have a chat log with all the choices, retrieved facts
+  in the same prompt for chitchat
+  * All answerers should have access to the same list of utterances, choices, and facts.
+    The only difference should be the final line of prompt.
+    #### MAKE TEST PASS
+    #### ADD CACHE TO ALL CONNECTORS
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her
@@ -60,6 +55,19 @@
   * maybe questions can be asked at a summary level? Not just sentence by sentence.
 
 * rules should be added and REMOVED!
+
+
+/* Complete the task extractor + policy guidance on the whole of the answerer/inference tree
+/  * Create test for different policies
+/     * create test for "I didn't mean that"
+/        * You need to log the rules that have been chosen.
+           This needs to part of the policy decision.
+           Dialogue alone is not enough.
+
+/     * create test for "do it again"
+       * FIND WAY TO EXTRACT TASK FROM DISCOURSE in arbiter_answerer
+       /* Selected_answer() returns unknown if all answers are None
+       /* add task recognition to choices and make tests pass
 
 /* make alarm work on wafl_home.
 /  * Make async work on wafl
