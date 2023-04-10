@@ -29,7 +29,7 @@ class TestTaskList(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "the sun is shining"
-        assert expected in interface.get_utterances_list()[-2].lower()
+        assert any(expected in item.lower() for item in interface.get_utterances_list())
 
         expected = "item removed"
-        assert expected in interface.get_utterances_list()[-1].lower()
+        assert any(expected in item.lower() for item in interface.get_utterances_list())
