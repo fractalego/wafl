@@ -4,7 +4,6 @@ import time
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 
-from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
@@ -32,16 +31,16 @@ class FlaskInterface(BaseInterface):
             print(text)
             return
 
-        utterance = from_bot_to_user(text)
+        utterance = text
         print(COLOR_START + "bot> " + utterance + COLOR_END)
         self._utterances.append((time.time(), f"bot: {text}"))
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
-        text = from_user_to_bot(input("user> ")).strip()
+        text = input("user> ").strip()
         while not_good_enough(text):
             self.output("I did not quite understand that")
-            text = from_user_to_bot(input("user> "))
+            text = input("user> ")
 
         self._utterances.append((time.time(), f"user: {text}"))
         return text

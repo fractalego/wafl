@@ -1,6 +1,5 @@
 import asyncio
 
-from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
@@ -45,7 +44,6 @@ class ConversationTestCases:
         is_consistent = True
         generated_lines = interface.get_utterances_list()
         for test_line, generated_line in zip(test_lines, generated_lines):
-            test_line = self._apply_deixis(test_line)
             if not self._lhs_entails_rhs(generated_line, test_line):
                 print(f" [test_line] {test_line}")
                 print(f" [predicted_line] {generated_line}")
@@ -83,12 +81,3 @@ class ConversationTestCases:
         lhs = ":".join(item.strip() for item in lhs.split(":")[1:])
         rhs = ":".join(item.strip() for item in rhs.split(":")[1:])
         return self._entailer.entails(lhs, rhs) == "True"
-
-    def _apply_deixis(self, line):
-        name = line.split(":")[0].strip()
-
-        if name.lower() == "user":
-            return from_user_to_bot(line)
-
-        if name.lower() == "bot":
-            return from_bot_to_user(line)

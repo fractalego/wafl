@@ -9,7 +9,8 @@ class GPTJAnswerPolicyConnector(BaseGPTJConnector):
         if not dialogue:
             return "Say yes 5 times: yes yes yes "
 
-        prompt = f"""
+        prompt = (
+            f"""
 ### Instruction:
 A conversation is taking place between a user and a bot. 
 The last line is a candidate reply from the bot. 
@@ -87,6 +88,8 @@ Reply "y" for yes or "n" for no.
 {dialogue}
 bot: {query}
 ### Response:
-        """.strip() + "\n"
+        """.strip()
+            + "\n"
+        )
 
         return prompt

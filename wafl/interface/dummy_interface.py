@@ -1,6 +1,5 @@
 import time
 
-from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
@@ -18,17 +17,17 @@ class DummyInterface(BaseInterface):
             return
 
         self._dialogue += "bot: " + text + "\n"
-        self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))
+        self._utterances.append((time.time(), f"bot: {text}"))
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
         text = self._to_utter.pop(0).strip()
         while self._is_listening and not_good_enough(text):
             self.output("I did not quite understand that")
-            text = from_user_to_bot(self._to_utter.pop(0))
+            text = self._to_utter.pop(0)
 
         self._dialogue += "user: " + text + "\n"
-        utterance = from_user_to_bot(text)
+        utterance = text
         self._utterances.append((time.time(), f"user: {utterance}"))
         return utterance
 

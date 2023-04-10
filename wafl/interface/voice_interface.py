@@ -2,7 +2,6 @@ import os
 import random
 
 from wafl.events.utils import remove_text_between_brackets
-from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import get_most_common_words, not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
@@ -62,7 +61,7 @@ class VoiceInterface(BaseInterface):
             return
 
         self._listener.activate()
-        text = from_bot_to_user(text)
+        text = text
         self._utterances.append(f"bot: {text}")
         print(COLOR_START + "bot> " + text + COLOR_END)
         self._speaker.speak(text)
@@ -83,11 +82,11 @@ class VoiceInterface(BaseInterface):
 
         text = text.lower().capitalize()
         print(COLOR_START + "user> " + text + COLOR_END)
-        utterance = remove_text_between_brackets(from_user_to_bot(text))
+        utterance = remove_text_between_brackets(text)
         if utterance.strip():
             self._utterances.append(f"user: {utterance}")
 
-        return from_user_to_bot(text)
+        return text
 
     def bot_has_spoken(self, to_set: bool = None):
         if to_set != None:

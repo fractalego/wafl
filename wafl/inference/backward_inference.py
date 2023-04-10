@@ -286,6 +286,7 @@ class BackwardInference:
             self._log(f"Answer within facts: The query is {query.text}")
             self._log(f"Answer within facts: The context is {text}")
             text = self._narrator.get_context_for_facts(text)
+            text = text.replace("The bot remembers:", "Keep in mind that")
             answer = await self._extractor.extract(query, text)
             task_memory.add_story(text)
             self._log(f"Answer within facts: The answer is {answer.text}")
@@ -307,9 +308,9 @@ class BackwardInference:
     ):
         self._log(f"Looking for answers in the user's last utterance")
         if depth > 0 and task_memory.get_story() and query.is_question:
-            query.text = from_bot_to_bot(query.text)
+            query.text = query.text
             user_utterances = [
-                item.replace("user:", "The user says:")
+                item
                 for item in self._interface.get_utterances_list()
                 if "user:" in item
             ]
@@ -346,9 +347,15 @@ class BackwardInference:
         self._log(f"Looking for answers in task memory")
         if depth > 0 and task_memory.get_story() and query.is_question:
             query.text = from_bot_to_bot(query.text)
-            answer = await self._extractor.extract(
-                query, task_memory.get_story(), task_memory
-            )
+            dialogue = self._interface.get_utterances_list_with_timestamp()
+            choices = self._interface.get_choices_and_timestamp()
+            facts = self._interface.get_facts_and_timestamp()
+            dialogue_items = dialogue + choices + facts
+            dialogue_items = sorted(dialogue_items)
+            dialogue_items = [item[1] for item in dialogue_items]
+            dialogue_items = "\n".join(dialogue_items)
+            dialogue_items = f"<conversation>\n{dialogue_items}\n</conversation>"
+            answer = await self._extractor.extract(query, dialogue_items, task_memory)
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
@@ -413,7 +420,7 @@ class BackwardInference:
                 story = (
                     f"When asked '{query.text}', the user says: '{user_input_text}.'"
                 )
-                query.text = from_bot_to_bot(query.text)
+                query.text = query.text
                 user_answer = await self._extractor.extract(query, story)
 
                 self._log(f"The answer that is understood: {user_answer.text}")

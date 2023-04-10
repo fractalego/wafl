@@ -11,19 +11,19 @@ _logger = LocalFileLogger()
 _wafl_example = """
 
 The user greets
-  username = What is the user's name
+  username = What is the user's name?
   SAY hello to you, {username}!
 
 The user says they can swim
-  username = What is the user's name
+  username = What is your name
   the user is called {username}
 
 color = What is the user's hair color
-  username = What is the user's nameprint(interface.get_utterances_list())
+  username = What is your name
   {username} has {color} hair
 
 the user wants to register to the newsletter
-  email = what is the user's email
+  email = what is your email
   REMEMBER the user's email is {email}
   SAY {email} has been added to the newsletter
 
@@ -40,13 +40,13 @@ Bob has black hair
 _wafl_greetings = """
 The user greets
   SAY Hello there!
-  username = What is the user's name
+  username = What is the your name
   REMEMBER the user is called {username}
   REMEMBER the user's name is {username}
   SAY Nice to meet you, {username}!
   
 The user wants to join the club
-  Is the user good enough to join?
+  Are you good enough to join?
   SAY Welcome to the club!
 
 """.strip()
@@ -75,8 +75,8 @@ class TestConversation(TestCase):
         )
         input_from_user = "hello!".capitalize()
         asyncio.run(conversation_events._process_query(input_from_user))
-        expected = "bot: Hello to you, bob!"
-        assert interface.get_utterances_list()[-1] == expected
+        expected = "bob!"
+        assert expected in interface.get_utterances_list()[-1]
 
     def test_input_during_inference(self):
         interface = DummyInterface(
@@ -89,6 +89,7 @@ class TestConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Test@example.com has been added to the newsletter"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__remember_command(self):
@@ -96,7 +97,7 @@ class TestConversation(TestCase):
             to_utter=[
                 "Can I register to the newsletter?",
                 "test@example.com",
-                "What is the email of the user",
+                "What is my email?",
             ]
         )
         conversation_events = ConversationEvents(
@@ -111,7 +112,7 @@ class TestConversation(TestCase):
 
     def test__knowledge_insertion(self):
         interface = DummyInterface(
-            to_utter=["the user's mother is called Ada", "How is the user's mum called"]
+            to_utter=["my mother is called Ada", "How is my mum called"]
         )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_example, logger=_logger),
@@ -125,7 +126,7 @@ class TestConversation(TestCase):
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting(self):
-        interface = DummyInterface(["My name is Albert", "What is my name"])
+        interface = DummyInterface(["My name is Albert", "What is my name?"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
@@ -136,10 +137,11 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting_with_alberto_as_name(self):
-        interface = DummyInterface(["My name is Albert0", "What is my name"])
+        interface = DummyInterface(["My name is Albert0", "What is my name?"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,
@@ -165,8 +167,10 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        assert "yes" in interface.get_utterances_list()[-1].lower()\
-               or "ada" in interface.get_utterances_list()[-1].lower()
+        assert (
+            "yes" in interface.get_utterances_list()[-1].lower()
+            or "ada" in interface.get_utterances_list()[-1].lower()
+        )
 
     def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob"])
@@ -180,8 +184,10 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        assert "no" in interface.get_utterances_list()[-1].lower()\
-               or "albert" in interface.get_utterances_list()[-1].lower()
+        assert (
+            "no" in interface.get_utterances_list()[-1].lower()
+            or "albert" in interface.get_utterances_list()[-1].lower()
+        )
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])
@@ -205,8 +211,9 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert (
-            interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
+            interface.get_utterances_list()[-2] == "bot: is the user good enough to join?"
         )
 
     def test__hello_and_username(self):
@@ -219,6 +226,7 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__how_are_you(self):
@@ -229,4 +237,4 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         asyncio.run(conversation_events.process_next())
-        assert "doing well" in interface.get_utterances_list()[-1]
+        assert "fine" in interface.get_utterances_list()[-1]

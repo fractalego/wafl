@@ -29,7 +29,7 @@ class DialogueAnswerer(BaseAnswerer):
         if not dialogue:
             dialogue = [(time.time(), f"user: {query_text}")]
 
-        choices = [] #self._interface.get_choices_and_timestamp()
+        choices = []  # self._interface.get_choices_and_timestamp()
         facts = self._interface.get_facts_and_timestamp()
         dialogue_items = dialogue + choices + facts
         dialogue_items = sorted(dialogue_items)

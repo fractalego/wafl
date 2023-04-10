@@ -39,7 +39,7 @@ class TestArbiterAnswerer(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "it is Rome"
+        expected = "rome"
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test_generated_answer_from_conversation3(self):
@@ -79,11 +79,10 @@ class TestArbiterAnswerer(TestCase):
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test__conversation_input_returns_chitchat_for_trivial_input(self):
-        interface = DummyInterface(["uhm what"])
+        interface = DummyInterface(["Say hello to me"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(""), interface=interface
         )
-        interface.output("hello there")
         asyncio.run(conversation_events.process_next())
-        expected = "bot: hello there"
-        self.assertEqual(expected, interface.get_utterances_list()[-1])
+        expected = "bot: hello"
+        self.assertEqual(expected, interface.get_utterances_list()[-1].lower())

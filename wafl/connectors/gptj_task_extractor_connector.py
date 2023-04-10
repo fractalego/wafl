@@ -6,7 +6,8 @@ class GPTJTaskExtractorConnector(BaseGPTJConnector):
         super().__init__(config)
 
     def _get_answer_prompt(self, text: str, query: str, dialogue: str = None):
-        prompt = f"""
+        prompt = (
+            f"""
 ### Instruction:
 Extract the user's intention from the conversation
 ### Input:
@@ -153,6 +154,8 @@ Extract the user's intention from the conversation
 ### Input:
 {dialogue}
 ### Response: 
-        """.strip() + "\n"
+        """.strip()
+            + "\n"
+        )
 
         return prompt

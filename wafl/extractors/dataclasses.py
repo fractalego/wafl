@@ -26,7 +26,7 @@ class Answer:
         return normalized(self.text) in ["no", "false"]
 
     def is_neutral(self) -> bool:
-        return normalized(self.text) in ["unknown"]
+        return normalized(self.text) in ["unknown", "i am not sure", "i don't know"]
 
     @staticmethod
     def create_true():
