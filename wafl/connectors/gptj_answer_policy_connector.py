@@ -10,68 +10,83 @@ class GPTJAnswerPolicyConnector(BaseGPTJConnector):
             return "Say yes 5 times: yes yes yes "
 
         prompt = f"""
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "yes" or "no".
+### Input:
 user: I have a toy car
-
-Is the next item fit to continue the conversation?
 Bot: The weather looks rainy
+### Response:
+n
 
-Please answer Yes or No: n
-
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 bot: I have a toy car
 user: what
-
-Is the next item fit to continue the conversation?
 bot: I have a toy car
+### Response:
+y
 
-Please answer Yes or No: y
-
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 user: I am hungry
-
-Is the next item fit to continue the conversation?
 bot: This is the menu
+### Response:
+y
 
-Please answer Yes or No: y
-
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 user: blah blah
-
-Is the next item fit to continue the conversation?
 bot: I don't understand
+### Response:
+y
 
-Please answer Yes or No: y
-
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 user: blah blah
-
-Is the next item fit to continue the conversation?
 bot: the bot understands that the user says blah blah  
+### Response:
+y
 
-Please answer Yes or No: y
-
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 the bot remembers: the user's name is John
 user: is my name Jane
-
-Is the next item fit to continue the conversation?
 bot: no
+### Response:
+y
 
-Please answer Yes or No: y
-
-The following conversation is taking place:
+### Instruction:
+A conversation is taking place between a user and a bot. 
+The last line is a candidate reply from the bot. 
+Is this reply fit to continue the conversation?  
+Reply "y" for yes or "n" for no.
+### Input:
 {dialogue}
-
-Is the next item fit to continue the conversation?
 bot: {query}
-
-Please answer Yes or No:
-        """.strip()
+### Response:
+        """.strip() + "\n"
 
         return prompt

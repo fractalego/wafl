@@ -1,5 +1,4 @@
 import asyncio
-import functools
 import json
 import re
 
@@ -9,7 +8,7 @@ import transformers
 from wafl.config import Configuration
 
 _tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
+    "EleutherAI/gpt-j-6B", padding_side="left"
 )
 
 
@@ -64,12 +63,14 @@ class BaseGPTJConnector:
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = self._get_answer_prompt(text, query, dialogue)
         text = prompt
-        start = text.rfind(":") + 1
+        start = len(text)
         while (
             all(item not in text[start:] for item in ["\n", ". "])
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
+
+        print(text)
 
         end_set = set()
         end_set.add(text.find("\n", start))
