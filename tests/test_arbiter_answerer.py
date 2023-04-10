@@ -84,5 +84,5 @@ class TestArbiterAnswerer(TestCase):
             SingleFileKnowledge(""), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: hello"
+        expected = "bot: hello."
         self.assertEqual(expected, interface.get_utterances_list()[-1].lower())
