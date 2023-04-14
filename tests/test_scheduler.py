@@ -49,8 +49,9 @@ class TestScheduler(TestCase):
             conversation_events,
             _logger,
             activation_word="",
+            max_misses=3,
         )
-        asyncio.run(conversation_loop.run(max_misses=3))
+        asyncio.run(conversation_loop.run())
         expected = ["user: hello !", "bot: Good bye!"]
         self.assertEqual(expected, interface.get_utterances_list())
 
