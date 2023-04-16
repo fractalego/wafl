@@ -1,5 +1,7 @@
 ### TODO
 
+* #### Play around with chitchat connector prompt. What works best?!
+
 * refactor everyting to have a chat log with all the choices, retrieved facts
   in the same prompt for chitchat
   * All answerers should have access to the same list of utterances, choices, and facts.

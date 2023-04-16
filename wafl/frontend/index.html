@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <title> WAFL frontend </title>
+    <script src="https://unpkg.com/htmx.org@1.9.0"
+            integrity="sha384-aOxz9UdWG0yBiyrTwPeMibmaoq07/d3a96GCbb9x60f3mOt5zwkjdbcHFnKH8qls"
+            crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            font-family: monospace;
+            font-size: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-bottom: 50px;
+        }
+
+        input {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            font-family: monospace;
+            font-size: 30px;
+            margin-top: 20px;
+            width: 50%;
+            bottom: 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="messages"
+     hx-get="/load_messages"
+     hx-swap="innerHTML"
+     hx-target="#messages"
+     hx-trigger="every 100ms"
+>
+    Loading...
+</div>
+<div>
+    <input autofocus name="query" id="query" class="input" type="text" placeholder="Type your message..."
+           data-hx-post="/input"
+           hx-swap="innerHTML"
+           hx-target="#messages"
+           hx-trigger="keyup[keyCode==13]"
+    >
+</div>
+</body>
+</html>
