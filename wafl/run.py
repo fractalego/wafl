@@ -74,7 +74,6 @@ def run_from_audio():
 
     scheduler = Scheduler([conversation_loop, events_loop])
     scheduler.run()
-    asyncio.run(conversation_loop.run(max_misses=3))
 
 
 def run_testcases():

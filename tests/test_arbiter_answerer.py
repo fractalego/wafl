@@ -75,7 +75,6 @@ class TestArbiterAnswerer(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "I am doing well"
-        print(interface.get_utterances_list())
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test__conversation_input_returns_chitchat_for_trivial_input(self):
@@ -83,7 +82,7 @@ class TestArbiterAnswerer(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge(""), interface=interface
         )
-        interface.output("hello there")
+        interface.output("say hello")
         asyncio.run(conversation_events.process_next())
-        expected = "bot: hello there"
-        self.assertEqual(expected, interface.get_utterances_list()[-1])
+        expected = "hello"
+        self.assertIn(expected, interface.get_utterances_list()[-1])

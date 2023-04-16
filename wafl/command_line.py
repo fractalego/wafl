@@ -10,6 +10,7 @@ from wafl.run import (
     print_incipit,
     download_models,
 )
+from wafl.runners.run_web_interface import run_server
 
 
 def print_help():
@@ -44,6 +45,10 @@ def process_cli():
 
         elif command == "run-audio":
             run_from_audio()
+            remove_preprocessed("/")
+
+        elif command == "run-server":
+            run_server()
             remove_preprocessed("/")
 
         elif command == "run-tests":
