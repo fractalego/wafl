@@ -1,9 +1,7 @@
+import aiohttp
 import asyncio
-import functools
 import json
 import re
-
-import aiohttp
 import transformers
 
 from wafl.config import Configuration
