@@ -1,3 +1,4 @@
+import logging
 import os
 import threading
 
@@ -15,6 +16,8 @@ app = Flask(
 app.config.from_object(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config["async_mode"] = "asyncio"
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.WARNING)
 
 
 class WebLoop:
@@ -26,9 +29,7 @@ class WebLoop:
         async def handle_input():
             text = request.form["query"]
             self._interface.input_queue.append(text)
-            conversation = (
-                "<div>" + "</br>".join(self._interface.get_utterances_list()) + "</div>"
-            )
+            conversation = "</br>".join(self._interface.get_utterances_list()) + "</br>"
             conversation += (
                 '<script>document.getElementById("query").value = "";</script>'
             )
@@ -36,7 +37,6 @@ class WebLoop:
 
         @app.route("/load_messages", methods=["GET"])
         async def load_messages():
-            print(self._interface.input_queue)
             conversation = "</br>".join(self._interface.get_utterances_list())
             return conversation
 
