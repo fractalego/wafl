@@ -16,7 +16,7 @@ app = Flask(
 app.config.from_object(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config["async_mode"] = "asyncio"
-log = logging.getLogger('werkzeug')
+log = logging.getLogger("werkzeug")
 log.setLevel(logging.WARNING)
 
 

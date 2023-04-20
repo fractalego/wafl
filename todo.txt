@@ -2,6 +2,7 @@
 
 * 1024 is limit in wafl_llm (deepspeed) change this to 2048
 * make it sure 2048 is limit when using gptj
+* only last three conversation items in task extractor
 
 * refactor everyting to have a chat log with all the choices, retrieved facts
   in the same prompt for chitchat

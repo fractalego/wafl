@@ -12,6 +12,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._logger = logger
         self._interface = interface
         self._connector = GPTJChitChatAnswerConnector()
+        self._max_num_past_utterances = 7
 
     async def answer(self, query_text, policy):
         if self._logger:
@@ -25,7 +26,13 @@ class DialogueAnswerer(BaseAnswerer):
         for text in texts:
             self._interface.add_fact(f"The bot remembers: {text}")
 
-        dialogue = self._interface.get_utterances_list_with_timestamp()
+        dialogue = self._interface.get_utterances_list_with_timestamp()[
+            -self._max_num_past_utterances :
+        ]
+        start_time = -1
+        if dialogue:
+            start_time = dialogue[0][0]
+
         if not dialogue:
             dialogue = [(time.time(), f"user: {query_text}")]
 
@@ -33,7 +40,7 @@ class DialogueAnswerer(BaseAnswerer):
         facts = self._interface.get_facts_and_timestamp()
         dialogue_items = dialogue + choices + facts
         dialogue_items = sorted(dialogue_items)
-        dialogue_items = [item[1] for item in dialogue_items]
+        dialogue_items = [item[1] for item in dialogue_items if item[0] > start_time]
         dialogue_items = "\n".join(dialogue_items)
         answer_text = await self._connector.get_answer(
             text="",
