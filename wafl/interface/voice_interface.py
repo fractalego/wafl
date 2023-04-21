@@ -1,5 +1,6 @@
 import os
 import random
+import time
 
 from wafl.events.utils import remove_text_between_brackets
 from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
@@ -63,7 +64,7 @@ class VoiceInterface(BaseInterface):
 
         self._listener.activate()
         text = from_bot_to_user(text)
-        self._utterances.append(f"bot: {text}")
+        self._utterances.append((time.time(), f"bot: {text}"))
         print(COLOR_START + "bot> " + text + COLOR_END)
         self._speaker.speak(text)
         self.bot_has_spoken(True)
@@ -85,7 +86,7 @@ class VoiceInterface(BaseInterface):
         print(COLOR_START + "user> " + text + COLOR_END)
         utterance = remove_text_between_brackets(from_user_to_bot(text))
         if utterance.strip():
-            self._utterances.append(f"user: {utterance}")
+            self._utterances.append((time.time(), f"user: {text}"))
 
         return from_user_to_bot(text)
 
@@ -107,9 +108,6 @@ class VoiceInterface(BaseInterface):
 
     def play_deny_sound(self):
         self._sound_speaker.speak(self._deny_sound_filename)
-
-    def get_utterances_list(self):
-        return self._utterances
 
     def __get_activation_sound_from_config(self, config):
         if config.get_value("waking_up_sound"):

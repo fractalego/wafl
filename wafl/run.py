@@ -71,7 +71,6 @@ def run_from_audio():
         generated_events,
         logger=_logger,
     )
-
     scheduler = Scheduler([conversation_loop, events_loop])
     scheduler.run()
 

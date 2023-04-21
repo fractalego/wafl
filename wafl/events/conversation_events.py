@@ -86,7 +86,6 @@ class ConversationEvents:
         try:
             text = await self._interface.input()
             text = text.replace("'", r"\'")
-            print(f"Text: {text}")
 
         except IndexError:
             return False
@@ -103,10 +102,8 @@ class ConversationEvents:
                 return True
 
         text = self.__remove_activation_word_and_normalize(activation_word, text)
-        print(self._interface.is_listening())
         if self._interface.is_listening():
             answer = await self._process_query(text)
-            print(answer)
             if answer and answer.text != "False":
                 return True
 

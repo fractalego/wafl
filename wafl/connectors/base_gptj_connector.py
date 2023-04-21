@@ -7,7 +7,7 @@ import transformers
 from wafl.config import Configuration
 
 _tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
+    "EleutherAI/gpt-neo-2.7B", padding_side="left"
 )
 
 
