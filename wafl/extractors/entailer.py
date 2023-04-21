@@ -1,13 +1,5 @@
-import os
-import torch
-
 from typing import Dict, Union
 from wafl.connectors.entailment_connector import EntailmentConnector
-
-os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-_model_name = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
 
 
 class Entailer:
