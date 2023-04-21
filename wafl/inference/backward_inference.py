@@ -176,7 +176,7 @@ class BackwardInference:
         self, query, task_memory, query_knowledge_name, policy, depth, inverted_rule
     ):
         self._log(f"Looking for answers in rules")
-        rules = self._knowledge.ask_for_rule_backward(
+        rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
         for rule in rules:
@@ -381,7 +381,7 @@ class BackwardInference:
                 self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
-                if self._knowledge.has_better_match(user_input_text):
+                if await self._knowledge.has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
                     task_text = (
                         await self._task_extractor.extract(user_input_text)

@@ -1,3 +1,4 @@
+import asyncio
 from unittest import TestCase
 from wafl.facts import Fact
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -139,8 +140,10 @@ class TestParsing(TestCase):
                 ],
             )
         )
-        rules = knowledge.ask_for_rule_backward(
-            Query("the user greets you", is_question=False)
+        rules = asyncio.run(
+            knowledge.ask_for_rule_backward(
+                Query("the user greets you", is_question=False)
+            )
         )
         assert str(rules[0]) == expected
 

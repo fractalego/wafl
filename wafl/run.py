@@ -85,7 +85,7 @@ def run_testcases():
         code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
-    testcases.run()
+    asyncio.run(testcases.run())
 
 
 def download_models():

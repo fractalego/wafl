@@ -82,14 +82,14 @@ class SingleFileKnowledge(BaseKnowledge):
             clean_text_for_retrieval(rule.effect.text), index=index
         )
 
-    def has_better_match(self, query_text: str) -> bool:
+    async def has_better_match(self, query_text: str) -> bool:
         if any(normalized(query_text).find(item) == 0 for item in ["yes", "no"]):
             return False
 
         if any(normalized(query_text).find(item) != -1 for item in [" yes ", " no "]):
             return False
 
-        rules = self.ask_for_rule_backward(
+        rules = await self.ask_for_rule_backward(
             Query(text=f"The user says to the bot: '{query_text}.'", is_question=False)
         )
         return any(rule.effect.is_interruption for rule in rules)
@@ -160,7 +160,7 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None):
         if text_is_exact_string(query.text):
             indices_and_scores = (
                 self._rules_string_retriever.get_indices_and_scores_from_text(
@@ -216,7 +216,7 @@ class SingleFileKnowledge(BaseKnowledge):
             query, rules_and_scores
         )
 
-        rules_and_scores = filter_out_rules_through_entailment(
+        rules_and_scores = await filter_out_rules_through_entailment(
             self._entailer, query, rules_and_scores
         )
 
