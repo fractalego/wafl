@@ -63,7 +63,7 @@ class ProjectKnowledge(BaseKnowledge):
 
         return to_return
 
-    def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
@@ -75,12 +75,14 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for rules in {name}")
 
                 rules_list.extend(
-                    self._knowledge_dict[name].ask_for_rule_backward(query)
+                    await self._knowledge_dict[name].ask_for_rule_backward(query)
                 )
 
         return rules_list
 
-    def has_better_match(self, query_text: str, knowledge_name: str = None) -> bool:
+    async def has_better_match(
+        self, query_text: str, knowledge_name: str = None
+    ) -> bool:
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
@@ -94,7 +96,7 @@ class ProjectKnowledge(BaseKnowledge):
 
             if name in self._get_all_dependency_names(knowledge_name):
                 result_list.append(
-                    self._knowledge_dict[name].has_better_match(query_text)
+                    await self._knowledge_dict[name].has_better_match(query_text)
                 )
 
         return any(result_list)

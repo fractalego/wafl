@@ -28,8 +28,10 @@ _ask_another_item
 class TestKnowledge(TestCase):
     def test_exact_string(self):
         knowledge = SingleFileKnowledge(wafl_example)
-        rules = knowledge.ask_for_rule_backward(
-            Query(text="_ask_another_item", is_question=False)
+        rules = asyncio.run(
+            knowledge.ask_for_rule_backward(
+                Query(text="_ask_another_item", is_question=False)
+            )
         )
         expected = "_ask_another_item"
         assert rules[0].effect.text == expected

@@ -1,37 +1,16 @@
-import os
-import torch
-
 from typing import Dict, Union
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-_model_name = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
-_tokenizer = AutoTokenizer.from_pretrained(_model_name)
-_model = AutoModelForSequenceClassification.from_pretrained(_model_name).to(_device)
+from wafl.connectors.entailment_connector import EntailmentConnector
 
 
 class Entailer:
     def __init__(self, logger=None):
-        self._tokenizer = _tokenizer
-        self._model = _model
-        if torch.cuda.is_available():
-            self._model.half()
-
         self._logger = logger
+        self._connector = EntailmentConnector()
 
-    def get_relation(self, premise: str, hypothesis: str) -> Dict[str, float]:
-        encodings = self._tokenizer(
-            premise, hypothesis, truncation=True, return_tensors="pt"
-        )
-        output = self._model(encodings["input_ids"].to(_device))
-        prediction = torch.softmax(output["logits"][0], -1).tolist()
-        label_names = ["entailment", "neutral", "contradiction"]
-        prediction = {name: float(pred) for pred, name in zip(prediction, label_names)}
-        return prediction
+    async def get_relation(self, premise: str, hypothesis: str) -> Dict[str, float]:
+        return await self._connector.predict(premise, hypothesis)
 
-    def entails(
+    async def entails(
         self,
         premise: str,
         hypothesis: str,
@@ -42,7 +21,7 @@ class Entailer:
         if self._logger:
             self._logger.write("Starting entailment procedure.")
 
-        prediction = self.get_relation(premise, hypothesis)
+        prediction = await self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
             if self._logger:
                 self._logger.write(f"Entailment: The premise is {premise}")
@@ -56,7 +35,7 @@ class Entailer:
 
         if prediction["contradiction"] < contradiction_threshold:
             premise = self._add_presuppositions_to_premise(premise)
-            prediction = self.get_relation(premise, hypothesis)
+            prediction = await self.get_relation(premise, hypothesis)
 
         if self._logger:
             self._logger.write(f"Entailment: The premise is {premise}")
@@ -77,7 +56,7 @@ class Entailer:
 
         return "False"
 
-    def is_neutral(
+    async def is_neutral(
         self,
         premise: str,
         hypothesis: str,
@@ -86,7 +65,7 @@ class Entailer:
         if self._logger:
             self._logger.write("Starting entailment neutral check.")
 
-        prediction = self.get_relation(premise, hypothesis)
+        prediction = await self.get_relation(premise, hypothesis)
         if prediction["neutral"] > threshold:
             if self._logger:
                 self._logger.write(f"Entailment: The premise is {premise}")

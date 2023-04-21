@@ -20,7 +20,7 @@ class ConversationTestCases:
         self._entailer = Entailer(logger)
         self._code_path = code_path if code_path else "/"
 
-    def test_single_case(self, name):
+    async def test_single_case(self, name):
         if name not in self._testcase_data:
             raise RuntimeWarning(f"The testcase '{name}' does not exist")
 
@@ -37,7 +37,7 @@ class ConversationTestCases:
         continue_conversations = True
         while continue_conversations:
             try:
-                continue_conversations = asyncio.run(conversation_events.process_next())
+                continue_conversations = await conversation_events.process_next()
 
             except (IndexError, CloseConversation):
                 break
@@ -46,7 +46,7 @@ class ConversationTestCases:
         generated_lines = interface.get_utterances_list()
         for test_line, generated_line in zip(test_lines, generated_lines):
             test_line = self._apply_deixis(test_line)
-            if not self._lhs_entails_rhs(generated_line, test_line):
+            if not await self._lhs_entails_rhs(generated_line, test_line):
                 print(f" [test_line] {test_line}")
                 print(f" [predicted_line] {generated_line}")
                 is_consistent = False
@@ -63,17 +63,17 @@ class ConversationTestCases:
 
         return False
 
-    def run(self):
+    async def run(self):
         to_return = True
 
         for name in self._testcase_data:
-            result = self.test_single_case(name)
+            result = await self.test_single_case(name)
             if not result:
                 to_return = False
 
         return to_return
 
-    def _lhs_entails_rhs(self, lhs, rhs):
+    async def _lhs_entails_rhs(self, lhs, rhs):
         lhs_name = lhs.split(":")[0].strip()
         rhs_name = rhs.split(":")[0].strip()
         if lhs_name != rhs_name:
@@ -82,7 +82,7 @@ class ConversationTestCases:
 
         lhs = ":".join(item.strip() for item in lhs.split(":")[1:])
         rhs = ":".join(item.strip() for item in rhs.split(":")[1:])
-        return self._entailer.entails(lhs, rhs) == "True"
+        return await self._entailer.entails(lhs, rhs) == "True"
 
     def _apply_deixis(self, line):
         name = line.split(":")[0].strip()

@@ -36,7 +36,7 @@ class InferenceAnswerer(BaseAnswerer):
             self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"
             )
-            result = self._entailer.entails(
+            result = await self._entailer.entails(
                 task_text, query_text, return_threshold=True
             )
             if result:

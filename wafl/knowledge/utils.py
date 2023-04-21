@@ -49,7 +49,7 @@ def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
     return new_rules_and_scores
 
 
-def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
+async def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
     new_rules_and_scores = []
     for rule, score in rules_and_scores:
         if rule.effect.is_question:
@@ -59,14 +59,14 @@ def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
             new_rules_and_scores.append((rule, score))
 
         else:
-            entailment_score = entailer.entails(
+            entailment_score = await entailer.entails(
                 query.text, rule.effect.text, return_threshold=True
             )
             if entailment_score:
                 new_rules_and_scores.append((rule, score * entailment_score))
                 continue
 
-            entailment_score = entailer.entails(
+            entailment_score = await entailer.entails(
                 rule.effect.text, query.text, return_threshold=True
             )
             if entailment_score:

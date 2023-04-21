@@ -71,7 +71,6 @@ def run_from_audio():
         generated_events,
         logger=_logger,
     )
-
     scheduler = Scheduler([conversation_loop, events_loop])
     scheduler.run()
 
@@ -86,7 +85,7 @@ def run_testcases():
         code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
-    testcases.run()
+    asyncio.run(testcases.run())
 
 
 def download_models():

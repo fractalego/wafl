@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from unittest import TestCase
@@ -12,7 +13,7 @@ class TestEntailment(TestCase):
         hypothesis = "The user is greeting"
 
         entailer = Entailer()
-        prediction = entailer.get_relation(premise, hypothesis)
+        prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
         self.assertTrue(prediction["entailment"] > 0.95)
 
     def test_question_entailment(self):
@@ -20,7 +21,8 @@ class TestEntailment(TestCase):
         hypothesis = "The user inquires about transport time tables"
 
         entailer = Entailer()
-        prediction = entailer.get_relation(premise, hypothesis)
+        prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
+        print(prediction)
         self.assertTrue(prediction["entailment"] > 0.95)
 
     def test_entailment_method(self):
@@ -28,4 +30,4 @@ class TestEntailment(TestCase):
         hypothesis = "The user says their name"
 
         entailer = Entailer()
-        self.assertEqual(entailer.entails(premise, hypothesis), "True")
+        self.assertEqual(asyncio.run(entailer.entails(premise, hypothesis)), "True")
