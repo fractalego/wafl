@@ -33,7 +33,7 @@ setup(
         "wafl.simple_text_processing",
     ],
     package_data={
-        "wafl": ["templates/*", "sounds/*", "models/*", "frontend/*"],
+        "wafl": ["templates/*", "sounds/*", "models/*", "frontend/*", "data/*"],
     },
     install_requires=[
         "flask[async]==2.0.1",

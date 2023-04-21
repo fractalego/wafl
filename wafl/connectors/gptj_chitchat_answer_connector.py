@@ -1,12 +1,39 @@
+import json
+import joblib
+import os
+
 from wafl.connectors.base_gptj_connector import BaseGPTJConnector
+from wafl.extractors.dataclasses import Query
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+
+_path = os.path.dirname(__file__)
 
 
 class GPTJChitChatAnswerConnector(BaseGPTJConnector):
     def __init__(self, config=None):
         super().__init__(config)
+        if not os.path.exists(os.path.join(_path, "../data/dialogues.knowledge")):
+            with open(os.path.join(_path, "../data/dialogues.json")) as file:
+                data = json.load(file)
+            self._knowledge = SingleFileKnowledge.create_from_list(
+                [item["dialogue"] for item in data]
+            )
+            joblib.dump(
+                self._knowledge, os.path.join(_path, "../data/dialogues.knowledge")
+            )
+
+        else:
+            self._knowledge = joblib.load(
+                os.path.join(_path, "../data/dialogues.knowledge")
+            )
 
     def _get_answer_prompt(self, text, query, dialogue=None):
-        prompt = f"""
+        retrieved_dialogues = self._knowledge.ask_for_facts(
+            Query.create_from_text(dialogue), threshold=0.3
+        )
+        retrieved_dialogues = [item.text for item in retrieved_dialogues]
+        prompt = "\n\n\n".join(retrieved_dialogues) + "\n\n\n"
+        prompt += f"""
 In the dialogue below a user is speaking to a bot:
 user: hello
 bot: [small talk] hello

@@ -21,12 +21,12 @@ class ArbiterAnswerer(BaseAnswerer):
         self._task_extractor = TaskExtractor(interface)
 
     async def answer(self, query_text, policy):
-        if self._knowledge.ask_for_rule_backward(
+        if await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(f"The user says: {query_text}"), knowledge_name="/"
         ):
             return Answer(text="unknown")
 
-        if self._knowledge.ask_for_rule_backward(
+        if await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(
                 (await self._task_extractor.extract(query_text)).text
             ),
@@ -36,7 +36,7 @@ class ArbiterAnswerer(BaseAnswerer):
 
         keys_and_scores = []
         for key in self._answerers_dict.keys():
-            score = self._entailer.entails(
+            score = await self._entailer.entails(
                 f"The user says: {query_text}",
                 key,
                 return_threshold=True,

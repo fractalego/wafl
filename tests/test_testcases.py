@@ -89,10 +89,10 @@ class TestConversationalTestCases(TestCase):
         testcase = ConversationTestCases(
             new_test_case, SingleFileKnowledge(_wafl_greetings)
         )
-        assert not testcase.test_single_case("test the greetings work")
+        assert not asyncio.run(testcase.test_single_case("test the greetings work"))
 
     def test_conversation_testcase_run_all(self):
         testcase = ConversationTestCases(
             _test_case_greetings, SingleFileKnowledge(_wafl_greetings)
         )
-        assert testcase.run()
+        assert asyncio.run(testcase.run())

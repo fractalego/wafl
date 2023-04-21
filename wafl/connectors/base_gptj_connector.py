@@ -1,15 +1,13 @@
+import aiohttp
 import asyncio
-import functools
 import json
 import re
-
-import aiohttp
 import transformers
 
 from wafl.config import Configuration
 
 _tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
+    "EleutherAI/gpt-neo-2.7B", padding_side="left"
 )
 
 
@@ -26,8 +24,17 @@ class BaseGPTJConnector:
             f"https://{config.get_value('model_host')}:"
             f"{config.get_value('model_port')}/predictions/bot"
         )
-        if not asyncio.run(self.check_connection()):
-            raise RuntimeError("Cannot connect a running Language Model.")
+
+        try:
+            loop = asyncio.get_running_loop()
+
+        except RuntimeError:
+            loop = None
+
+        if (not loop or (loop and not loop.is_running())) and not asyncio.run(
+            self.check_connection()
+        ):
+            raise RuntimeError("Cannot connect a running GPT-J Model.")
 
     async def predict(self, prompt: str) -> str:
         payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}

@@ -61,7 +61,9 @@ class Extractor:
     async def _check_fact(self, query_text, text, threshold):
         if not is_question(text):
             query_context = self._narrator.get_relevant_fact_context(text, query_text)
-            answer = self._entailer.entails(query_context, text, threshold=threshold)
+            answer = await self._entailer.entails(
+                query_context, text, threshold=threshold
+            )
             return Answer(text=self._entailer_to_qa_mapping[answer])
 
         dialogue = Dialogue()
