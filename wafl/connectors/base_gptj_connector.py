@@ -7,7 +7,7 @@ import transformers
 from wafl.config import Configuration
 
 _tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "EleutherAI/gpt-neo-2.7B", padding_side="left"
+    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
 )
 
 
@@ -32,21 +32,21 @@ class BaseGPTJConnector:
             loop = None
 
         if (not loop or (loop and not loop.is_running())) and not asyncio.run(
-            self.check_connection()
+                self.check_connection()
         ):
             raise RuntimeError("Cannot connect a running GPT-J Model.")
 
     async def predict(self, prompt: str) -> str:
-        payload = {"data": prompt, "num_beams": 1, "num_tokens": 5}
+        payload = {"data": prompt, "num_beams": 1, "num_tokens": self._num_prediction_tokens}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(verify_ssl=False)
+                    connector=aiohttp.TCPConnector(verify_ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     answer = json.loads(data)
                     answer = [item for item in answer if item > 0]
-                    return _tokenizer.decode(answer[-self._num_prediction_tokens :])
+                    return _tokenizer.decode(answer[-self._num_prediction_tokens:])
 
         return "UNKNOWN"
 
@@ -54,7 +54,7 @@ class BaseGPTJConnector:
         payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
         try:
             async with aiohttp.ClientSession(
-                conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
+                    conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     await response.text()
@@ -73,8 +73,8 @@ class BaseGPTJConnector:
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in ["\n", ". "])
-            and len(text) < start + self._max_reply_length
+                all(item not in text[start:] for item in ["\n", ". "])
+                and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
