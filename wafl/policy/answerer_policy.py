@@ -17,7 +17,7 @@ class AnswerPolicy:
         dialogue_items = [item[1] for item in dialogue_items]
         dialogue_items = "\n".join(dialogue_items)
         answer_text = await self._connector.get_answer(text, dialogue_items, result)
-        if answer_text.strip()[0].lower() == "y":
+        if answer_text and answer_text.strip()[0].lower() == "y":
             return True
 
         return False
