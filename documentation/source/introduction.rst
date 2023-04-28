@@ -1,7 +1,11 @@
 Introduction
 ============
-WAFL is an experimental framework for a home assistant.
+
+WAFL is a framework for home assistants.
 It is designed to combine Large Language Models and rules to create a predictable behavior.
+Specifically, instead of organising the work of an LLM into a chain of thoughts,
+WAFL intends to organise its behavior into inference trees.
 
 WAFL is a work in progress.
-While it might be ready to play with, it is not ready for production.
+The current version requires the user to specify the rules to follow.
+While it is ready to play with, it might not ready for production depending on your use-case.

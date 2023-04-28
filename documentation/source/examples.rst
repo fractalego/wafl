@@ -5,5 +5,7 @@ Examples
    :maxdepth: 2
 
    wafl_init
-   rules_and_functions
+   chitchat
+   rules
+   rules_and_backtracking
    directory_structure

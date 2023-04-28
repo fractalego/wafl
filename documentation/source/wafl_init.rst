@@ -3,6 +3,8 @@ Running wafl init
 
 What does this command do?
 
+.. code-block:: bash
+
     $ wafl init
 
 It creates a set of files that can be used to the interface side of WAFL.
@@ -47,17 +49,13 @@ The rules are written in the WAFL language, with a trigger condition on top and 
 This rule is activated when the user says "bring yourself online", and the action is for the machine to say "Hello there!".
 
 
-- The functions.py file contains the functions that can be used in the rules.wafl file.
+- The `functions.py` file contains the functions that can be used in the `rules.wafl` file.
 
 - The `events.py` file contains the event generation functions.
   For example, there is a function that returns the time and one that returns the data.
   These functions are executed every minute and may be used to activate one of the rules.
 
-- start_llm.sh is a script that starts the LLM locally.
+- `start_llm.sh` is a script that starts the LLM locally.
   It simply starts a docker container with the LLM image.
 
-
-
-
-The start_llm.sh file contains the command to start the LLM locally.
-The testcases.txt file contains the test cases that can be used to test the LLM.
+- The `testcases.txt` file contains the test cases that can be used to test the LLM.
