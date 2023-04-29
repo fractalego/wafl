@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rules &mdash; WAFL  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Rules and backtracking" href="rules_and_backtracking.html" />
+    <link rel="prev" title="Chitchat" href="chitchat.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WAFL
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_WAFL.html">Running WAFL</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wafl_init.html">Running wafl init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chitchat.html">Chitchat</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#say-command">SAY command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remember-command">REMEMBER command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asking-a-question">Asking a question</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-a-text">Generate a text</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#triggering-of-another-rule">Triggering of another rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-execution">Code execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entailment">Entailment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rules_and_backtracking.html">Rules and backtracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory_structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WAFL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="examples.html">Examples</a></li>
+      <li class="breadcrumb-item active">Rules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rules">
+<h1>Rules<a class="headerlink" href="#rules" title="Permalink to this heading"></a></h1>
+<p>The file rules.wafl contains the rules used by the system.
+Each rule is in the following format</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Trigger condition
+    action 1
+    action 2
+    action 3
+    ...
+</pre></div>
+</div>
+<p>Notice that the trigger condition has no indentation, while the actions are indented by any number spaces.
+Each action returns a true or false value.
+If that value is false, the rule stops executing and the next rule is triggered.
+A demo of the rules can be found in the repository <a class="reference external" href="https://github.com/fractalego/wafl_home">wafl_home</a>.</p>
+<p>A rule ends when the next rule is encountered (a new trigger condition is found).
+The trigger condition can be a single fact. For example</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>This bot&#39;s name is &quot;computer&quot;
+</pre></div>
+</div>
+<p>There are two actors in the system: “the user” and “the bot”.
+One simple rule example can be</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user asks what is this bot&#39;s name
+    SAY Hello, my name is Computer
+</pre></div>
+</div>
+<p>The rule above will be triggered when the user asks what is this bot’s name.
+There are 7 types of actions:
+<strong>SAY</strong>,
+<strong>REMEMBER</strong>,
+<strong>asking a question</strong>,
+<strong>generate a text</strong>,
+<strong>triggering of another rule</strong>,
+<strong>code execution</strong>,
+<strong>entailment</strong>.</p>
+<section id="say-command">
+<h2>SAY command<a class="headerlink" href="#say-command" title="Permalink to this heading"></a></h2>
+<p>This command will make the bot say something.
+For example the rule above will make the bot say “Hello, my name is computer”.</p>
+</section>
+<section id="remember-command">
+<h2>REMEMBER command<a class="headerlink" href="#remember-command" title="Permalink to this heading"></a></h2>
+<p>This command will make the bot remember something.
+for example the rule below will make the bot remember the user’s name.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name is John
+    REMEMBER The user&#39;s name is John
+</pre></div>
+</div>
+</section>
+<section id="asking-a-question">
+<h2>Asking a question<a class="headerlink" href="#asking-a-question" title="Permalink to this heading"></a></h2>
+<p>Typing a question (with or without question mark) will return a variable.
+This variable can be used later in the rule
+For example the rule below will make the bot ask the user’s name.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    REMEMBER The user&#39;s name is {name}
+</pre></div>
+</div>
+<p>Yes/No questions return a truth condition.
+For example by using the rule below, the bot will ask the user if they want to remember their name.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    Do you want to remember the user&#39;s name?
+    REMEMBER The user&#39;s name is {name}
+</pre></div>
+</div>
+<p>If the user says “no”, the rule will stop executing and the REMEMBER command will never be used</p>
+</section>
+<section id="generate-a-text">
+<h2>Generate a text<a class="headerlink" href="#generate-a-text" title="Permalink to this heading"></a></h2>
+<p>A text can be generated in a similar fashion as when asking questions</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    italian_name = the italian version of {name} is
+    SAY The italian version of {name} is {italian_name}
+</pre></div>
+</div>
+<p>The text will be generated by the line “the italian version of {name}” according to the LLM model.
+The only difference with asking question is that the text on the right hand side of <cite>=</cite> is a statement
+and not a question.</p>
+</section>
+<section id="triggering-of-another-rule">
+<h2>Triggering of another rule<a class="headerlink" href="#triggering-of-another-rule" title="Permalink to this heading"></a></h2>
+<p>A rule can trigger another rule as follows</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    the name if the user is {name}
+
+The name of the user is John
+    SAY Hello John!
+</pre></div>
+</div>
+<p>In this case the second rule is triggered if the user says their name is John.</p>
+</section>
+<section id="code-execution">
+<h2>Code execution<a class="headerlink" href="#code-execution" title="Permalink to this heading"></a></h2>
+<p>The code execution is done by using the python syntax.
+A function defined in the file <cite>functions.py</cite> can be called from the rule.</p>
+<p>For example, the file <cite>rules.wafl</cite> contains the following rule</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    greet({name})
+</pre></div>
+</div>
+<p>and the file <cite>functions.py</cite> contains the following function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the user says their name, the bot will greet the user by calling the function greet with the user’s name as argument.
+However print() does not activate the SAY command.
+From the <cite>functions.py</cite> file, a rule can be triggered by using the syntax <cite>“% … %”</cite></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="s2">&quot;% SAY Hello %&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;% SAY your name is </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> %&quot;</span>
+</pre></div>
+</div>
+<p>The first line will make the bot say “Hello”. The second line will make the bot say “your name is John” if the user’s name is John.</p>
+<p>The syntax <cite>“% … %”</cite>, can be used to trigger a rule, to generate a text, to ask a question, to remember something, or any other action available in the rules file.
+For example the prior function can be written as follows</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="s2">&quot;% SAY Hello %&quot;</span>
+    <span class="s2">&quot;% SAY your name is </span><span class="si">{name}</span><span class="s2"> %&quot;</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">&quot;% what is the date today? %&quot;</span>
+    <span class="s2">&quot;% SAY today is </span><span class="si">{date}</span><span class="s2"> %&quot;</span>
+    <span class="k">while</span> <span class="s2">&quot;% Do you want to continue? %&quot;</span><span class="p">:</span>
+        <span class="s2">&quot;% SAY I am happy to continue %&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="entailment">
+<h2>Entailment<a class="headerlink" href="#entailment" title="Permalink to this heading"></a></h2>
+<p>The entailment is done by using the :- operator. if RHS entails LHS, then LSH :- RHS is true, otherwise it is false.
+For example the rule below will stop at the second line if the user’s name is not John.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The user says their name
+    name = what is the user&#39;s name?
+    The user&#39;s name is John :- The user&#39;s name is {name}
+    SAY Your name is John!
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="chitchat.html" class="btn btn-neutral float-left" title="Chitchat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rules_and_backtracking.html" class="btn btn-neutral float-right" title="Rules and backtracking" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Alberto Cetoli.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
