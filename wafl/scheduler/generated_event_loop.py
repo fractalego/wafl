@@ -6,12 +6,13 @@ class GeneratedEventLoop:
         self._interface = interface
         self._events = events
         self._logger = logger
+        self._repeat_every_seconds = 60
 
     async def run(self):
         try:
             while True:
                 await self._events.process_next()
-                await asyncio.sleep(20)
+                await asyncio.sleep(self._repeat_every_seconds)
 
         except (KeyboardInterrupt, EOFError) as e:
             self._logger.write(

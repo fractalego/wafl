@@ -32,6 +32,7 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.4
+    _threshold_for_fact_rules = 0.35
     _threshold_for_partial_facts = 0.48
     _max_rules_per_type = 3
 
@@ -175,7 +176,7 @@ class SingleFileKnowledge(BaseKnowledge):
         fact_rules = [
             (self._rules_dict[item[0]], item[1])
             for item in indices_and_scores
-            if item[1] > 0
+            if item[1] > self._threshold_for_fact_rules
         ]
         fact_rules = [item for item in sorted(fact_rules, key=lambda x: -x[1])][
             : self._max_rules_per_type
