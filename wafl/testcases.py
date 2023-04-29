@@ -77,7 +77,6 @@ class ConversationTestCases:
         lhs_name = lhs.split(":")[0].strip()
         rhs_name = rhs.split(":")[0].strip()
         if lhs_name != rhs_name:
-            print("different name!")
             return False
 
         lhs = ":".join(item.strip() for item in lhs.split(":")[1:])

@@ -5,11 +5,11 @@ from wafl.config import create_initial_files
 from wafl.parsing.preprocess import remove_preprocessed
 from wafl.run import (
     run_from_command_line,
-    run_from_audio,
     run_testcases,
     print_incipit,
     download_models,
 )
+from wafl.runners.run_from_audio import run_from_audio
 from wafl.runners.run_web_interface import run_server
 
 

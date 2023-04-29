@@ -27,6 +27,9 @@ class BaseInterface:
 
     def deactivate(self):
         self._is_listening = False
+        self._choices = []
+        self._facts = []
+        self._utterances = []
 
     def add_hotwords(self, hotwords: List[str]):
         raise NotImplementedError

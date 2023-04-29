@@ -1,13 +1,13 @@
 ### TODO
 
 * Write choices, tasks and remember in web interface
-
-* refactor everyting to have a chat log with all the choices, retrieved facts
+* erase conversation after deactivation in voice interface
+/* refactor everyting to have a chat log with all the choices, retrieved facts
   in the same prompt for chitchat
-  * All answerers should have access to the same list of utterances, choices, and facts.
+  /* All answerers should have access to the same list of utterances, choices, and facts.
     The only difference should be the final line of prompt.
-    #### MAKE TEST PASS
-    #### ADD CACHE TO ALL CONNECTORS
+    /* MAKE TEST PASS
+    /* ADD CACHE TO ALL CONNECTORS (it cannot be done easily for async functions)
 
 * BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
    * [computer] confuse her
