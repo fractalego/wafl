@@ -29,7 +29,7 @@ class WebLoop:
         async def handle_input():
             text = request.form["query"]
             self._interface.input_queue.append(text)
-            conversation = "</br>".join(self._interface.get_utterances_list()) + "</br>"
+            conversation = await self._get_conversation()
             conversation += (
                 '<script>document.getElementById("query").value = "";</script>'
             )
@@ -37,8 +37,7 @@ class WebLoop:
 
         @app.route("/load_messages", methods=["GET"])
         async def load_messages():
-            conversation = "</br>".join(self._interface.get_utterances_list())
-            return conversation
+            return await self._get_conversation()
 
         @app.route("/output")
         async def handle_output():
@@ -57,3 +56,13 @@ class WebLoop:
 
         thread = threading.Thread(target=run_app)
         thread.start()
+
+    async def _get_conversation(self):
+        dialogue = self._interface.get_utterances_list_with_timestamp()
+        choices = self._interface.get_choices_and_timestamp()
+        facts = self._interface.get_facts_and_timestamp()
+        dialogue_items = dialogue + choices + facts
+        dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
+        dialogue_items = [item[1] for item in dialogue_items]
+        conversation = "</br>".join(dialogue_items) + "</br>"
+        return conversation
