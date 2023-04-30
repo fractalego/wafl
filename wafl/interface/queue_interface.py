@@ -17,7 +17,6 @@ class QueueInterface(BaseInterface):
             return
 
         utterance = text
-        print(f"Output: {utterance}")
         self.output_queue.append({"text": utterance, "silent": False})
         self._utterances.append((time.time(), f"bot: {text}"))
         self.bot_has_spoken(True)
@@ -27,7 +26,6 @@ class QueueInterface(BaseInterface):
             await asyncio.sleep(0.1)
 
         text = self.input_queue.pop(0)
-        print(f"Input: {text}")
         self._utterances.append((time.time(), f"user: {text}"))
         return text
 
