@@ -32,7 +32,8 @@ def create_initial_files():
     with open("start_llm.sh", "w") as file:
         file.write(_docker_start.read())
 
-    os.mkdir("logs/")
+    if not os.path.exists("logs/"):
+        os.mkdir("logs/")
 
     print("Done.")
 
