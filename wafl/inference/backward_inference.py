@@ -24,7 +24,7 @@ from wafl.inference.utils import (
     text_has_assigmnent,
     update_substitutions_from_results,
     answer_is_informative,
-    text_is_natural_language_task,
+    text_is_text_generation_task,
     escape_characters,
 )
 from wafl.simple_text_processing.normalize import normalized
@@ -199,8 +199,10 @@ class BackwardInference:
                 if answer.is_false():
                     continue
 
-            if policy and not await policy.accept(
-                f"The bot understands '{rule_effect_text}'"
+            if (
+                not rule.effect.is_interruption
+                and policy
+                and not await policy.accept(f"The bot understands '{rule_effect_text}'")
             ):
                 continue
 
@@ -227,7 +229,7 @@ class BackwardInference:
                         cause_text, knowledge_name, substitutions, policy
                     )
 
-                elif text_is_natural_language_task(cause_text):
+                elif text_is_text_generation_task(cause_text):
                     answer = await self._process_text_generation(
                         cause_text, knowledge_name, substitutions
                     )
