@@ -9,7 +9,7 @@ from wafl.logger.local_file_logger import LocalFileLogger
 
 wafl_example = """
 
-The user says hello
+The user says or wants to say hello
   name = What is the user's name
   SAY Hello, {name}!  
   
@@ -78,6 +78,7 @@ A:
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, bob!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__hello_does_not_get_into_task_memory(self):

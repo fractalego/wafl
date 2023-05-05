@@ -43,8 +43,8 @@ the user asks for the time
   time = get_time()
   SAY the time is {time}
     
-    
-sentence = What does the user want to say
+The user wants to say something  
+  sentence = What does the user want to say
   say_text(sentence)
   
 

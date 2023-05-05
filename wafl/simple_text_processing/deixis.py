@@ -5,28 +5,18 @@ from nltk import word_tokenize
 
 
 def from_user_to_bot(text):
-    text = re.sub("I don't", "the user doesn't", text, flags=re.IGNORECASE)
-    text = re.sub("I do not", "the user does not", text, flags=re.IGNORECASE)
     text = re.sub("are you", "is this bot", text, flags=re.IGNORECASE)
+    text = re.sub("you are", "this bot is", text, flags=re.IGNORECASE)
 
     word_and_pos_list = pos_tag(word_tokenize(text))
     new_text = []
 
     for word, pos in word_and_pos_list:
-        if word.lower() in ["my", "mine"] and pos == "PRP$":
-            new_text.append("the user's")
-
-        elif word.lower() in ["your", "yours"] and pos == "PRP$":
+        if word.lower() in ["your", "yours"] and pos == "PRP$":
             new_text.append("this bot's")
-
-        elif word.lower() in ["i", "me", "myself"] and pos == "PRP":
-            new_text.append("the user")
 
         elif word.lower() in ["you", "yourself"] and pos == "PRP":
             new_text.append("this bot")
-
-        elif word.lower() in ["am"] and pos == "VBP":
-            new_text.append("is")
 
         else:
             new_text.append(word)
@@ -56,13 +46,4 @@ def from_bot_to_user(text):
 
 
 def from_bot_to_bot(text):
-    text = re.sub("I don't", "The bot doesn't", text, flags=re.IGNORECASE)
-    text = re.sub("I do not", "The bot does not", text, flags=re.IGNORECASE)
-    text = re.sub("I do not", "The bot does not", text, flags=re.IGNORECASE)
-    text = re.sub("you do", "uhe user does", text, flags=re.IGNORECASE)
-    text = re.sub("your", "the user's", text, flags=re.IGNORECASE)
-    text = re.sub("do you", "does the user", text, flags=re.IGNORECASE)
-    text = re.sub("are you", "is the user", text, flags=re.IGNORECASE)
-    text = re.sub("you are", "the user is", text, flags=re.IGNORECASE)
-    text = re.sub("you", "the user", text, flags=re.IGNORECASE)
     return text

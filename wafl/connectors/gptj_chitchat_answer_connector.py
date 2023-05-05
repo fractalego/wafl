@@ -57,7 +57,7 @@ bot: [factual] The sun is bright yellow
 
 In the dialogue below a user is speaking to a bot:
 user: what is the height of my truck
-The bot remembers: the user's truck is 8ft
+The bot remembers: The user's truck is 8ft
 bot: [factual] The user's truck is 8ft
 
 
@@ -69,7 +69,7 @@ bot: [answer in conversation] no, it is a 1 bedroom
 
 
 In the dialogue below a user is speaking to a bot:
-the bot remembers: the user's name is John
+the bot remembers: The user's name is John
 user: is my name Jane
 bot: [factual] no, your name is John
 

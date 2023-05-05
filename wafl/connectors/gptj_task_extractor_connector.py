@@ -28,7 +28,7 @@ Say the user's intention: [statement] the user says goodbye
 
 The following conversation is taking place:
 user: hello
-user: the user's name is john
+user: My name is john
 
 Say the user's intention: [statement] the user says their name is John
 
@@ -91,7 +91,7 @@ Say the user's intention: the user wants the bot to remember that they are an en
 
 
 The following conversation is taking place:
-user: find the user a good restaurant and order a pizza
+user: find me a good restaurant and order a pizza
 
 Say the user's intention: [list of actions] the user wants this bot to find a good restaurant AND the user wants this bot to order a pizza
 
@@ -103,7 +103,7 @@ Say the user's intention: [list of actions] the user wants to know the time AND 
 
 
 The following conversation is taking place:
-user: what musing is playing
+user: what music is playing
 
 Say the user's intention: the user wants to know which music is playing 
 
