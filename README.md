@@ -65,7 +65,7 @@ Running WAFL
 This document contains a few examples of how to use the `wafl` CLI.
 There are four modes in which to run the system
 
-![The two parts of WAFL](images/wafl-commands.png)
+![Basic CLI commands](images/wafl-commands.png)
 
 
 ## wafl run-audio
