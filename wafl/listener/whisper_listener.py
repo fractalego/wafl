@@ -18,6 +18,7 @@ class WhisperListener:
     _range = 32768
     _generation_max_length = 15
     _starting_tokens = [50257, 50362]
+    _ending_tokens = [50256]
 
     def __init__(self, model_name):
         self._p = pyaudio.PyAudio()
@@ -127,7 +128,7 @@ class WhisperListener:
             output.sequences, skip_special_tokens=True
         )[0]
 
-        if torch.exp(output.sequences_scores) > 0.6:
+        if torch.exp(output.sequences_scores) > 0.45:
             return transcription
 
         if torch.exp(output.sequences_scores) > 0.3:
@@ -151,7 +152,17 @@ class WhisperListener:
         input_features = self._processor(
             self._last_waveform, return_tensors="pt", sampling_rate=16_000
         ).input_features
-        hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
+        hotword_tokens = (
+            torch.tensor(
+                [
+                    item
+                    for item in self._processor.tokenizer.encode(f" {hotword}")
+                    if item not in set(self._ending_tokens + self._starting_tokens)
+                ]
+            )
+            .unsqueeze(0)
+            .to(device)
+        )
 
         input_ids = torch.tensor([self._starting_tokens]).to(device)
         for _ in range(hotword_tokens.shape[1]):
@@ -165,7 +176,7 @@ class WhisperListener:
 
         logprobs = torch.log(torch.softmax(logits, dim=-1))
         sum_logp = 0
-        for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
+        for logp, index in zip(logprobs[0][1:], hotword_tokens):
             sum_logp += logp[index]
 
         return sum_logp > self._hotword_threshold

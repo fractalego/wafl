@@ -4,7 +4,6 @@ import re
 from wafl.events.answerer_creator import create_answerer
 from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
-
 from wafl.config import Configuration
 from wafl.events.utils import input_is_valid, remove_text_between_brackets
 from wafl.simple_text_processing.questions import is_question

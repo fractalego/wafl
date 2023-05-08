@@ -128,5 +128,5 @@ class TestInference(TestCase):
                 query, task_memory, "/", policy, 0, False
             )
         )
-        expected = "peach"
+        expected = "peach tree"
         assert answer.text == expected

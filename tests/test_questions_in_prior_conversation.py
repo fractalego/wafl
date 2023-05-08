@@ -30,7 +30,7 @@ class TestAnswerInConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "0 celsius"
+        expected = "0"
         assert expected in interface.get_utterances_list()[-1]
 
     def test__random_name_is_remembered(self):

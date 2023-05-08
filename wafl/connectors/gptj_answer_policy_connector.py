@@ -6,9 +6,6 @@ class GPTJAnswerPolicyConnector(BaseGPTJConnector):
         super().__init__(config)
 
     def _get_answer_prompt(self, text, query, dialogue: str = None):
-        if not dialogue:
-            return "Say yes 5 times: yes yes yes "
-
         prompt = f"""
 The following conversation is taking place:
 user: I have a toy car
@@ -64,6 +61,7 @@ Is the next item fit to continue the conversation?
 bot: no
 
 Please answer Yes or No: y
+
 
 The following conversation is taking place:
 {dialogue}

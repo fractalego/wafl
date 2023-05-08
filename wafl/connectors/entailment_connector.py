@@ -29,7 +29,12 @@ class EntailmentConnector:
         ):
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
+        self._cache = {}
+
     async def predict(self, premise: str, hypothesis: str) -> Dict[str, float]:
+        if (premise, hypothesis) in self._cache:
+            return self._cache[(premise, hypothesis)]
+
         payload = {"premise": premise, "hypothesis": hypothesis}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
@@ -39,9 +44,13 @@ class EntailmentConnector:
                     data = await response.text()
                     prediction = json.loads(data)
                     label_names = ["entailment", "neutral", "contradiction"]
-                    return {
+                    answer = {
                         name: float(pred) for pred, name in zip(prediction, label_names)
                     }
+                    if (premise, hypothesis) not in self._cache:
+                        self._cache[(premise, hypothesis)] = answer
+
+                    return answer
 
         return "UNKNOWN"
 

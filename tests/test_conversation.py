@@ -19,7 +19,7 @@ The user says they can swim
   the user is called {username}
 
 color = What is the user's hair color
-  username = What is the user's nameprint(interface.get_utterances_list())
+  username = What is the user's name
   {username} has {color} hair
 
 the user wants to register to the newsletter
@@ -106,6 +106,7 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "test@example.com"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__knowledge_insertion(self):
@@ -119,14 +120,13 @@ class TestConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        print(interface.get_utterances_list())
         expected = "ada"
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge("", logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -135,6 +135,7 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__greeting_with_alberto_as_name(self):
@@ -214,6 +215,7 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__how_are_you(self):

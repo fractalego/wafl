@@ -181,7 +181,7 @@ def answer_is_informative(answer: "Answer") -> bool:
     return not any(item == normalized(answer.text) for item in ["unknown"])
 
 
-def text_is_natural_language_task(text: str) -> bool:
+def text_is_text_generation_task(text: str) -> bool:
     if not "=" in text:
         return False
 

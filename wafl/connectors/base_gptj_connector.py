@@ -1,20 +1,14 @@
 import aiohttp
 import asyncio
-import json
 import re
-import transformers
 
 from wafl.config import Configuration
-
-_tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
-)
 
 
 class BaseGPTJConnector:
     _max_tries = 3
-    _max_reply_length = 70
-    _num_prediction_tokens = 5
+    _max_reply_length = 150
+    _num_prediction_tokens = 10
 
     def __init__(self, config=None):
         if not config:
@@ -32,21 +26,35 @@ class BaseGPTJConnector:
             loop = None
 
         if (not loop or (loop and not loop.is_running())) and not asyncio.run(
-                self.check_connection()
+            self.check_connection()
         ):
             raise RuntimeError("Cannot connect a running GPT-J Model.")
 
+        self._cache = {}
+
     async def predict(self, prompt: str) -> str:
-        payload = {"data": prompt, "num_beams": 1, "num_tokens": self._num_prediction_tokens}
+        payload = {
+            "data": prompt,
+            "num_beams": 1,
+            "num_tokens": self._num_prediction_tokens,
+        }
+
+        if prompt in self._cache:
+            return self._cache[prompt]
+
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                    connector=aiohttp.TCPConnector(verify_ssl=False)
+                connector=aiohttp.TCPConnector(verify_ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    data = await response.text()
-                    answer = json.loads(data)
-                    answer = [item for item in answer if item > 0]
-                    return _tokenizer.decode(answer[-self._num_prediction_tokens:])
+                    answer = await response.text()
+                    if not answer:
+                        answer = "\n"
+
+                    if prompt not in self._cache:
+                        self._cache[prompt] = answer
+
+                    return answer
 
         return "UNKNOWN"
 
@@ -54,7 +62,7 @@ class BaseGPTJConnector:
         payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
         try:
             async with aiohttp.ClientSession(
-                    conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
+                conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     await response.text()
@@ -73,8 +81,8 @@ class BaseGPTJConnector:
         text = prompt
         start = len(text)
         while (
-                all(item not in text[start:] for item in ["\n", ". "])
-                and len(text) < start + self._max_reply_length
+            all(item not in text[start:] for item in ["\n", ". "])
+            and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
@@ -88,7 +96,7 @@ class BaseGPTJConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split(":")[-1].strip()
+        candidate_answer = text[start:end].split(": ")[-1].strip()
         candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         return candidate_answer
 

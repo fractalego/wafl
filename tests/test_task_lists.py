@@ -22,7 +22,7 @@ The user wants delete something
 class TestTaskList(TestCase):
     def test__double_command_is_executed(self):
         interface = DummyInterface(
-            to_utter=["what is the weather and then delete apples"]
+            to_utter=["tell me about the weather and delete apples"]
         )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(wafl_example), interface=interface

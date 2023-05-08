@@ -20,7 +20,7 @@ the user wants to set an alarm in minutes from now
   minutes_from_now = how many minutes from now? do not use the word 'minute'
   time = get_time_in_future(minutes_from_now)
   REMEMBER the time is {time} :- SAY Hello there!; SAY This rule was created
-  SAY An alarm was created in {minutes_from_now} minutes
+  SAY An alarm was created in {minutes_from_now}
 """
 
 
@@ -39,7 +39,7 @@ class TestReminders(TestCase):
         )
         input_from_user = "I want an alarm for 7,05"
         asyncio.run(conversation_events._process_query(input_from_user))
-        expected = "bot: An alarm was created for 7,05"
+        expected = "bot: An alarm was created for 7:05"
         assert interface.get_utterances_list()[-1] == expected
 
         asyncio.run(generated_events.process_next())
@@ -59,7 +59,7 @@ class TestReminders(TestCase):
         )
         input_from_user = "I want to set an alarm in one minute"
         asyncio.run(conversation_events._process_query(input_from_user))
-        expected = "bot: An alarm was created in one minutes"
+        expected = "bot: An alarm was created in 1 minute"
         assert interface.get_utterances_list()[-1] == expected
 
         while not asyncio.run(generated_events.process_next()):

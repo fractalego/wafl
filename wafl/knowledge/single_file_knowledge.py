@@ -32,7 +32,7 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.4
-    _threshold_for_fact_rules = 0.35
+    _threshold_for_fact_rules = 0.22
     _threshold_for_partial_facts = 0.48
     _max_rules_per_type = 3
 

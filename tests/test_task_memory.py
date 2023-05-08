@@ -9,7 +9,7 @@ from wafl.logger.local_file_logger import LocalFileLogger
 
 wafl_example = """
 
-The user says hello
+The user says or wants to say hello
   name = What is the user's name
   SAY Hello, {name}!  
   
@@ -22,7 +22,7 @@ item = what does the user want to add to the shopping list?
 _ask_another_item
   does the user want to add another item
   item = what do you want to add
-  SAY {item} has been added to the list
+  SAY {item} has been added to the shopping list
   _ask_another_item
 
 """
@@ -39,7 +39,7 @@ the user wants to know what is in the shopping list
 item = what does the user want to add to the shopping list?
   reset_shopping_list()
   shopping_list.append(item)
-  SAY {item} has been added to the list
+  SAY {item} has been added to the shopping list
 
 the user wants to add something
     item = what does the user want to add?
@@ -78,6 +78,7 @@ A:
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, bob!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__hello_does_not_get_into_task_memory(self):
@@ -106,7 +107,7 @@ A:
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Bananas has been added to the list"
+        expected = "bot: Bananas has been added to the shopping list"
         assert interface.get_utterances_list()[-3] == expected
 
     def test__task_memory_does_not_propagate_down_for_depth3(self):
@@ -126,7 +127,8 @@ A:
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Bananas has been added to the list"
+        expected = "bot: Bananas has been added to the shopping list"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-3] == expected
 
     def test__task_memory_works_for_yes_questions(self):
@@ -144,7 +146,7 @@ A:
             logger=LocalFileLogger(),
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Bananas has been added to the list"
+        expected = "bot: Bananas has been added to the shopping list"
         assert interface.get_utterances_list()[-3] == expected
 
     def test__prior_list_name_is_remembered(self):
@@ -162,14 +164,15 @@ A:
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Bananas has been added to the list"
+        expected = "bot: Bananas has been added to the shopping list"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__prior_list_name_is_remembered_second_time(self):
         interface = DummyInterface(
             to_utter=[
                 "add tangerines to the shopping list",
-                "add bananas to the shopping list   ",
+                "add bananas to the shopping list",
                 "ok now add apples",
             ]
         )
@@ -183,7 +186,7 @@ A:
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        expected = "bot: Apples has been added to the list"
+        expected = "bot: Apples has been added to the shopping list"
         assert interface.get_utterances_list()[-1] == expected
 
     def test__prior_list_name_is_remembered_second_time_for_coffee_filters(self):
@@ -203,5 +206,5 @@ A:
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Coffee filters has been added to the list"
+        expected = "bot: Coffee filters has been added to the shopping list"
         assert interface.get_utterances_list()[-1] == expected
