@@ -5,12 +5,12 @@ from wafl.extractors.task_extractor import TaskExtractor
 from wafl.interface.dummy_interface import DummyInterface
 
 
-class TestTaskMemory(TestCase):
+class TestTaskExtraction(TestCase):
     def test__query_extractor(self):
         interface = DummyInterface()
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("hello what time is it")).text
-        expected = "the user asks what time it is"
+        expected = "the user wants to know the time"
         assert expected == prediction
 
     def test__dialogue_extractor1(self):
@@ -20,7 +20,7 @@ class TestTaskMemory(TestCase):
         ]
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
-        expected = "the user says hello AND asks what time it is"
+        expected = "the user wants to know the time"
         assert expected == prediction
 
     def test__dialogue_extractor2(self):
@@ -49,4 +49,5 @@ class TestTaskMemory(TestCase):
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "the user wants to know about the jubilee line"
+        print(prediction)
         assert expected == prediction

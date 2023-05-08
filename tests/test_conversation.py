@@ -106,6 +106,7 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "test@example.com"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__knowledge_insertion(self):
@@ -214,6 +215,7 @@ class TestConversation(TestCase):
         utterance = "Welcome to the website. How may I help you?"
         interface.output(utterance)
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
 
     def test__how_are_you(self):

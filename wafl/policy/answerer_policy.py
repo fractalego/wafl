@@ -20,6 +20,9 @@ class AnswerPolicy:
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
+        if not dialogue_items:
+            return True
+
         answer_text = await self._connector.get_answer(text, dialogue_items, result)
         if answer_text and answer_text.strip()[0].lower() == "y":
             return True

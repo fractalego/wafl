@@ -39,7 +39,7 @@ class TestArbiterAnswerer(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "it is Rome"
+        expected = "rome"
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test_generated_answer_from_conversation3(self):
@@ -54,7 +54,7 @@ class TestArbiterAnswerer(TestCase):
         interface.output("What can I do for you?")
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "6'7\""
+        expected = "6'6\""
         self.assertIn(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):

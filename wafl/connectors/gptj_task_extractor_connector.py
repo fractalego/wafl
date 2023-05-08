@@ -16,9 +16,9 @@ Some examples are below.
 The following conversation is taking place:
 user: hello what is the weather like
 
-Say the user's intention in the last utterance: the user says hello AND asks what the weather is like 
+Say the user's intention in the last utterance: the user says hello AND the user asks what the weather is like 
 
-        
+
 The following conversation is taking place:
 user: I want to drive the car
 

@@ -96,7 +96,7 @@ class BaseGPTJConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split(":")[-1].strip()
+        candidate_answer = text[start:end].split(": ")[-1].strip()
         candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         return candidate_answer
 
