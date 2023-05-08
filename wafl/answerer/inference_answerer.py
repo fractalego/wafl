@@ -59,7 +59,7 @@ class InferenceAnswerer(BaseAnswerer):
 
 
 def split_tasks(task_text):
-    return [item.strip() for item in task_text.split("AND") if item]
+    return [item.strip() for item in task_text.split("ANDAND") if item]
 
 
 def perform_and(answers):

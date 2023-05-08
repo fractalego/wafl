@@ -9,14 +9,14 @@ class GPTJTaskExtractorConnector(BaseGPTJConnector):
         prompt = f"""
 The task is to extract the user's intention from the last statement from the user.
 Prior statements only provide context and should not be used to determine the user's intention.
-If the last statement has multiple intentions, separate them with the word "AND".
+If the last statement has multiple intentions, separate them with word ANDAND written all in capital letters.
 Some examples are below.
 
 
 The following conversation is taking place:
 user: hello what is the weather like
 
-Say the user's intention in the last utterance: the user says hello AND the user asks what the weather is like 
+Say the user's intention in the last utterance: the user says hello ANDAND the user asks what the weather is like 
 
 
 The following conversation is taking place:
@@ -31,6 +31,21 @@ user: I want to drive the car
 
 Say the user's intention in the last utterance: the user wants to drive the car 
 
+
+The following conversation is taking place:
+user: I want to see my car
+bot: Your car is in the garage
+user: I want to drive the car
+user: you
+
+Say the user's intention in the last utterance: unknown 
+
+
+The following conversation is taking place:
+bot: hello there
+user: lgdfskaj
+
+Say the user's intention in the last utterance: unknown
 
 
 The following conversation is taking place:
@@ -100,7 +115,7 @@ Say the user's intention in the last utterance: the user greets
 The following conversation is taking place:
 user: what is the weather what is the temperature
 
-Say the user's intention in the last utterance: the user wants to know the weather AND the user wants to know the temperature
+Say the user's intention in the last utterance: the user wants to know the weather ANDAND the user wants to know the temperature
 
 
 The following conversation is taking place:
@@ -123,7 +138,7 @@ bot: london to paris
 bot: london to rome
 user: find me a good restaurant and order a pizza
 
-Say the user's intention in the last utterance: the user wants this bot to find a good restaurant AND the user wants this bot to order a pizza
+Say the user's intention in the last utterance: the user wants this bot to find a good restaurant ANDAND the user wants this bot to order a pizza
 
 
 The following conversation is taking place:
@@ -131,7 +146,7 @@ user: what is the weather like
 bot: it is sunny
 user: what is the time and how long is it before 12
 
-Say the user's intention in the last utterance: the user wants to know the time AND the user to know how long it is before 12 
+Say the user's intention in the last utterance: the user wants to know the time ANDAND the user to know how long it is before 12 
 
 
 The following conversation is taking place:

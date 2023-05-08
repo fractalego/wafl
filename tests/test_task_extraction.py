@@ -49,5 +49,21 @@ class TestTaskExtraction(TestCase):
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "the user wants to know about the jubilee line"
+        assert expected == prediction
+
+    def test__no_task_present_is_predicted_as_unknown(self):
+        interface = DummyInterface()
+        interface._utterances = [
+            [0, "user: hello what time is it"],
+            [1, "bot: hello there"],
+            [2, "bot: The time is 20 past 13"],
+            [3, "user: what is in the shopping list"],
+            [4, "bot: the shopping list contains milk, bread, and eggs"],
+            [4, "user: you"],
+        ]
+        task_extractor = TaskExtractor(interface)
+        prediction = asyncio.run(task_extractor.extract("")).text
+        expected = "unknown"
         print(prediction)
         assert expected == prediction
+
