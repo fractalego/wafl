@@ -1,5 +1,8 @@
 ### TODO
 
+* all sentences that are said when the interface is deactivated should not be appended to the conversation
+
+
 * Write choices, tasks and remember in web interface
 * erase conversation after deactivation in voice interface
 /* refactor everyting to have a chat log with all the choices, retrieved facts

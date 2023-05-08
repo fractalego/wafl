@@ -14,7 +14,9 @@ The user says their name
    name = what is the user's name?
    first_letter = return the first letter of the word. \
                   Examples: \
-                  test, t; feast, f; {name},
+                  test, t  \
+                  feast, f \
+                  {name},
                   
    SAY The first letter of your name is {first_letter} 
 """.strip()
@@ -27,6 +29,6 @@ class TestGeneration(TestCase):
             SingleFileKnowledge(wafl_rules), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: The first letter of your name is a;"
+        expected = "bot: The first letter of your name is a"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

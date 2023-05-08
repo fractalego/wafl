@@ -1,19 +1,13 @@
 import aiohttp
 import asyncio
-import json
 import re
-import transformers
 
 from wafl.config import Configuration
-
-_tokenizer = transformers.AutoTokenizer.from_pretrained(
-    "togethercomputer/GPT-JT-6B-v1", padding_side="left"
-)
 
 
 class BaseGPTJConnector:
     _max_tries = 3
-    _max_reply_length = 50
+    _max_reply_length = 150
     _num_prediction_tokens = 10
 
     def __init__(self, config=None):
@@ -53,10 +47,10 @@ class BaseGPTJConnector:
                 connector=aiohttp.TCPConnector(verify_ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    data = await response.text()
-                    answer = json.loads(data)
-                    answer = [item for item in answer if item > 0]
-                    answer = _tokenizer.decode(answer[-self._num_prediction_tokens :])
+                    answer = await response.text()
+                    if not answer:
+                        answer = "\n"
+
                     if prompt not in self._cache:
                         self._cache[prompt] = answer
 

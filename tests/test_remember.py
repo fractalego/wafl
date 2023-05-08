@@ -11,7 +11,7 @@ from wafl.retriever.dense_retriever import DenseRetriever
 _logger = LocalFileLogger()
 _wafl_remember_rules = """
 
-the user wants you to remember 
+the user wants the bot to remember 
   sentence = What piece of information do you want me to remember?
   REMEMBER sentence
   SAY I will remember that {sentence}
