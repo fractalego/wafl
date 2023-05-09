@@ -6,10 +6,11 @@ class AnswerPolicy:
         self._interface = interface
         self._logger = logger
         self._connector = GPTJAnswerPolicyConnector()
+        self._max_num_past_utterances = 3
 
     async def accept(self, result: str):
         text = ""
-        dialogue = self._interface.get_utterances_list_with_timestamp()
+        dialogue = self._interface.get_utterances_list_with_timestamp()[-self._max_num_past_utterances :]
         start_time = -1
         if dialogue:
             start_time = dialogue[0][0]
