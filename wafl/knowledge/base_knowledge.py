@@ -11,7 +11,7 @@ class BaseKnowledge:
         raise NotImplementedError()
 
     def ask_for_facts_with_threshold(
-        self, query, is_from_user=False, knowledge_name=None
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         raise NotImplementedError()
 

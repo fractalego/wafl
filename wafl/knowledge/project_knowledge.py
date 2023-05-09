@@ -44,7 +44,7 @@ class ProjectKnowledge(BaseKnowledge):
         return to_return
 
     def ask_for_facts_with_threshold(
-        self, query, is_from_user=False, knowledge_name=None
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
@@ -57,7 +57,7 @@ class ProjectKnowledge(BaseKnowledge):
 
                 to_return.extend(
                     self._knowledge_dict[name].ask_for_facts_with_threshold(
-                        query, is_from_user
+                        query, is_from_user, threshold=threshold
                     )
                 )
 

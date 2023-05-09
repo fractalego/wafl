@@ -1,31 +1,17 @@
 ### TODO
 
-* all sentences that are said when the interface is deactivated should not be appended to the conversation
+* Computer what is your name
+  -> Correct remember
+    -> answer is "I don't know". why?!
+    explanation: question -> task from question -> answer from task
+    solution: there should be a way to use the chitchat answerer to answer questions
 
-
-* Write choices, tasks and remember in web interface
-* erase conversation after deactivation in voice interface
-/* refactor everyting to have a chat log with all the choices, retrieved facts
-  in the same prompt for chitchat
-  /* All answerers should have access to the same list of utterances, choices, and facts.
-    The only difference should be the final line of prompt.
-    /* MAKE TEST PASS
-    /* ADD CACHE TO ALL CONNECTORS (it cannot be done easily for async functions)
-
-* BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
-   * [computer] confuse her
 
 * make it so one can change rules on the fly (reload when changed)
-
-* The simple answerer tends to repeat the last utterance.
-  This is because in the events sometimes there is "the bot says:..." without any explanation.
-  Perhaps "the bot says" shouls be excluded from simple answerer?
-  Unless it is as the answer to a question "when the user asks...."
 
 * add definions to arbiter (what is tea...?)
 
 * add the ability to ask questions to activate a trigger rule.
-
 
 * Make chit chat work!
   * should you take it out of arbiter? Maybe it should be the last item in ListAnswerer
@@ -61,6 +47,16 @@
 
 * rules should be added and REMOVED!
 
+/* all sentences that are said when the interface is deactivated should not be appended to the conversation
+
+/* Write choices, tasks and remember in web interface
+/* erase conversation after deactivation in voice interface
+/* refactor everyting to have a chat log with all the choices, retrieved facts
+  in the same prompt for chitchat
+  /* All answerers should have access to the same list of utterances, choices, and facts.
+    The only difference should be the final line of prompt.
+    /* MAKE TEST PASS
+    /* ADD CACHE TO ALL CONNECTORS (it cannot be done easily for async functions)
 
 /* 1024 is limit in wafl_llm (deepspeed) change this to 2048
 /* make it sure 2048 is limit when using gptj

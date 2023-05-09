@@ -129,7 +129,7 @@ class SingleFileKnowledge(BaseKnowledge):
         ]
 
     def ask_for_facts_with_threshold(
-        self, query, is_from_user=False, knowledge_name=None
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if query.is_question:
             indices_and_scores = (
@@ -142,13 +142,13 @@ class SingleFileKnowledge(BaseKnowledge):
             indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
                 query.text
             )
-        if is_from_user:
+        if not threshold and is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
                 if query.is_question
                 else self._threshold_for_facts
             )
-        else:
+        elif not threshold:
             threshold = (
                 self._threshold_for_questions_from_bot
                 if query.is_question
