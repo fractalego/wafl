@@ -75,7 +75,7 @@ class BackwardInference:
 
         return answer.text
 
-    async def compute(self, query, task_memory=None, policy=None, knowledge_name="/"):
+    async def compute(self, query, task_memory=None, policy=None, knowledge_name="/", depth=0):
         if query.is_neutral():
             return Answer.create_neutral()
 
@@ -85,7 +85,7 @@ class BackwardInference:
             task_memory = TaskMemory()
 
         result = await self._compute_recursively(
-            query, task_memory, knowledge_name, policy, depth=0
+            query, task_memory, knowledge_name, policy, depth=depth
         )
         lock.release()
         return result
@@ -103,7 +103,18 @@ class BackwardInference:
         self._log(f"The depth is {depth}", depth)
         self._log(f"The max depth is {self._max_depth}", depth)
 
+        if depth == 0:
+            answer = await self._look_for_answer_in_rules(
+                query, task_memory, knowledge_name, policy, depth, inverted_rule
+            )
+            if not answer:
+                answer = Answer.create_neutral()
+
+            self._log("Answer found by executing the rules: " + answer.text, depth)
+            return answer
+
         if depth > self._max_depth:
+            self._log("Max inference depth has been reached: " + str(depth))
             return Answer(text="False")
 
         candidate_answers = []
