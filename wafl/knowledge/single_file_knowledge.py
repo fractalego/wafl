@@ -217,11 +217,7 @@ class SingleFileKnowledge(BaseKnowledge):
             query, rules_and_scores
         )
 
-        rules_and_scores = await filter_out_rules_through_entailment(
-            self._entailer, query, rules_and_scores
-        )
-
-        return get_first_cluster_of_rules(rules_and_scores)
+        return [rule for rule, _ in rules_and_scores]
 
     def get_facts_and_rule_as_text(self):
         text = ""
