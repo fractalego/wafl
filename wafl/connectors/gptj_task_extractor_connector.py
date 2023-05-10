@@ -27,7 +27,7 @@ Say the user's intention in the last utterance: the user wants to drive the car
 The following conversation is taking place:
 user: I want to see my car
 bot: Your car is in the garage
-user: I want to drive the car
+user: I want to drive it
 
 Say the user's intention in the last utterance: the user wants to drive the car 
 
@@ -102,6 +102,16 @@ Say the user's intention in the last utterance: the user asks if they can have f
 
 The following conversation is taking place:
 user: Add oranges to the shopping list
+
+Say the user's intention in the last utterance: the user wants to add oranges to the shopping list 
+
+
+The following conversation is taking place:
+user: Hello
+bot: hello
+user: what is in the shopping list
+bot: the shopping list contains apples, kiwis
+user: right, add oranges
 
 Say the user's intention in the last utterance: the user wants to add oranges to the shopping list 
 

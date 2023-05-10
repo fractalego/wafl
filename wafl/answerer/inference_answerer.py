@@ -33,14 +33,18 @@ class InferenceAnswerer(BaseAnswerer):
         task_texts = (await self._task_extractor.extract(query_text)).text
         answers = []
         for task_text in split_tasks(task_texts):
+            if task_text == "unknown":
+                continue
+
+            result = await self._entailer.entails(
+                task_text, query_text, return_threshold=True, threshold=0.3
+            )
+            if not result:
+                task_text = query_text
+
             self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"
             )
-            result = await self._entailer.entails(
-                task_text, query_text, return_threshold=True
-            )
-            if result:
-                task_text = query_text
 
             answers.append(
                 await get_answer_using_text(
@@ -54,6 +58,9 @@ class InferenceAnswerer(BaseAnswerer):
 
         if len(answers) > 1:
             return perform_and(answers)
+
+        if not answers:
+            return Answer.create_neutral()
 
         return answers[0]
 
