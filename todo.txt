@@ -1,9 +1,12 @@
 ### TODO
 
-* better frontend (smaller facts and choices)
+
 * policy should only be about finding the correct rule to apply.
     * no y/n stuff, only choose btw candidate rules and none of the above.
+    * erase y/n policy, only rule policy remains
 
+
+/* better frontend (smaller facts and choices)
 /* Computer what is your name
 /  -> Correct remember
 /    -> answer is "I don't know". why?!

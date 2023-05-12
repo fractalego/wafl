@@ -1,7 +1,7 @@
 import time
 
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.connectors.gptj_chitchat_answer_connector import GPTJChitChatAnswerConnector
+from wafl.connectors.llm_chitchat_answer_connector import LLMChitChatAnswerConnector
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 
@@ -11,7 +11,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
-        self._connector = GPTJChitChatAnswerConnector()
+        self._connector = LLMChitChatAnswerConnector()
         self._max_num_past_utterances = 7
 
     async def answer(self, query_text, policy):

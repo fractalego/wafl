@@ -4,7 +4,7 @@ import os
 from unittest import TestCase
 
 from wafl.config import Configuration
-from wafl.connectors.gptj_qa_connector import GPTJQAConnector
+from wafl.connectors.llm_qa_connector import GPTJQAConnector
 
 _path = os.path.dirname(__file__)
 

@@ -2,14 +2,14 @@ import json
 import joblib
 import os
 
-from wafl.connectors.base_gptj_connector import BaseGPTJConnector
+from wafl.connectors.base_llm_connector import BaseLLMConnector
 from wafl.extractors.dataclasses import Query
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 
 
-class GPTJChitChatAnswerConnector(BaseGPTJConnector):
+class LLMChitChatAnswerConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
         if not os.path.exists(os.path.join(_path, "../data/dialogues.knowledge")):

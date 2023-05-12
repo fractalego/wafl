@@ -195,7 +195,7 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        rules = await self._rule_policy.select(rules, query)
+        #rules = await self._rule_policy.select(rules, query)
 
         for rule in rules:
             index = 0
@@ -598,7 +598,11 @@ class BackwardInference:
         else:
             new_query = Query(text=cause_text, is_question=False)
 
-        self._interface.add_choice(f"The bot tries the new query '{new_query.text}'")
+        additional_text = ""
+        if inverted_rule:
+            additional_text = "NOT "
+
+        self._interface.add_choice(f"The bot tries the new query '{additional_text + new_query.text}'")
         answer = await self._compute_recursively(
             new_query, task_memory, knowledge_name, policy, depth + 1, inverted_rule
         )

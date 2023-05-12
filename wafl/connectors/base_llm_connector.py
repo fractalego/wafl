@@ -5,7 +5,7 @@ import re
 from wafl.config import Configuration
 
 
-class BaseGPTJConnector:
+class BaseLLMConnector:
     _max_tries = 3
     _max_reply_length = 150
     _num_prediction_tokens = 10
@@ -39,20 +39,14 @@ class BaseGPTJConnector:
             "num_tokens": self._num_prediction_tokens,
         }
 
-        if prompt in self._cache:
-            return self._cache[prompt]
-
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(verify_ssl=False)
+                connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()
                     if not answer:
                         answer = "\n"
-
-                    if prompt not in self._cache:
-                        self._cache[prompt] = answer
 
                     return answer
 
@@ -62,7 +56,7 @@ class BaseGPTJConnector:
         payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
         try:
             async with aiohttp.ClientSession(
-                conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
+                conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     await response.text()
@@ -78,6 +72,9 @@ class BaseGPTJConnector:
 
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = self._get_answer_prompt(text, query, dialogue)
+        if prompt in self._cache:
+            return self._cache[prompt]
+
         text = prompt
         start = len(text)
         while (
@@ -98,6 +95,10 @@ class BaseGPTJConnector:
 
         candidate_answer = text[start:end].split(": ")[-1].strip()
         candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
+
+        if prompt not in self._cache:
+            self._cache[prompt] = candidate_answer
+
         return candidate_answer
 
     def _get_answer_prompt(self, text, query, dialogue=None):

@@ -38,7 +38,7 @@ class EntailmentConnector:
         payload = {"premise": premise, "hypothesis": hypothesis}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(verify_ssl=False)
+                connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
@@ -58,7 +58,7 @@ class EntailmentConnector:
         payload = {"premise": "hello", "hypothesis": "a greeting"}
         try:
             async with aiohttp.ClientSession(
-                conn_timeout=3, connector=aiohttp.TCPConnector(verify_ssl=False)
+                conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     await response.text()
