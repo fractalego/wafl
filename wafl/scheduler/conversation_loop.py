@@ -89,3 +89,9 @@ class ConversationLoop:
                 )
                 self._interface.deactivate()
                 continue
+
+            except Exception as e:
+                self._logger.write("Error in conversation loop", log_level=self._logger.level.ERROR)
+                self._logger.write(str(e), log_level=self._logger.level.ERROR)
+                print("Error in conversation loop. Closing the conversation.")
+                print(str(e))
