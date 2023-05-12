@@ -39,3 +39,7 @@ def run_from_audio():
     )
     scheduler = Scheduler([conversation_loop, events_loop])
     scheduler.run()
+
+
+if __name__ == '__main__':
+    run_from_audio()
