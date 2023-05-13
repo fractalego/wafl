@@ -51,8 +51,6 @@ setup(
         "sklearn==0.0",
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
-        "fairseq==0.12.2",
-        "g2p_en==2.1.0",
         "fuzzywuzzy==0.18.0",
         "PyAudio==0.2.11",
         "pyctcdecode==0.2.1",

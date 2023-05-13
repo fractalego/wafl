@@ -26,7 +26,7 @@ def run_from_command_line():
         code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
-    interface.output("Hello. How may I help you?")
+    asyncio.run(interface.output("Hello. How may I help you?"))
 
     while True:
         try:
@@ -34,7 +34,7 @@ def run_from_command_line():
         except (CloseConversation, KeyboardInterrupt, EOFError):
             break
 
-    interface.output("Goodbye!")
+    asyncio.run(interface.output("Goodbye!"))
 
 
 def run_testcases():

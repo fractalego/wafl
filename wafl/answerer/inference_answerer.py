@@ -37,12 +37,12 @@ class InferenceAnswerer(BaseAnswerer):
                 continue
 
             result = await self._entailer.entails(
-                task_text, query_text, return_threshold=True, threshold=0.3
+                query_text, task_text, return_threshold=True, threshold=0.3
             )
             if not result:
                 task_text = query_text
 
-            self._interface.add_choice(
+            await self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"
             )
 

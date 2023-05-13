@@ -54,7 +54,7 @@ class VoiceInterface(BaseInterface):
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             print(text)
             return
@@ -66,7 +66,7 @@ class VoiceInterface(BaseInterface):
         text = from_bot_to_user(text)
         self._utterances.append((time.time(), f"bot: {text}"))
         print(COLOR_START + "bot> " + text + COLOR_END)
-        self._speaker.speak(text)
+        await self._speaker.speak(text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
@@ -79,7 +79,7 @@ class VoiceInterface(BaseInterface):
 
         while self._is_listening and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
-            self.output(random.choice(["Sorry?", "Can you repeat?"]))
+            await self.output(random.choice(["Sorry?", "Can you repeat?"]))
             text = await self._listener.input()
 
         text = text.lower().capitalize()

@@ -286,7 +286,7 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
-                    self._interface.add_choice(
+                    await self._interface.add_choice(
                         f"The bot selected the clause with trigger {rule_effect_text}."
                     )
                     return answer
@@ -398,7 +398,7 @@ class BackwardInference:
 
             while True:
                 self._log(f"Asking the user: {query.text}")
-                self._interface.output(query.text)
+                await self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
                 if await self._knowledge.has_better_match(user_input_text):
@@ -406,7 +406,7 @@ class BackwardInference:
                     task_text = (
                         await self._task_extractor.extract(user_input_text)
                     ).text
-                    self._interface.add_choice(
+                    await self._interface.add_choice(
                         f"The bot tries to see if the new task can be '{task_text}'"
                     )
                     await self._spin_up_another_inference_task(
@@ -416,7 +416,7 @@ class BackwardInference:
                         policy,
                         depth,
                     )
-                    self._interface.add_choice(
+                    await self._interface.add_choice(
                         f"The task '{task_text}' did not bring any result."
                     )
 
@@ -441,7 +441,7 @@ class BackwardInference:
                 if is_yes_no_question(query.text):
                     user_answer = project_answer(user_answer, ["yes", "no"])
                     if user_answer.text not in ["yes", "no"]:
-                        self._interface.output("Yes or No?")
+                        await self._interface.output("Yes or No?")
                         user_answer = await self._look_for_answer_by_asking_the_user(
                             query, task_memory, knowledge_name, policy, depth
                         )
@@ -482,7 +482,7 @@ class BackwardInference:
     async def _process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._log(f"Uttering: {utterance}")
-        self._interface.output(utterance)
+        await self._interface.output(utterance)
         answer = Answer(text="True")
         return answer
 
@@ -602,7 +602,7 @@ class BackwardInference:
         if inverted_rule:
             additional_text = "NOT "
 
-        self._interface.add_choice(f"The bot tries the new query '{additional_text + new_query.text}'")
+        await self._interface.add_choice(f"The bot tries the new query '{additional_text + new_query.text}'")
         answer = await self._compute_recursively(
             new_query, task_memory, knowledge_name, policy, depth + 1, inverted_rule
         )

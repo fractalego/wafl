@@ -26,8 +26,8 @@ class GeneratedEvents:
         self._interface = interface
         self._events = events
 
-    def output(self, text: str):
-        self._interface.output(text)
+    async def output(self, text: str):
+        await self._interface.output(text)
 
     async def _process_query(self, text: str):
         query = Query(text=text, is_question=is_question(text), variable="name")
@@ -42,7 +42,7 @@ class GeneratedEvents:
                     return True
 
             except InterruptTask:
-                self._interface.output("Task interrupted")
+                await self._interface.output("Task interrupted")
                 return False
 
         return False

@@ -63,7 +63,7 @@ class TestConversation(TestCase):
     def test__single_utterance(self):
         interface = DummyInterface()
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         assert interface.get_utterances_list()[0] == "bot: " + utterance
 
     def test__say_command(self):
@@ -130,7 +130,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert"
@@ -144,7 +144,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "albert0"
@@ -159,7 +159,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         assert "yes" in interface.get_utterances_list()[-1].lower()
@@ -172,7 +172,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
@@ -186,7 +186,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         assert interface.get_utterances_list()[-1] == "bot: Welcome to the club!"
 
@@ -198,7 +198,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         assert (
             interface.get_utterances_list()[-2] == "bot: are you good enough to join?"
@@ -212,7 +212,7 @@ class TestConversation(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"

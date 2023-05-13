@@ -13,7 +13,7 @@ class CommandLineInterface(BaseInterface):
         super().__init__()
         self._bot_has_spoken = False
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             print(text)
             return
@@ -26,7 +26,7 @@ class CommandLineInterface(BaseInterface):
     async def input(self) -> str:
         text = from_user_to_bot(input("user> ")).strip()
         while not_good_enough(text):
-            self.output("I did not quite understand that")
+            await self.output("I did not quite understand that")
             text = from_user_to_bot(input("user> "))
 
         self._utterances.append((time.time(), f"user: {text}"))

@@ -34,7 +34,7 @@ class TestInterruptions(TestCase):
             SingleFileKnowledge(_wafl_greetings), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
@@ -47,7 +47,7 @@ class TestInterruptions(TestCase):
             code_path="/",
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         assert "The time is" in interface.get_utterances_list()[-4]
         assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
@@ -60,7 +60,7 @@ class TestInterruptions(TestCase):
             code_path="/",
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         try:
             asyncio.run(conversation_events.process_next())
 
@@ -77,7 +77,7 @@ class TestInterruptions(TestCase):
             code_path="/",
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == "bot: Task interrupted"
