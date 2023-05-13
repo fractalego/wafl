@@ -43,7 +43,7 @@ setup(
         "accelerate==0.13.2",
         "bitsandbytes==0.35.3",
         "torch==2.0.0",
-        "optimum==1.8.3",
+        "optimum==1.8.5",
         "transformers==4.28.1",
         "sentence_transformers==2.2.2",
         "nltk==3.6.2",

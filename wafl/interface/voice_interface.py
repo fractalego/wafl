@@ -31,7 +31,7 @@ class VoiceInterface(BaseInterface):
 
         self.listener_model_name = config.get_value("listener_model")
         self._speaker = FairSeqSpeaker()
-        self._listener = WhisperListener(self.listener_model_name)
+        self._listener = WhisperListener()
         self._listener.set_timeout(config.get_value("listener_silence_timeout"))
         self._listener.set_volume_threshold(
             config.get_value("listener_volume_threshold")

@@ -1,5 +1,7 @@
 ### TODO
-
+/* refactor whisper to backend
+* refactor speaker
+* refactor sentence-transformer to backend
 
 * policy should only be about finding the correct rule to apply.
     * no y/n stuff, only choose btw candidate rules and none of the above.
