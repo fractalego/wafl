@@ -1,7 +1,7 @@
 from wafl.connectors.base_llm_connector import BaseLLMConnector
 
 
-class GPTJQAConnector(BaseLLMConnector):
+class LLMQAConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
