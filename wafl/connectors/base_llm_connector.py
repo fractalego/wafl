@@ -78,12 +78,13 @@ class BaseLLMConnector:
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in ["<|END|>"])
+            all(item not in text[start:] for item in [". ", "<|END|>"])
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
+        end_set.add(text.find(". ", start))
         end_set.add(text.find("<|END|>", start))
         if -1 in end_set:
             end_set.remove(-1)
