@@ -13,7 +13,7 @@ user: I have a toy car
 Is the next item fit to continue the conversation?
 Bot: The weather looks rainy
 
-Please answer Yes or No: n
+Please answer Yes or No: n<|END|>
 
 
 The following conversation is taking place:
@@ -23,7 +23,7 @@ user: what
 Is the next item fit to continue the conversation?
 bot: I have a toy car
 
-Please answer Yes or No: y
+Please answer Yes or No: y<|END|>
 
 
 The following conversation is taking place:
@@ -32,7 +32,7 @@ user: I am hungry
 Is the next item fit to continue the conversation?
 bot: This is the menu
 
-Please answer Yes or No: y
+Please answer Yes or No: y<|END|>
 
 
 The following conversation is taking place:
@@ -41,7 +41,7 @@ user: blah blah
 Is the next item fit to continue the conversation?
 bot: I don't understand
 
-Please answer Yes or No: y
+Please answer Yes or No: y<|END|>
 
 
 The following conversation is taking place:
@@ -50,7 +50,7 @@ user: blah blah
 Is the next item fit to continue the conversation?
 bot: the bot understands that the user says blah blah  
 
-Please answer Yes or No: y
+Please answer Yes or No: y<|END|>
 
 
 The following conversation is taking place:
@@ -60,7 +60,7 @@ user: is my name Jane
 Is the next item fit to continue the conversation?
 bot: no
 
-Please answer Yes or No: y
+Please answer Yes or No: y<|END|>
 
 
 The following conversation is taking place:

@@ -46,7 +46,7 @@ class BaseLLMConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()
                     if not answer:
-                        answer = "\n"
+                        answer = "<|END|>"
 
                     return answer
 
@@ -78,14 +78,13 @@ class BaseLLMConnector:
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in ["\n", ". "])
+            all(item not in text[start:] for item in ["<|END|>"])
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find("\n", start))
-        end_set.add(text.find(". ", start))
+        end_set.add(text.find("<|END|>", start))
         if -1 in end_set:
             end_set.remove(-1)
 
@@ -95,6 +94,7 @@ class BaseLLMConnector:
 
         candidate_answer = text[start:end].split(": ")[-1].strip()
         candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
+        candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         if prompt not in self._cache:
             self._cache[prompt] = candidate_answer

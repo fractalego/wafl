@@ -37,7 +37,7 @@ class InferenceAnswerer(BaseAnswerer):
                 continue
 
             result = await self._entailer.entails(
-                query_text, task_text, return_threshold=True, threshold=0.3
+                query_text, task_text, return_threshold=True, threshold=0.75
             )
             if not result:
                 task_text = query_text

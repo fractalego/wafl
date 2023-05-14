@@ -15,14 +15,14 @@ class LLMQAConnector(BaseLLMConnector):
         prompt += "<story> </story>\n\n"
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the capital of Italy?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
         prompt += "<story> Water is wet </story>\n\n"
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: Is the earth round?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -31,7 +31,7 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the size of Jupyter?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -40,7 +40,7 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the user asking the bot?\n"
-        prompt += "A: to find a restaurant\n\n"
+        prompt += "A: to find a restaurant<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -49,7 +49,7 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: How far from here?\n"
-        prompt += "A: 1 kilometer\n\n"
+        prompt += "A: 1 kilometer<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -58,14 +58,14 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: what is the name of the user?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
         prompt += "<story> The user says 'hello'. The bot answers 'hello there'. The bot remembers: The sun is shiny </story>\n\n"
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: How is the sun?\n"
-        prompt += "A: shiny\n\n"
+        prompt += "A: shiny<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -75,21 +75,21 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the user's name?\n"
-        prompt += "A: John\n\n"
+        prompt += "A: John<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
         prompt += "<story> The user says 'hello' </story>\n\n"
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the user's name?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
         prompt += "<story> The user says 'it is raining' </story>\n\n"
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What does the user want to do?\n"
-        prompt += "A: unknown\n\n"
+        prompt += "A: unknown<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -99,7 +99,7 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: Who is the president?\n"
-        prompt += "A: JFK\n\n"
+        prompt += "A: JFK<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
@@ -109,7 +109,7 @@ class LLMQAConnector(BaseLLMConnector):
         )
         prompt += "The first person asks questions about the story and the second answers them:\n"
         prompt += "Q: What is the user reading?\n"
-        prompt += "A: a book\n\n"
+        prompt += "A: a book<|END|>\n\n"
 
         prompt += "Below a user and a bot discuss a story. The user is talking to the bot.\n"
         prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"

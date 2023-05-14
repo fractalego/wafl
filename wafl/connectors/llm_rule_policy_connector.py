@@ -23,7 +23,7 @@ The available choices to map the user's last utterance are as follows:
 3. The user wants to check the weather
 4. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 1, 2
+Please answer with the most relevant numbers separated by a comma: 1, 2<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -36,7 +36,7 @@ The available choices to map the user's last utterance are as follows:
 3. The user wants to check the weather
 4. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 2
+Please answer with the most relevant numbers separated by a comma: 2<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -47,7 +47,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user wants to know the weather
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 1
+Please answer with the most relevant numbers separated by a comma: 1<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -58,7 +58,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user says: "what is the weather like"
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 2
+Please answer with the most relevant numbers separated by a comma: 2<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -69,7 +69,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user says: "what is the weather like"
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 1
+Please answer with the most relevant numbers separated by a comma: 1<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -80,7 +80,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user wants to know the weather
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 2
+Please answer with the most relevant numbers separated by a comma: 2<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -93,7 +93,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user wants to know the weather
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 3
+Please answer with the most relevant numbers separated by a comma: 3<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -104,7 +104,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user asks about the weather
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 1
+Please answer with the most relevant numbers separated by a comma: 1<|END|>
 
 
 The following conversation is taking place between a user and a bot:
@@ -115,7 +115,7 @@ The available choices to map the user's last utterance are as follows:
 2. The user says: "shut up"
 3. None of the above
 
-Please answer with the most relevant numbers separated by a comma: 2
+Please answer with the most relevant numbers separated by a comma: 2<|END|>
 
 
 The following conversation is taking place between a user and a bot:

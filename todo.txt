@@ -1,12 +1,13 @@
 ### TODO
-/* refactor whisper to backend
-* refactor speaker
+* thank you does not close the conversation because of the entailer in inference_answerer
 * refactor sentence-transformer to backend
 
 * policy should only be about finding the correct rule to apply.
     * no y/n stuff, only choose btw candidate rules and none of the above.
     * erase y/n policy, only rule policy remains
 
+/* refactor whisper to backend
+/* refactor speaker
 
 /* better frontend (smaller facts and choices)
 /* Computer what is your name

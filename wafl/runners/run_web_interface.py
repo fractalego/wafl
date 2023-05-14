@@ -28,7 +28,7 @@ def run_server():
         activation_word="",
         max_misses=-1,
     )
-    interface.output("Hello. How may I help you?")
+    asyncio.run(interface.output("Hello. How may I help you?"))
     web_loop = WebLoop(interface)
     scheduler = Scheduler([conversation_loop, web_loop])
     asyncio.run(scheduler.run())
