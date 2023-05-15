@@ -10,7 +10,9 @@ class AnswerPolicy:
 
     async def accept(self, result: str):
         text = ""
-        dialogue = self._interface.get_utterances_list_with_timestamp()[-self._max_num_past_utterances :]
+        dialogue = self._interface.get_utterances_list_with_timestamp()[
+            -self._max_num_past_utterances :
+        ]
         start_time = -1
         if dialogue:
             start_time = dialogue[0][0]

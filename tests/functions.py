@@ -161,3 +161,7 @@ def get_time_in_future(minutes_from_now):
     now = datetime.now()
     final_time = now + timedelta(minutes=num_minutes)
     return final_time.strftime("%H, %M")
+
+
+def cutoff_to_last_newline(text):
+    return text[: text.rfind("\n")]

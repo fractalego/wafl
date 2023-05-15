@@ -21,14 +21,16 @@ class RulePolicy:
         rules_text += f"{len(rules) + 1}. None of the above\n"
         rules_text = rules_text.strip()
 
-        dialogue = self._interface.get_utterances_list_with_timestamp()[-self._max_num_past_utterances :]
+        dialogue = self._interface.get_utterances_list_with_timestamp()[
+            -self._max_num_past_utterances :
+        ]
         start_time = -1
         if dialogue:
             start_time = dialogue[0][0]
 
         choices = self._interface.get_choices_and_timestamp()
         facts = self._interface.get_facts_and_timestamp()
-        dialogue_items = dialogue# + choices + facts
+        dialogue_items = dialogue  # + choices + facts
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)

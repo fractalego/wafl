@@ -6,11 +6,11 @@ def text_is_exact_string(text):
     return text.strip() and text.strip()[0] == "_"
 
 
-def rules_are_too_different(retriever, rules):
+async def rules_are_too_different(retriever, rules):
     dot_products = []
     for item in rules[1:]:
         dot_products.append(
-            retriever.get_dot_product(item.effect.text, rules[0].effect.text)
+            await retriever.get_dot_product(item.effect.text, rules[0].effect.text)
         )
 
     if dot_products and min(dot_products) < 0.39:

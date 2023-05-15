@@ -195,5 +195,5 @@ def text_is_text_generation_task(text: str) -> bool:
 
 
 def escape_characters(text: str) -> bool:
-    text.replace(r"'", "\\'")
+    text = text.replace("\n", "\\n")
     return text

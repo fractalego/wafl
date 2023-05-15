@@ -41,5 +41,5 @@ def run_from_audio():
     scheduler.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_from_audio()

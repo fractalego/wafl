@@ -5,7 +5,7 @@ class LLMAnswerPolicyConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
-    def _get_answer_prompt(self, text, query, dialogue: str = None):
+    async def _get_answer_prompt(self, text, query, dialogue: str = None):
         prompt = f"""
 The following conversation is taking place:
 user: I have a toy car

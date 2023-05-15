@@ -45,7 +45,6 @@ setup(
         "torch==2.0.0",
         "optimum==1.8.5",
         "transformers==4.28.1",
-        "sentence_transformers==2.2.2",
         "nltk==3.6.2",
         "gensim==4.0.1",
         "sklearn==0.0",

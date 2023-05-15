@@ -5,7 +5,7 @@ class LLMRulePolicyConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
-    def _get_answer_prompt(self, text, query, dialogue: str = None):
+    async def _get_answer_prompt(self, text, query, dialogue: str = None):
         prompt = f"""
 The task is to map the user's last utterance to the most relevant sentences from a list of sentences. 
 The two sentences are considered similar if they have similar meaning.

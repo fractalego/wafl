@@ -77,7 +77,9 @@ class BackwardInference:
 
         return answer.text
 
-    async def compute(self, query, task_memory=None, policy=None, knowledge_name="/", depth=0):
+    async def compute(
+        self, query, task_memory=None, policy=None, knowledge_name="/", depth=0
+    ):
         if query.is_neutral():
             return Answer.create_neutral()
 
@@ -195,7 +197,7 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        #rules = await self._rule_policy.select(rules, query)
+        # rules = await self._rule_policy.select(rules, query)
 
         for rule in rules:
             index = 0
@@ -298,7 +300,7 @@ class BackwardInference:
         self, query, task_memory, knowledge_name, depth
     ):
         self._log(f"Looking for answers in facts")
-        facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
+        facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=depth == 0, knowledge_name=knowledge_name
         )
         texts = cluster_facts(facts_and_thresholds)
@@ -492,13 +494,13 @@ class BackwardInference:
             self._log(
                 f"Adding the following Rule to the knowledge name {knowledge_name}: {utterance}"
             )
-            self._knowledge.add_rule(utterance, knowledge_name=knowledge_name)
+            await self._knowledge.add_rule(utterance, knowledge_name=knowledge_name)
 
         else:
             self._log(
                 f"Adding the following Fact to the knowledge name {knowledge_name}: {utterance}"
             )
-            self._knowledge.add(utterance, knowledge_name=knowledge_name)
+            await self._knowledge.add(utterance, knowledge_name=knowledge_name)
 
         return Answer(text="True")
 
@@ -602,7 +604,9 @@ class BackwardInference:
         if inverted_rule:
             additional_text = "NOT "
 
-        await self._interface.add_choice(f"The bot tries the new query '{additional_text + new_query.text}'")
+        await self._interface.add_choice(
+            f"The bot tries the new query '{additional_text + new_query.text}'"
+        )
         answer = await self._compute_recursively(
             new_query, task_memory, knowledge_name, policy, depth + 1, inverted_rule
         )

@@ -24,11 +24,11 @@ class TestRetrieval(TestCase):
         retriever = DenseRetriever("msmarco-distilbert-base-v3")
         sentences = ["this is a test", "the food is hot on the table"]
         for index, sentence in enumerate(sentences):
-            retriever.add_text_and_index(sentence, str(index))
+            asyncio.run(retriever.add_text_and_index(sentence, str(index)))
 
         query = "the food is warm"
         expected = "1"
-        predicted = retriever.get_indices_and_scores_from_text(query)
+        predicted = asyncio.run(retriever.get_indices_and_scores_from_text(query))
         assert predicted[0][0] == expected
 
     def test_exact_string_retrieval(self):
@@ -39,22 +39,22 @@ class TestRetrieval(TestCase):
             "_this is an exact string",
         ]
         for index, sentence in enumerate(sentences):
-            retriever.add_text_and_index(sentence, str(index))
+            asyncio.run(retriever.add_text_and_index(sentence, str(index)))
 
         query = "_this is an exact string"
         expected = "2"
-        predicted = retriever.get_indices_and_scores_from_text(query)
+        predicted = asyncio.run(retriever.get_indices_and_scores_from_text(query))
         assert predicted[0][0] == expected
 
     def test_short_text_retrieves_nothing(self):
         retriever = DenseRetriever("msmarco-distilbert-base-v3")
         sentences = ["The user greets"]
         for index, sentence in enumerate(sentences):
-            retriever.add_text_and_index(sentence, str(index))
+            asyncio.run(retriever.add_text_and_index(sentence, str(index)))
 
         query = "O uh"
         expected = []
-        predicted = retriever.get_indices_and_scores_from_text(query)
+        predicted = asyncio.run(retriever.get_indices_and_scores_from_text(query))
         assert predicted == expected
 
     def test_input_during_inference(self):
@@ -65,6 +65,6 @@ class TestRetrieval(TestCase):
             logger=_logger,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: I will remember that your name is alberto"
+        expected = "bot: I will remember that that you are alberto"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

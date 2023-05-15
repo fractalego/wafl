@@ -66,4 +66,3 @@ class TestTaskExtraction(TestCase):
         expected = "unknown"
         print(prediction)
         assert expected == prediction
-

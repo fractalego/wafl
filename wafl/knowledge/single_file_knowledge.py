@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List
 
@@ -62,24 +63,24 @@ class SingleFileKnowledge(BaseKnowledge):
                 f"R{index}": value
                 for index, value in enumerate(facts_and_rules["rules"])
             }
-            self._initialize_retrievers()
+            asyncio.run(self._initialize_retrievers())
 
-    def add(self, text, knowledge_name="/"):
+    async def add(self, text, knowledge_name="/"):
         fact_index = f"F{len(self._facts_dict)}"
         self._facts_dict[fact_index] = Fact(text=text, knowledge_name=knowledge_name)
-        self._facts_retriever.add_text_and_index(
+        await self._facts_retriever.add_text_and_index(
             clean_text_for_retrieval(text), fact_index
         )
-        self._facts_retriever_for_questions.add_text_and_index(
+        await self._facts_retriever_for_questions.add_text_and_index(
             clean_text_for_retrieval(text), fact_index
         )
 
-    def add_rule(self, rule_text, knowledge_name=None):
+    async def add_rule(self, rule_text, knowledge_name=None):
         rule = parse_rule_from_single_line(rule_text, knowledge_name)
         index = str(len(self._rules_dict))
         index = f"R{index}"
         self._rules_dict[index] = rule
-        self._rules_fact_retriever.add_text_and_index(
+        await self._rules_fact_retriever.add_text_and_index(
             clean_text_for_retrieval(rule.effect.text), index=index
         )
 
@@ -95,19 +96,17 @@ class SingleFileKnowledge(BaseKnowledge):
         )
         return any(rule.effect.is_interruption for rule in rules)
 
-    def ask_for_facts(
+    async def ask_for_facts(
         self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if query.is_question:
-            indices_and_scores = (
-                self._facts_retriever_for_questions.get_indices_and_scores_from_text(
-                    query.text
-                )
+            indices_and_scores = await self._facts_retriever_for_questions.get_indices_and_scores_from_text(
+                query.text
             )
 
         else:
-            indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
-                query.text
+            indices_and_scores = (
+                await self._facts_retriever.get_indices_and_scores_from_text(query.text)
             )
         if not threshold and is_from_user:
             threshold = (
@@ -128,26 +127,26 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    def ask_for_facts_with_threshold(
+    async def ask_for_facts_with_threshold(
         self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if query.is_question:
-            indices_and_scores = (
-                self._facts_retriever_for_questions.get_indices_and_scores_from_text(
-                    query.text
-                )
+            indices_and_scores = await self._facts_retriever_for_questions.get_indices_and_scores_from_text(
+                query.text
             )
 
         else:
-            indices_and_scores = self._facts_retriever.get_indices_and_scores_from_text(
-                query.text
+            indices_and_scores = (
+                await self._facts_retriever.get_indices_and_scores_from_text(query.text)
             )
+
         if not threshold and is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
                 if query.is_question
                 else self._threshold_for_facts
             )
+
         elif not threshold:
             threshold = (
                 self._threshold_for_questions_from_bot
@@ -164,14 +163,16 @@ class SingleFileKnowledge(BaseKnowledge):
     async def ask_for_rule_backward(self, query, knowledge_name=None):
         if text_is_exact_string(query.text):
             indices_and_scores = (
-                self._rules_string_retriever.get_indices_and_scores_from_text(
+                await self._rules_string_retriever.get_indices_and_scores_from_text(
                     query.text
                 )
             )
             return [self._rules_dict[item[0]] for item in indices_and_scores]
 
         indices_and_scores = (
-            self._rules_fact_retriever.get_indices_and_scores_from_text(query.text)
+            await self._rules_fact_retriever.get_indices_and_scores_from_text(
+                query.text
+            )
         )
         fact_rules = [
             (self._rules_dict[item[0]], item[1])
@@ -183,7 +184,9 @@ class SingleFileKnowledge(BaseKnowledge):
         ]
 
         indices_and_scores = (
-            self._rules_question_retriever.get_indices_and_scores_from_text(query.text)
+            await self._rules_question_retriever.get_indices_and_scores_from_text(
+                query.text
+            )
         )
         question_rules = [
             (self._rules_dict[item[0]], item[1])
@@ -195,7 +198,7 @@ class SingleFileKnowledge(BaseKnowledge):
         ]
 
         indices_and_scores = (
-            self._rules_incomplete_retriever.get_indices_and_scores_from_text(
+            await self._rules_incomplete_retriever.get_indices_and_scores_from_text(
                 query.text
             )
         )
@@ -210,7 +213,7 @@ class SingleFileKnowledge(BaseKnowledge):
 
         rules_and_scores = fact_rules + question_rules + incomplete_rules
         rules = [item[0] for item in rules_and_scores]
-        if rules_are_too_different(self._rules_fact_retriever, rules):
+        if await rules_are_too_different(self._rules_fact_retriever, rules):
             return []
 
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
@@ -233,16 +236,16 @@ class SingleFileKnowledge(BaseKnowledge):
 
         return text
 
-    def _initialize_retrievers(self):
+    async def _initialize_retrievers(self):
         for index, fact in self._facts_dict.items():
             if text_is_exact_string(fact.text):
                 continue
 
-            self._facts_retriever.add_text_and_index(
+            await self._facts_retriever.add_text_and_index(
                 clean_text_for_retrieval(fact.text), index
             )
 
-            self._facts_retriever_for_questions.add_text_and_index(
+            await self._facts_retriever_for_questions.add_text_and_index(
                 clean_text_for_retrieval(fact.text), index
             )
 
@@ -251,18 +254,18 @@ class SingleFileKnowledge(BaseKnowledge):
                 continue
 
             if "{" in rule.effect.text:
-                self._rules_incomplete_retriever.add_text_and_index(
+                await self._rules_incomplete_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )
                 continue
 
             elif rule.effect.is_question:
-                self._rules_question_retriever.add_text_and_index(
+                await self._rules_question_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )
 
             else:
-                self._rules_fact_retriever.add_text_and_index(
+                await self._rules_fact_retriever.add_text_and_index(
                     clean_text_for_retrieval(rule.effect.text), index
                 )
 
@@ -270,12 +273,14 @@ class SingleFileKnowledge(BaseKnowledge):
             if not text_is_exact_string(rule.effect.text):
                 continue
 
-            self._rules_string_retriever.add_text_and_index(rule.effect.text, index)
+            await self._rules_string_retriever.add_text_and_index(
+                rule.effect.text, index
+            )
 
     @staticmethod
-    def create_from_list(facts: List[str]):
+    async def create_from_list(facts: List[str]) -> "SingleFileKnowledge":
         knowledge = SingleFileKnowledge()
         for index, fact in enumerate(facts):
-            knowledge.add(fact)
+            await knowledge.add(fact)
 
         return knowledge

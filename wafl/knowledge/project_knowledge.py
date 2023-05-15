@@ -13,21 +13,23 @@ class ProjectKnowledge(BaseKnowledge):
             rules_filename, self._dependency_dict
         )
 
-    def add(self, text, knowledge_name=None):
+    async def add(self, text, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
-        self._knowledge_dict[knowledge_name].add(text, knowledge_name=knowledge_name)
-
-    def add_rule(self, text, knowledge_name=None):
-        if not knowledge_name:
-            knowledge_name = self.root_knowledge
-
-        self._knowledge_dict[knowledge_name].add_rule(
+        await self._knowledge_dict[knowledge_name].add(
             text, knowledge_name=knowledge_name
         )
 
-    def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
+    async def add_rule(self, text, knowledge_name=None):
+        if not knowledge_name:
+            knowledge_name = self.root_knowledge
+
+        await self._knowledge_dict[knowledge_name].add_rule(
+            text, knowledge_name=knowledge_name
+        )
+
+    async def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
@@ -38,12 +40,12 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for facts in {name}")
 
                 to_return.extend(
-                    self._knowledge_dict[name].ask_for_facts(query, is_from_user)
+                    await self._knowledge_dict[name].ask_for_facts(query, is_from_user)
                 )
 
         return to_return
 
-    def ask_for_facts_with_threshold(
+    async def ask_for_facts_with_threshold(
         self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if not knowledge_name:
@@ -56,7 +58,7 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for facts in {name}")
 
                 to_return.extend(
-                    self._knowledge_dict[name].ask_for_facts_with_threshold(
+                    await self._knowledge_dict[name].ask_for_facts_with_threshold(
                         query, is_from_user, threshold=threshold
                     )
                 )

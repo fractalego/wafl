@@ -40,11 +40,11 @@ class VoiceInterface(BaseInterface):
         self._bot_has_spoken = False
         self._utterances = []
 
-    def add_hotwords_from_knowledge(
+    async def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
-            knowledge.get_facts_and_rule_as_text(),
+            await knowledge.get_facts_and_rule_as_text(),
             max_num_words=max_num_words,
             count_threshold=count_threshold,
         )

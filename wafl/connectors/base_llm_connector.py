@@ -71,20 +71,21 @@ class BaseLLMConnector:
         return False
 
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
-        prompt = self._get_answer_prompt(text, query, dialogue)
+        prompt = await self._get_answer_prompt(text, query, dialogue)
         if prompt in self._cache:
             return self._cache[prompt]
 
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in [". ", "<|END|>"])
+            all(item not in text[start:] for item in [". ", "<|END|>", "user:"])
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
         end_set.add(text.find(". ", start))
+        end_set.add(text.find("user:", start))
         end_set.add(text.find("<|END|>", start))
         if -1 in end_set:
             end_set.remove(-1)
@@ -93,7 +94,7 @@ class BaseLLMConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split(": ")[-1].strip()
+        candidate_answer = text[start:end].split("bot: ")[-1].strip()
         candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
@@ -102,5 +103,5 @@ class BaseLLMConnector:
 
         return candidate_answer
 
-    def _get_answer_prompt(self, text, query, dialogue=None):
+    async def _get_answer_prompt(self, text, query, dialogue=None):
         raise NotImplementedError("_get_answer_prompt() needs to be implemented.")

@@ -46,8 +46,10 @@ class TestVoice(TestCase):
     def test_hotwords_as_input(self):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
-        interface.add_hotwords_from_knowledge(
-            SingleFileKnowledge(_wafl_example), count_threshold=1
+        asyncio.run(
+            interface.add_hotwords_from_knowledge(
+                SingleFileKnowledge(_wafl_example), count_threshold=1
+            )
         )
         expected = ["jane", "name is", "is jane", "says", "says their", "their name"]
         assert interface._listener._hotwords == expected

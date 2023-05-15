@@ -1,13 +1,15 @@
-from typing import Dict
-
 import aiohttp
 import asyncio
 import json
 
+from typing import Dict, List
+
+import numpy as np
+
 from wafl.config import Configuration
 
 
-class WhisperConnector:
+class SentenceEmbedderConnector:
     _max_tries = 3
 
     def __init__(self, config=None):
@@ -16,7 +18,7 @@ class WhisperConnector:
 
         self._server_url = (
             f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/whisper"
+            f"{config.get_value('model_port')}/predictions/sentence_embedder"
         )
         try:
             loop = asyncio.get_running_loop()
@@ -29,14 +31,8 @@ class WhisperConnector:
         ):
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
-    async def predict(self, waveform, hotword=None) -> Dict[str, float]:
-
-        payload = {
-            "waveform": waveform.tolist(),
-            "num_beams": 3,
-            "num_tokens": 15,
-            "hotword": hotword,
-        }
+    async def predict(self, text: str, model_name: str) -> Dict[str, List[float]]:
+        payload = {"text": text, "model_name": model_name}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False)
@@ -44,19 +40,13 @@ class WhisperConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     prediction = json.loads(data)
-                    transcription = prediction["transcription"]
-                    score = prediction["score"]
-                    logp = prediction["logp"]
-                    return {
-                        "transcription": transcription,
-                        "score": score,
-                        "logp": logp,
-                    }
+                    embedding = prediction["embedding"]
+                    return {"embedding": np.array(embedding)}
 
-        return {"transcription": "", "score": 0.0}
+        return {"embedding": [0.0]}
 
     async def check_connection(self):
-        payload = {"waveform": [0], "num_beams": 3, "num_tokens": 15}
+        payload = {"text": "test", "model_name": "model_name"}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)

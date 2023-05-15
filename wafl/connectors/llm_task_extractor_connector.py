@@ -5,7 +5,7 @@ class LLMTaskExtractorConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 
-    def _get_answer_prompt(self, text: str, query: str, dialogue: str = None):
+    async def _get_answer_prompt(self, text: str, query: str, dialogue: str = None):
         prompt = f"""
 The task is to extract the user's intention from the last statement from the user.
 Prior statements only provide context and should not be used to determine the user's intention.

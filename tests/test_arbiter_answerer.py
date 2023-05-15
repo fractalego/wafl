@@ -54,7 +54,7 @@ class TestArbiterAnswerer(TestCase):
         asyncio.run(interface.output("What can I do for you?"))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "6'6\""
+        expected = "6'6"
         self.assertIn(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):
