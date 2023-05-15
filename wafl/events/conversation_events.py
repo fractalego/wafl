@@ -35,8 +35,8 @@ class ConversationEvents:
         else:
             self._config = config
 
-    def output(self, text: str):
-        self._interface.output(text)
+    async def output(self, text: str):
+        await self._interface.output(text)
 
     async def _process_query(self, text: str):
         self._interface.bot_has_spoken(False)
@@ -52,32 +52,32 @@ class ConversationEvents:
             )
 
         except InterruptTask:
-            self._interface.output("Task interrupted")
+            await self._interface.output("Task interrupted")
             return False
 
         if not self._interface.bot_has_spoken():
             if not text_is_question and not answer.is_neutral():
-                self.output(answer.text)
+                await self.output(answer.text)
 
             if text_is_question and answer.text not in ["True", "False"]:
-                self.output(answer.text)
+                await self.output(answer.text)
 
             if text_is_question and answer.is_false():
-                self.output("I don't know")
+                await self.output("I don't know")
 
             if (
                 not text_is_question
                 and answer.is_false()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("I don't know what to reply")
+                await self._interface.output("I don't know what to reply")
 
             if (
                 not text_is_question
                 and answer.is_true()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("Yes")
+                await self._interface.output("Yes")
 
         return answer
 

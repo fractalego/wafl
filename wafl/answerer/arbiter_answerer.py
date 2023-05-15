@@ -1,7 +1,7 @@
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.dialogue_answerer import DialogueAnswerer
 from wafl.answerer.inference_answerer import InferenceAnswerer
-from wafl.connectors.gptj_prompt_predictor_connector import GPTJPromptPredictorConnector
+from wafl.connectors.llm_prompt_predictor_connector import LLMPromptPredictorConnector
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
 from wafl.extractors.task_extractor import TaskExtractor
@@ -15,7 +15,7 @@ class ArbiterAnswerer(BaseAnswerer):
         self._answerers_dict = answerers_dict
         self._narrator = Narrator(interface)
         self._logger = logger
-        self._gptj_connector = GPTJPromptPredictorConnector()
+        self._gptj_connector = LLMPromptPredictorConnector()
         self._entailer = Entailer(logger)
         self._knowledge = knowledge
         self._task_extractor = TaskExtractor(interface)

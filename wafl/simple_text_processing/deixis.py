@@ -28,6 +28,8 @@ def from_user_to_bot(text):
     return_text = return_text.replace(" ]", "]")
     return_text = return_text.replace("{ ", "{")
     return_text = return_text.replace(" }", "}")
+    return_text = return_text.replace("``", '"')
+    return_text = return_text.replace("''", '"')
     return return_text
 
 
@@ -59,4 +61,3 @@ def from_bot_to_bot(text):
     text = re.sub("you are", "the user is", text, flags=re.IGNORECASE)
     text = re.sub("you", "the user", text, flags=re.IGNORECASE)
     return text
-

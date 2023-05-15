@@ -1,13 +1,15 @@
-from typing import Dict
-
 import aiohttp
 import asyncio
 import json
 
+from typing import Dict, List
+
+import numpy as np
+
 from wafl.config import Configuration
 
 
-class EntailmentConnector:
+class SentenceEmbedderConnector:
     _max_tries = 3
 
     def __init__(self, config=None):
@@ -16,7 +18,7 @@ class EntailmentConnector:
 
         self._server_url = (
             f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/entailment"
+            f"{config.get_value('model_port')}/predictions/sentence_embedder"
         )
         try:
             loop = asyncio.get_running_loop()
@@ -29,13 +31,8 @@ class EntailmentConnector:
         ):
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
-        self._cache = {}
-
-    async def predict(self, premise: str, hypothesis: str) -> Dict[str, float]:
-        if (premise, hypothesis) in self._cache:
-            return self._cache[(premise, hypothesis)]
-
-        payload = {"premise": premise, "hypothesis": hypothesis}
+    async def predict(self, text: str, model_name: str) -> Dict[str, List[float]]:
+        payload = {"text": text, "model_name": model_name}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False)
@@ -43,19 +40,13 @@ class EntailmentConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     prediction = json.loads(data)
-                    label_names = ["entailment", "neutral", "contradiction"]
-                    answer = {
-                        name: float(pred) for pred, name in zip(prediction, label_names)
-                    }
-                    if (premise, hypothesis) not in self._cache:
-                        self._cache[(premise, hypothesis)] = answer
+                    embedding = prediction["embedding"]
+                    return {"embedding": np.array(embedding)}
 
-                    return answer
-
-        return "UNKNOWN"
+        return {"embedding": [0.0]}
 
     async def check_connection(self):
-        payload = {"premise": "hello", "hypothesis": "a greeting"}
+        payload = {"text": "test", "model_name": "model_name"}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
@@ -66,7 +57,7 @@ class EntailmentConnector:
 
         except aiohttp.client.InvalidURL:
             print()
-            print("Is the entailment server running?")
+            print("Is the whisper server running?")
             print("Please run 'bash start-llm.sh' (see docs for explanation).")
             print()
 

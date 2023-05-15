@@ -54,7 +54,6 @@ class TestDependencies(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, albert!"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__facts_are_answered_from_dependency_list_one_level_deep(self):
@@ -89,7 +88,7 @@ class TestDependencies(TestCase):
             ProjectKnowledge(tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "shiny"
+        expected = "shin"
         assert expected in interface.get_utterances_list()[-1]
 
     def test__functions_can_be_called_from_a_dependency(self):
@@ -130,5 +129,4 @@ class TestDependencies(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Ciao!"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

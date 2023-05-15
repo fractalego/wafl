@@ -1,17 +1,17 @@
 class BaseKnowledge:
     root_knowledge = "/"
 
-    def add(self, text):
+    async def add(self, text):
         raise NotImplementedError()
 
-    def add_rule(self, rule_text, knowledge_name=None):
+    async def add_rule(self, rule_text, knowledge_name=None):
         raise NotImplementedError()
 
-    def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
+    async def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         raise NotImplementedError()
 
-    def ask_for_facts_with_threshold(
-        self, query, is_from_user=False, knowledge_name=None
+    async def ask_for_facts_with_threshold(
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         raise NotImplementedError()
 

@@ -17,7 +17,7 @@ The user says their name
                   test, t  \
                   feast, f \
                   {name},
-                  
+   first_letter = cutoff_to_last_newline(first_letter)
    SAY The first letter of your name is {first_letter} 
 """.strip()
 
@@ -26,7 +26,7 @@ class TestGeneration(TestCase):
     def test__language_model_returns_first_letter_of_name(self):
         interface = DummyInterface(["My name is alberto"])
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_rules), interface=interface
+            SingleFileKnowledge(wafl_rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: The first letter of your name is a"

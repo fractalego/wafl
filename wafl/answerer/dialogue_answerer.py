@@ -1,7 +1,7 @@
 import time
 
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.connectors.gptj_chitchat_answer_connector import GPTJChitChatAnswerConnector
+from wafl.connectors.llm_chitchat_answer_connector import LLMChitChatAnswerConnector
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 
@@ -11,7 +11,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
-        self._connector = GPTJChitChatAnswerConnector()
+        self._connector = LLMChitChatAnswerConnector()
         self._max_num_past_utterances = 7
 
     async def answer(self, query_text, policy):
@@ -19,12 +19,12 @@ class DialogueAnswerer(BaseAnswerer):
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
         query = Query.create_from_text(query_text)
-        facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, knowledge_name="/"
+        facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
+            query, is_from_user=True, knowledge_name="/", threshold=0.1
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts:
-            self._interface.add_fact(f"The bot remembers: {text}")
+            await self._interface.add_fact(f"The bot remembers: {text}")
 
         dialogue = self._interface.get_utterances_list_with_timestamp()[
             -self._max_num_past_utterances :

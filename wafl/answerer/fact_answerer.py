@@ -16,7 +16,7 @@ class FactAnswerer(BaseAnswerer):
             self._logger.write(f"Fact Answerer: the query is {query_text}")
 
         query = Query.create_from_text(query_text)
-        facts_and_thresholds = self._knowledge.ask_for_facts_with_threshold(
+        facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=True, knowledge_name="/"
         )
         texts = cluster_facts(facts_and_thresholds)

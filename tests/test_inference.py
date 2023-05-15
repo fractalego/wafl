@@ -52,7 +52,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="What is this bot's name", is_question=True, variable="name")
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         expected = "fractalego"
         assert answer.text.lower() == expected
         assert answer.variable == query.variable
@@ -65,7 +65,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
         )
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         assert answer.is_true()
 
     def test__fact_check_false(self):
@@ -74,7 +74,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user is sad", is_question=False, variable="name")
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         assert answer.is_false()
 
     def test__simple_rule(self):
@@ -83,7 +83,7 @@ class TestInference(TestCase):
             SingleFileKnowledge(wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user says hello!", is_question=False, variable="name")
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         assert answer.is_true()
 
     def test__forward_substitution(self):
@@ -94,7 +94,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
         )
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         assert answer.is_true()
 
     def test__backward_substitution(self):
@@ -105,7 +105,7 @@ class TestInference(TestCase):
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"
         )
-        answer = asyncio.run(inference.compute(query))
+        answer = asyncio.run(inference.compute(query, depth=1))
         assert answer.is_true()
 
     def test__forward_substution_2(self):

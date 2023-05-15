@@ -35,7 +35,7 @@ class TestInterruptions(TestCase):
             logger=_logger,
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         try:
             asyncio.run(conversation_events.process_next())
 

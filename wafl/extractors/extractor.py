@@ -1,7 +1,7 @@
 import logging
 import os
 
-from wafl.connectors.gptj_qa_connector import GPTJQAConnector
+from wafl.connectors.llm_qa_connector import LLMQAConnector
 from wafl.connectors.dialogue import Dialogue
 from wafl.simple_text_processing.questions import (
     is_question,
@@ -19,7 +19,7 @@ _logger = logging.getLogger(__file__)
 class Extractor:
     def __init__(self, narrator, logger=None):
         self._entailer = Entailer(logger)
-        self._qa = GPTJQAConnector()
+        self._qa = LLMQAConnector()
         self._narrator = narrator
         self._logger = logger
         self._entailer_to_qa_mapping = {

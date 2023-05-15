@@ -4,16 +4,13 @@ flask_dropzone==1.6.0
 accelerate==0.13.2
 bitsandbytes==0.35.3
 torch==2.0.0
-optimum==1.8.3
+optimum==1.8.5
 transformers==4.28.1
-sentence_transformers==2.2.2
 nltk==3.6.2
 gensim==4.3.1
 sklearn==0.0
 python-Levenshtein==0.12.2
 wave==0.0.2
-fairseq==0.12.2
-g2p_en==2.1.0
 fuzzywuzzy==0.18.0
 PyAudio==0.2.11
 num2words==0.5.12

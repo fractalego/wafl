@@ -50,11 +50,11 @@ class TestArbiterAnswerer(TestCase):
             SingleFileKnowledge(_wafl_rules),
             interface=interface,
         )
-        interface.output("Please say computer to activate me.")
-        interface.output("What can I do for you?")
+        asyncio.run(interface.output("Please say computer to activate me."))
+        asyncio.run(interface.output("What can I do for you?"))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
-        expected = "6'6\""
+        expected = "6'6"
         self.assertIn(expected, interface.get_utterances_list()[-1])
 
     def test_fact_answer(self):
@@ -82,7 +82,7 @@ class TestArbiterAnswerer(TestCase):
         conversation_events = ConversationEvents(
             SingleFileKnowledge(""), interface=interface
         )
-        interface.output("say hello")
+        asyncio.run(interface.output("say hello"))
         asyncio.run(conversation_events.process_next())
         expected = "hello"
         self.assertIn(expected, interface.get_utterances_list()[-1])

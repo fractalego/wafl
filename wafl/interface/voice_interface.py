@@ -31,7 +31,7 @@ class VoiceInterface(BaseInterface):
 
         self.listener_model_name = config.get_value("listener_model")
         self._speaker = FairSeqSpeaker()
-        self._listener = WhisperListener(self.listener_model_name)
+        self._listener = WhisperListener()
         self._listener.set_timeout(config.get_value("listener_silence_timeout"))
         self._listener.set_volume_threshold(
             config.get_value("listener_volume_threshold")
@@ -40,11 +40,11 @@ class VoiceInterface(BaseInterface):
         self._bot_has_spoken = False
         self._utterances = []
 
-    def add_hotwords_from_knowledge(
+    async def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
-            knowledge.get_facts_and_rule_as_text(),
+            await knowledge.get_facts_and_rule_as_text(),
             max_num_words=max_num_words,
             count_threshold=count_threshold,
         )
@@ -54,7 +54,7 @@ class VoiceInterface(BaseInterface):
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             print(text)
             return
@@ -66,20 +66,20 @@ class VoiceInterface(BaseInterface):
         text = from_bot_to_user(text)
         self._utterances.append((time.time(), f"bot: {text}"))
         print(COLOR_START + "bot> " + text + COLOR_END)
-        self._speaker.speak(text)
+        await self._speaker.speak(text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
         text = ""
         while not text:
             text = await self._listener.input()
-            hotword = self._listener.get_hotword_if_present()
+            hotword = await self._listener.get_hotword_if_present()
             if hotword:
                 text = f"[{hotword}] {text}"
 
         while self._is_listening and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
-            self.output(random.choice(["Sorry?", "Can you repeat?"]))
+            await self.output(random.choice(["Sorry?", "Can you repeat?"]))
             text = await self._listener.input()
 
         text = text.lower().capitalize()
