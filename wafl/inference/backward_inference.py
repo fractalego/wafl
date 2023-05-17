@@ -3,7 +3,6 @@ import logging
 import traceback
 
 from wafl.extractors.task_extractor import TaskExtractor
-from wafl.policy.rule_policy import RulePolicy
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -54,7 +53,6 @@ class BackwardInference:
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
-        self._rule_policy = RulePolicy(interface, logger)
         self._narrator = narrator
         self._logger = logger
         self._module = {}
@@ -197,7 +195,6 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        # rules = await self._rule_policy.select(rules, query)
 
         for rule in rules:
             index = 0
