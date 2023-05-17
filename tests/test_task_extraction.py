@@ -44,7 +44,7 @@ class TestTaskExtraction(TestCase):
             [2, "bot: The time is 20 past 13"],
             [3, "user: what is in the shopping list"],
             [4, "bot: the shopping list contains milk, bread, and eggs"],
-            [4, "user: what about the jubilee line"],
+            [5, "user: what about the jubilee line"],
         ]
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
@@ -59,7 +59,7 @@ class TestTaskExtraction(TestCase):
             [2, "bot: The time is 20 past 13"],
             [3, "user: what is in the shopping list"],
             [4, "bot: the shopping list contains milk, bread, and eggs"],
-            [4, "user: you"],
+            [5, "user: you"],
         ]
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text

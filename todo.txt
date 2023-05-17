@@ -4,6 +4,10 @@
   - try to go line-by-line in the code to see where the problem is
 
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
+* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
+  - rememeber that the sound wave was corrupted the other way round0
+  - you might want to use base64 encoding for the sending part as well
+  - save sound file from whisper_handler.py and listen to it
 
 /* thank you does not close the conversation because of the entailer in inference_answerer
 /* refactor sentence-transformer to backend

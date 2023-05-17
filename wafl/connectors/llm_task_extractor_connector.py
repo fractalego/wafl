@@ -22,14 +22,14 @@ Say the user's intention in the last utterance: the user says hello ANDAND the u
 The following conversation is taking place:
 user: I want to drive the car
 
-Say the user's intention in the last utterance: the user wants to drive the car 
+Say the user's intention in the last utterance: the user wants to drive the car<|END|>
 
 The following conversation is taking place:
 user: I want to see my car
 bot: Your car is in the garage
 user: I want to drive it
 
-Say the user's intention in the last utterance: the user wants to drive the car <|END|>
+Say the user's intention in the last utterance: the user wants to drive the car<|END|>
 
 
 The following conversation is taking place:
@@ -38,19 +38,19 @@ bot: Your car is in the garage
 user: I want to drive the car
 user: you
 
-Say the user's intention in the last utterance: unknown <|END|>
+Say the user's intention in the last utterance: unknown<|END|>
 
 
 The following conversation is taking place:
 user: you
 
-Say the user's intention in the last utterance: unknown <|END|>
+Say the user's intention in the last utterance: unknown<|END|>
 
 
 The following conversation is taking place:
 user: what
 
-Say the user's intention in the last utterance: unknown <|END|>
+Say the user's intention in the last utterance: unknown<|END|>
 
 
 
@@ -65,7 +65,7 @@ The following conversation is taking place:
 bot: hello, how can I help
 user: Hello
 
-Say the user's intention in the last utterance: the user says hi <|END|>
+Say the user's intention in the last utterance: the user says hi<|END|>
 
 
 The following conversation is taking place:
@@ -90,7 +90,7 @@ Say the user's intention in the last utterance: the user says their dog's name i
 The following conversation is taking place:
 user: thank you
 
-Say the user's intention in the last utterance: the user thanks <|END|>
+Say the user's intention in the last utterance: the user thanks<|END|>
 
 
 The following conversation is taking place:
@@ -98,25 +98,25 @@ user: I want to drive a car
 bot: do you have a driving license?
 user: no
 
-Say the user's intention in the last utterance: the user wants to drive a car <|END|>
+Say the user's intention in the last utterance: the user wants to drive a car<|END|>
 
 
 The following conversation is taking place:
 user: I want to drive the car to London
 
-Say the user's intention in the last utterance: the user wants to drive the car to London <|END|>
+Say the user's intention in the last utterance: the user wants to drive the car to London<|END|>
 
 
 The following conversation is taking place:
 user: Can I have french fries
 
-Say the user's intention in the last utterance: the user asks if they can have french fries <|END|>
+Say the user's intention in the last utterance: the user asks if they can have french fries<|END|>
 
 
 The following conversation is taking place:
 user: Add oranges to the shopping list
 
-Say the user's intention in the last utterance: the user wants to add oranges to the shopping list <|END|>
+Say the user's intention in the last utterance: the user wants to add oranges to the shopping list<|END|>
 
 
 The following conversation is taking place:
@@ -126,7 +126,7 @@ user: what is in the shopping list
 bot: the shopping list contains apples, kiwis
 user: right, add oranges
 
-Say the user's intention in the last utterance: the user wants to add oranges to the shopping list <|END|>
+Say the user's intention in the last utterance: the user wants to add oranges to the shopping list<|END|>
 
 
 The following conversation is taking place:
@@ -169,7 +169,7 @@ user: what is the weather like
 bot: it is sunny
 user: what is the time and how long is it before 12
 
-Say the user's intention in the last utterance: the user wants to know the time ANDAND the user to know how long it is before 12 <|END|>
+Say the user's intention in the last utterance: the user wants to know the time ANDAND the user to know how long it is before 12<|END|>
 
 
 The following conversation is taking place:
@@ -177,14 +177,14 @@ user: what is the weather like
 bot: it is sunny
 user: what music is playing
 
-Say the user's intention in the last utterance: the user wants to know which music is playing <|END|>
+Say the user's intention in the last utterance: the user wants to know which music is playing<|END|>
 
 
 The following conversation is taking place:
 user: what is the the weather like
 user: what is the time
 
-Say the user's intention in the last utterance: the user wants to know the time <|END|>
+Say the user's intention in the last utterance: the user wants to know the time<|END|>
 
 
 The following conversation is taking place:
@@ -192,7 +192,7 @@ user: add paper
 user: add scissors
 user: add stone
 
-Say the user's intention in the last utterance: the user wants to add stone <|END|>
+Say the user's intention in the last utterance: the user wants to add stone<|END|>
 
 
 The following conversation is taking place:
