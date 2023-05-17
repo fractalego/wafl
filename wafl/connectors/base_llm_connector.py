@@ -9,6 +9,7 @@ class BaseLLMConnector:
     _max_tries = 3
     _max_reply_length = 150
     _num_prediction_tokens = 10
+    _cache = {}
 
     def __init__(self, config=None):
         if not config:
@@ -29,8 +30,6 @@ class BaseLLMConnector:
             self.check_connection()
         ):
             raise RuntimeError("Cannot connect a running GPT-J Model.")
-
-        self._cache = {}
 
     async def predict(self, prompt: str) -> str:
         payload = {
