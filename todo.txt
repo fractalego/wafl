@@ -2,6 +2,8 @@
 
 * why is it so slow??
   - try to go line-by-line in the code to see where the problem is
+  - would .generate(do_sample=False) accelerate? in llm_handler.py
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
 
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
 * is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
