@@ -126,7 +126,9 @@ class TestParsing(TestCase):
     def test__knowledge_facts(self):
         knowledge = SingleFileKnowledge(wafl_example)
         expected = str(Fact(text="the user is happy", is_question=False))
-        facts = knowledge.ask_for_facts(Query("how is the user", is_question=True))
+        facts = asyncio.run(
+            knowledge.ask_for_facts(Query("how is the user", is_question=True))
+        )
         assert str(facts[0]) == expected
 
     def test__knowledge_rules(self):

@@ -63,14 +63,12 @@ class TestShoppingList(TestCase):
     def test_no_activation(self):
         knowledge = SingleFileKnowledge(_rules)
         results = asyncio.run(
-            asyncio.run(
                 knowledge.ask_for_rule_backward(
                     Query(
                         text="The user says: 'remove apples from the shopping list.'",
                         is_question=False,
                     )
                 )
-            )
         )
         assert len(results) == 2
 

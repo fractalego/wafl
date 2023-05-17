@@ -21,10 +21,10 @@ class ArbiterAnswerer(BaseAnswerer):
         self._task_extractor = TaskExtractor(interface)
 
     async def answer(self, query_text, policy):
-        if await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(f"The user says: {query_text}"), knowledge_name="/"
-        ):
-            return Answer(text="unknown")
+        # if await self._knowledge.ask_for_rule_backward(
+        #    Query.create_from_text(f"The user says: {query_text}"), knowledge_name="/"
+        # ):
+        #    return Answer(text="unknown")
 
         if await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(
@@ -34,14 +34,16 @@ class ArbiterAnswerer(BaseAnswerer):
         ):
             return Answer(text="unknown")
 
+        score = 1
         keys_and_scores = []
         for key in self._answerers_dict.keys():
-            score = await self._entailer.entails(
-                f"The user says: {query_text}",
-                key,
-                return_threshold=True,
-                threshold=0.5,
-            )
+            if len(self._answerers_dict) > 1:
+                score = await self._entailer.entails(
+                    f"The user says: {query_text}",
+                    key,
+                    return_threshold=True,
+                    threshold=0.5,
+                )
 
             keys_and_scores.append((key, score))
 
@@ -61,19 +63,8 @@ class ArbiterAnswerer(BaseAnswerer):
 
     @staticmethod
     def create_answerer(knowledge, interface, code_path, logger):
-        narrator = Narrator(interface)
         return ArbiterAnswerer(
             {
-                "The user asks to do something": InferenceAnswerer(
-                    interface,
-                    BackwardInference(
-                        knowledge, interface, narrator, code_path, logger=logger
-                    ),
-                    logger,
-                ),
-                "The user asks for some information about something": DialogueAnswerer(
-                    knowledge, interface, logger
-                ),
                 "The user chats": DialogueAnswerer(knowledge, interface, logger),
             },
             knowledge,
