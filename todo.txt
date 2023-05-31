@@ -1,6 +1,10 @@
 ### TODO
 
 * why is it so slow??
+  - USE past_key_values as argument in generate.
+    This argument is returned when use_cache=True.
+    Save first past_key_values and then use it as argument in generate.
+
   - try to go line-by-line in the code to see where the problem is
   - would .generate(do_sample=False) accelerate? in llm_handler.py
   - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
