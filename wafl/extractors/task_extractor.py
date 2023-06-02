@@ -15,6 +15,7 @@ class TaskExtractor:
         self._max_num_past_utterances = 3
 
     async def extract(self, query: str):
+        print(__name__)
         dialogue = "\n".join(
             self._interface.get_utterances_list()[-self._max_num_past_utterances :]
         )
