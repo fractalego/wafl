@@ -1,12 +1,9 @@
 import base64
-from typing import Dict
-
 import aiohttp
 import asyncio
 import json
 
-import numpy as np
-
+from typing import Dict
 from wafl.config import Configuration
 
 

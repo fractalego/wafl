@@ -1,6 +1,7 @@
 import os
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+
 _path = os.path.dirname(__file__)
 
 

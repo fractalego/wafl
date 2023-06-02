@@ -30,7 +30,6 @@ class WhisperConnector:
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
     async def predict(self, waveform, hotword=None) -> Dict[str, float]:
-
         payload = {
             "waveform": waveform.tolist(),
             "num_beams": 3,
