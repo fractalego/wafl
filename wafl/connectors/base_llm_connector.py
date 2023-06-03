@@ -10,7 +10,7 @@ from wafl.config import Configuration
 class BaseLLMConnector:
     _max_tries = 3
     _max_reply_length = 150
-    _num_prediction_tokens = 50
+    _num_prediction_tokens = 20
     _cache = {}
 
     def __init__(self, config=None):
