@@ -1,24 +1,30 @@
 ### TODO
 
-* why is it so slow??
-- would .generate(do_sample=False) accelerate? in llm_handler.py
-  - play around with early stopping and max_length. Use eos_token_id properly
-
-  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
-
-  - USE past_key_values as argument in generate.
-    This argument is returned when use_cache=True.
-    Save first past_key_values and then use it as argument in generate.
-
-  - try to go line-by-line in the code to see where the problem is
-  - would .generate(do_sample=False) accelerate? in llm_handler.py
-  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
-
+* make tests pass
+* interruptions should always be called. Make it so it is impossible to forget to call them
+* give the system the ability to create rules to solve tasks
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
-* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
-  - rememeber that the sound wave was corrupted the other way round0
-  - you might want to use base64 encoding for the sending part as well
-  - save sound file from whisper_handler.py and listen to it
+/* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
+/  - rememeber that the sound wave was corrupted the other way round0
+/  - you might want to use base64 encoding for the sending part as well
+/  - save sound file from whisper_handler.py and listen to it
+
+
+* why is it so slow??
+/- would .generate(do_sample=False) accelerate? in llm_handler.py
+/  - play around with early stopping and max_length. Use eos_token_id properly
+
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
+/  - USE past_key_values as argument in generate.
+/    This argument is returned when use_cache=True.
+/    Save first past_key_values and then use it as argument in generate.
+     -> It does not do much for a single query
+
+/  - try to go line-by-line in the code to see where the problem is
+/  - would .generate(do_sample=False) accelerate? in llm_handler.py
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
 
 /* thank you does not close the conversation because of the entailer in inference_answerer
 /* refactor sentence-transformer to backend
