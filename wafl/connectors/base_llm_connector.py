@@ -10,7 +10,7 @@ from wafl.config import Configuration
 class BaseLLMConnector:
     _max_tries = 3
     _max_reply_length = 150
-    _num_prediction_tokens = 10
+    _num_prediction_tokens = 50
     _cache = {}
 
     def __init__(self, config=None):
@@ -47,7 +47,7 @@ class BaseLLMConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()
                     if not answer:
-                        answer = "<|END|>"
+                        answer = "<|EOS|>"
 
                     return answer
 
@@ -84,7 +84,7 @@ class BaseLLMConnector:
         while (
             all(
                 item not in text[start:]
-                for item in [". ", "<|END|>", "user:", "\nThe bot"]
+                for item in [". ", "<|EOS|>", "user:", "\nThe bot"]
             )
             and len(text) < start + self._max_reply_length
         ):
@@ -93,7 +93,7 @@ class BaseLLMConnector:
         end_set = set()
         end_set.add(text.find(". ", start))
         end_set.add(text.find("user:", start))
-        end_set.add(text.find("<|END|>", start))
+        end_set.add(text.find("<|EOS|>", start))
         end_set.add(text.find("\nThe bot", start))
         if -1 in end_set:
             end_set.remove(-1)
