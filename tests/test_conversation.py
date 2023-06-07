@@ -165,7 +165,7 @@ class TestConversation(TestCase):
         assert "yes" in interface.get_utterances_list()[-1].lower()
 
     def test__no(self):
-        interface = DummyInterface(["My name is Albert", "Is my name Bob"])
+        interface = DummyInterface(["My name is Albert", "Is my name Bob?"])
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_greetings, logger=_logger),
             interface=interface,

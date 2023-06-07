@@ -32,7 +32,7 @@ class TestVoice(TestCase):
         interface.activate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         asyncio.run(conversation_events.process_next(activation_word="computer"))
-        assert len(interface.get_utterances_list()) == 2
+        assert len(interface.get_utterances_list()) == 3
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])

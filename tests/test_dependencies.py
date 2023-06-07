@@ -89,6 +89,7 @@ class TestDependencies(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "shin"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__functions_can_be_called_from_a_dependency(self):
@@ -128,5 +129,6 @@ class TestDependencies(TestCase):
             code_path=knowledge.get_dependencies_list(),
         )
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         expected = "bot: Ciao!"
         assert interface.get_utterances_list()[-1] == expected

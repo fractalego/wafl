@@ -1,9 +1,11 @@
 ### TODO
 
 * make tests pass
+* if utterance would trigger rule but task is unknown, then trigger the rule
 * interruptions should always be called. Make it so it is impossible to forget to call them
 * give the system the ability to create rules to solve tasks
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
+
 /* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
 /  - rememeber that the sound wave was corrupted the other way round0
 /  - you might want to use base64 encoding for the sending part as well

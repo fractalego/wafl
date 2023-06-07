@@ -63,7 +63,7 @@ class ProjectKnowledge(BaseKnowledge):
                     )
                 )
 
-        return to_return
+        return sorted(to_return, key=lambda x: -x[1])
 
     async def ask_for_rule_backward(self, query, knowledge_name=None):
         if not knowledge_name:
