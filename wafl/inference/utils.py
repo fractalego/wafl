@@ -181,7 +181,10 @@ def answer_is_informative(answer: "Answer") -> bool:
     return not any(item == normalized(answer.text) for item in ["unknown"])
 
 
-def text_is_text_generation_task(text: str) -> bool:
+async def text_is_text_generation_task(
+    text: str,
+    entailer: "Entailer",
+) -> bool:
     if not "=" in text:
         return False
 
@@ -191,7 +194,15 @@ def text_is_text_generation_task(text: str) -> bool:
     if is_question(text.split("=")[1]):
         return False
 
-    return True
+    if await entailer.entails(
+        text,
+        f"An instruction of some kind is given",
+        return_threshold=True,
+        threshold=0.5,
+    ):
+        return True
+
+    return False
 
 
 def escape_characters(text: str) -> bool:

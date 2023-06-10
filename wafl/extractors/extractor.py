@@ -89,6 +89,9 @@ class Extractor:
 
         return answer_text
 
+    def get_entailer(self):
+        return self._entailer
+
 
 def _split_events(text):
     return text.split("; ")

@@ -246,7 +246,9 @@ class BackwardInference:
                         cause_text, knowledge_name, substitutions, policy
                     )
 
-                elif text_is_text_generation_task(cause_text):
+                elif await text_is_text_generation_task(
+                    cause_text, self._extractor.get_entailer()
+                ):
                     answer = await self._process_text_generation(
                         cause_text, knowledge_name, substitutions
                     )
