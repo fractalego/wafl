@@ -591,7 +591,9 @@ class BackwardInference:
             variable, text = cause_text.split("=")
             variable = variable.strip()
             text = text.strip()
-            new_query = Query(text=text, is_question=True, variable=variable)
+            new_query = Query(
+                text=text, is_question=is_question(text), variable=variable
+            )
 
         elif cause_is_question:
             new_query = Query(text=cause_text, is_question=True)

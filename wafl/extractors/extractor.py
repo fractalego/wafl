@@ -45,9 +45,11 @@ class Extractor:
             if "the user says: 'yes" in text.lower():
                 return Answer(text="Yes")
 
-            return await self._check_fact(text, query_text, threshold=0.5)
+            return await self._check_fact(
+                text, query_text, query.variable, threshold=0.5
+            )
 
-        return await self._check_fact(query_text, text, threshold=0.5)
+        return await self._check_fact(query_text, text, query.variable, threshold=0.5)
 
     async def _answer_question(self, query_text, variable_name, text: str, task_memory):
         dialogue = Dialogue()
@@ -58,22 +60,24 @@ class Extractor:
 
         return Answer(text=answer, variable=variable_name)
 
-    async def _check_fact(self, query_text, text, threshold):
+    async def _check_fact(self, query_text, text, variable_name, threshold):
         if not is_question(text):
             query_context = self._narrator.get_relevant_fact_context(text, query_text)
             answer = await self._entailer.entails(
                 query_context, text, threshold=threshold
             )
-            return Answer(text=self._entailer_to_qa_mapping[answer])
+            return Answer(
+                text=self._entailer_to_qa_mapping[answer], variable=variable_name
+            )
 
         dialogue = Dialogue()
-        answer = normalized(
+        answer_text = normalized(
             await self._qa.get_answer(query_text, dialogue.get_text(), text)
         )
-        if answer != "unknown" and answer != "no":
-            return Answer(text="Yes")
+        if answer_text != "unknown" and answer_text != "no":
+            return Answer(text="Yes", variable=variable_name)
 
-        return Answer(text="No")
+        return Answer(text="No", variable=variable_name)
 
     async def _get_answer(self, story, dialogue_text, query_text):
         query_text = _clean_query_text(query_text)

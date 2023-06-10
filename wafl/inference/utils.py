@@ -11,7 +11,7 @@ def cause_is_negated(cause_text: str) -> bool:
     return cause_text.find("!") == 0
 
 
-def check_negation(cause_text: str) -> bool:
+def check_negation(cause_text: str) -> Tuple[str, bool]:
     invert_results = False
     if cause_is_negated(cause_text):
         if cause_text[0] == "!":
