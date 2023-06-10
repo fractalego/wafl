@@ -53,9 +53,7 @@ def say_twice():
     utterances = ["HELLO", "HELLO"]
     while index < len(utterances):
         f"% SAY Please say: '{utterances[index]}' %"
-
         "% SAY Your input is recorded %"
-
         index += 1
 
 

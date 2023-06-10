@@ -57,6 +57,7 @@ class BackwardInference:
         self._logger = logger
         self._module = {}
         self._functions = {}
+        self._sentences_to_utter = []
         if module_names:
             self._init_python_modules(module_names)
 
@@ -277,6 +278,7 @@ class BackwardInference:
                 if answer.variable:
                     update_substitutions_from_answer(answer, substitutions)
 
+                await self._flush_interface_output()
                 index += 1
 
             if index == len(rule.causes):
@@ -396,7 +398,7 @@ class BackwardInference:
     ):
         self._log(f"Looking for answers by asking the user")
         if depth > 0 and query.is_question:
-
+            await self._flush_interface_output()
             while True:
                 self._log(f"Asking the user: {query.text}")
                 await self._interface.output(query.text)
@@ -483,8 +485,8 @@ class BackwardInference:
     async def _process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._log(f"Uttering: {utterance}")
-        await self._interface.output(utterance)
-        answer = Answer(text="True")
+        self._sentences_to_utter.append(utterance)
+        answer = Answer.create_true()
         return answer
 
     async def _process_remember_command(self, cause_text, knowledge_name):
@@ -616,6 +618,14 @@ class BackwardInference:
         if answer.variable and answer.is_neutral():
             return Answer(text="False", variable=answer.variable)
 
+        if not new_query.variable:
+            await self._flush_interface_output()
+
+        elif self._sentences_to_utter:
+            self._sentences_to_utter.append(answer.text)
+            answer.text = "\n".join(self._sentences_to_utter)
+            self._sentences_to_utter = []
+
         return answer
 
     def _log(self, text, depth=None):
@@ -658,3 +668,7 @@ class BackwardInference:
             policy,
             depth,
         )
+
+    async def _flush_interface_output(self):
+        for _ in range(len(self._sentences_to_utter)):
+            await self._interface.output(self._sentences_to_utter.pop(0))
