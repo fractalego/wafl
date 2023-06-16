@@ -1,41 +1,27 @@
 import logging
 import os
 
-from wafl.connectors.llm_task_extractor_connector import LLMTaskExtractorConnector
-from wafl.extractors.dataclasses import Answer
+from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
+from wafl.extractors.dataclasses import Answer, Query
 
 _path = os.path.dirname(__file__)
 _logger = logging.getLogger(__file__)
 
 
 class TaskCreator:
-    def __init__(self, interface, logger=None):
-        self._interface = interface
-        self._connector = LLMTaskExtractorConnector()
-        self._max_num_past_utterances = 3
-        self._to_ignore = ["yes", "no", "ok", "okay", "sure", "nope", "yep", "you"]
+    def __init__(self, knowledge, logger=None):
+        self._connector = LLMTaskCreatorConnector()
+        self._knowledge = knowledge
 
-    async def extract(self, query: str) -> Answer:
+    async def extract(self, task: str) -> Answer:
         print(__name__)
-        dialogue = "\n".join(
-            self._interface.get_utterances_list()[-self._max_num_past_utterances :]
+        rules = await self._knowledge.ask_for_rule_backward(
+            Query.create_from_text(task), knowledge_name="/", first_n=2
         )
-        if not dialogue:
-            dialogue = query
-
-        if self._ignore_utterances(dialogue):
+        if not rules:
             return Answer.create_neutral()
 
-        prediction = await self._connector.get_answer(
-            "",
-            dialogue,
-            query,
-        )
+        triggers = "\n".join([item.effect.text for item in rules])
+
+        prediction = await self._connector.get_answer("", triggers, task)
         return Answer(text=prediction.strip())
-
-    def _ignore_utterances(self, dialogue: str) -> bool:
-        utterance = dialogue.split("\n")[-1].split("user:")[-1].strip()
-        if utterance.lower() in self._to_ignore:
-            return True
-
-        return False

@@ -65,7 +65,7 @@ class ProjectKnowledge(BaseKnowledge):
 
         return sorted(to_return, key=lambda x: -x[1])
 
-    async def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None, first_n=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
@@ -77,7 +77,9 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for rules in {name}")
 
                 rules_list.extend(
-                    await self._knowledge_dict[name].ask_for_rule_backward(query)
+                    await self._knowledge_dict[name].ask_for_rule_backward(
+                        query, knowledge_name=name, first_n=first_n
+                    )
                 )
 
         return rules_list

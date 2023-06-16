@@ -160,7 +160,7 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    async def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None, first_n=None):
         if text_is_exact_string(query.text):
             indices_and_scores = (
                 await self._rules_string_retriever.get_indices_and_scores_from_text(
@@ -174,11 +174,19 @@ class SingleFileKnowledge(BaseKnowledge):
                 query.text
             )
         )
-        fact_rules = [
-            (self._rules_dict[item[0]], item[1])
-            for item in indices_and_scores
-            if item[1] > self._threshold_for_fact_rules
-        ]
+        if not first_n:
+            fact_rules = [
+                (self._rules_dict[item[0]], item[1])
+                for item in indices_and_scores
+                if item[1] > self._threshold_for_fact_rules
+            ]
+
+        else:
+            fact_rules = [
+                (self._rules_dict[item[0]], item[1])
+                for item in indices_and_scores
+            ]
+
         fact_rules = [item for item in sorted(fact_rules, key=lambda x: -x[1])][
             : self._max_rules_per_type
         ]
@@ -212,7 +220,10 @@ class SingleFileKnowledge(BaseKnowledge):
         ][: self._max_rules_per_type]
 
         rules_and_scores = fact_rules + question_rules + incomplete_rules
-        rules = [item[0] for item in rules_and_scores]
+        rules = [item[0] for item in sorted(rules_and_scores, key=lambda x: -x[1])]
+        if first_n:
+            return rules[:first_n]
+
         if await rules_are_too_different(self._rules_fact_retriever, rules):
             return []
 
