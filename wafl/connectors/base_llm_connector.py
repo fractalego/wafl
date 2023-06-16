@@ -84,7 +84,7 @@ class BaseLLMConnector:
         while (
             all(
                 item not in text[start:]
-                for item in [". ", "<|EOS|>", "user:", "\nThe bot"]
+                for item in [". ", "<|EOS|>", "user:", "\nThe bot", "bot:"]
             )
             and len(text) < start + self._max_reply_length
         ):
