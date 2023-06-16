@@ -9,7 +9,7 @@ from wafl.config import Configuration
 
 class BaseLLMConnector:
     _max_tries = 3
-    _max_reply_length = 250
+    _max_reply_length = 350
     _num_prediction_tokens = 20
     _cache = {}
 

@@ -35,6 +35,16 @@ the user wants to know if it is going to rain
    SAY {{result}}<|EOS|>
 
 
+The intention of the user is the following: the user wants to know if it is going to rain
+
+The system has rules that are triggered by the following sentences
+- the user says "shut up"
+- the user wants to know the time
+
+A new rule can be created:
+unknown<|EOS|>
+
+
 The intention of the user is the following: {task}
 
 The system has rules that are triggered by the following sentences

@@ -9,6 +9,9 @@ _wafl_example = """
 The user wants to know the road to somewhere
   SAY Looking now
 
+The user wants to know the weather
+  SAY The temperature is going to be between 19 and 22
+  SAY The probability of rain is 5%
 
 """.strip()
 
@@ -33,7 +36,7 @@ the user wants to go swimming in the sea
         print(prediction)
         assert expected == prediction
 
-    def test__task_creator(self):
+    def test__task_creation1(self):
         knowledge = SingleFileKnowledge(_wafl_example)
         task_creator = TaskCreator(knowledge)
         task = "the user wants to go swimming in the sea"
@@ -46,3 +49,24 @@ the user wants to go swimming in the sea
         """.strip()
         print(answer.text)
         assert expected == answer.text.strip()
+
+    def test__task_creation2(self):
+        knowledge = SingleFileKnowledge(_wafl_example)
+        task_creator = TaskCreator(knowledge)
+        task = "the user wants to know if they need and umbrella"
+        answer = asyncio.run(task_creator.extract(task))
+        expected = """
+the user wants to go swimming in the sea
+   road_to_sea = the user wants to know the road to the sea
+   result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
+   SAY {result}
+        """.strip()
+        print(answer.text)
+        assert expected == answer.text.strip()
+
+    def test__task_is_created_from_conversation(self):
+        #### Insert task creation into arbiter_answerer:
+        #### If there are no rules to solve the task, find out if you can generate task
+        #### add examples where task generation is impossible
+
+        pass
