@@ -1,7 +1,10 @@
 import asyncio
 from unittest import TestCase
 from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
+from wafl.events.conversation_events import ConversationEvents
 from wafl.extractors.task_creator import TaskCreator
+from wafl.interface.dummy_interface import DummyInterface
+from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _wafl_example = """
@@ -11,7 +14,7 @@ The user wants to know the road to somewhere
 
 The user wants to know the weather
   SAY The temperature is going to be between 19 and 22
-  SAY The probability of rain is 5%
+  SAY The probability of rain is 95%
 
 """.strip()
 
@@ -56,17 +59,20 @@ the user wants to go swimming in the sea
         task = "the user wants to know if they need and umbrella"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
-the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the sea
-   result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
+The user wants to know if they need an umbrella
+   weather_forecast = the user wants to know the weather today
+   result = Answer the following question given this forecast: {weather_forecast}             Q: do I need an umbrella?            A:
    SAY {result}
         """.strip()
         print(answer.text)
         assert expected == answer.text.strip()
 
     def test__task_is_created_from_conversation(self):
-        #### Insert task creation into arbiter_answerer:
-        #### If there are no rules to solve the task, find out if you can generate task
-        #### add examples where task generation is impossible
-
-        pass
+        interface = DummyInterface(to_utter=["Do I need an umbrella"])
+        conversation_events = ConversationEvents(
+            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            interface=interface,
+        )
+        asyncio.run(conversation_events.process_next())
+        expected = "bot: Yes"
+        assert interface.get_utterances_list()[-1] == expected

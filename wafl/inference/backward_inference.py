@@ -1,8 +1,12 @@
 import asyncio
 import logging
+import random
 import traceback
 
+from wafl.config import Configuration
+from wafl.extractors.task_creator import TaskCreator
 from wafl.extractors.task_extractor import TaskExtractor
+from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -53,8 +57,10 @@ class BackwardInference:
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
+        self._task_creator = TaskCreator(knowledge)
         self._narrator = narrator
         self._logger = logger
+        self._config = Configuration.load_local_config()
         self._module = {}
         self._functions = {}
         self._sentences_to_utter = []
@@ -196,6 +202,10 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
+        if not rules and self._config.get_value("improvise_tasks"):
+            rules_answer = await self._task_creator.extract(query.text)
+            if not rules_answer.is_neutral():
+                rules = get_facts_and_rules_from_text(rules_answer.text)["rules"]
 
         for rule in rules:
             index = 0
@@ -265,20 +275,22 @@ class BackwardInference:
                         inverted_rule=invert_results,
                     )
 
-                if answer.is_neutral() and answer.variable:
-                    answer = Answer.create_false()
+                    if answer.is_neutral() and answer.variable:
+                        answer = Answer.create_false()
 
-                if invert_results:
-                    answer = invert_answer(answer)
+                    if invert_results:
+                        answer = invert_answer(answer)
 
-                if answer.is_false():
-                    task_memory.add_failed_clause(original_cause_text)
-                    break
+                    if answer.is_false():
+                        task_memory.add_failed_clause(original_cause_text)
+                        break
 
                 if answer.variable:
                     update_substitutions_from_answer(answer, substitutions)
 
-                await self._flush_interface_output()
+                if depth == 0:
+                    await self._flush_interface_output()
+
                 index += 1
 
             if index == len(rule.causes):

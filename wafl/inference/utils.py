@@ -181,6 +181,15 @@ def answer_is_informative(answer: "Answer") -> bool:
     return not any(item == normalized(answer.text) for item in ["unknown"])
 
 
+def is_inference_task(text):
+    text = text.split("=")[-1]
+    prompt = "the user"
+    if text.strip().lower().find(prompt) == 0:
+        return True
+
+    return False
+
+
 async def text_is_text_generation_task(
     text: str,
     entailer: "Entailer",
@@ -189,6 +198,9 @@ async def text_is_text_generation_task(
         return False
 
     if text_is_code(text):
+        return False
+
+    if is_inference_task(text):
         return False
 
     if is_question(text.split("=")[1]):

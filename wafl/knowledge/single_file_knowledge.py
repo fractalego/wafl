@@ -183,8 +183,7 @@ class SingleFileKnowledge(BaseKnowledge):
 
         else:
             fact_rules = [
-                (self._rules_dict[item[0]], item[1])
-                for item in indices_and_scores
+                (self._rules_dict[item[0]], item[1]) for item in indices_and_scores
             ]
 
         fact_rules = [item for item in sorted(fact_rules, key=lambda x: -x[1])][

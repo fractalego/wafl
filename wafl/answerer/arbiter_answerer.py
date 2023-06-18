@@ -1,5 +1,8 @@
+import random
+
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.dialogue_answerer import DialogueAnswerer
+from wafl.config import Configuration
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
 from wafl.extractors.task_extractor import TaskExtractor
@@ -11,18 +14,31 @@ class ArbiterAnswerer(BaseAnswerer):
     def __init__(self, answerers_dict, knowledge, interface, logger):
         self._answerers_dict = answerers_dict
         self._narrator = Narrator(interface)
+        self._interface = interface
         self._logger = logger
         self._entailer = Entailer(logger)
         self._knowledge = knowledge
         self._task_extractor = TaskExtractor(interface)
+        self._config = Configuration.load_local_config()
 
     async def answer(self, query_text, policy):
+        task = await self._task_extractor.extract(query_text)
         if await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(
-                (await self._task_extractor.extract(query_text)).text
-            ),
+            Query.create_from_text(task.text),
             knowledge_name="/",
         ):
+            return Answer(text="unknown")
+
+        if not task.is_neutral() and self._config.get_value("improvise_tasks"):
+            self._interface.output(
+                random.choice(
+                    [
+                        "Let me think",
+                        "Uhm",
+                        "Thinking about it",
+                    ]
+                )
+            )
             return Answer(text="unknown")
 
         score = 1

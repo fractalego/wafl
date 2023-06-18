@@ -30,9 +30,10 @@ class InferenceAnswerer(BaseAnswerer):
             )
 
         query_text = f"The user says: '{query_text.capitalize()}'"
-        task_texts = (await self._task_extractor.extract(query_text)).text
+        task = await self._task_extractor.extract(query_text)
+        task_texts = split_tasks(task.text)
         answers = []
-        for task_text in split_tasks(task_texts):
+        for task_text in task_texts:
             if task_text == "unknown":
                 continue
 

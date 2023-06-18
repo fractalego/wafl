@@ -6,12 +6,14 @@ from wafl.parsing.rules_parser import get_dependency_list
 
 
 class ProjectKnowledge(BaseKnowledge):
-    def __init__(self, rules_filename, logger=None):
+    def __init__(self, rules_filename=None, logger=None):
         self._logger = logger
         self._dependency_dict = {}
-        self._knowledge_dict = self._populate_knowledge_structure(
-            rules_filename, self._dependency_dict
-        )
+        self._knowledge_dict = {}
+        if rules_filename:
+            self._knowledge_dict = self._populate_knowledge_structure(
+                rules_filename, self._dependency_dict
+            )
 
     async def add(self, text, knowledge_name=None):
         if not knowledge_name:
@@ -107,6 +109,12 @@ class ProjectKnowledge(BaseKnowledge):
 
     def get_dependencies_list(self):
         return self._get_all_dependency_names(self.root_knowledge)
+
+    @staticmethod
+    def create_from_string(rules_text: str, knowledge_name: str) -> "ProjectKnowledge":
+        knowledge = ProjectKnowledge()
+        knowledge._knowledge_dict[knowledge_name] = SingleFileKnowledge(rules_text)
+        return knowledge
 
     def _populate_knowledge_structure(
         self, filename: str, dependency_dict: Dict[str, List[str]]

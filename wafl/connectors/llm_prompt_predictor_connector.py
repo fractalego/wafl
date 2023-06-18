@@ -6,6 +6,16 @@ class LLMPromptPredictorConnector(BaseLLMConnector):
         super().__init__(config)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
-        prompt = f"Complete the following prompt:\n" f"{text}"
+        prompt = f"""
+Complete the following prompt and add <|EOS|> at the end:
+Add 'a' to the list ["b", "c"]: ["b", "c", "a"]<|EOS|>
+
+Complete the following prompt and add <|EOS|> at the end:
+Given the context "the sky is red" answer the following Q: is the sky blue A: no<|EOS|>
+
+Complete the following prompt and add <|EOS|> at the end:
+{text}        
+        
+        """.strip()
 
         return prompt
