@@ -32,9 +32,9 @@ class TestTaskCreation(TestCase):
         prediction = asyncio.run(connector.get_answer("", triggers, task))
         expected = """
 the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the sea
-   result = Answer the following question given this road: {road_to_sea} Q: how to get to the sea? A:
-   SAY {result}        
+   road_to_sea = the user wants to know the road to the nearest sea
+   result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
+   SAY {result}
         """.strip()
         print(prediction)
         assert expected == prediction
@@ -46,8 +46,9 @@ the user wants to go swimming in the sea
         answer = asyncio.run(task_creator.extract(task))
         expected = """
 the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the sea
-   result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
+   road_to_sea = the user wants to know the road to the nearest sea
+   weather_forecast = the user wants to know the weather today
+   result = Answer the following question given this road and weather forecast: {road_to_sea} Q: How to get to the sea? A:
    SAY {result}
         """.strip()
         print(answer.text)
@@ -59,16 +60,16 @@ the user wants to go swimming in the sea
         task = "the user wants to know if they need and umbrella"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
-The user wants to know if they need an umbrella
+the user wants to know if they need an umbrella
    weather_forecast = the user wants to know the weather today
-   result = Answer the following question given this forecast: {weather_forecast}             Q: do I need an umbrella?            A:
+   result = Answer the following question given this forecast: {weather_forecast} Q: do I need an umbrella? A:
    SAY {result}
         """.strip()
         print(answer.text)
         assert expected == answer.text.strip()
 
     def test__task_is_created_from_conversation(self):
-        interface = DummyInterface(to_utter=["Do I need an umbrella"])
+        interface = DummyInterface(to_utter=["Tell me if I need an umbrella"])
         conversation_events = ConversationEvents(
             ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
             interface=interface,

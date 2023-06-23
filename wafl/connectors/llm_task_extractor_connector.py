@@ -16,12 +16,6 @@ Some examples are below.
 
 
 The following conversation is taking place:
-user: hello what is the weather like
-
-Say the user's intention in the last utterance: the user says hello ; the user asks what the weather is like<|EOS|>
-
-
-The following conversation is taking place:
 user: I want to drive the car
 
 Say the user's intention in the last utterance: the user wants to drive the car<|EOS|>
@@ -61,47 +55,7 @@ bot: hello there
 user: lgdfskaj
 
 Say the user's intention in the last utterance: unknown<|EOS|>
-
-
-The following conversation is taking place:
-bot: hello, how can I help
-user: Hello
-
-Say the user's intention in the last utterance: the user says hi<|EOS|>
-
-
-The following conversation is taking place:
-user: goodbye
-
-Say the user's intention in the last utterance: the user says goodbye<|EOS|>
  
-
-The following conversation is taking place:
-user: hello
-user: My name is john
-
-Say the user's intention in the last utterance: the user says their name is John<|EOS|>
-
-
-The following conversation is taking place:
-user: my dog's name is Fido
-
-Say the user's intention in the last utterance: the user says their dog's name is Fido<|EOS|>
-
-
-The following conversation is taking place:
-user: thank you
-
-Say the user's intention in the last utterance: the user thanks<|EOS|>
-
-
-The following conversation is taking place:
-user: I want to drive a car
-bot: do you have a driving license?
-user: no
-
-Say the user's intention in the last utterance: the user wants to drive a car<|EOS|>
-
 
 The following conversation is taking place:
 user: I want to drive the car to London
@@ -132,28 +86,9 @@ Say the user's intention in the last utterance: the user wants to add oranges to
 
 
 The following conversation is taking place:
-user: Hello
-
-Say the user's intention in the last utterance: the user greets<|EOS|>
-
-
-The following conversation is taking place:
-user: what is the weather what is the temperature
+user: what is the weather and what is the temperature
 
 Say the user's intention in the last utterance: the user wants to know the weather ; the user wants to know the temperature<|EOS|>
-
-
-The following conversation is taking place:
-bot: what is your name
-user: my name is Alberto
-
-Say the user's intention in the last utterance: the user says their name is Alberto<|EOS|>
-
-
-The following conversation is taking place:
-user: my name is John
-
-Say the user's intention in the last utterance: the user says their name is John<|EOS|>
 
 
 The following conversation is taking place:
@@ -199,6 +134,18 @@ user: what is the the weather like
 user: what is the time
 
 Say the user's intention in the last utterance: the user wants to know the time<|EOS|>
+
+
+The following conversation is taking place:
+user: tell me about the weather.
+
+Say the user's intention in the last utterance: the user wants to know what the weather is like<|EOS|>
+
+
+The following conversation is taking place:
+user: My name is John
+
+Say the user's intention in the last utterance: unknown<|EOS|>
 
 
 The following conversation is taking place:

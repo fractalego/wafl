@@ -31,6 +31,7 @@ class TestAnswerInConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "0"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__random_name_is_remembered(self):

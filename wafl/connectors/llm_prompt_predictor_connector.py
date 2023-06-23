@@ -6,6 +6,9 @@ class LLMPromptPredictorConnector(BaseLLMConnector):
         super().__init__(config)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
+        for _ in range(5):
+            text = text.replace("  ", " ")
+
         prompt = f"""
 Complete the following prompt and add <|EOS|> at the end:
 Add 'a' to the list ["b", "c"]: ["b", "c", "a"]<|EOS|>

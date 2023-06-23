@@ -1,5 +1,7 @@
 ### TODO
 
+Does it make sense to have the task_extractor work only when the user issues a command?
+  - Use LLM only after entailment with "The user asks to do something"
 
 * make tests pass
 * allow code creation from task creator

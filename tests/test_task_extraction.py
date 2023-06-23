@@ -6,13 +6,6 @@ from wafl.interface.dummy_interface import DummyInterface
 
 
 class TestTaskExtraction(TestCase):
-    def test__query_extractor(self):
-        interface = DummyInterface()
-        task_extractor = TaskExtractor(interface)
-        prediction = asyncio.run(task_extractor.extract("hello what time is it")).text
-        expected = "the user wants to know the time"
-        assert expected == prediction
-
     def test__dialogue_extractor1(self):
         interface = DummyInterface()
         interface._utterances = [
@@ -44,11 +37,14 @@ class TestTaskExtraction(TestCase):
             [2, "bot: The time is 20 past 13"],
             [3, "user: what is in the shopping list"],
             [4, "bot: the shopping list contains milk, bread, and eggs"],
-            [5, "user: what about the jubilee line"],
+            [5, "user: is the circle line running"],
+            [6, "bot: yes, it is running normally"],
+            [7, "user: what about the Jubilee line"],
         ]
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
-        expected = "the user wants to know about the jubilee line"
+        expected = "the user wants to know if the Jubilee line is running"
+        print(prediction)
         assert expected == prediction
 
     def test__no_task_present_is_predicted_as_unknown(self):

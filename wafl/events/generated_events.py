@@ -20,7 +20,12 @@ class GeneratedEvents:
         logger=None,
     ):
         self._inference = BackwardInference(
-            knowledge, interface, Narrator(interface), code_path, logger=logger
+            knowledge,
+            interface,
+            Narrator(interface),
+            code_path,
+            logger=logger,
+            generate_rules=False,
         )
         self._knowledge = knowledge
         self._interface = interface

@@ -147,7 +147,7 @@ def cluster_facts(facts_and_threshold: List[Tuple["Fact", float]]) -> List[str]:
     return texts
 
 
-def selected_answer(candidate_answers: List["Answer"]) -> bool:
+def selected_answer(candidate_answers: List["Answer"], variable_name: str) -> bool:
     for answer in candidate_answers:
         if answer and normalized(answer.text) != "unknown":
             return answer
@@ -156,7 +156,9 @@ def selected_answer(candidate_answers: List["Answer"]) -> bool:
         if answer:
             return answer
 
-    return Answer.create_neutral()
+    return_answer = Answer.create_neutral()
+    return_answer.variable = variable_name
+    return return_answer
 
 
 def fact_relates_to_user(text: str) -> bool:
@@ -208,7 +210,7 @@ async def text_is_text_generation_task(
 
     if await entailer.entails(
         text,
-        f"An instruction of some kind is given",
+        f"The user gives an instruction of some kind",
         return_threshold=True,
         threshold=0.5,
     ):

@@ -29,27 +29,36 @@ class ArbiterAnswerer(BaseAnswerer):
         ):
             return Answer(text="unknown")
 
-        if not task.is_neutral() and self._config.get_value("improvise_tasks"):
-            if await self._entailer.entails(
-                query_text,
-                "the user asks to do something",
+        simple_task = f"The user says: {query_text}"
+        if (
+            not task.is_neutral()
+            and self._config.get_value("improvise_tasks")
+            and await self._entailer.entails(
+                simple_task,
+                f"The user gives an order",
                 return_threshold=True,
-                threshold=0.5,
-            ):
-                await self._interface.output(
-                    random.choice(
-                        [
-                            "Let me think",
-                            "Uhm",
-                            "Thinking about it",
-                        ]
-                    )
+                threshold=0.965,
+            )
+        ):
+            await self._interface.output(
+                random.choice(
+                    [
+                        "Let me think",
+                        "Uhm",
+                        "Thinking about it",
+                    ]
                 )
-                return Answer(text="unknown")
+            )
+            return Answer(text="unknown")
+
+        if await self._knowledge.ask_for_rule_backward(
+            Query.create_from_text(simple_task),
+            knowledge_name="/",
+        ):
+            return Answer(text="unknown")
 
         score = 1
         keys_and_scores = []
-        simple_task = f"The user says: {query_text}"
         for key in self._answerers_dict.keys():
             if len(self._answerers_dict) > 1:
                 score = await self._entailer.entails(

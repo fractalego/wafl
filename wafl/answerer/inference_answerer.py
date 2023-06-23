@@ -34,9 +34,6 @@ class InferenceAnswerer(BaseAnswerer):
         task_texts = split_tasks(task.text)
         answers = []
         for task_text in task_texts:
-            if task_text == "unknown":
-                continue
-
             result = await self._entailer.entails(
                 query_text, task_text, return_threshold=True, threshold=0.6
             )

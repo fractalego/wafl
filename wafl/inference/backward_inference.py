@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import random
 import traceback
 
 from wafl.config import Configuration
@@ -49,6 +48,7 @@ class BackwardInference:
         narrator: "Narrator",
         module_names=None,
         max_depth: int = 10,
+        generate_rules: bool = True,
         logger=None,
     ):
         self._max_depth = max_depth
@@ -61,6 +61,7 @@ class BackwardInference:
         self._narrator = narrator
         self._logger = logger
         self._config = Configuration.load_local_config()
+        self._generate_rules = generate_rules
         self._module = {}
         self._functions = {}
         self._sentences_to_utter = []
@@ -134,7 +135,7 @@ class BackwardInference:
             return answer
 
         if ":-" in query.text:
-            return selected_answer(candidate_answers)
+            return selected_answer(candidate_answers, query.variable)
 
         answer = await self._look_for_answer_in_facts(
             query, task_memory, knowledge_name, depth
@@ -193,7 +194,7 @@ class BackwardInference:
             self._log("Answer found by executing the rules: " + answer.text, depth)
             return answer
 
-        return selected_answer(candidate_answers)
+        return selected_answer(candidate_answers, query.variable)
 
     async def _look_for_answer_in_rules(
         self, query, task_memory, query_knowledge_name, policy, depth, inverted_rule
@@ -202,7 +203,16 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        if not rules and self._config.get_value("improvise_tasks"):
+        if (
+            not rules
+            and self._generate_rules
+            and await self._extractor.get_entailer().entails(
+                query.text,
+                f"The user gives an order",
+                return_threshold=True,
+                threshold=0.965,
+            )
+        ):
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
                 rules = get_facts_and_rules_from_text(rules_answer.text)["rules"]
@@ -278,12 +288,12 @@ class BackwardInference:
                     if answer.is_neutral() and answer.variable:
                         answer = Answer.create_false()
 
-                    if invert_results:
-                        answer = invert_answer(answer)
+                if invert_results:
+                    answer = invert_answer(answer)
 
-                    if answer.is_false():
-                        task_memory.add_failed_clause(original_cause_text)
-                        break
+                if answer.is_false():
+                    task_memory.add_failed_clause(original_cause_text)
+                    break
 
                 if answer.variable:
                     update_substitutions_from_answer(answer, substitutions)
@@ -680,6 +690,7 @@ class BackwardInference:
             policy,
             depth,
         )
+        await self._flush_interface_output()
 
     async def _flush_interface_output(self):
         for _ in range(len(self._sentences_to_utter)):

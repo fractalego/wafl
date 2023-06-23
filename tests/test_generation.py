@@ -24,7 +24,6 @@ The user says their name
                   feast, f \
                   {name},
    SAY {first_letter}
-   first_letter = cutoff_to_last_newline(first_letter)
    SAY The first letter of your name is {first_letter} 
 """.strip()
 
