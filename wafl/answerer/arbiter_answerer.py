@@ -30,12 +30,18 @@ class ArbiterAnswerer(BaseAnswerer):
             return Answer(text="unknown")
 
         simple_task = f"The user says: {query_text}"
+        if await self._knowledge.ask_for_rule_backward(
+            Query.create_from_text(simple_task),
+            knowledge_name="/",
+        ):
+            return Answer(text="unknown")
+
         if (
             not task.is_neutral()
             and self._config.get_value("improvise_tasks")
             and await self._entailer.entails(
                 simple_task,
-                f"The user gives an order",
+                f"The user gives an order or request",
                 return_threshold=True,
                 threshold=0.965,
             )
@@ -49,12 +55,6 @@ class ArbiterAnswerer(BaseAnswerer):
                     ]
                 )
             )
-            return Answer(text="unknown")
-
-        if await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(simple_task),
-            knowledge_name="/",
-        ):
             return Answer(text="unknown")
 
         score = 1

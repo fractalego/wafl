@@ -20,6 +20,7 @@ user: I want to drive the car
 
 Say the user's intention in the last utterance: the user wants to drive the car<|EOS|>
 
+
 The following conversation is taking place:
 user: I want to see my car
 bot: Your car is in the garage
@@ -154,6 +155,12 @@ user: add scissors
 user: add stone
 
 Say the user's intention in the last utterance: the user wants to add stone<|EOS|>
+
+
+The following conversation is taking place:
+user: list all the files in a folder
+
+Say the user's intention in the last utterance: the user wants list all the files in a folder<|EOS|>
 
 
 The following conversation is taking place:

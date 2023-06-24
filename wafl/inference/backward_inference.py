@@ -3,8 +3,10 @@ import logging
 import traceback
 
 from wafl.config import Configuration
+from wafl.extractors.code_creator import CodeCreator
 from wafl.extractors.task_creator import TaskCreator
 from wafl.extractors.task_extractor import TaskExtractor
+from wafl.extractors.utils import get_code, get_function_description
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
@@ -58,6 +60,7 @@ class BackwardInference:
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
         self._task_creator = TaskCreator(knowledge)
+        self._code_creator = CodeCreator(knowledge)
         self._narrator = narrator
         self._logger = logger
         self._config = Configuration.load_local_config()
@@ -208,14 +211,16 @@ class BackwardInference:
             and self._generate_rules
             and await self._extractor.get_entailer().entails(
                 query.text,
-                f"The user gives an order",
+                f"The user gives an order or request",
                 return_threshold=True,
-                threshold=0.965,
+                threshold=0.9,
             )
         ):
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
-                rules = get_facts_and_rules_from_text(rules_answer.text)["rules"]
+                rules = get_facts_and_rules_from_text(
+                    rules_answer.text, query_knowledge_name
+                )["rules"]
 
         for rule in rules:
             index = 0
@@ -248,6 +253,11 @@ class BackwardInference:
                 cause_text = cause.text.strip()
                 self._log("clause: " + cause_text, depth)
                 original_cause_text = cause_text
+                code_description = ""
+                if text_is_code(cause_text):
+                    code_description = get_function_description(cause_text)
+                    cause_text = get_code(cause_text)
+
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
                 if task_memory.is_in_prior_failed_clauses(original_cause_text):
@@ -264,7 +274,11 @@ class BackwardInference:
 
                 elif text_is_code(cause_text):
                     answer = await self._process_code(
-                        cause_text, knowledge_name, substitutions, policy
+                        cause_text,
+                        code_description,
+                        knowledge_name,
+                        substitutions,
+                        policy,
                     )
 
                 elif await text_is_text_generation_task(
@@ -542,7 +556,9 @@ class BackwardInference:
         self._log(f"The answer is {answer.text}")
         return answer
 
-    async def _process_code(self, cause_text, knowledge_name, substitutions, policy):
+    async def _process_code(
+        self, cause_text, code_description, knowledge_name, substitutions, policy
+    ):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -563,9 +579,18 @@ class BackwardInference:
             )  # task_memory is used as argument of the code in eval()
             to_execute = escape_characters(to_execute)
             self._log(f"Executing code: {to_execute}")
-            result = eval(f"self._module['{knowledge_name}'].{to_execute}")
-            if result is not None:
-                result = await result
+
+            if not code_description:
+                result = eval(f"self._module['{knowledge_name}'].{to_execute}")
+                if result is not None:
+                    result = await result
+
+            else:
+                generated_function_answer = await self._code_creator.extract(
+                    cause_text + f" <{code_description}>"
+                )
+                exec(generated_function_answer.text)
+                result = eval(to_execute)
 
             self._log(f"Execution result: {result}")
 

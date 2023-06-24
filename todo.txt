@@ -1,10 +1,8 @@
 ### TODO
 
-Does it make sense to have the task_extractor work only when the user issues a command?
-  - Use LLM only after entailment with "The user asks to do something"
 
-* make tests pass
 * allow code creation from task creator
+* only first level for #using
 * flexible config for faster answers:
    * make it so the task extractor can be skipped
    * same for task creator
@@ -20,6 +18,9 @@ Does it make sense to have the task_extractor work only when the user issues a c
 * give the system the ability to create rules to solve tasks
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
 
+
+/Does it make sense to have the task_extractor work only when the user issues a command?
+/  - Use LLM only after entailment with "The user asks to do something"
 
 /* prompt generation only if it is task
 /* otherwise = should return the result of a rule that is being executed

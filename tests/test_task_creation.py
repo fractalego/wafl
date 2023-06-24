@@ -1,7 +1,10 @@
 import asyncio
 from unittest import TestCase
+
+from wafl.connectors.llm_code_creator_connector import LLMCodeCreatorConnector
 from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
 from wafl.events.conversation_events import ConversationEvents
+from wafl.extractors.code_creator import CodeCreator
 from wafl.extractors.task_creator import TaskCreator
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
@@ -32,7 +35,7 @@ class TestTaskCreation(TestCase):
         prediction = asyncio.run(connector.get_answer("", triggers, task))
         expected = """
 the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the nearest sea
+   road_to_sea = the user wants to know the road to the sea
    result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
    SAY {result}
         """.strip()
@@ -42,7 +45,7 @@ the user wants to go swimming in the sea
     def test__task_creation1(self):
         knowledge = SingleFileKnowledge(_wafl_example)
         task_creator = TaskCreator(knowledge)
-        task = "the user wants to go swimming in the sea"
+        task = "the user wants to go to Manchester"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
 the user wants to go swimming in the sea
@@ -76,4 +79,50 @@ the user wants to know if they need an umbrella
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Yes"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
+
+    def test__code_creation(self):
+        connector = LLMCodeCreatorConnector()
+        task = "connect to 'localhost:port' and return the data as json"
+        function_shape = "json_data = connect_to_localhost(port)"
+        prediction = asyncio.run(connector.get_answer("", function_shape, task))
+        expected = """
+def connect_to_localhost(port):
+    import socket
+    
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((socket.gethostname(), port))
+    return s.recv(1024).decode('utf-8')
+        """.strip()
+        print(prediction)
+        assert expected == prediction
+
+    def test__task_creation_with_function(self):
+        knowledge = SingleFileKnowledge(_wafl_example)
+        code_creator = CodeCreator(knowledge)
+        task = "folders_list = list_subfolders('/var/') <the user wants list all the subfolders in a folder>"
+        answer = asyncio.run(code_creator.extract(task))
+        expected = """
+def list_subfolders(folder_name):
+    import os
+
+    subfolders = []
+    for subfolder in os.listdir(folder_name):
+        if os.path.isdir(os.path.join(folder_name, subfolder)):
+            subfolders.append(subfolder)
+    return subfolders
+            """.strip()
+        print(answer.text)
+        assert expected == answer.text.strip()
+
+    def test__task_is_created_from_conversation_with_code(self):
+        interface = DummyInterface(to_utter=["Please list of the subfolders of /var"])
+        conversation_events = ConversationEvents(
+            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            interface=interface,
+            code_path="/",
+        )
+        asyncio.run(conversation_events.process_next())
+        assert "tmp" in interface.get_utterances_list()[-1]
+        assert "lib" in interface.get_utterances_list()[-1]

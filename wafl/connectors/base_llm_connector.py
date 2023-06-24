@@ -103,7 +103,6 @@ class BaseLLMConnector:
             end = min(end_set)
 
         candidate_answer = text[start:end].split("bot: ")[-1].strip()
-        candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         if prompt not in self._cache:
