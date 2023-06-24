@@ -1,6 +1,6 @@
 import asyncio
-from unittest import TestCase
 
+from unittest import TestCase
 from wafl.connectors.llm_code_creator_connector import LLMCodeCreatorConnector
 from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
 from wafl.events.conversation_events import ConversationEvents

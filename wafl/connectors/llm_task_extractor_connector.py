@@ -10,7 +10,7 @@ class LLMTaskExtractorConnector(BaseLLMConnector):
 The task is to extract the user's intention from the last statement from the user.
 Prior statements only provide context and should not be used to determine the user's intention.
 Be as specific as possible.
-If the last statement has multiple intentions, separate them with a semicolon ";".
+If the last statement has multiple intentions, separate them with a pipe character "|".
 After the task is extracted, end the text with <|EOS|>.
 Some examples are below.
 
@@ -89,7 +89,7 @@ Say the user's intention in the last utterance: the user wants to add oranges to
 The following conversation is taking place:
 user: what is the weather and what is the temperature
 
-Say the user's intention in the last utterance: the user wants to know the weather ; the user wants to know the temperature<|EOS|>
+Say the user's intention in the last utterance: the user wants to know the weather | the user wants to know the temperature<|EOS|>
 
 
 The following conversation is taking place:
@@ -105,7 +105,7 @@ bot: london to paris
 bot: london to rome
 user: find me a good restaurant and order a pizza
 
-Say the user's intention in the last utterance: the user wants this bot to find a good restaurant ; the user wants this bot to order a pizza<|EOS|>
+Say the user's intention in the last utterance: the user wants this bot to find a good restaurant | the user wants this bot to order a pizza<|EOS|>
 
 
 The following conversation is taking place:
@@ -113,13 +113,13 @@ user: what is the weather like
 bot: it is sunny
 user: what is the time and how long is it before 12
 
-Say the user's intention in the last utterance: the user wants to know the time ; the user to know how long it is before 12<|EOS|>
+Say the user's intention in the last utterance: the user wants to know the time | the user to know how long it is before 12<|EOS|>
 
 
 The following conversation is taking place:
 user: tell me what time it is and then what is the weather tomorrow
 
-Say the user's intention in the last utterance: the user wants to know the time ; the user wants to know the weather tomorrow<|EOS|>
+Say the user's intention in the last utterance: the user wants to know the time | the user wants to know the weather tomorrow<|EOS|>
 
 
 The following conversation is taking place:
