@@ -1,6 +1,6 @@
 import re
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 from fuzzywuzzy import process
 from wafl.extractors.dataclasses import Answer
 from wafl.simple_text_processing.normalize import normalized
@@ -67,6 +67,10 @@ def text_has_new_task_memory_command(text: str) -> bool:
 
 def update_substitutions_from_answer(answer: "Answer", substitutions: Dict[str, str]):
     safe_value = _make_safe(answer.text)
+    substitutions[f"({{{answer.variable.strip()}}})"] = f'("{safe_value}")'
+    substitutions[f"({{{answer.variable.strip()}}},"] = f'("{safe_value}",'
+    substitutions[f",{{{answer.variable.strip()}}},"] = f',"{safe_value}",'
+    substitutions[f",{{{answer.variable.strip()}}})"] = f',"{safe_value}")'
     substitutions[f"{{{answer.variable.strip()}}}"] = safe_value
     substitutions[f"({answer.variable.strip()})"] = f'("{safe_value}")'
     substitutions[f"({answer.variable.strip()},"] = f'("{safe_value}",'
@@ -86,6 +90,10 @@ def update_substitutions_from_results(
     result: str, variable: str, substitutions: Dict[str, str]
 ):
     safe_value = _make_safe(result)
+    substitutions.update({f"({{{variable}}})": f'("{safe_value}")'})
+    substitutions.update({f"({{{variable}}},": f'("{safe_value}",'})
+    substitutions.update({f",{{{variable}}},": f',"{safe_value}",'})
+    substitutions.update({f",{{{variable}}})": f',"{safe_value}")'})
     substitutions.update({f"{{{variable}}}": safe_value})
     substitutions.update({f"({variable})": f'("{safe_value}")'})
     substitutions.update({f"({variable},": f'("{safe_value}",'})
@@ -222,3 +230,27 @@ async def text_is_text_generation_task(
 def escape_characters(text: str) -> bool:
     text = text.replace("\n", "\\n")
     return text
+
+
+def string_is_python_list(text: str) -> bool:
+    try:
+        result = eval(text)
+        if type(result) == list:
+            return True
+
+    except SyntaxError:
+        pass
+
+    return False
+
+
+def get_list_from_string(text: str) -> List[Any]:
+    try:
+        result = eval(text)
+        if type(result) == list:
+            return result
+
+    except SyntaxError:
+        pass
+
+    return []

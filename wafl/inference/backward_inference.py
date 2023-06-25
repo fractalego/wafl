@@ -31,6 +31,8 @@ from wafl.inference.utils import (
     answer_is_informative,
     text_is_text_generation_task,
     escape_characters,
+    string_is_python_list,
+    get_list_from_string,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -260,6 +262,9 @@ class BackwardInference:
 
                 cause_text, invert_results = check_negation(cause_text)
                 cause_text = apply_substitutions(cause_text, substitutions)
+                if code_description:
+                    apply_substitutions(code_description, substitutions)
+
                 if task_memory.is_in_prior_failed_clauses(original_cause_text):
                     self._log("This clause failed before", depth)
                     break
@@ -635,7 +640,6 @@ class BackwardInference:
         depth,
         inverted_rule,
     ):
-        self._log("Processing clause as a query", depth)
         if "=" in cause_text:
             variable, text = cause_text.split("=")
             variable = variable.strip()

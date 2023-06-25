@@ -18,11 +18,7 @@ The user says hello
 
 The user says their name
    name = what is the user's name?
-   first_letter = Return the first letter of the word. \
-                  Examples: \
-                  test, t  \
-                  feast, f \
-                  {name},
+   first_letter = Return the first letter of the word {name}
    SAY {first_letter}
    SAY The first letter of your name is {first_letter} 
 """.strip()

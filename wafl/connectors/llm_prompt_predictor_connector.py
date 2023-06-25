@@ -10,15 +10,10 @@ class LLMPromptPredictorConnector(BaseLLMConnector):
             text = text.replace("  ", " ")
 
         prompt = f"""
-Complete the following prompt and add <|EOS|> at the end:
-Add 'a' to the list ["b", "c"]: ["b", "c", "a"]<|EOS|>
-
-Complete the following prompt and add <|EOS|> at the end:
-Given the context "the sky is red" answer the following Q: is the sky blue A: no<|EOS|>
-
-Complete the following prompt and add <|EOS|> at the end:
-{text}        
-        
+<task>
+Complete the following task and add <|EOS|> at the end: {text}
+</task>
+<result>
         """.strip()
 
         return prompt

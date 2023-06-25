@@ -1,13 +1,15 @@
 ### TODO
 
 
-* allow code creation from task creator
+* add interaction on lists (actions for each item in the list)
+* RETRIEVAL for prompts
+* Add RETRIEVE as a command
+
 * only first level for #using
 * flexible config for faster answers:
    * make it so the task extractor can be skipped
    * same for task creator
 
-* add interaction on lists (actions for each item in the list)
 * allow for facts to be checked by the llm directly
 * create command line instructions "wafl list all the files"
 * why does "[computer] computer what should I buy" does not trigger a rule in wafl_home?
@@ -19,7 +21,8 @@
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
 
 
-/Does it make sense to have the task_extractor work only when the user issues a command?
+/* allow code creation from task creator
+/*Does it make sense to have the task_extractor work only when the user issues a command?
 /  - Use LLM only after entailment with "The user asks to do something"
 
 /* prompt generation only if it is task

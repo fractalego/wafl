@@ -9,7 +9,7 @@ from wafl.config import Configuration
 
 class BaseLLMConnector:
     _max_tries = 3
-    _max_reply_length = 350
+    _max_reply_length = 500
     _num_prediction_tokens = 20
     _cache = {}
 
@@ -84,7 +84,7 @@ class BaseLLMConnector:
         while (
             all(
                 item not in text[start:]
-                for item in [". ", "<|EOS|>", "user:", "\nThe bot", "bot:"]
+                for item in ["<|EOS|>", "user:", "\nThe bot", "bot:"]
             )
             and len(text) < start + self._max_reply_length
         ):

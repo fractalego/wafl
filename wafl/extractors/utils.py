@@ -16,8 +16,8 @@ def get_function_description(text):
     if "<" not in text:
         return ""
 
-    return re.sub(r".*<(.*)>$", r"\1", text).strip()
+    return re.sub(r".*<(.*)>$", r"\1", text, re.MULTILINE).strip()
 
 
 def get_code(text):
-    return re.sub(r"(.*)<.*>$", r"\1", text).strip()
+    return re.sub(r"(.*)<.*>$", r"\1", text, re.MULTILINE).strip()

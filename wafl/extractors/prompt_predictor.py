@@ -11,7 +11,9 @@ _logger = logging.getLogger(__file__)
 class PromptPredictor:
     def __init__(self, logger=None):
         self._model = LLMPromptPredictorConnector()
+        self._closing_tag = "</result>"
 
     async def predict(self, prompt: str):
         prediction = await self._model.get_answer(prompt, "", "")
+        prediction = prediction.replace(self._closing_tag, "").strip()
         return Answer(text=prediction.strip())
