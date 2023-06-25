@@ -263,8 +263,11 @@ class BackwardInference:
                     code_description = get_function_description(cause_text)
                     cause_text = get_code(cause_text)
 
-                cause_text, invert_results = check_negation(cause_text)
+                cause_text = apply_substitutions(cause_text, substitutions)
+                if code_description:
+                    apply_substitutions(code_description, substitutions)
 
+                cause_text, invert_results = check_negation(cause_text)
                 cause_text_list = get_causes_list(cause_text)
 
                 answers = []
@@ -284,7 +287,9 @@ class BackwardInference:
                     )
 
                 if len(answers) > 1:
-                    answer = Answer.create_from_text(str([item.text for item in answers]))
+                    answer = Answer.create_from_text(
+                        str([item.text for item in answers])
+                    )
 
                 else:
                     answer = answers[0]
@@ -334,10 +339,6 @@ class BackwardInference:
         depth,
         invert_results,
     ):
-        cause_text = apply_substitutions(cause_text, substitutions)
-        if code_description:
-            apply_substitutions(code_description, substitutions)
-
         if text_has_say_command(cause_text):
             answer = await self._process_say_command(cause_text)
 
@@ -664,6 +665,7 @@ class BackwardInference:
         variable = variable.strip()
         prompt = prompt.strip()
         answer = await self._prompt_predictor.predict(prompt)
+        answer.variable = variable
         update_substitutions_from_results(answer.text, variable, substitutions)
         return answer
 

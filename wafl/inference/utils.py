@@ -257,10 +257,21 @@ def get_list_from_string(text: str) -> List[Any]:
 
 
 def get_list_like_element(text: str) -> str:
-    return re.sub(r".*\[(.*)].*", r"\1", text, re.MULTILINE).strip()
+    return re.sub(r".*\[(.*)].*", r"[\1]", text, re.MULTILINE).strip()
 
 
 def get_causes_list(text: str) -> List[str]:
+    """
+    If the text contains a Python list (e.g. generate a chapter with the theme ["space", "romance"] )
+    then the output becomes a list of texts where each item appears separaterly
+    (e.g. ["generate a chapter with the theme space", generate a chapter with the theme romance"]
+
+    :param text:
+    :return: a list of causes,
+    """
+    if text_is_code(text):
+        return [text]
+
     list_like_element = get_list_like_element(text)
     if not string_is_python_list(list_like_element):
         return [text]
@@ -268,6 +279,6 @@ def get_causes_list(text: str) -> List[str]:
     items = get_list_from_string(list_like_element)
     causes_list = []
     for item in items:
-        causes_list.append(item.replace(list_like_element, item))
+        causes_list.append(text.replace(list_like_element, item))
 
     return causes_list
