@@ -91,7 +91,6 @@ class BaseLLMConnector:
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find(". ", start))
         end_set.add(text.find("user:", start))
         end_set.add(text.find("<|EOS|>", start))
         end_set.add(text.find("\nThe bot", start))

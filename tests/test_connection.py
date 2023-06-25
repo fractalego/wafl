@@ -41,11 +41,7 @@ class TestConnection(TestCase):
         config = Configuration.load_local_config()
         connector = BaseLLMConnector(config)
         connector._num_prediction_tokens = 200
-        chapter = "The first contact"
-        theme = "space opera"
-        text = (
-            f'Generate a full paragraph based on this chapter title "{chapter}". The theme of the paragraph is {theme}. Include the characters "Alberto" and "Maria". Write at least three sentences.'
-        )
+        text = 'Generate a full paragraph based on this chapter title " The First Contact". The theme of the paragraph is space opera. Include the characters "Alberto" and "Maria". Write at least three sentences.'
         prompt = f"""
 <task>
 Complete the following task and add <|EOS|> at the end: {text}
