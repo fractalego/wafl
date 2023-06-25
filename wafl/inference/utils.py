@@ -227,7 +227,7 @@ async def text_is_text_generation_task(
     return False
 
 
-def escape_characters(text: str) -> bool:
+def escape_characters(text: str) -> str:
     text = text.replace("\n", "\\n")
     return text
 
@@ -254,3 +254,20 @@ def get_list_from_string(text: str) -> List[Any]:
         pass
 
     return []
+
+
+def get_list_like_element(text: str) -> str:
+    return re.sub(r".*\[(.*)].*", r"\1", text, re.MULTILINE).strip()
+
+
+def get_causes_list(text: str) -> List[str]:
+    list_like_element = get_list_like_element(text)
+    if not string_is_python_list(list_like_element):
+        return [text]
+
+    items = get_list_from_string(list_like_element)
+    causes_list = []
+    for item in items:
+        causes_list.append(item.replace(list_like_element, item))
+
+    return causes_list

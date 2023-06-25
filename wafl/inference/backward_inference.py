@@ -31,8 +31,7 @@ from wafl.inference.utils import (
     answer_is_informative,
     text_is_text_generation_task,
     escape_characters,
-    string_is_python_list,
-    get_list_from_string,
+    get_causes_list,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -266,17 +265,31 @@ class BackwardInference:
 
                 cause_text, invert_results = check_negation(cause_text)
 
-                answer = await self._process_cause(
-                    cause_text,
-                    cause.is_question,
-                    code_description,
-                    knowledge_name,
-                    substitutions,
-                    policy,
-                    task_memory,
-                    depth,
-                    invert_results,
-                )
+                cause_text_list = get_causes_list(cause_text)
+
+                answers = []
+                for cause_text in cause_text_list:
+                    answers.append(
+                        await self._process_cause(
+                            cause_text,
+                            cause.is_question,
+                            code_description,
+                            knowledge_name,
+                            substitutions,
+                            policy,
+                            task_memory,
+                            depth,
+                            invert_results,
+                        )
+                    )
+
+                if len(answers) > 1:
+                    answer = Answer.create_from_text(str([item.text for item in answers]))
+
+                else:
+                    answer = answers[0]
+
+                answer.variable = answers[0].variable
 
                 if invert_results:
                     answer = invert_answer(answer)
