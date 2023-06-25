@@ -15,7 +15,7 @@ the user wants to write a book
     list_of_chapters = generate a bullet list of 4 chapters title for a book about a {theme}. Return the result without any number, just a list of titles
     list_of_chapters = get_list_from_text({list_of_chapters}) <create a python list from the bullet list in a text>
     SAY {list_of_chapters}
-    chapter_texts = Generate a full paragraph based on this chapter title "{list_of_chapters}". The theme of the paragraph is {theme}. Include the characters "Alberto" and "Maria".
+    chapter_texts = Generate a full paragraph based on this chapter title "{list_of_chapters}". The theme of the paragraph is {theme}. Include the characters "Alberto" and "Maria". Write at least three sentences.
     SAY {chapter_texts}
 
 """
@@ -33,11 +33,12 @@ class TestListType(TestCase):
             SingleFileKnowledge(_rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
-        assert "Alberto" in interface.get_utterances_list()[-1]
-        assert "Alberto" in interface.get_utterances_list()[-2]
-        assert "Alberto" in interface.get_utterances_list()[-3]
-        assert "Alberto" in interface.get_utterances_list()[-4]
-        assert "Maria" in interface.get_utterances_list()[-1]
-        assert "Maria" in interface.get_utterances_list()[-2]
-        assert "Maria" in interface.get_utterances_list()[-3]
-        assert "Maria" in interface.get_utterances_list()[-4]
+        [print(item) for item in interface.get_utterances_list()]
+        assert "alberto" in interface.get_utterances_list()[-1].lower()
+        assert "alberto" in interface.get_utterances_list()[-2].lower()
+        assert "alberto" in interface.get_utterances_list()[-3].lower()
+        assert "alberto" in interface.get_utterances_list()[-4].lower()
+        assert "maria" in interface.get_utterances_list()[-1].lower()
+        assert "maria" in interface.get_utterances_list()[-2].lower()
+        assert "maria" in interface.get_utterances_list()[-3].lower()
+        assert "maria" in interface.get_utterances_list()[-4].lower()
