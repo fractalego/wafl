@@ -238,7 +238,7 @@ def string_is_python_list(text: str) -> bool:
         if type(result) == list:
             return True
 
-    except SyntaxError:
+    except (SyntaxError, NameError):
         pass
 
     return False
@@ -250,7 +250,7 @@ def get_list_from_string(text: str) -> List[Any]:
         if type(result) == list:
             return result
 
-    except SyntaxError:
+    except (SyntaxError, NameError):
         pass
 
     return []
