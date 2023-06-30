@@ -32,6 +32,7 @@ from wafl.inference.utils import (
     text_is_text_generation_task,
     escape_characters,
     get_causes_list,
+    text_has_retrieve_command,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -272,19 +273,22 @@ class BackwardInference:
 
                 answers = []
                 for cause_text in cause_text_list:
-                    answers.append(
-                        await self._process_cause(
-                            cause_text,
-                            cause.is_question,
-                            code_description,
-                            knowledge_name,
-                            substitutions,
-                            policy,
-                            task_memory,
-                            depth,
-                            invert_results,
-                        )
+                    answer = await self._process_cause(
+                        cause_text,
+                        cause.is_question,
+                        code_description,
+                        knowledge_name,
+                        substitutions,
+                        policy,
+                        task_memory,
+                        depth,
+                        invert_results,
                     )
+                    if type(answer) == list:
+                        answers.extend(answer)
+
+                    else:
+                        answers.append(answer)
 
                 if len(answers) > 1:
                     answer = Answer.create_from_text(
@@ -294,7 +298,8 @@ class BackwardInference:
                 else:
                     answer = answers[0]
 
-                answer.variable = answers[0].variable
+                if answers:
+                    answer.variable = answers[0].variable
 
                 if invert_results:
                     answer = invert_answer(answer)
@@ -341,6 +346,9 @@ class BackwardInference:
     ):
         if text_has_say_command(cause_text):
             answer = await self._process_say_command(cause_text)
+
+        elif text_has_retrieve_command(cause_text):
+            answer = await self._process_retrieve_command(cause_text)
 
         elif text_has_remember_command(cause_text):
             answer = await self._process_remember_command(cause_text, knowledge_name)
@@ -762,3 +770,19 @@ class BackwardInference:
     async def _flush_interface_output(self):
         for _ in range(len(self._sentences_to_utter)):
             await self._interface.output(self._sentences_to_utter.pop(0))
+
+    async def _process_retrieve_command(self, cause_text):
+        cause_text = cause_text.replace("retrieve", "")
+        cause_text = cause_text.replace("RETRIEVE", "")
+        if "=" in cause_text:
+            variable, text = cause_text.split("=")
+            variable = variable.strip()
+            text = text.strip()
+            query = Query(text=text, is_question=is_question(text), variable=variable)
+
+        else:
+            variable = None
+            query = Query(text=cause_text, is_question=is_question(cause_text))
+
+        facts = await self._knowledge.ask_for_facts_with_threshold(query, threshold=0.5)
+        return [Answer(text=item[0].text, variable=variable) for item in facts]

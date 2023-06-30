@@ -57,6 +57,14 @@ def text_has_say_command(text: str) -> bool:
     return False
 
 
+def text_has_retrieve_command(text: str) -> bool:
+    words = text.split("=")[-1].strip().split()
+    if words:
+        return words[0].lower() == "retrieve"
+
+    return False
+
+
 def text_has_remember_command(text: str) -> bool:
     return normalized(text).find("remember") == 0
 
