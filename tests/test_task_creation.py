@@ -35,8 +35,8 @@ class TestTaskCreation(TestCase):
         prediction = asyncio.run(connector.get_answer("", triggers, task))
         expected = """
 the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the sea
-   result = Answer the following question given this road: {road_to_sea} Q: How to get to the sea? A:
+   road_to_sea = the user wants to know the road to the nearest sea
+   result = Answer the following question given this road: {road_to_sea}. How to get to the sea?
    SAY {result}
         """.strip()
         print(prediction)
@@ -45,13 +45,12 @@ the user wants to go swimming in the sea
     def test__task_creation1(self):
         knowledge = SingleFileKnowledge(_wafl_example)
         task_creator = TaskCreator(knowledge)
-        task = "the user wants to go to Manchester"
+        task = "the user wants to go swimming in the sea"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
 the user wants to go swimming in the sea
    road_to_sea = the user wants to know the road to the nearest sea
-   weather_forecast = the user wants to know the weather today
-   result = Answer the following question given this road and weather forecast: {road_to_sea} Q: How to get to the sea? A:
+   result = Answer the following question given this road: {road_to_sea}. How to get to the sea?
    SAY {result}
         """.strip()
         print(answer.text)
@@ -65,9 +64,22 @@ the user wants to go swimming in the sea
         expected = """
 the user wants to know if they need an umbrella
    weather_forecast = the user wants to know the weather today
-   result = Answer the following question given this forecast: {weather_forecast} Q: do I need an umbrella? A:
+   result = Answer the following question given this forecast: {weather_forecast}. Do you need an umbrella?
    SAY {result}
         """.strip()
+        print(answer.text)
+        assert expected == answer.text.strip()
+
+    def test__task_creation3(self):
+        knowledge = SingleFileKnowledge(_wafl_example)
+        task_creator = TaskCreator(knowledge)
+        task = "the user wants to go from London to Manchester"
+        answer = asyncio.run(task_creator.extract(task))
+        expected = """
+the user wants to go from London to Manchester
+   result = Answer the following question. How to get from London to Manchester?
+   SAY {result}
+    """.strip()
         print(answer.text)
         assert expected == answer.text.strip()
 
@@ -124,5 +136,6 @@ def list_subfolders(folder_name):
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
-        assert "tmp" in interface.get_utterances_list()[-1]
-        assert "lib" in interface.get_utterances_list()[-1]
+        print(interface.get_utterances_list())
+        assert "bot: tmp" in [item.lower() for item in interface.get_utterances_list()]
+        assert "bot: lib" in [item.lower() for item in interface.get_utterances_list()]

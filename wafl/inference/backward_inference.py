@@ -454,7 +454,11 @@ class BackwardInference:
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
-            if task_memory.text_is_in_prior_answers(answer.text):
+            if (
+                not answer.is_true()
+                and not answer.is_false()
+                and task_memory.text_is_in_prior_answers(answer.text)
+            ):
                 answer.text = "unknown"
 
             task_memory.add_answer(answer.text)
@@ -462,15 +466,10 @@ class BackwardInference:
             if not query.is_question:
                 return answer
 
-            if normalized(answer.text) not in [
-                "unknown",
-                "yes",
-                "no",
-            ]:
-                if answer.text[-1] == ".":
-                    answer.text = answer.text[:-1]
+            if answer.text[-1] == ".":
+                answer.text = answer.text[:-1]
 
-                return answer
+            return answer
 
     async def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, policy, depth

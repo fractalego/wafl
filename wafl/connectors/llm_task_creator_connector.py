@@ -20,7 +20,7 @@ Use the least steps:
 the user wants to eat at a restaurant
    food_type = what type of food do you want?
    restaurant_position = the user wants to know where a {{food_type}} restaurant is
-   result = Format this restaurant position {{restaurant_position}} in a convenient way to explain where it is:
+   result = Format this restaurant position {{restaurant_position}} in a convenient way to explain where it is.
    SAY The restaurant you want could be at {{result}}
 
 
@@ -36,7 +36,7 @@ A Python function can be added with instructions in English within <...>.
 Use the least steps:
 the user wants to go somewhere
    location = where do you want to go?
-   result = Answer the following question Q: How to get to {{location}}? A:
+   result = Answer the following question. How to get to {{location}}?
    SAY This is the road to {{location}}: {{result}}
 
 
@@ -53,7 +53,7 @@ A Python function can be added with instructions in English within <...>.
 Use the least steps:
 the user wants to know if it is going to rain
    weather_forecast = the user wants to know the weather today
-   result = Answer the following question given this forecast: {{weather_forecast}} Q: is it going to rain? A:
+   result = Answer the following question given this forecast: {{weather_forecast}}. Is it going to rain?
    SAY {{result}}<|EOS|>
 
 
@@ -84,7 +84,7 @@ A Python function can be added with instructions in English within <...>.
 Use the least steps:
 the user wants to list all the files in a folder
    folder_name = which folder do you want to list?
-   files_list = list_folder({{folder_name}} <List all the files in a folder, given as an argument>
+   files_list = list_folder({{folder_name}}) <List all the files in a folder, given as an argument. Return a python list>
    SAY {{files_list}}<|EOS|>
 
 
@@ -117,7 +117,7 @@ A Python function can be added with instructions in English within <...>.
 Use the least steps:
 the user wants to know where to buy legos
    road_to_lego_shop = the user wants to know the road to the nearest lego shop
-   result = Answer the following question given this road: {{road_to_lego_shop}} Q: How to get to the lego shop? A:
+   result = Answer the following question given this road: {{road_to_lego_shop}}. How to get to the lego shop?
    SAY {{result}}<|EOS|>
 
 

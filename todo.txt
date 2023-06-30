@@ -1,9 +1,12 @@
 ### TODO
 
 
-* add interaction on lists (actions for each item in the list)
+* Make tests pass
 * RETRIEVAL for prompts
 * Add RETRIEVE as a command
+* add all the rules you have to the retrievable examples
+* better web UI
+
 
 * only first level for #using
 * flexible config for faster answers:
@@ -20,7 +23,7 @@
 * give the system the ability to create rules to solve tasks
 * use <internal_thoughts></internal_thoughts> in prompt for dialogue
 
-
+/* add interaction on lists (actions for each item in the list)
 /* allow code creation from task creator
 /*Does it make sense to have the task_extractor work only when the user issues a command?
 /  - Use LLM only after entailment with "The user asks to do something"

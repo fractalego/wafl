@@ -8,6 +8,7 @@ from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 wafl_example = """
   
 the user wants to know what is in the shopping list
+  ERASE MEMORY
   Does the user want to see the shopping list
   SAY So you do want to see it!  
 
