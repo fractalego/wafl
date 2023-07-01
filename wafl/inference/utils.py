@@ -226,7 +226,7 @@ async def text_is_text_generation_task(
 
     if await entailer.entails(
         text,
-        f"The user gives an instruction of some kind",
+        f"An instruction or request of some kind",
         return_threshold=True,
         threshold=0.5,
     ):
