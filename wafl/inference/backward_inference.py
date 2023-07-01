@@ -251,6 +251,10 @@ class BackwardInference:
             ):
                 continue
 
+            await self._interface.add_choice(
+                f"The bot selected the rule with trigger {rule_effect_text}."
+            )
+
             for cause in rule.causes:
                 cause_text = cause.text.strip()
                 self._log("clause: " + cause_text, depth)
@@ -324,9 +328,6 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
-                    await self._interface.add_choice(
-                        f"The bot selected the clause with trigger {rule_effect_text}."
-                    )
                     return answer
 
             if inverted_rule:
@@ -490,7 +491,7 @@ class BackwardInference:
                 await self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
-                if await self._knowledge.has_better_match(user_input_text):
+                if await self._query_has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
                     task_text = (
                         await self._task_extractor.extract(user_input_text)
@@ -786,3 +787,12 @@ class BackwardInference:
 
         facts = await self._knowledge.ask_for_facts_with_threshold(query, threshold=0.5)
         return [Answer(text=item[0].text, variable=variable) for item in facts]
+
+    async def _query_has_better_match(self, text: str):
+        if is_question(text):
+            return True
+
+        if await self._knowledge.has_better_match(text):
+            return True
+
+        return False
