@@ -44,7 +44,7 @@ class VoiceInterface(BaseInterface):
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
-            await knowledge.get_facts_and_rule_as_text(),
+            knowledge.get_facts_and_rule_as_text(),
             max_num_words=max_num_words,
             count_threshold=count_threshold,
         )

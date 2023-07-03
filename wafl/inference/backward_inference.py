@@ -2,8 +2,12 @@ import asyncio
 import logging
 import traceback
 
+from wafl.config import Configuration
+from wafl.extractors.code_creator import CodeCreator
+from wafl.extractors.task_creator import TaskCreator
 from wafl.extractors.task_extractor import TaskExtractor
-from wafl.policy.rule_policy import RulePolicy
+from wafl.extractors.utils import get_code, get_function_description
+from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 from wafl.simple_text_processing.questions import is_question, is_yes_no_question
 from wafl.events.task_memory import TaskMemory
 from wafl.simple_text_processing.deixis import from_bot_to_bot
@@ -27,6 +31,8 @@ from wafl.inference.utils import (
     answer_is_informative,
     text_is_text_generation_task,
     escape_characters,
+    get_causes_list,
+    text_has_retrieve_command,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -46,6 +52,7 @@ class BackwardInference:
         narrator: "Narrator",
         module_names=None,
         max_depth: int = 10,
+        generate_rules: bool = True,
         logger=None,
     ):
         self._max_depth = max_depth
@@ -54,11 +61,15 @@ class BackwardInference:
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
-        self._rule_policy = RulePolicy(interface, logger)
+        self._task_creator = TaskCreator(knowledge)
+        self._code_creator = CodeCreator(knowledge)
         self._narrator = narrator
         self._logger = logger
+        self._config = Configuration.load_local_config()
+        self._generate_rules = generate_rules
         self._module = {}
         self._functions = {}
+        self._sentences_to_utter = []
         if module_names:
             self._init_python_modules(module_names)
 
@@ -129,7 +140,7 @@ class BackwardInference:
             return answer
 
         if ":-" in query.text:
-            return selected_answer(candidate_answers)
+            return selected_answer(candidate_answers, query.variable)
 
         answer = await self._look_for_answer_in_facts(
             query, task_memory, knowledge_name, depth
@@ -188,7 +199,7 @@ class BackwardInference:
             self._log("Answer found by executing the rules: " + answer.text, depth)
             return answer
 
-        return selected_answer(candidate_answers)
+        return selected_answer(candidate_answers, query.variable)
 
     async def _look_for_answer_in_rules(
         self, query, task_memory, query_knowledge_name, policy, depth, inverted_rule
@@ -197,7 +208,21 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        # rules = await self._rule_policy.select(rules, query)
+        if (
+            not rules
+            and self._generate_rules
+            and await self._extractor.get_entailer().entails(
+                query.text,
+                f"The user gives an order or request",
+                return_threshold=True,
+                threshold=0.9,
+            )
+        ):
+            rules_answer = await self._task_creator.extract(query.text)
+            if not rules_answer.is_neutral():
+                rules = get_facts_and_rules_from_text(
+                    rules_answer.text, query_knowledge_name
+                )["rules"]
 
         for rule in rules:
             index = 0
@@ -226,47 +251,59 @@ class BackwardInference:
             ):
                 continue
 
+            await self._interface.add_choice(
+                f"The bot selected the rule with trigger {rule_effect_text}."
+            )
+
             for cause in rule.causes:
                 cause_text = cause.text.strip()
                 self._log("clause: " + cause_text, depth)
                 original_cause_text = cause_text
-                cause_text, invert_results = check_negation(cause_text)
-                cause_text = apply_substitutions(cause_text, substitutions)
                 if task_memory.is_in_prior_failed_clauses(original_cause_text):
                     self._log("This clause failed before", depth)
                     break
 
-                if text_has_say_command(cause_text):
-                    answer = await self._process_say_command(cause_text)
+                code_description = ""
+                if text_is_code(cause_text):
+                    code_description = get_function_description(cause_text)
+                    cause_text = get_code(cause_text)
 
-                elif text_has_remember_command(cause_text):
-                    answer = await self._process_remember_command(
-                        cause_text, knowledge_name
+                cause_text = apply_substitutions(cause_text, substitutions)
+                if code_description:
+                    apply_substitutions(code_description, substitutions)
+
+                cause_text, invert_results = check_negation(cause_text)
+                cause_text_list = get_causes_list(cause_text)
+
+                answers = []
+                for cause_text in cause_text_list:
+                    answer = await self._process_cause(
+                        cause_text,
+                        cause.is_question,
+                        code_description,
+                        knowledge_name,
+                        substitutions,
+                        policy,
+                        task_memory,
+                        depth,
+                        invert_results,
                     )
+                    if type(answer) == list:
+                        answers.extend(answer)
 
-                elif text_is_code(cause_text):
-                    answer = await self._process_code(
-                        cause_text, knowledge_name, substitutions, policy
-                    )
+                    else:
+                        answers.append(answer)
 
-                elif text_is_text_generation_task(cause_text):
-                    answer = await self._process_text_generation(
-                        cause_text, knowledge_name, substitutions
+                if len(answers) > 1:
+                    answer = Answer.create_from_text(
+                        str([item.text for item in answers])
                     )
 
                 else:
-                    answer = await self._process_query(
-                        cause_text,
-                        cause.is_question,
-                        task_memory,
-                        knowledge_name,
-                        policy,
-                        depth,
-                        inverted_rule=invert_results,
-                    )
+                    answer = answers[0]
 
-                if answer.is_neutral() and answer.variable:
-                    answer = Answer.create_false()
+                if answers:
+                    answer.variable = answers[0].variable
 
                 if invert_results:
                     answer = invert_answer(answer)
@@ -278,6 +315,9 @@ class BackwardInference:
                 if answer.variable:
                     update_substitutions_from_answer(answer, substitutions)
 
+                if depth == 0:
+                    await self._flush_interface_output()
+
                 index += 1
 
             if index == len(rule.causes):
@@ -288,13 +328,62 @@ class BackwardInference:
                     return answer.create_true()
 
                 if not answer.is_false():
-                    await self._interface.add_choice(
-                        f"The bot selected the clause with trigger {rule_effect_text}."
-                    )
                     return answer
 
             if inverted_rule:
                 return Answer(text="False")
+
+    async def _process_cause(
+        self,
+        cause_text,
+        cause_is_question,
+        code_description,
+        knowledge_name,
+        substitutions,
+        policy,
+        task_memory,
+        depth,
+        invert_results,
+    ):
+        if text_has_say_command(cause_text):
+            answer = await self._process_say_command(cause_text)
+
+        elif text_has_retrieve_command(cause_text):
+            answer = await self._process_retrieve_command(cause_text)
+
+        elif text_has_remember_command(cause_text):
+            answer = await self._process_remember_command(cause_text, knowledge_name)
+
+        elif text_is_code(cause_text):
+            answer = await self._process_code(
+                cause_text,
+                code_description,
+                knowledge_name,
+                substitutions,
+                policy,
+            )
+
+        elif await text_is_text_generation_task(
+            cause_text, self._extractor.get_entailer()
+        ):
+            answer = await self._process_text_generation(
+                cause_text, knowledge_name, substitutions
+            )
+
+        else:
+            answer = await self._process_query(
+                cause_text,
+                cause_is_question,
+                task_memory,
+                knowledge_name,
+                policy,
+                depth,
+                inverted_rule=invert_results,
+            )
+            if answer.is_neutral() and answer.variable:
+                answer = Answer.create_false()
+
+        return answer
 
     async def _look_for_answer_in_facts(
         self, query, task_memory, knowledge_name, depth
@@ -374,7 +463,11 @@ class BackwardInference:
             if task_memory.text_is_in_prior_questions(answer.text):
                 answer.text = "unknown"
 
-            if task_memory.text_is_in_prior_answers(answer.text):
+            if (
+                not answer.is_true()
+                and not answer.is_false()
+                and task_memory.text_is_in_prior_answers(answer.text)
+            ):
                 answer.text = "unknown"
 
             task_memory.add_answer(answer.text)
@@ -382,28 +475,23 @@ class BackwardInference:
             if not query.is_question:
                 return answer
 
-            if normalized(answer.text) not in [
-                "unknown",
-                "yes",
-                "no",
-            ]:
-                if answer.text[-1] == ".":
-                    answer.text = answer.text[:-1]
+            if answer.text[-1] == ".":
+                answer.text = answer.text[:-1]
 
-                return answer
+            return answer
 
     async def _look_for_answer_by_asking_the_user(
         self, query, task_memory, knowledge_name, policy, depth
     ):
         self._log(f"Looking for answers by asking the user")
         if depth > 0 and query.is_question:
-
+            await self._flush_interface_output()
             while True:
                 self._log(f"Asking the user: {query.text}")
                 await self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
-                if await self._knowledge.has_better_match(user_input_text):
+                if await self._query_has_better_match(user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
                     task_text = (
                         await self._task_extractor.extract(user_input_text)
@@ -484,8 +572,8 @@ class BackwardInference:
     async def _process_say_command(self, cause_text):
         utterance = cause_text.strip()[3:].strip().capitalize()
         self._log(f"Uttering: {utterance}")
-        await self._interface.output(utterance)
-        answer = Answer(text="True")
+        self._sentences_to_utter.append(utterance)
+        answer = Answer.create_true()
         return answer
 
     async def _process_remember_command(self, cause_text, knowledge_name):
@@ -519,7 +607,9 @@ class BackwardInference:
         self._log(f"The answer is {answer.text}")
         return answer
 
-    async def _process_code(self, cause_text, knowledge_name, substitutions, policy):
+    async def _process_code(
+        self, cause_text, code_description, knowledge_name, substitutions, policy
+    ):
         variable = None
         if "=" in cause_text:
             variable, to_execute = cause_text.split("=")
@@ -540,9 +630,18 @@ class BackwardInference:
             )  # task_memory is used as argument of the code in eval()
             to_execute = escape_characters(to_execute)
             self._log(f"Executing code: {to_execute}")
-            result = eval(f"self._module['{knowledge_name}'].{to_execute}")
-            if result is not None:
-                result = await result
+
+            if not code_description:
+                result = eval(f"self._module['{knowledge_name}'].{to_execute}")
+                if result is not None:
+                    result = await result
+
+            else:
+                generated_function_answer = await self._code_creator.extract(
+                    cause_text + f" <{code_description}>"
+                )
+                exec(generated_function_answer.text)
+                result = eval(to_execute)
 
             self._log(f"Execution result: {result}")
 
@@ -574,6 +673,7 @@ class BackwardInference:
         variable = variable.strip()
         prompt = prompt.strip()
         answer = await self._prompt_predictor.predict(prompt)
+        answer.variable = variable
         update_substitutions_from_results(answer.text, variable, substitutions)
         return answer
 
@@ -587,12 +687,13 @@ class BackwardInference:
         depth,
         inverted_rule,
     ):
-        self._log("Processing clause as a query", depth)
         if "=" in cause_text:
             variable, text = cause_text.split("=")
             variable = variable.strip()
             text = text.strip()
-            new_query = Query(text=text, is_question=True, variable=variable)
+            new_query = Query(
+                text=text, is_question=is_question(text), variable=variable
+            )
 
         elif cause_is_question:
             new_query = Query(text=cause_text, is_question=True)
@@ -614,6 +715,14 @@ class BackwardInference:
 
         if answer.variable and answer.is_neutral():
             return Answer(text="False", variable=answer.variable)
+
+        if not new_query.variable:
+            await self._flush_interface_output()
+
+        elif self._sentences_to_utter:
+            self._sentences_to_utter.append(answer.text)
+            answer.text = "\n".join(self._sentences_to_utter)
+            self._sentences_to_utter = []
 
         return answer
 
@@ -657,3 +766,33 @@ class BackwardInference:
             policy,
             depth,
         )
+        await self._flush_interface_output()
+
+    async def _flush_interface_output(self):
+        for _ in range(len(self._sentences_to_utter)):
+            await self._interface.output(self._sentences_to_utter.pop(0))
+
+    async def _process_retrieve_command(self, cause_text):
+        cause_text = cause_text.replace("retrieve", "")
+        cause_text = cause_text.replace("RETRIEVE", "")
+        if "=" in cause_text:
+            variable, text = cause_text.split("=")
+            variable = variable.strip()
+            text = text.strip()
+            query = Query(text=text, is_question=is_question(text), variable=variable)
+
+        else:
+            variable = None
+            query = Query(text=cause_text, is_question=is_question(cause_text))
+
+        facts = await self._knowledge.ask_for_facts_with_threshold(query, threshold=0.5)
+        return [Answer(text=item[0].text, variable=variable) for item in facts]
+
+    async def _query_has_better_match(self, text: str):
+        if is_question(text):
+            return True
+
+        if await self._knowledge.has_better_match(text):
+            return True
+
+        return False

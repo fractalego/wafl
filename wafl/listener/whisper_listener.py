@@ -113,13 +113,10 @@ class WhisperListener:
         transcription = prediction["transcription"]
         score = prediction["score"]
 
-        if math.exp(score) > 0.45:
+        if math.exp(score) > 0.5:
             return transcription
 
-        if math.exp(score) > 0.3:
-            return "[unclear]"
-
-        return ""
+        return "[unclear]"
 
     async def get_hotword_if_present(self):
         for hotword in self._hotwords:

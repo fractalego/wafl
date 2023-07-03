@@ -1,3 +1,5 @@
+import time
+
 import aiohttp
 import asyncio
 import re
@@ -7,8 +9,9 @@ from wafl.config import Configuration
 
 class BaseLLMConnector:
     _max_tries = 3
-    _max_reply_length = 150
-    _num_prediction_tokens = 10
+    _max_reply_length = 500
+    _num_prediction_tokens = 200
+    _cache = {}
 
     def __init__(self, config=None):
         if not config:
@@ -28,9 +31,7 @@ class BaseLLMConnector:
         if (not loop or (loop and not loop.is_running())) and not asyncio.run(
             self.check_connection()
         ):
-            raise RuntimeError("Cannot connect a running GPT-J Model.")
-
-        self._cache = {}
+            raise RuntimeError("Cannot connect a running LLM.")
 
     async def predict(self, prompt: str) -> str:
         payload = {
@@ -46,7 +47,7 @@ class BaseLLMConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()
                     if not answer:
-                        answer = "<|END|>"
+                        answer = "<|EOS|>"
 
                     return answer
 
@@ -71,22 +72,28 @@ class BaseLLMConnector:
         return False
 
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
+        print(__name__)
+        start_time = time.time()
         prompt = await self._get_answer_prompt(text, query, dialogue)
         if prompt in self._cache:
+            print(time.time() - start_time)
             return self._cache[prompt]
 
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in [". ", "<|END|>", "user:"])
+            all(
+                item not in text[start:]
+                for item in ["<|EOS|>", "user:", "\nThe bot", "bot:"]
+            )
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find(". ", start))
         end_set.add(text.find("user:", start))
-        end_set.add(text.find("<|END|>", start))
+        end_set.add(text.find("<|EOS|>", start))
+        end_set.add(text.find("\nThe bot", start))
         if -1 in end_set:
             end_set.remove(-1)
 
@@ -95,12 +102,12 @@ class BaseLLMConnector:
             end = min(end_set)
 
         candidate_answer = text[start:end].split("bot: ")[-1].strip()
-        candidate_answer = re.sub(r"\[.*](.*)", r"\1", candidate_answer).strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         if prompt not in self._cache:
             self._cache[prompt] = candidate_answer
 
+        print(time.time() - start_time)
         return candidate_answer
 
     async def _get_answer_prompt(self, text, query, dialogue=None):

@@ -15,7 +15,7 @@ class BaseKnowledge:
     ):
         raise NotImplementedError()
 
-    async def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None, first_n=None):
         raise NotImplementedError()
 
     async def has_better_match(self, query_text: str) -> bool:

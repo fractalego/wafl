@@ -30,14 +30,12 @@ class InferenceAnswerer(BaseAnswerer):
             )
 
         query_text = f"The user says: '{query_text.capitalize()}'"
-        task_texts = (await self._task_extractor.extract(query_text)).text
+        task = await self._task_extractor.extract(query_text)
+        task_texts = split_tasks(task.text)
         answers = []
-        for task_text in split_tasks(task_texts):
-            if task_text == "unknown":
-                continue
-
+        for task_text in task_texts:
             result = await self._entailer.entails(
-                query_text, task_text, return_threshold=True, threshold=0.75
+                query_text, task_text, return_threshold=True, threshold=0.6
             )
             if not result:
                 task_text = query_text
@@ -66,7 +64,7 @@ class InferenceAnswerer(BaseAnswerer):
 
 
 def split_tasks(task_text):
-    return [item.strip() for item in task_text.split("ANDAND") if item]
+    return [item.strip() for item in task_text.split("|") if item]
 
 
 def perform_and(answers):

@@ -103,7 +103,7 @@ class ConversationEvents:
         text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.is_listening():
             answer = await self._process_query(text)
-            if answer and answer.text != "False":
+            if answer and not answer.is_false():
                 return True
 
         return False

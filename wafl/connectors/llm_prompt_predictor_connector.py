@@ -6,6 +6,14 @@ class LLMPromptPredictorConnector(BaseLLMConnector):
         super().__init__(config)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
-        prompt = f"Complete the following prompt:\n" f"{text}"
+        for _ in range(5):
+            text = text.replace("  ", " ")
+
+        prompt = f"""
+<task>
+Complete the following task and add <|EOS|> at the end: {text}
+</task>
+<result>
+        """.strip()
 
         return prompt

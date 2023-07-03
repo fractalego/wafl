@@ -10,11 +10,22 @@ from wafl.retriever.dense_retriever import DenseRetriever
 
 _logger = LocalFileLogger()
 _wafl_remember_rules = """
+the user is tall
+
+the user has brown hair
+
+the user has green eyes
+
 
 the user wants the bot to remember something
   sentence = What piece of information do you want me to remember?
   REMEMBER sentence
   SAY I will remember that {sentence}
+
+
+"how is the user like"
+  user_qualities = RETRIEVE how is the user like
+  SAY {user_qualities}
 
 """
 
@@ -30,6 +41,17 @@ class TestRetrieval(TestCase):
         expected = "1"
         predicted = asyncio.run(retriever.get_indices_and_scores_from_text(query))
         assert predicted[0][0] == expected
+
+    def test_retrieval_from_rules(self):
+        interface = DummyInterface(to_utter=["tell me how the user is like"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_remember_rules, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        assert len(interface.get_utterances_list()) == 3
 
     def test_exact_string_retrieval(self):
         retriever = StringRetriever()
@@ -65,6 +87,6 @@ class TestRetrieval(TestCase):
             logger=_logger,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: I will remember that that you are alberto"
+        expected = "bot: I will remember that that your name is alberto"
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected

@@ -164,6 +164,7 @@ class TestExecutables(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Batteries cannot be added to the list"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test_say_command_in_functions(self):

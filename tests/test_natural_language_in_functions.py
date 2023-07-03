@@ -79,6 +79,7 @@ class TestLanguageInFunctions(TestCase):
             "bot: Your input is recorded",
         ]
 
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[1] == expected[0]
         assert interface.get_utterances_list()[2] == expected[1]
         assert interface.get_utterances_list()[3] == expected[2]

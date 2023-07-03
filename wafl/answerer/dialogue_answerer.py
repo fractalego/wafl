@@ -15,6 +15,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._max_num_past_utterances = 7
 
     async def answer(self, query_text, policy):
+        print(__name__)
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 

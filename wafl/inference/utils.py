@@ -1,6 +1,6 @@
 import re
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 from fuzzywuzzy import process
 from wafl.extractors.dataclasses import Answer
 from wafl.simple_text_processing.normalize import normalized
@@ -11,7 +11,7 @@ def cause_is_negated(cause_text: str) -> bool:
     return cause_text.find("!") == 0
 
 
-def check_negation(cause_text: str) -> bool:
+def check_negation(cause_text: str) -> Tuple[str, bool]:
     invert_results = False
     if cause_is_negated(cause_text):
         if cause_text[0] == "!":
@@ -57,6 +57,14 @@ def text_has_say_command(text: str) -> bool:
     return False
 
 
+def text_has_retrieve_command(text: str) -> bool:
+    words = text.split("=")[-1].strip().split()
+    if words:
+        return words[0].lower() == "retrieve"
+
+    return False
+
+
 def text_has_remember_command(text: str) -> bool:
     return normalized(text).find("remember") == 0
 
@@ -67,6 +75,10 @@ def text_has_new_task_memory_command(text: str) -> bool:
 
 def update_substitutions_from_answer(answer: "Answer", substitutions: Dict[str, str]):
     safe_value = _make_safe(answer.text)
+    substitutions[f"({{{answer.variable.strip()}}})"] = f'("{safe_value}")'
+    substitutions[f"({{{answer.variable.strip()}}},"] = f'("{safe_value}",'
+    substitutions[f",{{{answer.variable.strip()}}},"] = f',"{safe_value}",'
+    substitutions[f",{{{answer.variable.strip()}}})"] = f',"{safe_value}")'
     substitutions[f"{{{answer.variable.strip()}}}"] = safe_value
     substitutions[f"({answer.variable.strip()})"] = f'("{safe_value}")'
     substitutions[f"({answer.variable.strip()},"] = f'("{safe_value}",'
@@ -86,6 +98,10 @@ def update_substitutions_from_results(
     result: str, variable: str, substitutions: Dict[str, str]
 ):
     safe_value = _make_safe(result)
+    substitutions.update({f"({{{variable}}})": f'("{safe_value}")'})
+    substitutions.update({f"({{{variable}}},": f'("{safe_value}",'})
+    substitutions.update({f",{{{variable}}},": f',"{safe_value}",'})
+    substitutions.update({f",{{{variable}}})": f',"{safe_value}")'})
     substitutions.update({f"{{{variable}}}": safe_value})
     substitutions.update({f"({variable})": f'("{safe_value}")'})
     substitutions.update({f"({variable},": f'("{safe_value}",'})
@@ -147,7 +163,7 @@ def cluster_facts(facts_and_threshold: List[Tuple["Fact", float]]) -> List[str]:
     return texts
 
 
-def selected_answer(candidate_answers: List["Answer"]) -> bool:
+def selected_answer(candidate_answers: List["Answer"], variable_name: str) -> bool:
     for answer in candidate_answers:
         if answer and normalized(answer.text) != "unknown":
             return answer
@@ -156,7 +172,9 @@ def selected_answer(candidate_answers: List["Answer"]) -> bool:
         if answer:
             return answer
 
-    return Answer.create_neutral()
+    return_answer = Answer.create_neutral()
+    return_answer.variable = variable_name
+    return return_answer
 
 
 def fact_relates_to_user(text: str) -> bool:
@@ -181,19 +199,94 @@ def answer_is_informative(answer: "Answer") -> bool:
     return not any(item == normalized(answer.text) for item in ["unknown"])
 
 
-def text_is_text_generation_task(text: str) -> bool:
+def is_inference_task(text):
+    text = text.split("=")[-1]
+    prompt = "the user"
+    if text.strip().lower().find(prompt) == 0:
+        return True
+
+    return False
+
+
+async def text_is_text_generation_task(
+    text: str,
+    entailer: "Entailer",
+) -> bool:
     if not "=" in text:
         return False
 
     if text_is_code(text):
         return False
 
+    if is_inference_task(text):
+        return False
+
     if is_question(text.split("=")[1]):
         return False
 
-    return True
+    if await entailer.entails(
+        text,
+        f"An instruction or request of some kind",
+        return_threshold=True,
+        threshold=0.5,
+    ):
+        return True
+
+    return False
 
 
-def escape_characters(text: str) -> bool:
+def escape_characters(text: str) -> str:
     text = text.replace("\n", "\\n")
     return text
+
+
+def string_is_python_list(text: str) -> bool:
+    try:
+        result = eval(text)
+        if type(result) == list:
+            return True
+
+    except (SyntaxError, NameError):
+        pass
+
+    return False
+
+
+def get_list_from_string(text: str) -> List[Any]:
+    try:
+        result = eval(text)
+        if type(result) == list:
+            return result
+
+    except (SyntaxError, NameError):
+        pass
+
+    return []
+
+
+def get_list_like_element(text: str) -> str:
+    return re.sub(r".*\[(.*)].*", r"[\1]", text, re.MULTILINE).strip()
+
+
+def get_causes_list(text: str) -> List[str]:
+    """
+    If the text contains a Python list (e.g. generate a chapter with the theme ["space", "romance"] )
+    then the output becomes a list of texts where each item appears separaterly
+    (e.g. ["generate a chapter with the theme space", generate a chapter with the theme romance"]
+
+    :param text:
+    :return: a list of causes,
+    """
+    if text_is_code(text):
+        return [text]
+
+    list_like_element = get_list_like_element(text)
+    if not string_is_python_list(list_like_element):
+        return [text]
+
+    items = get_list_from_string(list_like_element)
+    causes_list = []
+    for item in items:
+        causes_list.append(text.replace(list_like_element, item))
+
+    return causes_list

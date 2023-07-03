@@ -4,6 +4,7 @@ import os
 from unittest import TestCase
 
 from wafl.config import Configuration
+from wafl.connectors.base_llm_connector import BaseLLMConnector
 from wafl.connectors.llm_qa_connector import LLMQAConnector
 
 _path = os.path.dirname(__file__)
@@ -24,3 +25,30 @@ class TestConnection(TestCase):
         )
         expected = "blue"
         self.assertEqual(expected, answer_text)
+
+    def test__connection_to_generative_model_can_generate_text(self):
+        config = Configuration.load_local_config()
+        connector = BaseLLMConnector(config)
+        prediction = asyncio.run(
+            connector.predict(
+                'Generate a full paragraph based on this chapter title "The first contact". '
+                "The theme of the paragraph is space opera. "
+            )
+        )
+        assert len(prediction) > 0
+
+    def test__connection_to_generative_model_can_generate_text_within_tags(self):
+        config = Configuration.load_local_config()
+        connector = BaseLLMConnector(config)
+        connector._num_prediction_tokens = 200
+        text = 'Generate a full paragraph based on this chapter title " The First Contact". The theme of the paragraph is space opera. Include the characters "Alberto" and "Maria". Write at least three sentences.'
+        prompt = f"""
+<task>
+Complete the following task and add <|EOS|> at the end: {text}
+</task>
+<result>
+                """.strip()
+
+        prediction = asyncio.run(connector.predict(prompt))
+        print(prediction)
+        assert len(prediction) > 0

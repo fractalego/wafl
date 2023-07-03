@@ -1,6 +1,61 @@
 ### TODO
-* thank you does not close the conversation because of the entailer in inference_answerer
-* refactor sentence-transformer to backend
+
+
+* Make tests pass
+* RETRIEVAL for prompts
+* Add RETRIEVE as a command
+* add all the rules you have to the retrievable examples
+* better web UI
+
+
+* only first level for #using
+* flexible config for faster answers:
+   * make it so the task extractor can be skipped
+   * same for task creator
+
+* allow for facts to be checked by the llm directly
+* create command line instructions "wafl list all the files"
+* why does "[computer] computer what should I buy" does not trigger a rule in wafl_home?
+
+
+* if utterance would trigger rule but task is unknown, then trigger the rule
+* interruptions should always be called. Make it so it is impossible to forget to call them
+* give the system the ability to create rules to solve tasks
+* use <internal_thoughts></internal_thoughts> in prompt for dialogue
+
+/* add interaction on lists (actions for each item in the list)
+/* allow code creation from task creator
+/*Does it make sense to have the task_extractor work only when the user issues a command?
+/  - Use LLM only after entailment with "The user asks to do something"
+
+/* prompt generation only if it is task
+/* otherwise = should return the result of a rule that is being executed
+/* implement rules in case the task has not immediate trigger
+
+/* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
+/  - rememeber that the sound wave was corrupted the other way round0
+/  - you might want to use base64 encoding for the sending part as well
+/  - save sound file from whisper_handler.py and listen to it
+
+
+* why is it so slow??
+/- would .generate(do_sample=False) accelerate? in llm_handler.py
+/  - play around with early stopping and max_length. Use eos_token_id properly
+
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
+/  - USE past_key_values as argument in generate.
+/    This argument is returned when use_cache=True.
+/    Save first past_key_values and then use it as argument in generate.
+     -> It does not do much for a single query
+
+/  - try to go line-by-line in the code to see where the problem is
+/  - would .generate(do_sample=False) accelerate? in llm_handler.py
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
+
+/* thank you does not close the conversation because of the entailer in inference_answerer
+/* refactor sentence-transformer to backend
 
 * policy should only be about finding the correct rule to apply.
     * no y/n stuff, only choose btw candidate rules and none of the above.

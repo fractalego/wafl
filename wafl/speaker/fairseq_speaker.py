@@ -1,3 +1,4 @@
+import asyncio
 import pyaudio
 
 from wafl.connectors.speaker_connector import SpeakerConnector
@@ -24,3 +25,4 @@ class FairSeqSpeaker(BaseSpeaker):
         stream.write(wav)
         stream.stop_stream()
         stream.close()
+        await asyncio.sleep(0.1)

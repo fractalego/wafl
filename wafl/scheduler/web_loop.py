@@ -31,13 +31,22 @@ class WebLoop:
             self._interface.input_queue.append(text)
             conversation = await self._get_conversation()
             conversation += (
-                '<script>document.getElementById("query").value = "";</script>'
+                "<script>"
+                'document.getElementById("query").value = "";'
+                "window.scrollTo(1000, document.body.scrollHeight);"
+                "</script>"
             )
             return conversation
 
         @app.route("/load_messages", methods=["GET"])
         async def load_messages():
-            return await self._get_conversation()
+            conversation = await self._get_conversation()
+            conversation += (
+                "<script>"
+                "window.scrollTo(1000, document.body.scrollHeight);"
+                "</script>"
+            )
+            return conversation
 
         @app.route("/output")
         async def handle_output():
@@ -67,7 +76,7 @@ class WebLoop:
         choices = [
             (
                 item[0],
-                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#fafafa;'>"
+                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )
@@ -77,7 +86,7 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#fafafa;'>"
+                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )

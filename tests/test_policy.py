@@ -30,6 +30,7 @@ class TestPolicy(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "to see it"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__policy_can_steer_conversation(self):

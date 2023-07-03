@@ -8,7 +8,7 @@ from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 _wafl_example = """
-the user needs a new rule
+the user wants to create a new rule
   REMEMBER the user says "hello" :- SAY Hello there!; SAY This rule was created
   SAY A rule was created 
 """
@@ -24,6 +24,7 @@ class TestRulesCreation(TestCase):
         input_from_user = "I need you to create a new rule"
         asyncio.run(conversation_events._process_query(input_from_user))
         expected = "bot: A rule was created"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
         interface.reset_history()
