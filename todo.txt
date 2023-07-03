@@ -1,11 +1,22 @@
 ### TODO
 
-
-* Make tests pass
-* RETRIEVAL for prompts
-* Add RETRIEVE as a command
-* add all the rules you have to the retrievable examples
+* make the text disappar in the input after you write
+* input should be frozen when the bot is thinking/speaking
+* add a check for rules that are too generic.
+  - For example, "the user wants to add something"
+  - The rule priority should be weighed down according to
+    how easy it is to trigger it from different utterances.
 * better web UI
+* add a way to change the rules on the fly
+* create a battery of tests for questions that interrupt a question
+  from the bot
+
+
+/* Make tests pass
+/* RETRIEVAL for prompts
+/* Add RETRIEVE as a command
+* add all the rules you have to the retrievable examples
+
 
 
 * only first level for #using
