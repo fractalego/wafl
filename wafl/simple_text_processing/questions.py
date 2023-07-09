@@ -8,11 +8,16 @@ def is_question(text):
     if not text:
         return False
 
+    if ":" in text:
+        return False
+
     if text[-1] == "?":
         return True
 
     if ", the user says" in text:
         return False
+
+
 
     text = re.sub("^Are", "are", text)
     text = re.sub("^Am", "am", text)

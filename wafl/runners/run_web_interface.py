@@ -32,3 +32,7 @@ def run_server():
     web_loop = WebLoop(interface)
     scheduler = Scheduler([conversation_loop, web_loop])
     asyncio.run(scheduler.run())
+
+
+if __name__ == '__main__':
+    run_server()

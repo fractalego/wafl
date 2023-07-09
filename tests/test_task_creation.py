@@ -139,3 +139,14 @@ def list_subfolders(folder_name):
         print(interface.get_utterances_list())
         assert "bot: tmp" in [item.lower() for item in interface.get_utterances_list()]
         assert "bot: lib" in [item.lower() for item in interface.get_utterances_list()]
+
+    def test__math_task_is_created_from_conversation(self):
+        interface = DummyInterface(to_utter=["Multiply 100 and 43"])
+        conversation_events = ConversationEvents(
+            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            interface=interface,
+            code_path="/",
+        )
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        assert "4300" in interface.get_utterances_list()[-1]

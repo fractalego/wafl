@@ -145,9 +145,15 @@ def cluster_facts(facts_and_threshold: List[Tuple["Fact", float]]) -> List[str]:
     texts = []
     last_threshold = facts_and_threshold[0][1]
     text = ""
+    prior_facts = set()
     for fact, threshold in facts_and_threshold:
         if not fact.text:
             continue
+
+        if fact.text in prior_facts:
+            continue
+
+        prior_facts.add(fact.text)
 
         if abs(threshold - last_threshold) < _cluster_margin:
             text += normalized(fact.text, lower_case=False).capitalize() + ". "

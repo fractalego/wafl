@@ -1,5 +1,23 @@
 ### TODO
 
+* make this work:
+  - Do I need an umbrella?
+  - Tell me if I need an umbrella
+
+  The issue is that the relevant rule is not retrieved. The entailer gives ~0 btw the user says"do I need an umbrella" :- the user wants to know the weather
+  Find a good way to entail what you need.
+
+  - Issues were:
+     - Tetriever is not very good. There are a lot other rules scooped up when asking for a task
+     - Interrution rule must not be used for tasks
+     - Text-generation tasks are understood as questions, therefore no text generation
+
+* Maybe you need to add text_generation task right before searching the answer in rules
+
+/* add feedback from frontend
+* Feebdack texts should be used in-context for dialogue and task extractor
+    * Use retriever to create dynamic prompts
+
 * make the text disappar in the input after you write
 * input should be frozen when the bot is thinking/speaking
 * add a check for rules that are too generic.

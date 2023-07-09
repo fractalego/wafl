@@ -12,16 +12,22 @@ class TaskCreator:
     def __init__(self, knowledge, logger=None):
         self._connector = LLMTaskCreatorConnector()
         self._knowledge = knowledge
+        self._logger = logger
 
     async def extract(self, task: str) -> Answer:
         print(__name__)
+        if self._logger:
+            self._logger.write("TaskCreator: asking for rules")
+
         rules = await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(task), knowledge_name="/", first_n=2
+            Query.create_from_text(task), knowledge_name="/", first_n=15
         )
-        if not rules:
-            return Answer.create_neutral()
+        rules = [rule for rule in rules if not rule.effect.is_interruption]
+        if self._logger:
+            self._logger.write("Rules found")
+            for rule in rules:
+                self._logger.write(str(rule))
 
-        triggers = "\n".join([item.effect.text for item in rules])
-
+        triggers = "\n".join(["- " + item.effect.text for item in rules])
         prediction = await self._connector.get_answer("", triggers, task)
         return Answer(text=prediction.strip())

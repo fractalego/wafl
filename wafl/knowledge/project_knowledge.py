@@ -2,6 +2,7 @@ from typing import Dict, List
 
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.knowledge.utils import get_first_cluster_of_rules
 from wafl.parsing.rules_parser import get_dependency_list
 
 
@@ -71,20 +72,22 @@ class ProjectKnowledge(BaseKnowledge):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
-        rules_list = []
+        rules_and_scores_list = []
 
         for name in self._knowledge_dict.keys():
             if name in self._get_all_dependency_names(knowledge_name):
                 if self._logger:
                     self._logger.write(f"Project Knowledge: Asking for rules in {name}")
 
-                rules_list.extend(
-                    await self._knowledge_dict[name].ask_for_rule_backward(
+                rules_and_scores_list.extend(
+                    await self._knowledge_dict[name]._ask_for_rule_backward_with_scores(
                         query, knowledge_name=name, first_n=first_n
                     )
                 )
 
-        return rules_list
+        rules_and_scores_list = sorted(rules_and_scores_list, key=lambda x: -x[1])
+        rules = get_first_cluster_of_rules(rules_and_scores_list)[:first_n]
+        return rules
 
     async def has_better_match(
         self, query_text: str, knowledge_name: str = None

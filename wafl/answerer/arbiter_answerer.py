@@ -43,7 +43,7 @@ class ArbiterAnswerer(BaseAnswerer):
                 simple_task,
                 f"The user gives an order or request",
                 return_threshold=True,
-                threshold=0.965,
+                threshold=0.95,
             )
         ):
             await self._interface.output(

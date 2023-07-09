@@ -61,7 +61,7 @@ class BackwardInference:
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
-        self._task_creator = TaskCreator(knowledge)
+        self._task_creator = TaskCreator(knowledge, logger)
         self._code_creator = CodeCreator(knowledge)
         self._narrator = narrator
         self._logger = logger
@@ -218,11 +218,16 @@ class BackwardInference:
                 threshold=0.9,
             )
         ):
+            self._log(f"Creating rules for the task: {query.text}", depth)
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
                 rules = get_facts_and_rules_from_text(
                     rules_answer.text, query_knowledge_name
                 )["rules"]
+
+            for rule in rules:
+                await self._interface.add_choice(f"The bot created the rule:")
+                await self._interface.add_choice(str(rule))
 
         for rule in rules:
             index = 0
@@ -720,7 +725,6 @@ class BackwardInference:
             await self._flush_interface_output()
 
         elif self._sentences_to_utter:
-            self._sentences_to_utter.append(answer.text)
             answer.text = "\n".join(self._sentences_to_utter)
             self._sentences_to_utter = []
 
