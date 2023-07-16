@@ -50,11 +50,11 @@ class ArbiterAnswerer(BaseAnswerer):
                 random.choice(
                     [
                         "Let me think",
-                        "Uhm",
                         "Thinking about it",
                     ]
                 )
             )
+            self._interface.bot_has_spoken(False)
             return Answer(text="unknown")
 
         score = 1

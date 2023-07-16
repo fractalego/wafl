@@ -30,8 +30,11 @@ class InferenceAnswerer(BaseAnswerer):
             )
 
         query_text = f"The user says: '{query_text.capitalize()}'"
-        task = await self._task_extractor.extract(query_text)
-        task_texts = split_tasks(task.text)
+        task_answer = await self._task_extractor.extract(query_text)
+        if task_answer.is_neutral():
+            return task_answer
+
+        task_texts = split_tasks(task_answer.text)
         answers = []
         for task_text in task_texts:
             result = await self._entailer.entails(

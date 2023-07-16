@@ -44,7 +44,7 @@ class TestArbiterAnswerer(TestCase):
 
     def test_generated_answer_from_conversation3(self):
         interface = DummyInterface(
-            ["what is the capital of Italy .", "how tall is Micheal Jordan ."]
+            ["what is the capital of Italy .", "how tall is Micheal Jordan (in feet)"]
         )
         conversation_events = ConversationEvents(
             SingleFileKnowledge(_wafl_rules),
@@ -74,7 +74,7 @@ class TestArbiterAnswerer(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "good good"
+        expected = "bot: I am doing well"
         self.assertIn(expected.lower(), interface.get_utterances_list()[-1].lower())
 
     def test__conversation_input_returns_chitchat_for_trivial_input(self):

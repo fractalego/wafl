@@ -1,10 +1,13 @@
-import time
-
 import aiohttp
 import asyncio
+import csv
+import os
+import joblib
+import time
 import re
 
 from wafl.config import Configuration
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 
 class BaseLLMConnector:
@@ -112,3 +115,22 @@ class BaseLLMConnector:
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         raise NotImplementedError("_get_answer_prompt() needs to be implemented.")
+
+    async def _load_knowledge_from_file(self, filename, _path=None):
+        if not os.path.exists(os.path.join(_path, f"../data/{filename}.knowledge")):
+            items_list = []
+            with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
+                csvreader = csv.reader(file)
+                for row in csvreader:
+                    items_list.append(row[0].strip())
+
+            self._knowledge = await SingleFileKnowledge.create_from_list(items_list)
+            joblib.dump(
+                self._knowledge, os.path.join(_path, f"../data/{filename}.knowledge")
+            )
+
+        else:
+            self._knowledge = joblib.load(
+                os.path.join(_path, f"../data/{filename}.knowledge")
+            )
+

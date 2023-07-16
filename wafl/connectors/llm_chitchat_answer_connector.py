@@ -1,6 +1,9 @@
+import asyncio
 import os
+import re
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
@@ -8,70 +11,21 @@ _path = os.path.dirname(__file__)
 class LLMChitChatAnswerConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
+        asyncio.run(self._load_knowledge_from_file("dialogues", _path))
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
-        prompt = ""
-        prompt += f"""
+        retrieved_dialogues = await self._knowledge.ask_for_facts(
+            Query.create_from_text(dialogue), threshold=0.1
+        )
+        retrieved_dialogues = "\n\n\n".join([item.text for item in retrieved_dialogues][:3])
+        dialogue = re.sub(r"bot:(.*)\n", r"bot: \1<|EOS|>\n", dialogue)
+        prompt = f"""
 The user and the bot talk.
-The bot must end its utterance with <|EOS|>.
-some examples are as follows:        
-        
-In the dialogue below a user is speaking to a bot:
-user: hello
-bot: hello<|EOS|>
+The bot ends every utterance line with <|EOS|>.
+some examples are as follows:
 
 
-In the dialogue below a user is speaking to a bot:
-user: you
-bot: what?<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: what
-bot: what?<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: what is the colour of the sky
-bot: I believe it is blue on a good day<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: who was the lead actor in superman (1978)
-bot: I believe it was Christopher Reeve<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: what is the color of the sun
-The bot remembers: the sun is bright yellow
-bot: The sun is bright yellow<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: what is the height of my truck
-The bot remembers: The user's truck is 8ft
-bot: The user's truck is 8ft<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: My flat is a one bedroom
-bot: nice to know<|EOS|>
-user: is my flat a 2 bedroom
-bot: no, it is a 1 bedroom<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-the bot remembers: The user's name is John
-user: is my name Jane
-bot: no, your name is John<|EOS|>
-
-
-In the dialogue below a user is speaking to a bot:
-user: My address is 11 Coulton rd
-bot: good to know<|EOS|>
-user: what is my address
-the bot remembers: the user's name is John
-bot: Your address is 11 Coulton rd<|EOS|>
+{retrieved_dialogues}
 
 
 In the dialogue below a user is speaking to a bot:
