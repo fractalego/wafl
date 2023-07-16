@@ -1,5 +1,8 @@
 ### TODO
 
+* retrievers for in-context learning
+  * all answerers and extractors
+
 * make this work:
   - Do I need an umbrella?
   - Tell me if I need an umbrella
