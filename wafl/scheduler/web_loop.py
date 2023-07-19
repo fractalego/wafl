@@ -106,7 +106,10 @@ class WebLoop:
         ]
         dialogue_items = dialogue + choices + facts
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
-        dialogue_items = [item[1].replace("\n", "<br>").replace(" ", "&nbsp;") for item in dialogue_items]
+        dialogue_items = [
+            item[1].replace("\n", "<br>").replace(" ", "&nbsp;")
+            for item in dialogue_items
+        ]
         conversation = "<div class='col'>"
         conversation += "".join(dialogue_items)
         conversation += "</div>"

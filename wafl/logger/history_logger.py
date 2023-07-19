@@ -16,7 +16,9 @@ class HistoryLogger:
         if not os.path.exists(directory):
             os.mkdir(directory)
 
-        filename = hashlib.md5(str(time.time()).encode("utf8")).hexdigest() + "-history.log"
+        filename = (
+            hashlib.md5(str(time.time()).encode("utf8")).hexdigest() + "-history.log"
+        )
         self._filename = os.path.join(directory, filename)
         self._depth = 0
         self._log_level = LogLevels.INFO
@@ -32,8 +34,8 @@ class HistoryLogger:
 
     def write(self, text: str, log_level=LogLevels.INFO):
         dialogue = self._interface.get_utterances_list_with_timestamp()[
-                   -self._max_num_past_utterances:
-                   ]
+            -self._max_num_past_utterances :
+        ]
         start_time = -1
         if dialogue:
             start_time = dialogue[0][0]

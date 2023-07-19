@@ -162,7 +162,9 @@ class SingleFileKnowledge(BaseKnowledge):
         ]
 
     async def ask_for_rule_backward(self, query, knowledge_name=None, first_n=None):
-        rules_and_scores = await self._ask_for_rule_backward_with_scores(query, knowledge_name, first_n)
+        rules_and_scores = await self._ask_for_rule_backward_with_scores(
+            query, knowledge_name, first_n
+        )
         return get_first_cluster_of_rules(rules_and_scores)
 
     def get_facts_and_rule_as_text(self):
@@ -224,7 +226,9 @@ class SingleFileKnowledge(BaseKnowledge):
 
         return knowledge
 
-    async def _ask_for_rule_backward_with_scores(self, query, knowledge_name=None, first_n=None):
+    async def _ask_for_rule_backward_with_scores(
+        self, query, knowledge_name=None, first_n=None
+    ):
         if text_is_exact_string(query.text):
             indices_and_scores = (
                 await self._rules_string_retriever.get_indices_and_scores_from_text(
@@ -247,7 +251,8 @@ class SingleFileKnowledge(BaseKnowledge):
 
         else:
             fact_rules = [
-                (self._rules_dict[item[0]], item[1]) for item in indices_and_scores
+                (self._rules_dict[item[0]], item[1])
+                for item in indices_and_scores
                 if item[1] > self._threshold_for_fact_rules_for_creation
             ]
 
@@ -285,7 +290,9 @@ class SingleFileKnowledge(BaseKnowledge):
 
         rules_and_scores = fact_rules + question_rules + incomplete_rules
         rules = [item[0] for item in sorted(rules_and_scores, key=lambda x: -x[1])]
-        if not first_n and await rules_are_too_different(self._rules_fact_retriever, rules):
+        if not first_n and await rules_are_too_different(
+            self._rules_fact_retriever, rules
+        ):
             return []
 
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(

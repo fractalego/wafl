@@ -124,13 +124,14 @@ class BaseLLMConnector:
                 for row in csvreader:
                     items_list.append(row[0].strip())
 
-            self._knowledge = await SingleFileKnowledge.create_from_list(items_list)
+            knowledge = await SingleFileKnowledge.create_from_list(items_list)
             joblib.dump(
-                self._knowledge, os.path.join(_path, f"../data/{filename}.knowledge")
+                knowledge, os.path.join(_path, f"../data/{filename}.knowledge")
             )
 
         else:
-            self._knowledge = joblib.load(
+            knowledge = joblib.load(
                 os.path.join(_path, f"../data/{filename}.knowledge")
             )
 
+        return knowledge

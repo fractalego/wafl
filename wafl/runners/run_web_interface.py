@@ -34,5 +34,5 @@ def run_server():
     asyncio.run(scheduler.run())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_server()
