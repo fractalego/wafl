@@ -24,7 +24,7 @@ class DialogueAnswerer(BaseAnswerer):
             query, is_from_user=True, knowledge_name="/", threshold=0.1
         )
         texts = cluster_facts(facts_and_thresholds)
-        for text in texts:
+        for text in texts[::-1]:
             await self._interface.add_fact(f"The bot remembers: {text}")
 
         dialogue = self._interface.get_utterances_list_with_timestamp()[

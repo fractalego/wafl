@@ -109,13 +109,13 @@ class SingleFileKnowledge(BaseKnowledge):
             indices_and_scores = (
                 await self._facts_retriever.get_indices_and_scores_from_text(query.text)
             )
-        if not threshold and is_from_user:
+        if threshold == None and is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
                 if query.is_question
                 else self._threshold_for_facts
             )
-        elif not threshold:
+        elif threshold == None:
             threshold = (
                 self._threshold_for_questions_from_bot
                 if query.is_question
@@ -141,14 +141,14 @@ class SingleFileKnowledge(BaseKnowledge):
                 await self._facts_retriever.get_indices_and_scores_from_text(query.text)
             )
 
-        if not threshold and is_from_user:
+        if threshold == None and is_from_user:
             threshold = (
                 self._threshold_for_questions_from_user
                 if query.is_question
                 else self._threshold_for_facts
             )
 
-        elif not threshold:
+        elif threshold == None:
             threshold = (
                 self._threshold_for_questions_from_bot
                 if query.is_question
@@ -235,7 +235,7 @@ class SingleFileKnowledge(BaseKnowledge):
                     query.text
                 )
             )
-            return [self._rules_dict[item[0]] for item in indices_and_scores]
+            return [(self._rules_dict[item[0]], item[1]) for item in indices_and_scores]
 
         indices_and_scores = (
             await self._rules_fact_retriever.get_indices_and_scores_from_text(

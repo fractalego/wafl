@@ -11,9 +11,25 @@ _path = os.path.dirname(__file__)
 class LLMChitChatAnswerConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
-        self._knowledge = asyncio.run(self._load_knowledge_from_file("dialogues", _path))
+
+        try:
+            loop = asyncio.get_running_loop()
+
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            self._knowledge = None
+
+        else:
+            self._knowledge = asyncio.run(
+                self._load_knowledge_from_file("dialogues", _path)
+            )
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
+        if not self._knowledge:
+            self._knowledge = await self._load_knowledge_from_file("dialogues", _path)
+
         retrieved_dialogues = await self._knowledge.ask_for_facts(
             Query.create_from_text(dialogue), threshold=0.1
         )

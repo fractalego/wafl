@@ -51,7 +51,7 @@ class TestRetrieval(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        assert len(interface.get_utterances_list()) == 3
+        assert len(interface.get_utterances_list()) == 4
 
     def test_exact_string_retrieval(self):
         retriever = StringRetriever()

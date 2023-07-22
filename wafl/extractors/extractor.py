@@ -91,6 +91,9 @@ class Extractor:
         if self._logger:
             self._logger.write(f"Extractor: the answer is {answer_text}")
 
+        if not answer_text:
+            answer_text = "unknown"
+
         return answer_text
 
     def get_entailer(self):

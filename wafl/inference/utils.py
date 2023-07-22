@@ -253,6 +253,15 @@ def string_is_python_list(text: str) -> bool:
             return True
 
     except (SyntaxError, NameError):
+        try:
+            text = text.replace("'s", "\\'s")
+            result = eval(text)
+            if type(result) == list:
+                return True
+
+        except (SyntaxError, NameError):
+            pass
+
         pass
 
     return False
@@ -265,6 +274,11 @@ def get_list_from_string(text: str) -> List[Any]:
             return result
 
     except (SyntaxError, NameError):
+        text = text.replace("'s", "\\'s")
+        result = eval(text)
+        if type(result) == list:
+            return result
+
         pass
 
     return []

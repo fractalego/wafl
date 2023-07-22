@@ -94,7 +94,8 @@ class BaseLLMConnector:
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find("user:", start))
+        end_set.add(text.find("\nuser:", start))
+        end_set.add(text.find("\nbot:", start))
         end_set.add(text.find("<|EOS|>", start))
         end_set.add(text.find("\nThe bot", start))
         if -1 in end_set:
@@ -111,6 +112,9 @@ class BaseLLMConnector:
             self._cache[prompt] = candidate_answer
 
         print(time.time() - start_time)
+        if not candidate_answer:
+            candidate_answer = "unknown"
+
         return candidate_answer
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
@@ -125,9 +129,7 @@ class BaseLLMConnector:
                     items_list.append(row[0].strip())
 
             knowledge = await SingleFileKnowledge.create_from_list(items_list)
-            joblib.dump(
-                knowledge, os.path.join(_path, f"../data/{filename}.knowledge")
-            )
+            joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
 
         else:
             knowledge = joblib.load(

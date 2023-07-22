@@ -9,27 +9,6 @@ user: I want to drive it
 
 Say the user's intention in the last utterance: the user wants to drive the car<|EOS|>"
 "The following conversation is taking place:
-user: I want to see my car
-bot: Your car is in the garage
-user: I want to drive the car
-user: you
-
-Say the user's intention in the last utterance: unknown<|EOS|>"
-"The following conversation is taking place:
-user: you
-
-Say the user's intention in the last utterance: unknown<|EOS|>
-"
-"The following conversation is taking place:
-user: what
-
-Say the user's intention in the last utterance: unknown<|EOS|>"
-"The following conversation is taking place:
-bot: hello there
-user: lgdfskaj
-
-Say the user's intention in the last utterance: unknown<|EOS|>"
-"The following conversation is taking place:
 user: I want to drive the car to London
 
 Say the user's intention in the last utterance: the user wants to drive the car to London<|EOS|>"
@@ -92,10 +71,6 @@ user: tell me about the weather.
 
 Say the user's intention in the last utterance: the user wants to know what the weather is like<|EOS|>"
 "The following conversation is taking place:
-user: My name is John
-
-Say the user's intention in the last utterance: unknown<|EOS|>"
-"The following conversation is taking place:
 user: add paper
 user: add scissors
 user: add stone
@@ -105,3 +80,9 @@ Say the user's intention in the last utterance: the user wants to add stone<|EOS
 user: list all the files in a folder
 
 Say the user's intention in the last utterance: the user wants list all the files in a folder<|EOS|>"
+"The following conversation is taking place:
+user: list the first four files in the alphabet folder
+bot: sure the list is a, b, c, d
+user: sorry I meant the numbers folder
+
+Say the user's intention in the last utterance: the user wants this bot to list the first four files in the numbers folder<|EOS|>"

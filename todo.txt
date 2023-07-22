@@ -1,7 +1,14 @@
 ### TODO
 
+* make all tests pass
+* modify wafl_llm to have a config file for the models to use/download
+* add a standard variable for the dialogue history to be used in rules space
+
+
+
 * retrievers for in-context learning
-  * all answerers and extractors
+  /* all answerers and extractors
+  /* create adversarial examples for task extractor
 
 * make this work:
   - Do I need an umbrella?
@@ -389,3 +396,4 @@ Fourth week:
 /* Use entailment to make generated qa more accurate
     /- Upload qa system to huggingface and pip
     /-**** Use conversation_qa -> refactor qa.py
+

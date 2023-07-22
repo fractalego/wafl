@@ -189,7 +189,9 @@ class BackwardInference:
                 return await self._process_remember_command(query.text, knowledge_name)
 
             elif text_is_code(query.text):
-                return await self._process_code(query.text, knowledge_name, {}, policy)
+                return await self._process_code(
+                    query.text, "", knowledge_name, {}, policy
+                )
 
         answer = await self._look_for_answer_in_rules(
             query, task_memory, knowledge_name, policy, depth, inverted_rule
@@ -208,16 +210,7 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        if (
-            not rules
-            and self._generate_rules
-            and await self._extractor.get_entailer().entails(
-                query.text,
-                f"The user gives an order or request",
-                return_threshold=True,
-                threshold=0.9,
-            )
-        ):
+        if not rules and self._generate_rules and policy.improvise:
             self._log(f"Creating rules for the task: {query.text}", depth)
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():

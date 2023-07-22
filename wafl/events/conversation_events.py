@@ -45,7 +45,7 @@ class ConversationEvents:
             return False
 
         text_is_question = is_question(text)
-
+        self._policy.improvise = False
         try:
             answer = await self._answerer.answer(
                 remove_text_between_brackets(text), policy=self._policy
