@@ -1,0 +1,56 @@
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'find me a restaurant'</story>
+
+The first person asks questions about the story and the second answers them:
+Q: What is the user asking the bot?
+A: to find a restaurant<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'I live at 1km from here'</story>
+
+The first person asks questions about the story and the second answers them:
+Q: How far from here?
+A: 1 kilometer<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'hello'. The bot answers 'hello there'. The bot remembers: The sun is shiny </story>
+
+The first person asks questions about the story and the second answers them:
+Q: How is the sun?
+A: shiny<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'hello'. The bot answers 'hello there'. When asked the user's name the user replies: I am John </story>
+
+The first person asks questions about the story and the second answers them:
+Q: What is the user's name?
+A: John<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'hello'. The bot answers 'hello there'. When the bot asks who is president, the user replies JFK </story>
+
+The first person asks questions about the story and the second answers them:
+Q: Who is the president?
+A: JFK<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The user says 'hello'. The bot answers 'hello there'. When the bot asks what the user is reading, the user replies a book </story>
+
+The first person asks questions about the story and the second answers them:
+Q: What is the user reading?
+A: a book<|EOS|>"
+"Below a user and a bot discuss a story. The user is talking to the bot.
+If the answer is *not* in the story the answer is 'unknown'.
+
+<story> The bot remembers: The earth is round. </story>
+
+The first person asks questions about the story and the second answers them:
+Q: What shape is the earth?
+A: round<|EOS|>"

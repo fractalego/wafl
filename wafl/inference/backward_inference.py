@@ -61,7 +61,7 @@ class BackwardInference:
         self._extractor = Extractor(narrator, logger)
         self._prompt_predictor = PromptPredictor(logger)
         self._task_extractor = TaskExtractor(interface)
-        self._task_creator = TaskCreator(knowledge)
+        self._task_creator = TaskCreator(knowledge, logger)
         self._code_creator = CodeCreator(knowledge)
         self._narrator = narrator
         self._logger = logger
@@ -189,7 +189,9 @@ class BackwardInference:
                 return await self._process_remember_command(query.text, knowledge_name)
 
             elif text_is_code(query.text):
-                return await self._process_code(query.text, knowledge_name, {}, policy)
+                return await self._process_code(
+                    query.text, "", knowledge_name, {}, policy
+                )
 
         answer = await self._look_for_answer_in_rules(
             query, task_memory, knowledge_name, policy, depth, inverted_rule
@@ -208,21 +210,17 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        if (
-            not rules
-            and self._generate_rules
-            and await self._extractor.get_entailer().entails(
-                query.text,
-                f"The user gives an order or request",
-                return_threshold=True,
-                threshold=0.9,
-            )
-        ):
+        if not rules and self._generate_rules and policy.improvise:
+            self._log(f"Creating rules for the task: {query.text}", depth)
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
                 rules = get_facts_and_rules_from_text(
                     rules_answer.text, query_knowledge_name
                 )["rules"]
+
+            for rule in rules:
+                await self._interface.add_choice(f"The bot created the rule:")
+                await self._interface.add_choice(str(rule))
 
         for rule in rules:
             index = 0
@@ -720,7 +718,6 @@ class BackwardInference:
             await self._flush_interface_output()
 
         elif self._sentences_to_utter:
-            self._sentences_to_utter.append(answer.text)
             answer.text = "\n".join(self._sentences_to_utter)
             self._sentences_to_utter = []
 

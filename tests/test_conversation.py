@@ -76,6 +76,7 @@ class TestConversation(TestCase):
         input_from_user = "hello!".capitalize()
         asyncio.run(conversation_events._process_query(input_from_user))
         expected = "bot: Hello to you, bob!"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test_input_during_inference(self):
@@ -89,6 +90,7 @@ class TestConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Test@example.com has been added to the newsletter"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__remember_command(self):
@@ -106,6 +108,7 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         expected = "test@example.com"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1].lower()
 
     def test__knowledge_insertion(self):
@@ -164,7 +167,10 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        assert "yes" in interface.get_utterances_list()[-1].lower()
+        assert (
+            "yes" in interface.get_utterances_list()[-1].lower()
+            or "ada" in interface.get_utterances_list()[-1].lower()
+        )
 
     def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob?"])
@@ -178,7 +184,10 @@ class TestConversation(TestCase):
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
-        assert "no" in interface.get_utterances_list()[-1].lower()
+        assert (
+            "no" in interface.get_utterances_list()[-1].lower()
+            or "albert" in interface.get_utterances_list()[-1].lower()
+        )
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])

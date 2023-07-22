@@ -22,14 +22,14 @@ class ArbiterAnswerer(BaseAnswerer):
         self._config = Configuration.load_local_config()
 
     async def answer(self, query_text, policy):
-        task = await self._task_extractor.extract(query_text)
-        if await self._knowledge.ask_for_rule_backward(
+        simple_task = f"The user says: {query_text.capitalize()}"
+        task = await self._task_extractor.extract(simple_task)
+        if not task.is_neutral() and await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(task.text),
             knowledge_name="/",
         ):
             return Answer(text="unknown")
 
-        simple_task = f"The user says: {query_text}"
         if await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(simple_task),
             knowledge_name="/",
@@ -43,18 +43,11 @@ class ArbiterAnswerer(BaseAnswerer):
                 simple_task,
                 f"The user gives an order or request",
                 return_threshold=True,
-                threshold=0.965,
+                threshold=0.95,
             )
         ):
-            await self._interface.output(
-                random.choice(
-                    [
-                        "Let me think",
-                        "Uhm",
-                        "Thinking about it",
-                    ]
-                )
-            )
+            self._interface.bot_has_spoken(False)
+            policy.improvise = True
             return Answer(text="unknown")
 
         score = 1

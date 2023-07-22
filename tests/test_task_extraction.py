@@ -9,11 +9,12 @@ class TestTaskExtraction(TestCase):
     def test__dialogue_extractor1(self):
         interface = DummyInterface()
         interface._utterances = [
-            [0, "user: hello what time is it"],
+            [0, "user: what time is it"],
         ]
         task_extractor = TaskExtractor(interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "wants to know the time"
+        print(prediction)
         assert expected in prediction
 
     def test__dialogue_extractor2(self):

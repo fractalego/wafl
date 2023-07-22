@@ -17,7 +17,7 @@ While it is ready to play with, it might not ready for production depending on y
 Installation
 ============
 
-In this version, WAFL is built to run as a two-part system.
+In this version, WAFL is a two-part system.
 Both can be installed on the same machine.
 
 ![The two parts of WAFL](images/two-parts.png)

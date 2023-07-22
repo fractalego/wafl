@@ -5,6 +5,7 @@ import threading
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from wafl.interface.queue_interface import QueueInterface
+from wafl.logger.history_logger import HistoryLogger
 
 _path = os.path.dirname(__file__)
 app = Flask(
@@ -23,6 +24,7 @@ log.setLevel(logging.WARNING)
 class WebLoop:
     def __init__(self, interface: QueueInterface):
         self._interface = interface
+        self._hystory_logger = HistoryLogger(self._interface)
 
     async def run(self):
         @app.route("/input", methods=["POST"])
@@ -55,6 +57,16 @@ class WebLoop:
 
             output = self._interface.output_queue.pop(0)
             return jsonify(output)
+
+        @app.route("/thumbs_up", methods=["POST"])
+        async def thumbs_up():
+            self._hystory_logger.write("thumbs_up")
+            return jsonify("")
+
+        @app.route("/thumbs_down", methods=["POST"])
+        async def thumbs_down():
+            self._hystory_logger.write("thumbs_down")
+            return jsonify("")
 
         @app.route("/")
         async def index():
@@ -94,7 +106,10 @@ class WebLoop:
         ]
         dialogue_items = dialogue + choices + facts
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
-        dialogue_items = [item[1].replace("\n", "<br>") for item in dialogue_items]
+        dialogue_items = [
+            item[1].replace("\n", "<br>").replace(" ", "&nbsp;")
+            for item in dialogue_items
+        ]
         conversation = "<div class='col'>"
         conversation += "".join(dialogue_items)
         conversation += "</div>"

@@ -29,15 +29,15 @@ class TestTaskCreation(TestCase):
         triggers = "\n".join(
             [
                 "- the user wants to know the road to somewhere",
-                "- the user has a headache",
+                "- the user wants to say hello",
             ]
         )
         prediction = asyncio.run(connector.get_answer("", triggers, task))
         expected = """
 the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the nearest sea
-   result = Answer the following question given this road: {road_to_sea}. How to get to the sea?
-   SAY {result}
+   location = where do you want to go?
+   result = Answer the following question. How to get to {location}?
+   SAY This is the road to {location}: {result}
         """.strip()
         print(prediction)
         assert expected == prediction
@@ -45,12 +45,13 @@ the user wants to go swimming in the sea
     def test__task_creation1(self):
         knowledge = SingleFileKnowledge(_wafl_example)
         task_creator = TaskCreator(knowledge)
-        task = "the user wants to go swimming in the sea"
+        task = "the user wants to go swimming in the sea at brighton beach"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
-the user wants to go swimming in the sea
-   road_to_sea = the user wants to know the road to the nearest sea
-   result = Answer the following question given this road: {road_to_sea}. How to get to the sea?
+the user wants to go swimming in the sea at brighton beach
+   road_to_brighton_beach = the user wants to know the road to brighton beach
+   weather = the user wants to know the weather
+   result = Answer the following question given this road and weather: {road_to_brighton_beach}. How to get to brighton beach?
    SAY {result}
         """.strip()
         print(answer.text)
@@ -63,7 +64,7 @@ the user wants to go swimming in the sea
         answer = asyncio.run(task_creator.extract(task))
         expected = """
 the user wants to know if they need an umbrella
-   weather_forecast = the user wants to know the weather today
+   weather_forecast = the user wants to know the weather
    result = Answer the following question given this forecast: {weather_forecast}. Do you need an umbrella?
    SAY {result}
         """.strip()
@@ -77,7 +78,8 @@ the user wants to know if they need an umbrella
         answer = asyncio.run(task_creator.extract(task))
         expected = """
 the user wants to go from London to Manchester
-   result = Answer the following question. How to get from London to Manchester?
+   road_to_manchester = the user wants to know the road to Manchester
+   result = Answer the following question given this road: {road_to_manchester}. How to get to Manchester?
    SAY {result}
     """.strip()
         print(answer.text)
@@ -90,7 +92,7 @@ the user wants to go from London to Manchester
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Yes"
+        expected = "bot: The probability of rain is 95%. you should bring an umbrella."
         print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
@@ -121,7 +123,7 @@ def list_subfolders(folder_name):
 
     subfolders = []
     for subfolder in os.listdir(folder_name):
-        if os.path.isdir(os.path.join(folder_name, subfolder)):
+        if os.path.isdir(subfolder):
             subfolders.append(subfolder)
     return subfolders
             """.strip()
@@ -139,3 +141,14 @@ def list_subfolders(folder_name):
         print(interface.get_utterances_list())
         assert "bot: tmp" in [item.lower() for item in interface.get_utterances_list()]
         assert "bot: lib" in [item.lower() for item in interface.get_utterances_list()]
+
+    def test__math_task_is_created_from_conversation(self):
+        interface = DummyInterface(to_utter=["Multiply 100 and 43"])
+        conversation_events = ConversationEvents(
+            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            interface=interface,
+            code_path="/",
+        )
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        assert "4300" in interface.get_utterances_list()[-1]

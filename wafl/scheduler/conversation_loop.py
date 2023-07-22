@@ -97,3 +97,4 @@ class ConversationLoop:
                 self._logger.write(str(e), log_level=self._logger.level.ERROR)
                 print("Error in conversation loop. Closing the conversation.")
                 print(str(e))
+                raise e  ####

@@ -29,16 +29,22 @@ class InferenceAnswerer(BaseAnswerer):
                 f"InferenceAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        query_text = f"The user says: '{query_text.capitalize()}'"
-        task = await self._task_extractor.extract(query_text)
-        task_texts = split_tasks(task.text)
+        simple_task = f"The user says: '{query_text.capitalize()}'"
+        task_answer = await self._task_extractor.extract(simple_task)
+        if task_answer.is_neutral():
+            task = simple_task
+
+        else:
+            task = task_answer.text
+
+        task_texts = split_tasks(task)
         answers = []
         for task_text in task_texts:
             result = await self._entailer.entails(
-                query_text, task_text, return_threshold=True, threshold=0.6
+                simple_task, task_text, return_threshold=True, threshold=0.6
             )
             if not result:
-                task_text = query_text
+                task_text = simple_task
 
             await self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"

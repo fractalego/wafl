@@ -7,6 +7,7 @@ class AnswerPolicy:
         self._logger = logger
         self._connector = LLMAnswerPolicyConnector()
         self._max_num_past_utterances = 3
+        self.improvise = False
 
     async def accept(self, result: str):
         return True

@@ -1,11 +1,50 @@
 ### TODO
 
+* make all tests pass
+* modify wafl_llm to have a config file for the models to use/download
+* add a standard variable for the dialogue history to be used in rules space
 
-* Make tests pass
-* RETRIEVAL for prompts
-* Add RETRIEVE as a command
-* add all the rules you have to the retrievable examples
+
+
+* retrievers for in-context learning
+  /* all answerers and extractors
+  /* create adversarial examples for task extractor
+
+* make this work:
+  - Do I need an umbrella?
+  - Tell me if I need an umbrella
+
+  The issue is that the relevant rule is not retrieved. The entailer gives ~0 btw the user says"do I need an umbrella" :- the user wants to know the weather
+  Find a good way to entail what you need.
+
+  - Issues were:
+     - Tetriever is not very good. There are a lot other rules scooped up when asking for a task
+     - Interrution rule must not be used for tasks
+     - Text-generation tasks are understood as questions, therefore no text generation
+
+* Maybe you need to add text_generation task right before searching the answer in rules
+
+/* add feedback from frontend
+* Feebdack texts should be used in-context for dialogue and task extractor
+    * Use retriever to create dynamic prompts
+
+* make the text disappar in the input after you write
+* input should be frozen when the bot is thinking/speaking
+* add a check for rules that are too generic.
+  - For example, "the user wants to add something"
+  - The rule priority should be weighed down according to
+    how easy it is to trigger it from different utterances.
 * better web UI
+* add a way to change the rules on the fly
+* create a battery of tests for questions that interrupt a question
+  from the bot
+
+
+/* Make tests pass
+/* RETRIEVAL for prompts
+/* Add RETRIEVE as a command
+* add all the rules you have to the retrievable examples
+
 
 
 * only first level for #using
@@ -357,3 +396,4 @@ Fourth week:
 /* Use entailment to make generated qa more accurate
     /- Upload qa system to huggingface and pip
     /-**** Use conversation_qa -> refactor qa.py
+

@@ -1,133 +1,58 @@
+import asyncio
+import os
+
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.extractors.dataclasses import Query
+
+_path = os.path.dirname(__file__)
 
 
 class LLMQAConnector(BaseLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
+        try:
+            loop = asyncio.get_running_loop()
+
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            self._knowledge = None
+            self._adversarial_knowledge = None
+
+        else:
+            self._knowledge = asyncio.run(self._load_knowledge_from_file("qa", _path))
+            self._adversarial_knowledge = asyncio.run(
+                self._load_knowledge_from_file("qa_adversarial", _path)
+            )
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
+        if not self._knowledge:
+            self._knowledge = await self._load_knowledge_from_file("qa", _path)
+
+        if not self._adversarial_knowledge:
+            self._adversarial_knowledge = await self._load_knowledge_from_file(
+                "qa_adversarial", _path
+            )
+
         text = text.strip()
         text = text.replace("\\'", "'")
         query = query.strip()
-
+        retrieved_items = await self._knowledge.ask_for_facts_with_threshold(
+            Query.create_from_text(f"<story>{text}</story> Q:{query}"), threshold=0.0
+        )
+        retrieved_adversarial_items = (
+            await self._adversarial_knowledge.ask_for_facts_with_threshold(
+                Query.create_from_text(f"<story>{text}</story> Q:{query}"),
+                threshold=0.0,
+            )
+        )
+        all_items_and_scores = sorted(
+            retrieved_items[:5] + retrieved_adversarial_items[:5], key=lambda x: x[1]
+        )
         prompt = (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
+            "\n\n\n".join([item[0].text for item in all_items_and_scores]) + "\n\n\n"
         )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> </story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the capital of Italy?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> Water is wet </story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: Is the earth round?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += (
-            "<story> The user says 'hello'. The bot answers 'hello there'</story>\n\n"
-        )
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the size of Jupyter?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'find me a restaurant'</story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the user asking the bot?\n"
-        prompt += "A: to find a restaurant<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'I live at 1km from here'</story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: How far from here?\n"
-        prompt += "A: 1 kilometer<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'hello'.</story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: what is the name of the user?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'hello'. The bot answers 'hello there'. The bot remembers: The sun is shiny </story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: How is the sun?\n"
-        prompt += "A: shiny<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += (
-            "<story> The user says 'hello'. The bot answers 'hello there'."
-            "When asked the user's name the user replies: I am John </story>\n\n"
-        )
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the user's name?\n"
-        prompt += "A: John<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'hello' </story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the user's name?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += "<story> The user says 'it is raining' </story>\n\n"
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What does the user want to do?\n"
-        prompt += "A: unknown<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += (
-            "<story> The user says 'hello'. The bot answers 'hello there'. "
-            "When the bot asks who is president, the user replies JFK </story>\n\n"
-        )
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: Who is the president?\n"
-        prompt += "A: JFK<|EOS|>\n\n"
-
-        prompt += (
-            "Below a user and a bot discuss a story. The user is talking to the bot.\n"
-        )
-        prompt += "If the answer is *not* in the story the answer is 'unknown'.\n\n"
-        prompt += (
-            "<story> The user says 'hello'. The bot answers 'hello there'. "
-            "When the bot asks what the user is reading, the user replies a book </story>\n\n"
-        )
-        prompt += "The first person asks questions about the story and the second answers them:\n"
-        prompt += "Q: What is the user reading?\n"
-        prompt += "A: a book<|EOS|>\n\n"
 
         prompt += (
             "Below a user and a bot discuss a story. The user is talking to the bot.\n"

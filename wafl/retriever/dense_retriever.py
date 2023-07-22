@@ -30,7 +30,7 @@ class DenseRetriever(BaseRetriever):
             return []
 
         embeddings = await self._get_embeddings_from_text(text)
-        return self._embeddings_model.similar_by_vector(embeddings, topn=2)
+        return self._embeddings_model.similar_by_vector(embeddings, topn=5)
 
     async def _get_embeddings_from_text(self, text: str) -> "numpy.array":
         if not hasattr(self, "_connector"):

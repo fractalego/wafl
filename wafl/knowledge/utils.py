@@ -24,8 +24,13 @@ def get_first_cluster_of_rules(rules_and_threshold):
     _cluster_margin = 0.1
 
     last_threshold = rules_and_threshold[0][1]
+    prior_rules = set()
     rules = []
     for rule, threshold in rules_and_threshold:
+        if str(rule) in prior_rules:
+            continue
+
+        prior_rules.add(str(rule))
         if abs(threshold - last_threshold) < _cluster_margin:
             rules.append(rule)
 
