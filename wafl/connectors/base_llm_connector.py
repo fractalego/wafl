@@ -121,19 +121,12 @@ class BaseLLMConnector:
         raise NotImplementedError("_get_answer_prompt() needs to be implemented.")
 
     async def _load_knowledge_from_file(self, filename, _path=None):
-        if not os.path.exists(os.path.join(_path, f"../data/{filename}.knowledge")):
-            items_list = []
-            with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
-                csvreader = csv.reader(file)
-                for row in csvreader:
-                    items_list.append(row[0].strip())
+        items_list = []
+        with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
+            csvreader = csv.reader(file)
+            for row in csvreader:
+                items_list.append(row[0].strip())
 
-            knowledge = await SingleFileKnowledge.create_from_list(items_list)
-            joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
-
-        else:
-            knowledge = joblib.load(
-                os.path.join(_path, f"../data/{filename}.knowledge")
-            )
-
+        knowledge = await SingleFileKnowledge.create_from_list(items_list)
+        joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
         return knowledge

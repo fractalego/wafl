@@ -51,7 +51,7 @@ class BackwardInference:
         interface: "BaseInterface",
         narrator: "Narrator",
         module_names=None,
-        max_depth: int = 10,
+        max_depth: int = 3,
         generate_rules: bool = True,
         logger=None,
     ):
