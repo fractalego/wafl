@@ -29,25 +29,15 @@ class WebLoop:
     async def run(self):
         @app.route("/input", methods=["POST"])
         async def handle_input():
-            text = request.form["query"]
-            self._interface.input_queue.append(text)
-            conversation = await self._get_conversation()
-            conversation += (
-                "<script>"
-                'document.getElementById("query").value = "";'
-                "window.scrollTo(1000, document.body.scrollHeight);"
-                "</script>"
-            )
+            query = request.form["query"]
+            self._interface.input_queue.append(query)
+            conversation = await self._get_conversation(query)
             return conversation
 
-        @app.route("/load_messages", methods=["GET"])
+        @app.route("/load_messages", methods=["POST"])
         async def load_messages():
-            conversation = await self._get_conversation()
-            conversation += (
-                "<script>"
-                "window.scrollTo(1000, document.body.scrollHeight);"
-                "</script>"
-            )
+            query = request.form["query"]
+            conversation = await self._get_conversation(query)
             return conversation
 
         @app.route("/output")
@@ -78,17 +68,22 @@ class WebLoop:
         thread = threading.Thread(target=run_app)
         thread.start()
 
-    async def _get_conversation(self):
+    async def _get_conversation(self, query):
         dialogue = self._interface.get_utterances_list_with_timestamp()
         dialogue = [
-            (item[0], "<div class='row' style='font-size:30px;'>" + item[1] + "</div>")
+            (
+                item[0],
+                "<div class='dialogue-row' style='font-size:30px;'>"
+                + item[1]
+                + "</div>",
+            )
             for item in dialogue
         ]
         choices = self._interface.get_choices_and_timestamp()
         choices = [
             (
                 item[0],
-                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )
@@ -98,19 +93,25 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )
             for item in facts
         ]
-        dialogue_items = dialogue + choices + facts
+        choices_and_facts = choices + facts
+        choices_and_facts = sorted(choices_and_facts, key=lambda x: x[0])
+        choices_and_facts = [item[1] for item in choices_and_facts]
+        dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
-        dialogue_items = [
-            item[1].replace("\n", "<br>").replace(" ", "&nbsp;")
-            for item in dialogue_items
-        ]
-        conversation = "<div class='col'>"
+        dialogue_items = [item[1] for item in dialogue_items]
+        conversation = (
+            "<div id='dialogue' class='dialogue overflow-y-scroll scroll-auto'>"
+        )
         conversation += "".join(dialogue_items)
+        conversation += "<div id='anchor'></div>"
+        conversation += "</div>"
+        conversation += "<div id='dialogue' class='logs overflow-y-scroll scroll-auto'>"
+        conversation += "".join(choices_and_facts)
         conversation += "</div>"
         return conversation
