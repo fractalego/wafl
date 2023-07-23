@@ -31,13 +31,12 @@ class WebLoop:
         async def handle_input():
             query = request.form["query"]
             self._interface.input_queue.append(query)
-            conversation = await self._get_conversation(query)
+            conversation = await self._get_conversation()
             return conversation
 
         @app.route("/load_messages", methods=["POST"])
         async def load_messages():
-            query = request.form["query"]
-            conversation = await self._get_conversation(query)
+            conversation = await self._get_conversation()
             return conversation
 
         @app.route("/output")
@@ -68,12 +67,12 @@ class WebLoop:
         thread = threading.Thread(target=run_app)
         thread.start()
 
-    async def _get_conversation(self, query):
+    async def _get_conversation(self):
         dialogue = self._interface.get_utterances_list_with_timestamp()
         dialogue = [
             (
                 item[0],
-                "<div class='dialogue-row' style='font-size:30px;'>"
+                "<div class='dialogue-row' style='font-size:20px; '>"
                 + item[1]
                 + "</div>",
             )
@@ -83,7 +82,7 @@ class WebLoop:
         choices = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )
@@ -93,25 +92,24 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:20px;margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
                 + item[1]
                 + "</div>",
             )
             for item in facts
         ]
         choices_and_facts = choices + facts
-        choices_and_facts = sorted(choices_and_facts, key=lambda x: x[0])
+        choices_and_facts = sorted(choices_and_facts, key=lambda x: x[0])[::-1]
         choices_and_facts = [item[1] for item in choices_and_facts]
         dialogue_items = dialogue
-        dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
+        dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
         dialogue_items = [item[1] for item in dialogue_items]
         conversation = (
-            "<div id='dialogue' class='dialogue overflow-y-scroll scroll-auto'>"
+            "<div id='dialogue' class='dialogue shadow-sm overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
         )
         conversation += "".join(dialogue_items)
-        conversation += "<div id='anchor'></div>"
         conversation += "</div>"
-        conversation += "<div id='dialogue' class='logs overflow-y-scroll scroll-auto'>"
+        conversation += "<div id='logs' class='logs shadow-sm overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
         conversation += "".join(choices_and_facts)
         conversation += "</div>"
         return conversation
