@@ -43,6 +43,16 @@ class TestVoice(TestCase):
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 1
 
+    def test_computer_name_is_removed_after_activation(self):
+        interface = DummyInterface(to_utter=["[computer] computer my name is bob"])
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_example), interface=interface
+        )
+        interface.deactivate()
+        asyncio.run(conversation_events.process_next(activation_word="computer"))
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1].count("computer") == 0
+
     def test_hotwords_as_input(self):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)

@@ -33,9 +33,6 @@ class DenseRetriever(BaseRetriever):
         return self._embeddings_model.similar_by_vector(embeddings, topn=5)
 
     async def _get_embeddings_from_text(self, text: str) -> "numpy.array":
-        if not hasattr(self, "_connector"):
-            self._connector = SentenceEmbedderConnector()
-
         return (await self._connector.predict(text, self._model_name))["embedding"]
 
     async def get_dot_product(self, lhs: str, rhs: str) -> float:

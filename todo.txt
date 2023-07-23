@@ -1,6 +1,8 @@
 ### TODO
 
-* make all tests pass
+/* make all tests pass
+* REMOVE computer FROM UTTERANCES!! (after activation)
+
 * modify wafl_llm to have a config file for the models to use/download
 * add a standard variable for the dialogue history to be used in rules space
 * only files declared with #using can be used in rules
