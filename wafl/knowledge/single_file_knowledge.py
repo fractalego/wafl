@@ -64,7 +64,14 @@ class SingleFileKnowledge(BaseKnowledge):
                 f"R{index}": value
                 for index, value in enumerate(facts_and_rules["rules"])
             }
-            asyncio.run(self._initialize_retrievers())
+            try:
+                loop = asyncio.get_running_loop()
+
+            except RuntimeError:
+                loop = None
+
+            if not loop or not loop.is_running():
+                asyncio.run(self._initialize_retrievers())
 
     async def add(self, text, knowledge_name="/"):
         fact_index = f"F{len(self._facts_dict)}"

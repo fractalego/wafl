@@ -20,3 +20,4 @@ class BaseKnowledge:
 
     async def has_better_match(self, query_text: str) -> bool:
         raise NotImplementedError()
+

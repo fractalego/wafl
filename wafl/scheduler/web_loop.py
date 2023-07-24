@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import threading
@@ -22,8 +23,10 @@ log.setLevel(logging.WARNING)
 
 
 class WebLoop:
-    def __init__(self, interface: QueueInterface):
+    def __init__(self, interface: QueueInterface, knowledge: "ProjectKnowledge"):
         self._interface = interface
+        self._knowledge = knowledge
+        self._rules_filename = knowledge.rules_filename
         self._hystory_logger = HistoryLogger(self._interface)
 
     async def run(self):
@@ -40,6 +43,15 @@ class WebLoop:
             await self._interface.output("Hello. How may I help you?")
             conversation = await self._get_conversation()
             return conversation
+
+        @app.route("/reload_rules", methods=["POST"])
+        async def reload_rules():
+            async with asyncio.Lock():
+                self._knowledge.reload_rules(self._rules_filename)
+                await self._knowledge.reinitialize_all_retrievers()
+                print("Rules reloaded")
+
+            return ""
 
         @app.route("/load_messages", methods=["POST"])
         async def load_messages():
