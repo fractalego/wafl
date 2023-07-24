@@ -57,3 +57,4 @@ class BaseInterface:
     def reset_history(self):
         self._utterances = []
         self._choices = []
+        self._facts = []

@@ -1,5 +1,4 @@
 from typing import Dict, List
-
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.knowledge.utils import get_first_cluster_of_rules
@@ -11,10 +10,12 @@ class ProjectKnowledge(BaseKnowledge):
         self._logger = logger
         self._dependency_dict = {}
         self._knowledge_dict = {}
+        self.rules_filename = None
         if rules_filename:
             self._knowledge_dict = self._populate_knowledge_structure(
                 rules_filename, self._dependency_dict
             )
+            self.rules_filename = rules_filename
 
     async def add(self, text, knowledge_name=None):
         if not knowledge_name:
@@ -109,6 +110,15 @@ class ProjectKnowledge(BaseKnowledge):
                 )
 
         return any(result_list)
+
+    def reload_rules(self, rules_filename: str):
+        self._knowledge_dict = self._populate_knowledge_structure(
+            rules_filename, self._dependency_dict
+        )
+
+    async def reinitialize_all_retrievers(self):
+        for knowledge in self._knowledge_dict.values():
+            await knowledge._initialize_retrievers()
 
     def get_dependencies_list(self):
         return self._get_all_dependency_names(self.root_knowledge)

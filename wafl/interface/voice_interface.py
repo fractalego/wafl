@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import time
 
 from wafl.events.utils import remove_text_between_brackets
@@ -73,6 +74,7 @@ class VoiceInterface(BaseInterface):
         text = ""
         while not text:
             text = await self._listener.input()
+            text = self.__remove_activation_word_and_normalize(text)
             hotword = await self._listener.get_hotword_if_present()
             if hotword:
                 text = f"[{hotword}] {text}"
@@ -126,3 +128,13 @@ class VoiceInterface(BaseInterface):
             return os.path.join(_path, "../sounds/deny.wav")
 
         return None
+
+    def __remove_activation_word_and_normalize(self, text):
+        activation_word = re.sub(r"\[(.*)\].*", r"\1", text)
+        text = re.sub(
+            f"^\[{activation_word}\] {activation_word} (.*)",
+            r"\1",
+            text,
+            flags=re.IGNORECASE,
+        )
+        return text

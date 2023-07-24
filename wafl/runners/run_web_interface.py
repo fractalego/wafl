@@ -29,7 +29,7 @@ def run_server():
         max_misses=-1,
     )
     asyncio.run(interface.output("Hello. How may I help you?"))
-    web_loop = WebLoop(interface)
+    web_loop = WebLoop(interface, knowledge)
     scheduler = Scheduler([conversation_loop, web_loop])
     asyncio.run(scheduler.run())
 
