@@ -33,6 +33,7 @@ from wafl.inference.utils import (
     escape_characters,
     get_causes_list,
     text_has_retrieve_command,
+    create_default_substitutions,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -226,6 +227,7 @@ class BackwardInference:
             index = 0
             substitutions = {}
 
+            substitutions = create_default_substitutions(self._interface)
             rule_effect_text = rule.effect.text
             knowledge_name = rule.knowledge_name
             self._log(f"Trying rule with trigger: {rule_effect_text}", depth)

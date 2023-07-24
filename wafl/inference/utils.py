@@ -310,3 +310,10 @@ def get_causes_list(text: str) -> List[str]:
         causes_list.append(text.replace(list_like_element, item))
 
     return causes_list
+
+
+def create_default_substitutions(interface: "BaseInterface") -> Dict[str, str]:
+    substitutions = {}
+    dialogue = " ".join(interface.get_utterances_list())
+    update_substitutions_from_results("_dialogue", dialogue, substitutions)
+    return substitutions

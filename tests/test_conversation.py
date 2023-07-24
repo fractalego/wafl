@@ -59,6 +59,15 @@ This bot is doing well
 """.strip()
 
 
+_wafl_dialogue_variable = """
+
+The user wants this bot to say something about the user
+    reply = Given this dialogue {_dialogue} say something about the user
+    SAY {reply}
+
+""".strip()
+
+
 class TestConversation(TestCase):
     def test__single_utterance(self):
         interface = DummyInterface()
@@ -237,3 +246,18 @@ class TestConversation(TestCase):
         )
         asyncio.run(conversation_events.process_next())
         assert "doing well" in interface.get_utterances_list()[-1]
+
+    def test__dialogue_variable_works(self):
+        interface = DummyInterface(
+            ["my name is Albert0 and I am a carpenter", "say something about me"]
+        )
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(_wafl_dialogue_variable, logger=_logger),
+            interface=interface,
+            logger=_logger,
+        )
+        asyncio.run(conversation_events.process_next())
+        asyncio.run(conversation_events.process_next())
+        expected = "albert0"
+        print(interface.get_utterances_list())
+        assert expected in interface.get_utterances_list()[-1].lower()

@@ -123,9 +123,7 @@ class WebLoop:
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
         dialogue_items = [item[1] for item in dialogue_items]
-        conversation = (
-            "<div id='dialogue' class='dialogue shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
-        )
+        conversation = "<div id='dialogue' class='dialogue shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
         conversation += "".join(dialogue_items)
         conversation += "</div>"
         conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"

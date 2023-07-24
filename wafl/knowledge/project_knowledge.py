@@ -50,7 +50,7 @@ class ProjectKnowledge(BaseKnowledge):
         return to_return
 
     async def ask_for_facts_with_threshold(
-            self, query, is_from_user=False, knowledge_name=None, threshold=None
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
@@ -91,7 +91,7 @@ class ProjectKnowledge(BaseKnowledge):
         return rules
 
     async def has_better_match(
-            self, query_text: str, knowledge_name: str = None
+        self, query_text: str, knowledge_name: str = None
     ) -> bool:
         if not knowledge_name:
             knowledge_name = self.root_knowledge
@@ -130,7 +130,7 @@ class ProjectKnowledge(BaseKnowledge):
         return knowledge
 
     def _populate_knowledge_structure(
-            self, filename: str, dependency_dict: Dict[str, List[str]]
+        self, filename: str, dependency_dict: Dict[str, List[str]]
     ) -> Dict[str, SingleFileKnowledge]:
         knowledge_structure = {}
         with open(filename) as file:
