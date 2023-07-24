@@ -34,6 +34,13 @@ class WebLoop:
             conversation = await self._get_conversation()
             return conversation
 
+        @app.route("/reset_conversation", methods=["POST"])
+        async def reset_conversation():
+            self._interface.reset_history()
+            await self._interface.output("Hello. How may I help you?")
+            conversation = await self._get_conversation()
+            return conversation
+
         @app.route("/load_messages", methods=["POST"])
         async def load_messages():
             conversation = await self._get_conversation()
@@ -105,11 +112,11 @@ class WebLoop:
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
         dialogue_items = [item[1] for item in dialogue_items]
         conversation = (
-            "<div id='dialogue' class='dialogue shadow-sm overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+            "<div id='dialogue' class='dialogue shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
         )
         conversation += "".join(dialogue_items)
         conversation += "</div>"
-        conversation += "<div id='logs' class='logs shadow-sm overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+        conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
         conversation += "".join(choices_and_facts)
         conversation += "</div>"
         return conversation

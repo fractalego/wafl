@@ -6,8 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: lightblue;
-            color: #1a1a1a;
+            background: #f0f8ff;
+            color: black;
             font-family: monospace;
             font-size: 25px;
             padding-left: 30px;
@@ -70,18 +70,32 @@
             padding: 10px 10px;
         }
 
+        #default-sidebar a{
+            cursor: pointer;
+            text-align: left;
+        }
+
     </style>
 </head>
 <body>
 <div id="default-sidebar"
-       class="shadow-sm fixed top-0 left-0 z-40 w-15 h-screen transition-transform -translate-x-full sm:translate-x-0"
-       aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+     class="shadow-lg fixed top-0 left-0 z-40 w-15 h-screen transition-transform -translate-x-full sm:translate-x-0"
+     aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
             <li>
-                <a href="/"
-                   class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <span class="ml-1">&#x2302;</span>
+                <a title="Reset conversation"
+                   data-hx-post="/reset_conversation"
+                   hx-swap="innerHTML scroll:bottom"
+                   hx-target="#messages"
+                   class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group">
+                    <span class="ml-2"> &#x21bb;</span>
+                </a>
+            </li>
+            <li>
+                <a title="Reload rules"
+                   class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group">
+                    <span class="ml-2">&#128195;</span>
                 </a>
             </li>
         </ul>
