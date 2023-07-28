@@ -32,7 +32,7 @@ class LLMCodeCreatorConnector(BaseLLMConnector):
 
         function_name = function_name.split("=")[-1]
         retrieved_items = await self._knowledge.ask_for_facts(
-            Query.create_from_text(task), threshold=0.
+            Query.create_from_text(task), threshold=0.0
         )
         retrieved_items = "\n\n\n".join(
             [item.text for item in retrieved_items][::-1][:5]

@@ -669,7 +669,11 @@ class BackwardInference:
         if "=" not in cause_text:
             return Answer(text="False")
 
-        variable, prompt = cause_text.split("=")
+        position_of_assignment_operator = cause_text.find("=")
+        variable, prompt = (
+            cause_text[:position_of_assignment_operator].strip(),
+            cause_text[position_of_assignment_operator + 1 :].strip(),
+        )
         variable = variable.strip()
         prompt = prompt.strip()
         answer = await self._prompt_predictor.predict(prompt)
