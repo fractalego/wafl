@@ -40,6 +40,8 @@ class LLMChitChatAnswerConnector(BaseLLMConnector):
         prompt = f"""
 The user and the bot talk.
 The bot ends every utterance line with <|EOS|>.
+This bot answers are short and to the point. Do not use more than one sentence to reply.
+The bot should not repeat itself. Every reply should be different from the previous ones.
 some examples are as follows:
 
 
