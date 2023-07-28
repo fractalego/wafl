@@ -1,13 +1,16 @@
 ### TODO
 
-/* make all tests pass
-* REMOVE computer FROM UTTERANCES!! (after activation)
-
-* modify wafl_llm to have a config file for the models to use/download
-* add a standard variable for the dialogue history to be used in rules space
-* only files declared with #using can be used in rules
+* why does sqrt throw exception when eval(code)?
 * rewrite documentation
 * push to main!
+
+
+/* make all tests pass
+/* REMOVE computer FROM UTTERANCES!! (after activation)
+
+/* modify wafl_llm to have a config file for the models to use/download
+/* add a standard variable for the dialogue history to be used in rules space
+/* only files declared with #using can be used in rules
 
 
 * retrievers for in-context learning
