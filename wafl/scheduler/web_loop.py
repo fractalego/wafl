@@ -34,8 +34,19 @@ class WebLoop:
         async def handle_input():
             query = request.form["query"]
             self._interface.input_queue.append(query)
-            conversation = await self._get_conversation()
-            return conversation
+            return f"""
+<input autofocus name="query" id="query" class="input" type="text" placeholder="{query}"
+               data-hx-post="/input"
+               hx-swap="outerHTML"
+               hx-trigger="keyup[keyCode==13]">
+<div data-hx-post="/load_messages"
+         hx-swap="innerHTML"
+         hx-target="#messages"
+         hx-trigger="load"
+         style="display:none;"
+         >
+</div>            
+            """.strip()
 
         @app.route("/reset_conversation", methods=["POST"])
         async def reset_conversation():

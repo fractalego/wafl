@@ -108,7 +108,7 @@
     </div>
     <pre id="messages" class="grid grid-flow-col"
          data-hx-post="/load_messages"
-         hx-swap="innerHTML scroll:bottom"
+         hx-swap="innerHTML"
          hx-target="#messages"
          hx-trigger="every 1s"
     >
@@ -117,8 +117,7 @@
     <div class="controls">
         <input autofocus name="query" id="query" class="input" type="text" placeholder="Type here your query"
                data-hx-post="/input"
-               hx-swap="innerHTML scroll:bottom"
-               hx-target="#messages"
+               hx-swap="outerHTML"
                hx-trigger="keyup[keyCode==13]">
         <div style="display:inline-block;cursor:pointer;"
              data-hx-post="/thumbs_up"
