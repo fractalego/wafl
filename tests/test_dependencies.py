@@ -15,6 +15,7 @@ The user greets
   
 the user's name is alberto
   the user is italian
+
 """.strip()
 
 
@@ -131,4 +132,25 @@ class TestDependencies(TestCase):
         asyncio.run(conversation_events.process_next())
         print(interface.get_utterances_list())
         expected = "bot: Ciao!"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__rules_can_be_imported_using_prior_folders(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        interface = DummyInterface(
+            to_utter=[
+                "My name is Maria",
+            ]
+        )
+        knowledge = ProjectKnowledge(tmp_filename)
+        conversation_events = ConversationEvents(
+            ProjectKnowledge(tmp_filename),
+            interface=interface,
+            code_path=knowledge.get_dependencies_list(),
+        )
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        expected = "bot: The sky is green"
         assert interface.get_utterances_list()[-1] == expected

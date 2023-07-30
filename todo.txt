@@ -1,10 +1,15 @@
 ### TODO
 
-* why does sqrt throw exception when eval(code)?
+* add #using ../
+* make it so it is possible to navigate among levels of tasks
+   * e.g.: what is the name of the list? that's not what i meant
+* split bullet lists into lists for mapping onto a query
+   * add something for merging as well
+
 * rewrite documentation
 * push to main!
 
-
+/* why does sqrt throw exception when eval(code)?
 /* make all tests pass
 /* REMOVE computer FROM UTTERANCES!! (after activation)
 

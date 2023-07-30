@@ -1,0 +1,5 @@
+### v 0.0. 70
+
+* Added the keyword RETRIEVE to get list of relevant items from the knowledge base
+* On-the-spot rule generation
+* mapping lists onto queries
