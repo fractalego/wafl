@@ -1,14 +1,21 @@
 ### TODO
 
-* add #using ../
+
 * make it so it is possible to navigate among levels of tasks
    * e.g.: what is the name of the list? that's not what i meant
+   * INTERRUPTIONS: nevermind, nothing, no one, not what i meant
+   * questions: answering a question with a question should trigger a new resolution tree
+
 * split bullet lists into lists for mapping onto a query
    * add something for merging as well
+* add init-default (with modified wafl_home) and init (as empty)
 
 * rewrite documentation
 * push to main!
+* push wafl-llm to main
+  * and docker
 
+/* add #using ../
 /* why does sqrt throw exception when eval(code)?
 /* make all tests pass
 /* REMOVE computer FROM UTTERANCES!! (after activation)
@@ -30,8 +37,8 @@
   Find a good way to entail what you need.
 
   - Issues were:
-     - Tetriever is not very good. There are a lot other rules scooped up when asking for a task
-     - Interrution rule must not be used for tasks
+     - Retriever is not very good. There are a lot other rules scooped up when asking for a task
+     - Interruption rule must not be used for tasks
      - Text-generation tasks are understood as questions, therefore no text generation
 
 * Maybe you need to add text_generation task right before searching the answer in rules

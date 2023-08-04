@@ -161,6 +161,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
@@ -169,6 +172,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
@@ -177,6 +183,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers by asking the user: " + answer.text, depth)
             return answer
 
@@ -225,8 +234,6 @@ class BackwardInference:
 
         for rule in rules:
             index = 0
-            substitutions = {}
-
             substitutions = create_default_substitutions(self._interface)
             rule_effect_text = rule.effect.text
             knowledge_name = rule.knowledge_name
@@ -491,7 +498,7 @@ class BackwardInference:
                 await self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
-                if await self._query_has_better_match(user_input_text):
+                if await self._query_has_better_match(query.text, user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
                     task_text = (
                         await self._task_extractor.extract(user_input_text)
@@ -791,11 +798,38 @@ class BackwardInference:
         facts = await self._knowledge.ask_for_facts_with_threshold(query, threshold=0.5)
         return [Answer(text=item[0].text, variable=variable) for item in facts]
 
-    async def _query_has_better_match(self, text: str):
-        if is_question(text):
+    async def _query_has_better_match(
+        self,
+        query: str,
+        user_answer: str,
+    ):
+        if is_question(user_answer):
             return True
 
-        if await self._knowledge.has_better_match(text):
+        if await self._knowledge.has_better_match(user_answer):
             return True
 
         return False
+
+    async def _answer_makes_sense(
+        self, query: str, user_answer: str, entailer: "Entailer"
+    ):
+        result = await entailer.entails(
+            f"bot: {query} user: {user_answer}",
+            "the user refuses to answer",
+            threshold=0.9,
+            return_threshold=True
+        )
+        if result:
+            return False
+
+        result = await entailer.entails(
+            f"bot: {query} user: {user_answer}",
+            "The answer gives no information",
+            threshold=0.9,
+            return_threshold=True
+        )
+        if result:
+            return False
+
+        return True

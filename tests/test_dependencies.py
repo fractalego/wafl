@@ -28,7 +28,7 @@ class TestDependencies(TestCase):
         knowledge = ProjectKnowledge(tmp_filename)
         expected = {
             "/": ["/greetings"],
-            "/greetings": ["/facts", "/rules"],
+            "/greetings": ["/facts", "/rules", "/../backward_import"],
             "/greetings/facts": [],
             "/greetings/rules": [],
         }
@@ -40,7 +40,7 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         knowledge = ProjectKnowledge(tmp_filename)
-        expected = ["/", "/greetings", "/greetings/facts", "/greetings/rules"]
+        expected = ["/", "/greetings", "/greetings/facts", "/greetings/rules", "/greetings/../backward_import"]
         self.assertEqual(expected, list(knowledge._knowledge_dict.keys()))
 
     def test__rules_are_called_from_dependency_list(self):

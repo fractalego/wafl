@@ -1,3 +1,4 @@
+import functools
 from typing import Dict, Union
 from wafl.connectors.entailment_connector import EntailmentConnector
 
@@ -6,6 +7,7 @@ class Entailer:
     def __init__(self, logger=None):
         self._logger = logger
         self._connector = EntailmentConnector()
+        self._cache = {}
 
     async def get_relation(self, premise: str, hypothesis: str) -> Dict[str, float]:
         return await self._connector.predict(premise, hypothesis)
@@ -21,6 +23,10 @@ class Entailer:
         if self._logger:
             self._logger.write("Starting entailment procedure.")
 
+        arguments = (premise, hypothesis, threshold, contradiction_threshold, return_threshold)
+        if arguments in self._cache:
+            return self._cache[arguments]
+
         prediction = await self.get_relation(premise, hypothesis)
         if prediction["entailment"] > threshold:
             if self._logger:
@@ -29,8 +35,10 @@ class Entailer:
                 self._logger.write(f"Entailment: The results are {str(prediction)}")
 
             if return_threshold:
+                self._cache[arguments] = prediction["entailment"]
                 return prediction["entailment"]
 
+            self._cache[arguments] = "True"
             return "True"
 
         if prediction["contradiction"] < contradiction_threshold:
@@ -44,16 +52,21 @@ class Entailer:
 
         if prediction["entailment"] > threshold:
             if return_threshold:
+                self._cache[arguments] = prediction["entailment"]
                 return prediction["entailment"]
 
+            self._cache[arguments] = "True"
             return "True"
 
         if return_threshold:
+            self._cache[arguments] = 0
             return 0
 
         if prediction["neutral"] > threshold:
+            self._cache[arguments] = "Unknown"
             return "Unknown"
 
+        self._cache[arguments] = "False"
         return "False"
 
     async def is_neutral(

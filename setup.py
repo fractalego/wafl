@@ -51,7 +51,7 @@ setup(
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
         "fuzzywuzzy==0.18.0",
-        "PyAudio==0.2.11",
+        "PyAudio==0.2.13",
         "pyctcdecode==0.2.1",
         "num2words==0.5.12",
         "word2number==1.1",

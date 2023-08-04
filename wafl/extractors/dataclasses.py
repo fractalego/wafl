@@ -40,8 +40,8 @@ class Answer:
         return Answer(text="false")
 
     @staticmethod
-    def create_neutral():
-        return Answer(text="unknown")
+    def create_neutral(variable=None):
+        return Answer(text="unknown", variable=variable)
 
     @staticmethod
     def create_from_text(text):
