@@ -309,7 +309,7 @@ class BackwardInference:
 
                 if len(answers) > 1:
                     answer = Answer.create_from_text(
-                        str([item.text for item in answers])
+                        str([item.text for item in answers])[1:-1]
                     )
 
                 else:

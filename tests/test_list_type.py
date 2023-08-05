@@ -12,10 +12,10 @@ _rules = """
 
 the user wants to write a book
     theme = what is the book about?
-    list_of_chapters = Generate a Python list of 4 chapters names for a space opera book. The output needs to be a python list of strings:
-    SAY {list_of_chapters}
-    chapter_texts = Generate a full paragraph based on this chapter title "{list_of_chapters}". The theme of the paragraph is {theme}. Include the characters "Alberto" and "Maria". Write at least three sentences.
-    SAY {chapter_texts}
+    list_of_chapters = Generate a bullet list of 4 chapters names for a book. The theme of the book is {theme}.
+    SAY [{list_of_chapters}]
+    chapter_texts = Generate a full paragraph based on this chapter title "[{list_of_chapters}]". Include the characters "Alberto" and "Maria". Write at least three sentences.
+    SAY [{chapter_texts}]
 
 """
 

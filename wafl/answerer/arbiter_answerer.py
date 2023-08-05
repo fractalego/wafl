@@ -1,5 +1,3 @@
-import random
-
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.dialogue_answerer import DialogueAnswerer
 from wafl.answerer.inference_answerer import InferenceAnswerer
