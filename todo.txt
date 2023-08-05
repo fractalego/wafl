@@ -1,19 +1,23 @@
 ### TODO
 
 
-* make it so it is possible to navigate among levels of tasks
-   * e.g.: what is the name of the list? that's not what i meant
-   * INTERRUPTIONS: nevermind, nothing, no one, not what i meant
-   * questions: answering a question with a question should trigger a new resolution tree
-
 * split bullet lists into lists for mapping onto a query
    * add something for merging as well
+* If the inference fail, should you try to improvise?
 * add init-default (with modified wafl_home) and init (as empty)
 
 * rewrite documentation
 * push to main!
 * push wafl-llm to main
   * and docker
+
+
+
+/* make it so it is possible to navigate among levels of tasks
+/   * e.g.: what is the name of the list? that's not what i meant
+/   * INTERRUPTIONS: nevermind, nothing, no one, not what i meant
+/   * questions: answering a question with a question should trigger a new resolution tree
+    -> resolution: before answer_is_informative() I added an entailment check whether the answer makes sense/user doesn't want to answer
 
 /* add #using ../
 /* why does sqrt throw exception when eval(code)?

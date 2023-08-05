@@ -29,6 +29,7 @@ class TestDependencies(TestCase):
         expected = {
             "/": ["/greetings"],
             "/greetings": ["/facts", "/rules", "/../backward_import"],
+            '/greetings/../backward_import': [],
             "/greetings/facts": [],
             "/greetings/rules": [],
         }
