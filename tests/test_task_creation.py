@@ -123,7 +123,7 @@ def list_subfolders(folder_name):
 
     subfolders = []
     for subfolder in os.listdir(folder_name):
-        if os.path.isdir(subfolder):
+        if os.path.isdir(os.path.join(folder_name, subfolder)):
             subfolders.append(subfolder)
     return subfolders
             """.strip()

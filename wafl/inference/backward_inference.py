@@ -53,7 +53,7 @@ class BackwardInference:
         narrator: "Narrator",
         module_names=None,
         max_depth: int = 3,
-        generate_rules: bool = True,
+        generate_rules: bool = False,
         logger=None,
     ):
         self._max_depth = max_depth
@@ -161,7 +161,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
-            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
                 answer = Answer.create_neutral(variable=answer.variable)
 
             self._log("Answers in working memory: " + answer.text, depth)
@@ -172,7 +174,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
-            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
                 answer = Answer.create_neutral(variable=answer.variable)
 
             self._log("Answers in working memory: " + answer.text, depth)
@@ -183,7 +187,9 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
-            if not await self._answer_makes_sense(query.text, answer.text, self._extractor.get_entailer()):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
                 answer = Answer.create_neutral(variable=answer.variable)
 
             self._log("Answers by asking the user: " + answer.text, depth)
@@ -220,7 +226,7 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        if not rules and self._generate_rules and policy.improvise:
+        if not rules and self._generate_rules:
             self._log(f"Creating rules for the task: {query.text}", depth)
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
@@ -818,7 +824,7 @@ class BackwardInference:
             f"bot: {query} user: {user_answer}",
             "the user refuses to answer",
             threshold=0.9,
-            return_threshold=True
+            return_threshold=True,
         )
         if result:
             return False
@@ -827,7 +833,7 @@ class BackwardInference:
             f"bot: {query} user: {user_answer}",
             "The answer gives no information",
             threshold=0.9,
-            return_threshold=True
+            return_threshold=True,
         )
         if result:
             return False

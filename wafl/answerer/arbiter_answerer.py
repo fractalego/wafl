@@ -2,10 +2,12 @@ import random
 
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.dialogue_answerer import DialogueAnswerer
+from wafl.answerer.inference_answerer import InferenceAnswerer
 from wafl.config import Configuration
 from wafl.events.narrator import Narrator
 from wafl.extractors.entailer import Entailer
 from wafl.extractors.task_extractor import TaskExtractor
+from wafl.inference.backward_inference import BackwardInference
 from wafl.inference.utils import answer_is_informative
 from wafl.extractors.dataclasses import Answer, Query
 
@@ -28,27 +30,16 @@ class ArbiterAnswerer(BaseAnswerer):
             Query.create_from_text(task.text),
             knowledge_name="/",
         ):
-            return Answer(text="unknown")
+            simple_task += ". There is a rule for that request."
 
-        if await self._knowledge.ask_for_rule_backward(
+        elif await self._knowledge.ask_for_rule_backward(
             Query.create_from_text(simple_task),
             knowledge_name="/",
         ):
-            return Answer(text="unknown")
+            simple_task += ". There is a rule for that request."
 
-        if (
-            not task.is_neutral()
-            and self._config.get_value("improvise_tasks")
-            and await self._entailer.entails(
-                simple_task,
-                f"The user gives an order or request",
-                return_threshold=True,
-                threshold=0.95,
-            )
-        ):
-            self._interface.bot_has_spoken(False)
-            policy.improvise = True
-            return Answer(text="unknown")
+        else:
+            simple_task += ". There is no rule for that request."
 
         score = 1
         keys_and_scores = []
@@ -79,9 +70,48 @@ class ArbiterAnswerer(BaseAnswerer):
 
     @staticmethod
     def create_answerer(knowledge, interface, code_path, logger):
+        narrator = Narrator(interface)
         return ArbiterAnswerer(
             {
-                "The user chats": DialogueAnswerer(knowledge, interface, logger),
+                "The user makes small talk and there is no rule for that query": DialogueAnswerer(
+                    knowledge, interface, logger
+                ),
+                "The user gives an order or request and there is a rule for that query": InferenceAnswerer(
+                    interface,
+                    BackwardInference(
+                        knowledge,
+                        interface,
+                        narrator,
+                        code_path,
+                        logger=logger,
+                        generate_rules=False,
+                    ),
+                    logger,
+                ),
+                "The user gives an order or request and there is no rule for that query": InferenceAnswerer(
+                    interface,
+                    BackwardInference(
+                        knowledge,
+                        interface,
+                        narrator,
+                        code_path,
+                        logger=logger,
+                        generate_rules=True,
+                    ),
+                    logger,
+                ),
+                "The user gives a command and and there is no rule for that query": InferenceAnswerer(
+                    interface,
+                    BackwardInference(
+                        knowledge,
+                        interface,
+                        narrator,
+                        code_path,
+                        logger=logger,
+                        generate_rules=True,
+                    ),
+                    logger,
+                ),
             },
             knowledge,
             interface,

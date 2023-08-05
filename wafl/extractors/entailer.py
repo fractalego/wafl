@@ -23,7 +23,13 @@ class Entailer:
         if self._logger:
             self._logger.write("Starting entailment procedure.")
 
-        arguments = (premise, hypothesis, threshold, contradiction_threshold, return_threshold)
+        arguments = (
+            premise,
+            hypothesis,
+            threshold,
+            contradiction_threshold,
+            return_threshold,
+        )
         if arguments in self._cache:
             return self._cache[arguments]
 
