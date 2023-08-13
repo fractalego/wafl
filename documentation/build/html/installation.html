@@ -86,12 +86,12 @@ Both can be installed on the same machine.</p>
 <h2>Interface side<a class="headerlink" href="#interface-side" title="Permalink to this heading"></a></h2>
 <p>The first part is local to your machine and needs to have access to a microphone and speaker.
 To install it, run the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>portaudio19-dev<span class="w"> </span>ffmpeg
-pip<span class="w"> </span>install<span class="w"> </span>wafl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>portaudio19-dev<span class="w"> </span>ffmpeg
+$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>wafl
 </pre></div>
 </div>
 <p>After installing the requirements, you can initialize the interface by running the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wafl<span class="w"> </span>init
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wafl<span class="w"> </span>init
 </pre></div>
 </div>
 <p>which creates a <cite>config.json</cite> file that you can edit to change the default settings.
@@ -100,10 +100,10 @@ Please see the examples in the following chapters.</p>
 </section>
 <section id="llm-side-needs-a-gpu">
 <h2>LLM side (needs a GPU)<a class="headerlink" href="#llm-side-needs-a-gpu" title="Permalink to this heading"></a></h2>
-<p>The second part is a server that runs on a machine with a public IP address.
+<p>The second part is a server that runs on a machine accessible from the interface side.
 This last machine will need to have a GPU to run the Large Language Model at a convenient speed.
 This part can be run using a docker image by running the script</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-p8080:8080<span class="w"> </span>--env<span class="w"> </span><span class="nv">NVIDIA_DISABLE_REQUIRE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>fractalego/wafl-llm:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p8080:8080<span class="w"> </span>--env<span class="w"> </span><span class="nv">NVIDIA_DISABLE_REQUIRE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>fractalego/wafl-llm:latest
 </pre></div>
 </div>
 <p>The interface side has a <cite>config.json</cite> file that needs to be filled with the IP address of the LLM side.

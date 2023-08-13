@@ -1,17 +1,23 @@
 ### TODO
 
+* rewrite documentation
+   * talk about the system will improvise the rules
+   * explain arbiter pipeline
 
-* split bullet lists into lists for mapping onto a query
-   * add something for merging as well
-* If the inference fail, should you try to improvise?
 * add init-default (with modified wafl_home) and init (as empty)
 
-* rewrite documentation
+
 * push to main!
 * push wafl-llm to main
   * and docker
 
+* add import from files in rules space
+* make stand-alone connectors (no need for server-side)
 
+
+/* split bullet lists into lists for mapping onto a query
+/   * add something for merging as well
+/* If the inference fail, should you try to improvise?
 
 /* make it so it is possible to navigate among levels of tasks
 /   * e.g.: what is the name of the list? that's not what i meant

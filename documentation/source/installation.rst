@@ -9,7 +9,7 @@ Both can be installed on the same machine.
    :align: center
 
 Interface side
----------
+--------------
 
 The first part is local to your machine and needs to have access to a microphone and speaker.
 To install it, run the following commands:
