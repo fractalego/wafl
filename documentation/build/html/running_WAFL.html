@@ -45,10 +45,10 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Running WAFL</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#wafl-run-audio">wafl run-audio</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#wafl-run-server">wafl run-server</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#wafl-run-cli">wafl run-cli</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#wafl-run-tests">wafl run-tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wafl-run-audio">$ wafl run-audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wafl-run-server">$ wafl run-server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wafl-run-cli">$ wafl run-cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wafl-run-tests">$ wafl run-tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -83,25 +83,24 @@
 <h1>Running WAFL<a class="headerlink" href="#running-wafl" title="Permalink to this heading"></a></h1>
 <p>This document contains a few examples of how to use the <cite>wafl</cite> CLI.
 There are four modes in which to run the system</p>
-<img alt="Basic CLI commands" class="align-center" src="_images/wafl-commands.png" />
 <section id="wafl-run-audio">
-<h2>wafl run-audio<a class="headerlink" href="#wafl-run-audio" title="Permalink to this heading"></a></h2>
-<p>This is the main mode of operation. It will run the system in a loop, waiting for the user to speak a command.
+<h2>$ wafl run-audio<a class="headerlink" href="#wafl-run-audio" title="Permalink to this heading"></a></h2>
+<p>It will run the system in a loop, waiting for the user to speak a command.
 The activation word is the name defined in config.json.
 The default name is “computer”, but you can change it to whatever you want.</p>
 </section>
 <section id="wafl-run-server">
-<h2>wafl run-server<a class="headerlink" href="#wafl-run-server" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-server<a class="headerlink" href="#wafl-run-server" title="Permalink to this heading"></a></h2>
 <p>It runs a local web server that listens for HTTP requests on port 8889.
 The server will act as a chatbot, executing commands and returning the result as defined in the rules.</p>
 </section>
 <section id="wafl-run-cli">
-<h2>wafl run-cli<a class="headerlink" href="#wafl-run-cli" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-cli<a class="headerlink" href="#wafl-run-cli" title="Permalink to this heading"></a></h2>
 <p>This command works as for the run-server command, but it will listen for commands on the command line.
 It does not run a webserver and is useful for testing purposes.</p>
 </section>
 <section id="wafl-run-tests">
-<h2>wafl run-tests<a class="headerlink" href="#wafl-run-tests" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-tests<a class="headerlink" href="#wafl-run-tests" title="Permalink to this heading"></a></h2>
 <p>This command will run all the tests defined in the file testcases.txt.</p>
 </section>
 </section>
