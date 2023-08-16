@@ -39,5 +39,5 @@ Only the rules and facts that are included will be part of the inference.
 For example, the keyword `#using facts` within greetings/ (2) will not include the folder above it.
 Inference in a subfolder is limited the the rules and facts that are part of that folder or below it.
 
-For more information, you can have a look at the (still early) project in
+For more complete example, you can have a look at the (still early) project in
 `wafl_home <https://github.com/fractalego/wafl_home>`_.

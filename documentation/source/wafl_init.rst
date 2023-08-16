@@ -1,7 +1,7 @@
-Running wafl init
------------------
+Initialization
+--------------
 
-What does this command do?
+This command initialises WAFL's work environment
 
 .. code-block:: bash
 
@@ -39,7 +39,7 @@ It creates a set of files that can be used to the interface side of WAFL.
 
 
 - The rules.wafl file contains the rules that guide the chatbot.
-The rules are written in the WAFL language, with a trigger condition on top and a list of actions below.
+  The rules are written in the WAFL language, with a trigger condition on top and a list of actions below.
 
 .. code-block:: text
 
