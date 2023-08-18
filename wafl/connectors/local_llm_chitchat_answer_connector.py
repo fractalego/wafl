@@ -2,13 +2,13 @@ import asyncio
 import os
 import re
 
-from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.connectors.local_llm_connector import LocalLLMConnector
 from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
 
-class LLMChitChatAnswerConnector(BaseLLMConnector):
+class LocalLLMChitChatAnswerConnector(LocalLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 

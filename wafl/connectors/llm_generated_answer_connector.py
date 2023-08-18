@@ -1,7 +1,7 @@
-from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.connectors.remote_llm_connector import RemoteLLMConnector
 
 
-class LLMGeneratedAnswerConnector(BaseLLMConnector):
+class LLMGeneratedAnswerConnector(RemoteLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
 

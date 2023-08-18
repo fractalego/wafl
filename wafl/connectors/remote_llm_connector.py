@@ -10,7 +10,7 @@ from wafl.config import Configuration
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 
-class BaseLLMConnector:
+class RemoteLLMConnector:
     _max_tries = 3
     _max_reply_length = 500
     _num_prediction_tokens = 200
@@ -56,24 +56,6 @@ class BaseLLMConnector:
 
         return "UNKNOWN"
 
-    async def check_connection(self):
-        payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
-        try:
-            async with aiohttp.ClientSession(
-                conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
-            ) as session:
-                async with session.post(self._server_url, json=payload) as response:
-                    await response.text()
-                    return True
-
-        except aiohttp.client.InvalidURL:
-            print()
-            print("Is the wafl-llm running?")
-            print("Please run 'bash start-llm.sh' (see docs for explanation).")
-            print()
-
-        return False
-
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         print(__name__)
         start_time = time.time()
@@ -116,6 +98,24 @@ class BaseLLMConnector:
             candidate_answer = "unknown"
 
         return candidate_answer
+
+    async def check_connection(self):
+        payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
+        try:
+            async with aiohttp.ClientSession(
+                conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
+            ) as session:
+                async with session.post(self._server_url, json=payload) as response:
+                    await response.text()
+                    return True
+
+        except aiohttp.client.InvalidURL:
+            print()
+            print("Is the wafl-llm running?")
+            print("Please run 'bash start-llm.sh' (see docs for explanation).")
+            print()
+
+        return False
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         raise NotImplementedError("_get_answer_prompt() needs to be implemented.")

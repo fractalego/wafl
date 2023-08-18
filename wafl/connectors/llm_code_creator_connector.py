@@ -1,13 +1,13 @@
 import asyncio
 import os
 
-from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.connectors.remote_llm_connector import RemoteLLMConnector
 from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
 
-class LLMCodeCreatorConnector(BaseLLMConnector):
+class LLMCodeCreatorConnector(RemoteLLMConnector):
     def __init__(self, config=None):
         super().__init__(config)
         try:
