@@ -6,8 +6,6 @@ import time
 import numpy as np
 import torch.cuda
 
-from wafl.connectors.whisper_connector import WhisperConnector
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -21,14 +19,14 @@ class WhisperListener:
     _starting_tokens = [50257, 50362]
     _ending_tokens = [50256]
 
-    def __init__(self):
+    def __init__(self, connector):
         self._p = pyaudio.PyAudio()
         self._volume_threshold = 1
         self._original_volume_threshold = self._volume_threshold
         self._timeout = 1
         self._max_timeout = 4
         self._hotword_threshold = -8
-        self._connector = WhisperConnector()
+        self._connector = connector
         self._hotwords = list()
         self.is_active = False
         self._last_waveform = None

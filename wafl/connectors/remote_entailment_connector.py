@@ -1,22 +1,17 @@
-from typing import Dict
-
 import aiohttp
 import asyncio
 import json
 
-from wafl.config import Configuration
+from typing import Dict
 
 
-class WhisperConnector:
+class RemoteEntailmentConnector:
     _max_tries = 3
 
-    def __init__(self, config=None):
-        if not config:
-            config = Configuration.load_local_config()
-
+    def __init__(self, config):
         self._server_url = (
-            f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/whisper"
+            f"https://{config.get_value('entailment_model')['model_host']}:"
+            f"{config.get_value('entailment_model')['model_port']}/predictions/entailment"
         )
         try:
             loop = asyncio.get_running_loop()
@@ -29,13 +24,13 @@ class WhisperConnector:
         ):
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
-    async def predict(self, waveform, hotword=None) -> Dict[str, float]:
-        payload = {
-            "waveform": waveform.tolist(),
-            "num_beams": 3,
-            "num_tokens": 15,
-            "hotword": hotword,
-        }
+        self._cache = {}
+
+    async def predict(self, premise: str, hypothesis: str) -> Dict[str, float]:
+        if (premise, hypothesis) in self._cache:
+            return self._cache[(premise, hypothesis)]
+
+        payload = {"premise": premise, "hypothesis": hypothesis}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False)
@@ -43,19 +38,19 @@ class WhisperConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     prediction = json.loads(data)
-                    transcription = prediction["transcription"]
-                    score = prediction["score"]
-                    logp = prediction["logp"]
-                    return {
-                        "transcription": transcription,
-                        "score": score,
-                        "logp": logp,
+                    label_names = ["entailment", "neutral", "contradiction"]
+                    answer = {
+                        name: float(pred) for pred, name in zip(prediction, label_names)
                     }
+                    if (premise, hypothesis) not in self._cache:
+                        self._cache[(premise, hypothesis)] = answer
 
-        return {"transcription": "", "score": 0.0}
+                    return answer
+
+        return "UNKNOWN"
 
     async def check_connection(self):
-        payload = {"waveform": [0], "num_beams": 3, "num_tokens": 15}
+        payload = {"premise": "hello", "hypothesis": "a greeting"}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
@@ -66,7 +61,7 @@ class WhisperConnector:
 
         except aiohttp.client.InvalidURL:
             print()
-            print("Is the whisper server running?")
+            print("Is the entailment server running?")
             print("Please run 'bash start-llm.sh' (see docs for explanation).")
             print()
 

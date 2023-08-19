@@ -1,0 +1,57 @@
+{
+  "allow_interruptions": true,
+  "waking_up_word": "computer",
+  "waking_up_sound": true,
+  "deactivate_sound": true,
+  "improvise_tasks": true,
+  "llm_model": {
+    "model_is_local": true,
+    "local_model": "mosaicml/mpt-7b-instruct",
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    }
+  },
+  "listener_model": {
+    "model_is_local": true,
+    "local_model": "fractalego/personal-whisper-medium.en-model",
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    },
+    "listener_hotword_logp": -8,
+    "listener_volume_threshold": 0.6,
+    "listener_silence_timeout": 0.7
+  },
+  "speaker_model": {
+    "model_is_local": true,
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    }
+  },
+  "entailment_model": {
+    "model_is_local": true,
+    "local_model": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli",
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    }
+  },
+  "text_embedding_model": {
+    "model_is_local": true,
+    "local_model": "msmarco-distilbert-base-v3",
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    }
+  },
+  "qa_embedding_model": {
+    "model_is_local": true,
+    "local_model": "multi-qa-distilbert-dot-v1",
+    "remote_model": {
+      "model_host": "localhost",
+      "model_port": 8080
+    }
+  }
+}

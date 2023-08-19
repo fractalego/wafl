@@ -67,3 +67,14 @@ class Configuration:
                 "Cannot load 'config.json'. Does the file exist in the execution path?"
             )
             exit(0)
+
+    @classmethod
+    def load_from_filename(cls, filename):
+        try:
+            return cls(filename)
+
+        except FileNotFoundError:
+            print(
+                f"Cannot load '{filename}'. Does the file exist in the execution path?"
+            )
+            exit(0)
