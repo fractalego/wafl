@@ -1,14 +1,13 @@
 import asyncio
 import pyaudio
 
-from wafl.connectors.speaker_connector import SpeakerConnector
 from wafl.speaker.base_speaker import BaseSpeaker
 from wafl.speaker.utils import convert_numbers_to_words
 
 
 class FairSeqSpeaker(BaseSpeaker):
-    def __init__(self):
-        self._connector = SpeakerConnector()
+    def __init__(self, connector):
+        self._connector = connector
         self._p = pyaudio.PyAudio()
 
     async def speak(self, text):

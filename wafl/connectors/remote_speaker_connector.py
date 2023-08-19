@@ -4,19 +4,15 @@ import asyncio
 import json
 
 from typing import Dict
-from wafl.config import Configuration
 
 
-class SpeakerConnector:
+class RemoteSpeakerConnector:
     _max_tries = 3
 
-    def __init__(self, config=None):
-        if not config:
-            config = Configuration.load_local_config()
-
+    def __init__(self, config):
         self._server_url = (
-            f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/speaker"
+            f"https://{config.get_value('listener_model')['model_host']}:"
+            f"{config.get_value('listener_model')['model_port']}/predictions/speaker"
         )
         try:
             loop = asyncio.get_running_loop()
@@ -27,7 +23,7 @@ class SpeakerConnector:
         if (not loop or (loop and not loop.is_running())) and not asyncio.run(
             self.check_connection()
         ):
-            raise RuntimeError("Cannot connect a running Entailment Model.")
+            raise RuntimeError("Cannot connect a running Speaker Model.")
 
     async def predict(self, text: str) -> Dict[str, float]:
         payload = {"text": text}

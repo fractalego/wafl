@@ -10,11 +10,13 @@ from wafl.config import Configuration
 from wafl.connectors.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.connectors.local_entailment_connector import LocalEntailmentConnector
 from wafl.connectors.local_llm_connector import LocalLLMConnector
+from wafl.connectors.local_speaker_connector import LocalSpeakerConnector
 from wafl.connectors.local_whisper_connector import LocalWhisperConnector
 from wafl.connectors.remote_llm_connector import RemoteLLMConnector
 from wafl.connectors.llm_qa_connector import LLMQAConnector
 from wafl.extractors.entailer import Entailer
 from wafl.listener.whisper_listener import WhisperListener
+from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 
 _path = os.path.dirname(__file__)
 
@@ -107,3 +109,10 @@ Complete the following task and add <|EOS|> at the end: {text}
         print(result)
         expected = "DELETE BATTERIES FROM THE GROCERY LIST"
         assert expected.lower() in result
+
+    def test__speaker_local_connector(self):
+        config = Configuration.load_from_filename("local_config.json")
+        connector = LocalSpeakerConnector(config)
+        speaker = FairSeqSpeaker(connector)
+        text = "Hello world"
+        asyncio.run(speaker.speak(text))

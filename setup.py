@@ -58,6 +58,7 @@ setup(
         "aiohttp==3.8.4",
         "einops==0.6.1",
         "sentence_transformers==2.2.2",
+        "fairseq==0.12.2",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

@@ -1,7 +1,8 @@
-from typing import Dict
-
 import torch
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from typing import Dict
+
+_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class LocalWhisperConnector:
@@ -11,6 +12,7 @@ class LocalWhisperConnector:
         model_name = config.get_value("listener_model")["local_model"]
         global model, processor
         self.model = WhisperForConditionalGeneration.from_pretrained(model_name)
+        self.model.to(_device)
         self.processor = WhisperProcessor.from_pretrained(model_name)
         self._starting_tokens = self.processor.tokenizer.convert_tokens_to_ids(
             ["<|startoftranscript|>", "<|notimestamps|>"]
@@ -37,10 +39,11 @@ class LocalWhisperConnector:
             ).unsqueeze(0)
 
         output = self.model.generate(
-            input_features,
+            input_features.to(_device),
             num_beams=num_beams,
             return_dict_in_generate=True,
-            output_scores=True,            max_length=num_tokens,
+            output_scores=True,
+            max_length=num_tokens,
         )
         transcription = self.processor.batch_decode(
             output.sequences, skip_special_tokens=True
@@ -60,7 +63,7 @@ class LocalWhisperConnector:
         input_ids = torch.tensor([self._starting_tokens]).cuda()
         for _ in range(hotword_tokens.shape[1]):
             logits = self.model(
-                input_features,
+                input_features.to(_device),
                 decoder_input_ids=input_ids,
             ).logits
             new_token = torch.argmax(logits, dim=-1)

@@ -4,7 +4,6 @@ import torch
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import StoppingCriteria
-
 from wafl.config import Configuration
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
