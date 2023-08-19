@@ -1,16 +1,19 @@
 import asyncio
+import csv
+
+import joblib
 import os
 import re
 
-from wafl.connectors.local_llm_connector import LocalLLMConnector
 from wafl.extractors.dataclasses import Query
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 
 
-class LocalLLMChitChatAnswerConnector(LocalLLMConnector):
-    def __init__(self, config=None):
-        super().__init__(config)
+class LLMChitChatAnswerBridge:
+    def __init__(self, llm_connector):
+        self._llm_connector = llm_connector
 
         try:
             loop = asyncio.get_running_loop()
@@ -25,6 +28,10 @@ class LocalLLMChitChatAnswerConnector(LocalLLMConnector):
             self._knowledge = asyncio.run(
                 self._load_knowledge_from_file("dialogues", _path)
             )
+
+    async def get_answer(self, text: str, dialogue: str, query: str) -> str:
+        prompt = await self._get_answer_prompt(text, query, dialogue)
+        return await self._llm_connector.generate(prompt)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         if not self._knowledge:
@@ -53,3 +60,14 @@ In the dialogue below a user is speaking to a bot:
 bot:
         """.strip()
         return prompt
+
+    async def _load_knowledge_from_file(self, filename, _path=None):
+        items_list = []
+        with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
+            csvreader = csv.reader(file)
+            for row in csvreader:
+                items_list.append(row[0].strip())
+
+        knowledge = await SingleFileKnowledge.create_from_list(items_list)
+        joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
+        return knowledge

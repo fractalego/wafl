@@ -1,5 +1,9 @@
 ### TODO
 
+* make stand-alone connectors (no need for server-side)
+  * modify config for all connectors
+  * check remote connectors work!
+
 * rewrite documentation
    * talk about how the system will improvises rules
    * explain arbiter pipeline
@@ -13,7 +17,7 @@
   * and docker
 
 * add import from files in rules space
-* make stand-alone connectors (no need for server-side)
+
 
 
 /* split bullet lists into lists for mapping onto a query

@@ -57,6 +57,7 @@ setup(
         "word2number==1.1",
         "aiohttp==3.8.4",
         "einops==0.6.1",
+        "sentence_transformers==2.2.2",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

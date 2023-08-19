@@ -1,7 +1,7 @@
 import time
 
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.connectors.local_llm_chitchat_answer_connector import RemoteLLMChitChatAnswerConnector
+from wafl.connectors.llm_chitchat_answer_bridge import RemoteLLMChitChatAnswerConnector
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 

@@ -1,25 +1,17 @@
 import aiohttp
 import asyncio
 import json
+import numpy as np
 
 from typing import Dict, List
 
-import numpy as np
 
-from wafl.config import Configuration
-
-
-class SentenceEmbedderConnector:
+class RemoteSentenceEmbedderConnector:
     _max_tries = 3
 
-    def __init__(self, config=None):
-        if not config:
-            config = Configuration.load_local_config()
-
-        self._server_url = (
-            f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/sentence_embedder"
-        )
+    def __init__(self, host, port, model_name):
+        self._model_name = model_name
+        self._server_url = f"https://{host}:" f"{port}/predictions/sentence_embedder"
         try:
             loop = asyncio.get_running_loop()
 
@@ -31,8 +23,8 @@ class SentenceEmbedderConnector:
         ):
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
-    async def predict(self, text: str, model_name: str) -> Dict[str, List[float]]:
-        payload = {"text": text, "model_name": model_name}
+    async def predict(self, text: str) -> Dict[str, List[float]]:
+        payload = {"text": text, "model_name": self._model_name}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False)

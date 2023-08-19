@@ -4,6 +4,7 @@ from typing import List
 
 import nltk
 
+from wafl.config import Configuration
 from wafl.facts import Fact
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
@@ -38,18 +39,21 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_partial_facts = 0.48
     _max_rules_per_type = 3
 
-    def __init__(self, rules_text=None, knowledge_name=None, logger=None):
+    def __init__(self, config, rules_text=None, knowledge_name=None, logger=None):
         self._logger = logger
         self._facts_dict = {}
         self._rules_dict = {}
-        self._facts_retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        self._facts_retriever = DenseRetriever("text_embedding_model", config)
         self._facts_retriever_for_questions = DenseRetriever(
-            "multi-qa-distilbert-dot-v1"
+            "qa_embedding_model",
+            config,
         )
         self._entailer = Entailer(logger)
-        self._rules_incomplete_retriever = DenseRetriever("msmarco-distilbert-base-v3")
-        self._rules_fact_retriever = DenseRetriever("msmarco-distilbert-base-v3")
-        self._rules_question_retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        self._rules_incomplete_retriever = DenseRetriever(
+            "text_embedding_model", config
+        )
+        self._rules_fact_retriever = DenseRetriever("text_embedding_model", config)
+        self._rules_question_retriever = DenseRetriever("text_embedding_model", config)
         self._rules_string_retriever = StringRetriever()
         knowledge_name = knowledge_name if knowledge_name else self.root_knowledge
         if rules_text:
@@ -227,7 +231,8 @@ class SingleFileKnowledge(BaseKnowledge):
 
     @staticmethod
     async def create_from_list(facts: List[str]) -> "SingleFileKnowledge":
-        knowledge = SingleFileKnowledge()
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config)
         for index, fact in enumerate(facts):
             await knowledge.add(fact)
 

@@ -4,6 +4,7 @@ import os
 from unittest import TestCase
 
 from wafl.config import Configuration
+from wafl.connectors.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.connectors.local_llm_connector import LocalLLMConnector
 from wafl.connectors.remote_llm_connector import RemoteLLMConnector
 from wafl.connectors.llm_qa_connector import LLMQAConnector
@@ -73,3 +74,11 @@ Complete the following task and add <|EOS|> at the end: {text}
         prediction = asyncio.run(connector.predict(prompt))
         print(prediction)
         assert len(prediction) > 0
+
+    def test__chit_chat_bridge_can_run_locally(self):
+        config = Configuration.load_local_config()
+        connector = LocalLLMConnector(config)
+        dialogue_bridge = LLMChitChatAnswerBridge(connector)
+        answer = asyncio.run(dialogue_bridge.get_answer("", "", "bot: hello"))
+        print(answer)
+        assert len(answer) > 0

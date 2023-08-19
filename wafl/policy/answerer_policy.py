@@ -1,4 +1,6 @@
-from wafl.connectors.remote_llm_answer_policy_connector import RemoteLLMAnswerPolicyConnector
+from wafl.connectors.remote_llm_answer_policy_connector import (
+    RemoteLLMAnswerPolicyConnector,
+)
 
 
 class AnswerPolicy:
