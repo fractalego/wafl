@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
@@ -25,8 +27,9 @@ class TestCommonSense(TestCase):
                 "Please add apples to the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )

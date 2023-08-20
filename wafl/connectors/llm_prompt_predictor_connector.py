@@ -2,7 +2,7 @@ from wafl.connectors.remote_llm_connector import RemoteLLMConnector
 
 
 class LLMPromptPredictorConnector(RemoteLLMConnector):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):

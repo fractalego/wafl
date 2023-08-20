@@ -16,14 +16,10 @@ class RemoteLLMConnector:
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config=None):
-        if not config:
-            config = Configuration.load_local_config()
-
-        self._server_url = (
-            f"https://{config.get_value('model_host')}:"
-            f"{config.get_value('model_port')}/predictions/bot"
-        )
+    def __init__(self, config):
+        host = config["remote_model"]["model_host"]
+        port = config["remote_model"]["model_port"]
+        self._server_url = f"https://{host}:{port}/predictions/bot"
 
         try:
             loop = asyncio.get_running_loop()

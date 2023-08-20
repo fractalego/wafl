@@ -9,8 +9,8 @@ _logger = logging.getLogger(__file__)
 
 
 class TaskCreator:
-    def __init__(self, knowledge, logger=None):
-        self._connector = LLMTaskCreatorConnector()
+    def __init__(self, config, knowledge, logger=None):
+        self._connector = LLMTaskCreatorConnector(config.get_value("llm_model"))
         self._knowledge = knowledge
         self._logger = logger
 

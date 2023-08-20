@@ -1,16 +1,17 @@
 import time
 
 from wafl.answerer.base_answerer import BaseAnswerer
+from wafl.connectors.llm_connector_factory import LLMConnectorFactory
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 
 
 class DialogueAnswerer(BaseAnswerer):
-    def __init__(self, knowledge, interface, connector, logger):
+    def __init__(self, config, knowledge, interface, logger):
+        self._connector = LLMConnectorFactory.get_connector(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
-        self._connector = connector
         self._max_num_past_utterances = 7
 
     async def answer(self, query_text, policy):

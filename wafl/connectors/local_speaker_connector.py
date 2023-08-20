@@ -9,7 +9,7 @@ _device = "cuda" if torch.cuda.is_available() else "cpu"
 
 class LocalSpeakerConnector:
     def __init__(self, config):
-        model_name = config.get_value("listener_model")["speaker_model"]
+        model_name = config["local_model"]
         global model
         models, cfg, self._task = load_model_ensemble_and_task_from_hf_hub(
             model_name,

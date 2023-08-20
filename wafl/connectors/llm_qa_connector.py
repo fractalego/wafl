@@ -8,7 +8,7 @@ _path = os.path.dirname(__file__)
 
 
 class LLMQAConnector(RemoteLLMConnector):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config)
         try:
             loop = asyncio.get_running_loop()

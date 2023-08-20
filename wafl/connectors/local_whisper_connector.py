@@ -9,7 +9,7 @@ class LocalWhisperConnector:
     _max_tries = 3
 
     def __init__(self, config):
-        model_name = config.get_value("listener_model")["local_model"]
+        model_name = config["local_model"]
         global model, processor
         self.model = WhisperForConditionalGeneration.from_pretrained(model_name)
         self.model.to(_device)

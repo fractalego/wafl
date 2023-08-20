@@ -10,8 +10,8 @@ class RemoteEntailmentConnector:
 
     def __init__(self, config):
         self._server_url = (
-            f"https://{config.get_value('entailment_model')['model_host']}:"
-            f"{config.get_value('entailment_model')['model_port']}/predictions/entailment"
+            f"https://{config['remote_model']['model_host']}:"
+            f"{config['remote_model']['model_port']}/predictions/entailment"
         )
         try:
             loop = asyncio.get_running_loop()

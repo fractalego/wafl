@@ -10,7 +10,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 class LocalEntailmentConnector:
     def __init__(self, config):
         global model, tokenizer
-        model_name = config.get_value("entailment_model")["local_model"]
+        model_name = config["local_model"]
         model = AutoModelForSequenceClassification.from_pretrained(model_name)
         model.to(device)
         tokenizer = AutoTokenizer.from_pretrained(model_name)

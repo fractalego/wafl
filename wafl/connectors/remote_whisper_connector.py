@@ -10,8 +10,8 @@ class RemoteWhisperConnector:
 
     def __init__(self, config):
         self._server_url = (
-            f"https://{config.get_value('listener_model')['model_host']}:"
-            f"{config.get_value('listener_model')['model_port']}/predictions/whisper"
+            f"https://{config['model_host']}:"
+            f"{config['model_port']}/predictions/whisper"
         )
         try:
             loop = asyncio.get_running_loop()

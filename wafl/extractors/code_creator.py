@@ -10,8 +10,8 @@ _logger = logging.getLogger(__file__)
 
 
 class CodeCreator:
-    def __init__(self, knowledge, logger=None):
-        self._connector = LLMCodeCreatorConnector()
+    def __init__(self, config, knowledge, logger=None):
+        self._connector = LLMCodeCreatorConnector(config.get_value("llm_model"))
         self._knowledge = knowledge
 
     async def extract(self, function_and_task: str) -> Answer:

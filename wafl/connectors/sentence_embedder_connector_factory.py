@@ -1,6 +1,9 @@
 from wafl.connectors.local_sentence_embedder_connector import (
     LocalSentenceEmbedderConnector,
 )
+from wafl.connectors.remote_sentence_embedder_connector import (
+    RemoteSentenceEmbedderConnector,
+)
 
 
 class SentenceEmbedderConnectorFactory:
@@ -10,3 +13,5 @@ class SentenceEmbedderConnectorFactory:
             return LocalSentenceEmbedderConnector(
                 config.get_value(model_name)["local_model"]
             )
+
+        return RemoteSentenceEmbedderConnector(config.get_value(model_name))

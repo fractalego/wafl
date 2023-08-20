@@ -9,9 +9,9 @@ _logger = logging.getLogger(__file__)
 
 
 class TaskExtractor:
-    def __init__(self, interface, logger=None):
+    def __init__(self, config, interface, logger=None):
         self._interface = interface
-        self._connector = LLMTaskExtractorConnector()
+        self._connector = LLMTaskExtractorConnector(config.get_value("llm_model"))
         self._max_num_past_utterances = 3
         self._to_ignore = ["yes", "no", "ok", "okay", "sure", "nope", "yep", "you"]
 

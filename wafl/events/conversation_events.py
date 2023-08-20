@@ -1,6 +1,7 @@
 import os
 import re
 
+from wafl.connectors.local_llm_connector import LocalLLMConnector
 from wafl.events.answerer_creator import create_answerer
 from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
@@ -21,19 +22,18 @@ class ConversationEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = create_answerer(knowledge, interface, code_path, logger)
+        if not config:
+            config = Configuration.load_local_config()
+
+        self._answerer = create_answerer(
+            config, knowledge, interface, code_path, logger
+        )
         self._knowledge = knowledge
         self._interface = interface
-        self._policy = AnswerPolicy(interface, logger)
+        self._policy = AnswerPolicy(config, interface, logger)
         self._logger = logger
         if logger:
             self._logger.set_depth(0)
-
-        if not config:
-            self._config = Configuration.load_local_config()
-
-        else:
-            self._config = config
 
     async def output(self, text: str):
         await self._interface.output(text)

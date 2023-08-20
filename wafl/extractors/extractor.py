@@ -17,9 +17,9 @@ _logger = logging.getLogger(__file__)
 
 
 class Extractor:
-    def __init__(self, narrator, logger=None):
-        self._entailer = Entailer(logger)
-        self._qa = LLMQAConnector()
+    def __init__(self, config, narrator, logger=None):
+        self._entailer = Entailer(config, logger)
+        self._qa = LLMQAConnector(config.get_value("llm_model"))
         self._narrator = narrator
         self._logger = logger
         self._entailer_to_qa_mapping = {

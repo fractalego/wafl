@@ -15,20 +15,15 @@ class LocalLLMConnector:
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config=None):
-        if not config:
-            config = Configuration.load_local_config()
-
+    def __init__(self, config):
         global model, tokenizer
         model = AutoModelForCausalLM.from_pretrained(
-            config.get_value("llm_model")["local_model"],
+            config["local_model"],
             init_device=device,
             trust_remote_code=True,
             torch_dtype=torch.half,
         )
-        tokenizer = AutoTokenizer.from_pretrained(
-            config.get_value("llm_model")["local_model"]
-        )
+        tokenizer = AutoTokenizer.from_pretrained(config["local_model"])
 
         self._stop_at_eos = StopAtEOS(tokenizer)
 

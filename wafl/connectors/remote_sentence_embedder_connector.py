@@ -9,7 +9,11 @@ from typing import Dict, List
 class RemoteSentenceEmbedderConnector:
     _max_tries = 3
 
-    def __init__(self, host, port, model_name):
+    def __init__(self, config):
+        host = config["remote_model"]["model_host"]
+        port = config["remote_model"]["model_port"]
+        model_name = config["local_model"]
+
         self._model_name = model_name
         self._server_url = f"https://{host}:" f"{port}/predictions/sentence_embedder"
         try:

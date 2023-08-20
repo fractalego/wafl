@@ -1,10 +1,12 @@
 from typing import Dict, Union
 
+from wafl.connectors.entailment_connector_factory import EntailmentConnectorFactory
+
 
 class Entailer:
-    def __init__(self, connector, logger=None):
+    def __init__(self, config, logger=None):
         self._logger = logger
-        self._connector = connector
+        self._connector = EntailmentConnectorFactory.get_connector(config)
         self._cache = {}
 
     async def get_relation(self, premise: str, hypothesis: str) -> Dict[str, float]:

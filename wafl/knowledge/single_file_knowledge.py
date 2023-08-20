@@ -48,7 +48,7 @@ class SingleFileKnowledge(BaseKnowledge):
             "qa_embedding_model",
             config,
         )
-        self._entailer = Entailer(logger)
+        self._entailer = Entailer(config, logger)
         self._rules_incomplete_retriever = DenseRetriever(
             "text_embedding_model", config
         )
@@ -230,8 +230,12 @@ class SingleFileKnowledge(BaseKnowledge):
             )
 
     @staticmethod
-    async def create_from_list(facts: List[str]) -> "SingleFileKnowledge":
-        config = Configuration.load_local_config()
+    async def create_from_list(
+        facts: List[str], config: "Configuration" = None
+    ) -> "SingleFileKnowledge":
+        if not config:
+            config = Configuration.load_local_config()
+
         knowledge = SingleFileKnowledge(config)
         for index, fact in enumerate(facts):
             await knowledge.add(fact)

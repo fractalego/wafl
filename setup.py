@@ -59,6 +59,7 @@ setup(
         "einops==0.6.1",
         "sentence_transformers==2.2.2",
         "fairseq==0.12.2",
+        "g2p-en==2.1.0",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

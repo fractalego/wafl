@@ -11,14 +11,14 @@ from wafl.extractors.dataclasses import Answer, Query
 
 
 class ArbiterAnswerer(BaseAnswerer):
-    def __init__(self, answerers_dict, knowledge, interface, logger):
+    def __init__(self, config, answerers_dict, knowledge, interface, logger):
         self._answerers_dict = answerers_dict
         self._narrator = Narrator(interface)
         self._interface = interface
         self._logger = logger
-        self._entailer = Entailer(logger)
+        self._entailer = Entailer(config, logger)
         self._knowledge = knowledge
-        self._task_extractor = TaskExtractor(interface)
+        self._task_extractor = TaskExtractor(config, interface)
         self._config = Configuration.load_local_config()
 
     async def answer(self, query_text, policy):
@@ -67,16 +67,19 @@ class ArbiterAnswerer(BaseAnswerer):
         return Answer(text="Unknown")
 
     @staticmethod
-    def create_answerer(knowledge, interface, code_path, logger):
+    def create_answerer(config, knowledge, interface, code_path, logger):
         narrator = Narrator(interface)
         return ArbiterAnswerer(
+            config,
             {
                 "The user makes small talk and there is no rule for that query": DialogueAnswerer(
-                    knowledge, interface, logger
+                    config, knowledge, interface, logger
                 ),
                 "The user gives an order or request and there is a rule for that query": InferenceAnswerer(
+                    config,
                     interface,
                     BackwardInference(
+                        config,
                         knowledge,
                         interface,
                         narrator,
@@ -87,8 +90,10 @@ class ArbiterAnswerer(BaseAnswerer):
                     logger,
                 ),
                 "The user gives an order or request and there is no rule for that query": InferenceAnswerer(
+                    config,
                     interface,
                     BackwardInference(
+                        config,
                         knowledge,
                         interface,
                         narrator,
@@ -99,8 +104,10 @@ class ArbiterAnswerer(BaseAnswerer):
                     logger,
                 ),
                 "The user gives a command and and there is no rule for that query": InferenceAnswerer(
+                    config,
                     interface,
                     BackwardInference(
+                        config,
                         knowledge,
                         interface,
                         narrator,

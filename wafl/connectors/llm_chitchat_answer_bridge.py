@@ -5,6 +5,7 @@ import joblib
 import os
 import re
 
+from wafl.connectors.llm_connector_factory import LLMConnectorFactory
 from wafl.extractors.dataclasses import Query
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -12,8 +13,9 @@ _path = os.path.dirname(__file__)
 
 
 class LLMChitChatAnswerBridge:
-    def __init__(self, llm_connector):
-        self._llm_connector = llm_connector
+    def __init__(self, config):
+        self._llm_connector = LLMConnectorFactory.get_connector(config)
+        self._config = config
 
         try:
             loop = asyncio.get_running_loop()
@@ -68,6 +70,6 @@ bot:
             for row in csvreader:
                 items_list.append(row[0].strip())
 
-        knowledge = await SingleFileKnowledge.create_from_list(items_list)
+        knowledge = await SingleFileKnowledge.create_from_list(items_list, self._config)
         joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
         return knowledge

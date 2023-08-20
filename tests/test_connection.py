@@ -77,7 +77,7 @@ Complete the following task and add <|EOS|> at the end: {text}
 
     def test__local_llm_connector_can_generate_a_python_list(self):
         config = Configuration.load_from_filename("local_config.json")
-        connector = LocalLLMConnector(config)
+        connector = LocalLLMConnector(config.get_value("llm_model"))
         connector._num_prediction_tokens = 200
         prompt = "Generate a Python list of 4 chapters names for a space opera book. The output needs to be a python list of strings: "
         prediction = asyncio.run(connector.predict(prompt))
@@ -85,8 +85,7 @@ Complete the following task and add <|EOS|> at the end: {text}
 
     def test__chit_chat_bridge_can_run_locally(self):
         config = Configuration.load_from_filename("local_config.json")
-        connector = LocalLLMConnector(config)
-        dialogue_bridge = LLMChitChatAnswerBridge(connector)
+        dialogue_bridge = LLMChitChatAnswerBridge(config)
         answer = asyncio.run(dialogue_bridge.get_answer("", "", "bot: hello"))
         assert len(answer) > 0
 
@@ -94,25 +93,21 @@ Complete the following task and add <|EOS|> at the end: {text}
         premise = "The user says 'hello.'."
         hypothesis = "The user is greeting"
         config = Configuration.load_from_filename("local_config.json")
-        connector = LocalEntailmentConnector(config)
-        entailer = Entailer(connector)
+        entailer = Entailer(config)
         prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
         self.assertTrue(prediction["entailment"] > 0.95)
 
     def test__listener_local_connector(self):
         config = Configuration.load_from_filename("local_config.json")
-        connector = LocalWhisperConnector(config)
-        listener = WhisperListener(connector)
+        listener = WhisperListener(config)
         f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
         result = asyncio.run(listener.input_waveform(waveform))
-        print(result)
         expected = "DELETE BATTERIES FROM THE GROCERY LIST"
         assert expected.lower() in result
 
     def test__speaker_local_connector(self):
         config = Configuration.load_from_filename("local_config.json")
-        connector = LocalSpeakerConnector(config)
-        speaker = FairSeqSpeaker(connector)
+        speaker = FairSeqSpeaker(config)
         text = "Hello world"
         asyncio.run(speaker.speak(text))

@@ -48,6 +48,7 @@ _logger = logging.getLogger(__name__)
 class BackwardInference:
     def __init__(
         self,
+        config: "Configuration",
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
         narrator: "Narrator",
@@ -59,14 +60,17 @@ class BackwardInference:
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
-        self._extractor = Extractor(narrator, logger)
-        self._prompt_predictor = PromptPredictor(logger)
-        self._task_extractor = TaskExtractor(interface)
-        self._task_creator = TaskCreator(knowledge, logger)
-        self._code_creator = CodeCreator(knowledge)
+        self._config = config
+        #### go through them with the config
+        self._extractor = Extractor(config, narrator, logger)
+        self._prompt_predictor = PromptPredictor(config, logger)
+        self._task_extractor = TaskExtractor(config, interface)
+        self._task_creator = TaskCreator(config, knowledge, logger)
+        self._code_creator = CodeCreator(config, knowledge)
+        ####
+
         self._narrator = narrator
         self._logger = logger
-        self._config = Configuration.load_local_config()
         self._generate_rules = generate_rules
         self._module = {}
         self._functions = {}

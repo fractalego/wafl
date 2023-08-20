@@ -25,6 +25,7 @@
   },
   "speaker_model": {
     "model_is_local": true,
+    "local_model": "facebook/fastspeech2-en-ljspeech",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080

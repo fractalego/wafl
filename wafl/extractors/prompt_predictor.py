@@ -9,8 +9,8 @@ _logger = logging.getLogger(__file__)
 
 
 class PromptPredictor:
-    def __init__(self, logger=None):
-        self._model = LLMPromptPredictorConnector()
+    def __init__(self, config, logger=None):
+        self._model = LLMPromptPredictorConnector(config.get_value("llm_model"))
         self._closing_tag = "</result>"
 
     async def predict(self, prompt: str):
