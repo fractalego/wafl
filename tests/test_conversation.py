@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -77,8 +79,9 @@ class TestConversation(TestCase):
 
     def test__say_command(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )

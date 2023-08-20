@@ -5,10 +5,10 @@
   * check remote connectors work!
   * create note about local speaker for python 3.11
 
-* rewrite documentation
+* rewrite documentation !!!!
    * talk about how the system will improvises rules
    * explain arbiter pipeline
-   * update config description (possibly with stand-alone connection)
+   * update config description (possibly with stand-alone connection) !!!!
 
 * add init-default (with modified wafl_home) and init (as empty)
 
