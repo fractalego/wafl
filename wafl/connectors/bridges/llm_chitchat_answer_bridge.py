@@ -1,20 +1,17 @@
 import asyncio
-import csv
-
-import joblib
 import os
 import re
 
-from wafl.connectors.llm_connector_factory import LLMConnectorFactory
+from wafl.connectors.bridges.bridge_implementation import load_knowledge_from_file
+from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
 from wafl.extractors.dataclasses import Query
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 _path = os.path.dirname(__file__)
 
 
 class LLMChitChatAnswerBridge:
     def __init__(self, config):
-        self._llm_connector = LLMConnectorFactory.get_connector(config)
+        self._connector = LLMConnectorFactory.get_connector(config)
         self._config = config
 
         try:
@@ -28,16 +25,16 @@ class LLMChitChatAnswerBridge:
 
         else:
             self._knowledge = asyncio.run(
-                self._load_knowledge_from_file("dialogues", _path)
+                load_knowledge_from_file("dialogues", self._config)
             )
 
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = await self._get_answer_prompt(text, query, dialogue)
-        return await self._llm_connector.generate(prompt)
+        return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         if not self._knowledge:
-            self._knowledge = await self._load_knowledge_from_file("dialogues", _path)
+            self._knowledge = await load_knowledge_from_file("dialogues", self._config)
 
         retrieved_dialogues = await self._knowledge.ask_for_facts(
             Query.create_from_text(dialogue), threshold=0.1
@@ -62,14 +59,3 @@ In the dialogue below a user is speaking to a bot:
 bot:
         """.strip()
         return prompt
-
-    async def _load_knowledge_from_file(self, filename, _path=None):
-        items_list = []
-        with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
-            csvreader = csv.reader(file)
-            for row in csvreader:
-                items_list.append(row[0].strip())
-
-        knowledge = await SingleFileKnowledge.create_from_list(items_list, self._config)
-        joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
-        return knowledge

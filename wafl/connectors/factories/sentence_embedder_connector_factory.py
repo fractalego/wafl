@@ -1,7 +1,7 @@
-from wafl.connectors.local_sentence_embedder_connector import (
+from wafl.connectors.local.local_sentence_embedder_connector import (
     LocalSentenceEmbedderConnector,
 )
-from wafl.connectors.remote_sentence_embedder_connector import (
+from wafl.connectors.remote.remote_sentence_embedder_connector import (
     RemoteSentenceEmbedderConnector,
 )
 

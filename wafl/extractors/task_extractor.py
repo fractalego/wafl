@@ -1,7 +1,7 @@
 import logging
 import os
 
-from wafl.connectors.llm_task_extractor_connector import LLMTaskExtractorConnector
+from wafl.connectors.bridges.llm_task_extractor_bridge import LLMTaskExtractorBridge
 from wafl.extractors.dataclasses import Answer
 
 _path = os.path.dirname(__file__)
@@ -11,7 +11,7 @@ _logger = logging.getLogger(__file__)
 class TaskExtractor:
     def __init__(self, config, interface, logger=None):
         self._interface = interface
-        self._connector = LLMTaskExtractorConnector(config.get_value("llm_model"))
+        self._connector = LLMTaskExtractorBridge(config)
         self._max_num_past_utterances = 3
         self._to_ignore = ["yes", "no", "ok", "okay", "sure", "nope", "yep", "you"]
 

@@ -7,13 +7,10 @@ from unittest import TestCase
 import numpy as np
 
 from wafl.config import Configuration
-from wafl.connectors.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
-from wafl.connectors.local_entailment_connector import LocalEntailmentConnector
-from wafl.connectors.local_llm_connector import LocalLLMConnector
-from wafl.connectors.local_speaker_connector import LocalSpeakerConnector
-from wafl.connectors.local_whisper_connector import LocalWhisperConnector
-from wafl.connectors.remote_llm_connector import RemoteLLMConnector
-from wafl.connectors.llm_qa_connector import LLMQAConnector
+from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
+from wafl.connectors.local.local_llm_connector import LocalLLMConnector
+from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
+from wafl.connectors.bridges.llm_qa_bridge import LLMQABridge
 from wafl.extractors.entailer import Entailer
 from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
@@ -24,11 +21,11 @@ _path = os.path.dirname(__file__)
 class TestConnection(TestCase):
     def test__connection_to_generative_model_hostname_is_active(self):
         config = Configuration.load_local_config()
-        LLMQAConnector(config)
+        LLMQABridge(config)
 
     def test__connection_to_generative_model_hostname_answer_a_question_correctly(self):
         config = Configuration.load_local_config()
-        connector = LLMQAConnector(config)
+        connector = LLMQABridge(config)
         answer_text = asyncio.run(
             connector.get_answer(
                 text="The bot remembers: The sky is blue",

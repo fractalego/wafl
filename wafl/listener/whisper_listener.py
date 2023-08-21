@@ -6,7 +6,7 @@ import time
 import numpy as np
 import torch.cuda
 
-from wafl.connectors.whisper_connector_factory import WhisperConnectorFactory
+from wafl.connectors.factories.whisper_connector_factory import WhisperConnectorFactory
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 

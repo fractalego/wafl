@@ -1,14 +1,14 @@
 import time
 
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.connectors.llm_connector_factory import LLMConnectorFactory
+from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 
 
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, logger):
-        self._connector = LLMConnectorFactory.get_connector(config)
+        self._bridge = LLMChitChatAnswerBridge(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
@@ -42,7 +42,7 @@ class DialogueAnswerer(BaseAnswerer):
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
-        answer_text = await self._connector.get_answer(
+        answer_text = await self._bridge.get_answer(
             text="",
             dialogue=dialogue_items,
             query=query_text,

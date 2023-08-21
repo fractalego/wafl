@@ -1,7 +1,7 @@
 import asyncio
 import pyaudio
 
-from wafl.connectors.speaker_connector_factory import SpeakerConnectorFactory
+from wafl.connectors.factories.speaker_connector_factory import SpeakerConnectorFactory
 from wafl.speaker.base_speaker import BaseSpeaker
 from wafl.speaker.utils import convert_numbers_to_words
 

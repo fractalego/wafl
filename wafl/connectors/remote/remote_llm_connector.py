@@ -52,10 +52,9 @@ class RemoteLLMConnector:
 
         return "UNKNOWN"
 
-    async def get_answer(self, text: str, dialogue: str, query: str) -> str:
+    async def generate(self, prompt: str) -> str:
         print(__name__)
         start_time = time.time()
-        prompt = await self._get_answer_prompt(text, query, dialogue)
         if prompt in self._cache:
             print(time.time() - start_time)
             return self._cache[prompt]
@@ -112,17 +111,3 @@ class RemoteLLMConnector:
             print()
 
         return False
-
-    async def _get_answer_prompt(self, text, query, dialogue=None):
-        raise NotImplementedError("_get_answer_prompt() needs to be implemented.")
-
-    async def _load_knowledge_from_file(self, filename, _path=None):
-        items_list = []
-        with open(os.path.join(_path, f"../data/{filename}.csv")) as file:
-            csvreader = csv.reader(file)
-            for row in csvreader:
-                items_list.append(row[0].strip())
-
-        knowledge = await SingleFileKnowledge.create_from_list(items_list)
-        joblib.dump(knowledge, os.path.join(_path, f"../data/{filename}.knowledge"))
-        return knowledge

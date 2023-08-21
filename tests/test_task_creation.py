@@ -1,8 +1,8 @@
 import asyncio
 
 from unittest import TestCase
-from wafl.connectors.llm_code_creator_connector import LLMCodeCreatorConnector
-from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
+from wafl.connectors.bridges.llm_code_creator_bridge import LLMCodeCreatorBridge
+from wafl.connectors.bridges.llm_task_creator_bridge import LLMTaskCreatorBridge
 from wafl.events.conversation_events import ConversationEvents
 from wafl.extractors.code_creator import CodeCreator
 from wafl.extractors.task_creator import TaskCreator
@@ -24,7 +24,7 @@ The user wants to know the weather
 
 class TestTaskCreation(TestCase):
     def test__task_creation_connector(self):
-        connector = LLMTaskCreatorConnector()
+        connector = LLMTaskCreatorBridge()
         task = "the user wants to go swimming in the sea"
         triggers = "\n".join(
             [
@@ -97,7 +97,7 @@ the user wants to go from London to Manchester
         assert interface.get_utterances_list()[-1] == expected
 
     def test__code_creation(self):
-        connector = LLMCodeCreatorConnector()
+        connector = LLMCodeCreatorBridge()
         task = "connect to 'localhost:port' and return the data as json"
         function_shape = "json_data = connect_to_localhost(port)"
         prediction = asyncio.run(connector.get_answer("", function_shape, task))

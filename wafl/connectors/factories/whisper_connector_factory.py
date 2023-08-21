@@ -1,5 +1,5 @@
-from wafl.connectors.local_whisper_connector import LocalWhisperConnector
-from wafl.connectors.remote_whisper_connector import RemoteWhisperConnector
+from wafl.connectors.local.local_whisper_connector import LocalWhisperConnector
+from wafl.connectors.remote.remote_whisper_connector import RemoteWhisperConnector
 
 
 class WhisperConnectorFactory:

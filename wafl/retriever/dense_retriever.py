@@ -3,7 +3,7 @@ import numpy as np
 
 from typing import List, Tuple
 from gensim.models import KeyedVectors
-from wafl.connectors.sentence_embedder_connector_factory import (
+from wafl.connectors.factories.sentence_embedder_connector_factory import (
     SentenceEmbedderConnectorFactory,
 )
 from wafl.retriever.base_retriever import BaseRetriever

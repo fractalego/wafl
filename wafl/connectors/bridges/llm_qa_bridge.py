@@ -1,15 +1,17 @@
 import asyncio
 import os
 
-from wafl.connectors.remote_llm_connector import RemoteLLMConnector
+from wafl.connectors.bridges.bridge_implementation import load_knowledge_from_file
+from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
 from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
 
-class LLMQAConnector(RemoteLLMConnector):
+class LLMQABridge:
     def __init__(self, config):
-        super().__init__(config)
+        self._connector = LLMConnectorFactory.get_connector(config)
+        self._config = config
         try:
             loop = asyncio.get_running_loop()
 
@@ -21,18 +23,22 @@ class LLMQAConnector(RemoteLLMConnector):
             self._adversarial_knowledge = None
 
         else:
-            self._knowledge = asyncio.run(self._load_knowledge_from_file("qa", _path))
+            self._knowledge = asyncio.run(load_knowledge_from_file("qa", self._config))
             self._adversarial_knowledge = asyncio.run(
-                self._load_knowledge_from_file("qa_adversarial", _path)
+                load_knowledge_from_file("qa_adversarial", self._config)
             )
+
+    async def get_answer(self, text: str, dialogue: str, query: str) -> str:
+        prompt = await self._get_answer_prompt(text, query, dialogue)
+        return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         if not self._knowledge:
-            self._knowledge = await self._load_knowledge_from_file("qa", _path)
+            self._knowledge = await load_knowledge_from_file("qa", _path)
 
         if not self._adversarial_knowledge:
-            self._adversarial_knowledge = await self._load_knowledge_from_file(
-                "qa_adversarial", _path
+            self._adversarial_knowledge = await load_knowledge_from_file(
+                "qa_adversarial", self._config
             )
 
         text = text.strip()

@@ -1,5 +1,5 @@
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.connectors.llm_generated_answer_connector import LLMGeneratedAnswerConnector
+from wafl.connectors.bridges.llm_generated_answer_bridge import LLMGeneratedAnswerBridge
 from wafl.extractors.dataclasses import Answer
 from wafl.extractors.entailer import Entailer
 
@@ -8,7 +8,7 @@ class GeneratedAnswerer(BaseAnswerer):
     def __init__(self, narrator, logger):
         self._logger = logger
         self._narrator = narrator
-        self._connector = LLMGeneratedAnswerConnector()
+        self._connector = LLMGeneratedAnswerBridge()
         self._entailer = Entailer(logger)
 
     async def answer(self, query_text, policy):

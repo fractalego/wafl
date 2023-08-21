@@ -1,5 +1,5 @@
-from wafl.connectors.local_entailment_connector import LocalEntailmentConnector
-from wafl.connectors.remote_entailment_connector import RemoteEntailmentConnector
+from wafl.connectors.local.local_entailment_connector import LocalEntailmentConnector
+from wafl.connectors.remote.remote_entailment_connector import RemoteEntailmentConnector
 
 
 class EntailmentConnectorFactory:

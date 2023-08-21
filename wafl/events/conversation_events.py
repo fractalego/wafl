@@ -1,7 +1,6 @@
 import os
 import re
 
-from wafl.connectors.local_llm_connector import LocalLLMConnector
 from wafl.events.answerer_creator import create_answerer
 from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized

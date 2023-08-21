@@ -2,7 +2,7 @@ import asyncio
 import os
 import re
 
-from wafl.connectors.remote_llm_connector import RemoteLLMConnector
+from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
 from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)

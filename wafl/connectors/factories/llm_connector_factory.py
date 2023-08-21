@@ -1,5 +1,5 @@
-from wafl.connectors.local_llm_connector import LocalLLMConnector
-from wafl.connectors.remote_llm_connector import RemoteLLMConnector
+from wafl.connectors.local.local_llm_connector import LocalLLMConnector
+from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
 
 
 class LLMConnectorFactory:

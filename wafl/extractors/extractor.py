@@ -1,8 +1,7 @@
 import logging
 import os
 
-from wafl.connectors.llm_qa_connector import LLMQAConnector
-from wafl.connectors.dialogue import Dialogue
+from wafl.connectors.bridges.llm_qa_bridge import LLMQABridge
 from wafl.simple_text_processing.questions import (
     is_question,
     is_yes_no_question,
@@ -19,7 +18,7 @@ _logger = logging.getLogger(__file__)
 class Extractor:
     def __init__(self, config, narrator, logger=None):
         self._entailer = Entailer(config, logger)
-        self._qa = LLMQAConnector(config.get_value("llm_model"))
+        self._qa = LLMQABridge(config)
         self._narrator = narrator
         self._logger = logger
         self._entailer_to_qa_mapping = {
@@ -52,9 +51,7 @@ class Extractor:
         return await self._check_fact(query_text, text, query.variable, threshold=0.5)
 
     async def _answer_question(self, query_text, variable_name, text: str, task_memory):
-        dialogue = Dialogue()
-
-        answer = await self._get_answer(text, dialogue.get_text(), query_text)
+        answer = await self._get_answer(text, "", query_text)
         if answer and answer[-1] in [".", ",", "!"]:
             answer = answer[:-1]
 
@@ -70,9 +67,8 @@ class Extractor:
                 text=self._entailer_to_qa_mapping[answer], variable=variable_name
             )
 
-        dialogue = Dialogue()
         answer_text = normalized(
-            await self._qa.get_answer(query_text, dialogue.get_text(), text)
+            await self._qa.get_answer(query_text, "", text)
         )
         if answer_text != "unknown" and answer_text != "no":
             return Answer(text="Yes", variable=variable_name)

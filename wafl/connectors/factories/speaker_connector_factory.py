@@ -1,5 +1,5 @@
-from wafl.connectors.local_speaker_connector import LocalSpeakerConnector
-from wafl.connectors.remote_speaker_connector import RemoteSpeakerConnector
+from wafl.connectors.local.local_speaker_connector import LocalSpeakerConnector
+from wafl.connectors.remote.remote_speaker_connector import RemoteSpeakerConnector
 
 
 class SpeakerConnectorFactory:

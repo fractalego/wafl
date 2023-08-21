@@ -1,15 +1,17 @@
 import asyncio
 import os
 
-from wafl.connectors.remote_llm_connector import RemoteLLMConnector
+from wafl.connectors.bridges.bridge_implementation import load_knowledge_from_file
+from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
 from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
 
-class LLMTaskCreatorConnector(RemoteLLMConnector):
+class LLMTaskCreatorBridge:
     def __init__(self, config=None):
-        super().__init__(config)
+        self._connector = LLMConnectorFactory.get_connector(config)
+        self._config = config
         try:
             loop = asyncio.get_running_loop()
 
@@ -21,13 +23,17 @@ class LLMTaskCreatorConnector(RemoteLLMConnector):
 
         else:
             self._knowledge = asyncio.run(
-                self._load_knowledge_from_file("task_creator", _path)
+                load_knowledge_from_file("task_creator", self._config)
             )
+
+    async def get_answer(self, text: str, dialogue: str, query: str) -> str:
+        prompt = await self._get_answer_prompt(text, query, dialogue)
+        return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(self, text: str, task: str, triggers: str = None):
         if self._knowledge is None:
-            self._knowledge = await self._load_knowledge_from_file(
-                "task_creator", _path
+            self._knowledge = await load_knowledge_from_file(
+                "task_creator", self._config
             )
 
         retrieved_items = await self._knowledge.ask_for_facts(
