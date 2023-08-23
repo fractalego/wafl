@@ -43,8 +43,9 @@ class TestCommonSense(TestCase):
                 "Please add bananas to the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -58,8 +59,9 @@ class TestCommonSense(TestCase):
                 "Please add skyscrapers to the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
