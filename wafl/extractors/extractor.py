@@ -67,9 +67,7 @@ class Extractor:
                 text=self._entailer_to_qa_mapping[answer], variable=variable_name
             )
 
-        answer_text = normalized(
-            await self._qa.get_answer(query_text, "", text)
-        )
+        answer_text = normalized(await self._qa.get_answer(query_text, "", text))
         if answer_text != "unknown" and answer_text != "no":
             return Answer(text="Yes", variable=variable_name)
 

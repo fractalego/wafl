@@ -21,7 +21,7 @@ def print_incipit():
 def run_from_command_line():
     interface = CommandLineInterface()
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge(config,  "rules.wafl", logger=_logger)
+    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
     conversation_events = ConversationEvents(
         knowledge,
         interface=interface,

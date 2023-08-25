@@ -53,7 +53,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(text="What is this bot's name", is_question=True, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -66,7 +68,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
@@ -79,7 +83,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(text="The user is sad", is_question=False, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -90,7 +96,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(text="The user says hello!", is_question=False, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -101,7 +109,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
@@ -114,7 +124,9 @@ class TestInference(TestCase):
         config = Configuration.load_local_config()
         inference = BackwardInference(
             config,
-            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
+            SingleFileKnowledge(config, wafl_example),
+            interface,
+            Narrator(interface),
         )
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"

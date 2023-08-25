@@ -1,6 +1,8 @@
 from typing import Dict, Union
 
-from wafl.connectors.factories.entailment_connector_factory import EntailmentConnectorFactory
+from wafl.connectors.factories.entailment_connector_factory import (
+    EntailmentConnectorFactory,
+)
 
 
 class Entailer:

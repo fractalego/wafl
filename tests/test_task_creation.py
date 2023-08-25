@@ -95,7 +95,9 @@ the user wants to go from London to Manchester
         interface = DummyInterface(to_utter=["Tell me if I need an umbrella"])
         config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(config, _wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
@@ -143,7 +145,9 @@ def list_subfolders(folder_name):
         interface = DummyInterface(to_utter=["Please list of the subfolders of /var"])
         config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(config, _wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
             code_path="/",
         )
@@ -156,7 +160,9 @@ def list_subfolders(folder_name):
         interface = DummyInterface(to_utter=["Multiply 100 and 43"])
         config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(config, _wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
             code_path="/",
         )

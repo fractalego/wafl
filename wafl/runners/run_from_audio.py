@@ -4,10 +4,12 @@ from wafl.events.events_from_module_name import EventsCreatorFromModuleName
 from wafl.events.generated_events import GeneratedEvents
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
-from wafl.run import _logger
+from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.generated_event_loop import GeneratedEventLoop
 from wafl.scheduler.scheduler import Scheduler
+
+_logger = LocalFileLogger()
 
 
 def run_from_audio():

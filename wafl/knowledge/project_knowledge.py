@@ -125,9 +125,13 @@ class ProjectKnowledge(BaseKnowledge):
         return self._get_all_dependency_names(self.root_knowledge)
 
     @staticmethod
-    def create_from_string(config: "Configuration", rules_text: str, knowledge_name: str) -> "ProjectKnowledge":
+    def create_from_string(
+        config: "Configuration", rules_text: str, knowledge_name: str
+    ) -> "ProjectKnowledge":
         knowledge = ProjectKnowledge(config)
-        knowledge._knowledge_dict[knowledge_name] = SingleFileKnowledge(config, rules_text)
+        knowledge._knowledge_dict[knowledge_name] = SingleFileKnowledge(
+            config, rules_text
+        )
         return knowledge
 
     def _populate_knowledge_structure(
