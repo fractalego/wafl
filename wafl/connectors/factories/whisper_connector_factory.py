@@ -8,4 +8,4 @@ class WhisperConnectorFactory:
         if config.get_value("listener_model")["model_is_local"]:
             return LocalWhisperConnector(config.get_value("listener_model"))
 
-        return RemoteWhisperConnector(config.get_value("listener_model"))
+        return RemoteWhisperConnector(config.get_value("listener_model")["remote_model"])

@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -25,8 +27,9 @@ class TestRecursion(TestCase):
                 "the jubilee line",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, _rules), interface=interface, code_path="/"
         )
 
         while asyncio.run(conversation_events.process_next()):

@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
@@ -40,7 +42,8 @@ class TestDependencies(TestCase):
         with open(tmp_filename, "w") as file:
             file.write(wafl_dependency)
 
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         expected = [
             "/",
             "/greetings",
@@ -56,7 +59,8 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         interface = DummyInterface(to_utter=["Hello", "albert"])
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
             knowledge, interface=interface, code_path=knowledge.get_dependencies_list()
         )
@@ -74,8 +78,9 @@ class TestDependencies(TestCase):
                 "How are you doing",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename), interface=interface
+            ProjectKnowledge(config, tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "well"
@@ -92,8 +97,9 @@ class TestDependencies(TestCase):
                 "how is the sun",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename), interface=interface
+            ProjectKnowledge(config, tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "shin"
@@ -110,9 +116,10 @@ class TestDependencies(TestCase):
                 "What time is it",
             ]
         )
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename),
+            knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
@@ -130,9 +137,10 @@ class TestDependencies(TestCase):
                 "My name is Alberto",
             ]
         )
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename),
+            knowledge=knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
@@ -151,9 +159,10 @@ class TestDependencies(TestCase):
                 "My name is Maria",
             ]
         )
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename),
+            knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )

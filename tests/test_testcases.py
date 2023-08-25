@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -68,8 +70,9 @@ class TestConversationalTestCases(TestCase):
         interface = DummyInterface(
             dialogue_data["test the greetings work"]["user_lines"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         assert [
@@ -79,20 +82,23 @@ class TestConversationalTestCases(TestCase):
         ] == dialogue_data["test the greetings work"]["bot_lines"]
 
     def test_conversation_testcase_single_test_success(self):
+        config = Configuration.load_local_config()
         testcase = ConversationTestCases(
-            _test_case_greetings, SingleFileKnowledge(_wafl_greetings)
+            config, _test_case_greetings, SingleFileKnowledge(config, _wafl_greetings)
         )
         assert testcase.test_single_case("test the greetings work")
 
     def test_conversation_testcase_single_test_failure(self):
         new_test_case = _test_case_greetings.replace("Bob", "Albert")
+        config = Configuration.load_local_config()
         testcase = ConversationTestCases(
-            new_test_case, SingleFileKnowledge(_wafl_greetings)
+            config, new_test_case, SingleFileKnowledge(config, _wafl_greetings)
         )
         assert not asyncio.run(testcase.test_single_case("test the greetings work"))
 
     def test_conversation_testcase_run_all(self):
+        config = Configuration.load_local_config()
         testcase = ConversationTestCases(
-            _test_case_greetings, SingleFileKnowledge(_wafl_greetings)
+            config, _test_case_greetings, SingleFileKnowledge(config, _wafl_greetings)
         )
         assert asyncio.run(testcase.run())

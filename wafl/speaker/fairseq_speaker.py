@@ -23,7 +23,7 @@ class FairSeqSpeaker(BaseSpeaker):
             output=True,
         )
         await asyncio.sleep(0.2)
-        stream.write(wav.cpu().numpy().tobytes())
+        stream.write(wav)
         stream.stop_stream()
         stream.close()
         await asyncio.sleep(0.1)

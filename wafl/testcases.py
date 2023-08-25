@@ -14,10 +14,10 @@ class ConversationTestCases:
     GREEN_COLOR_START = "\033[32m"
     COLOR_END = "\033[0m"
 
-    def __init__(self, text, knowledge, code_path=None, logger=None):
+    def __init__(self, config, text, knowledge, code_path=None, logger=None):
         self._testcase_data = get_user_and_bot_lines_from_text(text)
         self._knowledge = knowledge
-        self._entailer = Entailer(logger)
+        self._entailer = Entailer(config, logger)
         self._code_path = code_path if code_path else "/"
 
     async def test_single_case(self, name):

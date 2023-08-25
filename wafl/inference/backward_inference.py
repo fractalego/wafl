@@ -61,13 +61,11 @@ class BackwardInference:
         self._knowledge = knowledge
         self._interface = interface
         self._config = config
-        #### go through them with the config
         self._extractor = Extractor(config, narrator, logger)
         self._prompt_predictor = PromptPredictor(config, logger)
         self._task_extractor = TaskExtractor(config, interface)
         self._task_creator = TaskCreator(config, knowledge, logger)
         self._code_creator = CodeCreator(config, knowledge)
-        ####
 
         self._narrator = narrator
         self._logger = logger

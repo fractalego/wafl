@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -68,8 +70,9 @@ the user wants to stop
 class TestGreetings(TestCase):
     def test_hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
         asyncio.run(interface.output(utterance))
@@ -78,8 +81,9 @@ class TestGreetings(TestCase):
 
     def test_hello_and_username2(self):
         interface = DummyInterface(["Hello", "bob"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
         asyncio.run(interface.output(utterance))

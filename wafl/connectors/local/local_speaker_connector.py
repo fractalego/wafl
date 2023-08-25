@@ -30,5 +30,5 @@ class LocalSpeakerConnector:
             wav, rate = TTSHubInterface.get_prediction(
                 self._task, self._model, self._generator, sample
             )
-
+        wav = wav.cpu().numpy().tobytes()
         return {"wav": wav, "rate": rate}

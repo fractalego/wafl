@@ -3,6 +3,7 @@ import os
 
 from unittest import TestCase
 
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -24,8 +25,9 @@ class TestPolicy(TestCase):
         interface = DummyInterface(
             to_utter=["What's in the shopping list", "say it again"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
@@ -37,8 +39,9 @@ class TestPolicy(TestCase):
         interface = DummyInterface(
             to_utter=["What's in the shopping list", "I meant the todo list"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())

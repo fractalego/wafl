@@ -1,5 +1,7 @@
 import asyncio
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.facts import Fact
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text, get_dependency_list
@@ -124,7 +126,8 @@ class TestParsing(TestCase):
         assert str(facts_and_rules["facts"]) == expected
 
     def test__knowledge_facts(self):
-        knowledge = SingleFileKnowledge(wafl_example)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, wafl_example)
         expected = str(Fact(text="the user is happy", is_question=False))
         facts = asyncio.run(
             knowledge.ask_for_facts(Query("how is the user", is_question=True))
@@ -132,7 +135,8 @@ class TestParsing(TestCase):
         assert str(facts[0]) == expected
 
     def test__knowledge_rules(self):
-        knowledge = SingleFileKnowledge(wafl_example)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, wafl_example)
         expected = str(
             Rule(
                 effect=Fact(text="USER greets", is_question=False),

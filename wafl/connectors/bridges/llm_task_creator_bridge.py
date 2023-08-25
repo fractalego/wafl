@@ -9,7 +9,7 @@ _path = os.path.dirname(__file__)
 
 
 class LLMTaskCreatorBridge:
-    def __init__(self, config=None):
+    def __init__(self, config):
         self._connector = LLMConnectorFactory.get_connector(config)
         self._config = config
         try:

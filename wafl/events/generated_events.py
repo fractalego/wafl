@@ -12,14 +12,15 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 class GeneratedEvents:
     def __init__(
         self,
+        config,
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
         events: "BaseEventCreator",
         code_path=None,
-        config=None,
         logger=None,
     ):
         self._inference = BackwardInference(
+            config,
             knowledge,
             interface,
             Narrator(interface),

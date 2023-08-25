@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.extractors.task_extractor import TaskExtractor
 from wafl.interface.dummy_interface import DummyInterface
 
@@ -11,7 +13,8 @@ class TestTaskExtraction(TestCase):
         interface._utterances = [
             [0, "user: what time is it"],
         ]
-        task_extractor = TaskExtractor(interface)
+        config = Configuration.load_local_config()
+        task_extractor = TaskExtractor(config, interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "wants to know the time"
         print(prediction)
@@ -25,7 +28,8 @@ class TestTaskExtraction(TestCase):
             [2, "bot: The time is 20 past 13"],
             [3, "user: what is in the shopping list"],
         ]
-        task_extractor = TaskExtractor(interface)
+        config = Configuration.load_local_config()
+        task_extractor = TaskExtractor(config, interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "the user wants to know what is in the shopping list"
         assert expected == prediction
@@ -42,7 +46,8 @@ class TestTaskExtraction(TestCase):
             [6, "bot: yes, it is running normally"],
             [7, "user: what about the Jubilee line"],
         ]
-        task_extractor = TaskExtractor(interface)
+        config = Configuration.load_local_config()
+        task_extractor = TaskExtractor(config, interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "the user wants to know if the Jubilee line is running"
         print(prediction)
@@ -58,7 +63,8 @@ class TestTaskExtraction(TestCase):
             [4, "bot: the shopping list contains milk, bread, and eggs"],
             [5, "user: you"],
         ]
-        task_extractor = TaskExtractor(interface)
+        config = Configuration.load_local_config()
+        task_extractor = TaskExtractor(config, interface)
         prediction = asyncio.run(task_extractor.extract("")).text
         expected = "unknown"
         print(prediction)

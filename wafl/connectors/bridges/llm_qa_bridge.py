@@ -34,7 +34,7 @@ class LLMQABridge:
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
         if not self._knowledge:
-            self._knowledge = await load_knowledge_from_file("qa", _path)
+            self._knowledge = await load_knowledge_from_file("qa", self._config)
 
         if not self._adversarial_knowledge:
             self._adversarial_knowledge = await load_knowledge_from_file(

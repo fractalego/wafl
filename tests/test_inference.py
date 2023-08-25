@@ -1,5 +1,7 @@
 import asyncio
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.narrator import Narrator
 from wafl.events.task_memory import TaskMemory
 from wafl.inference.backward_inference import BackwardInference
@@ -48,8 +50,10 @@ Bob's address is 42 Flinch road
 class TestInference(TestCase):
     def test__simple_question(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(text="What is this bot's name", is_question=True, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -59,8 +63,10 @@ class TestInference(TestCase):
 
     def test__fact_check_true(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(
             text="The user is in a good mood", is_question=False, variable="name"
@@ -70,8 +76,10 @@ class TestInference(TestCase):
 
     def test__fact_check_false(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user is sad", is_question=False, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -79,8 +87,10 @@ class TestInference(TestCase):
 
     def test__simple_rule(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(text="The user says hello!", is_question=False, variable="name")
         answer = asyncio.run(inference.compute(query, depth=1))
@@ -88,8 +98,10 @@ class TestInference(TestCase):
 
     def test__forward_substitution(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(
             text="The user says: I can swim", is_question=False, variable="name"
@@ -99,8 +111,10 @@ class TestInference(TestCase):
 
     def test__backward_substitution(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example), interface, Narrator(interface)
+            config,
+            SingleFileKnowledge(config, wafl_example), interface, Narrator(interface)
         )
         query = Query(
             text="The user says: I have black hair", is_question=False, variable="name"
@@ -110,8 +124,10 @@ class TestInference(TestCase):
 
     def test__forward_substution_2(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         inference = BackwardInference(
-            SingleFileKnowledge(wafl_example),
+            config,
+            SingleFileKnowledge(config, wafl_example),
             interface,
             Narrator(interface),
             logger=_logger,

@@ -3,6 +3,7 @@ import os
 
 from unittest import TestCase
 
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.generated_events import GeneratedEvents
 from wafl.events.events_from_module_name import EventsCreatorFromModuleName
@@ -27,8 +28,10 @@ the user wants to set an alarm in minutes from now
 class TestReminders(TestCase):
     def test__time_reminder_can_be_set(self):
         interface = DummyInterface()
-        knowledge = SingleFileKnowledge(_wafl_example)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
         generated_events = GeneratedEvents(
+            config,
             knowledge,
             events=EventsCreatorFromModuleName("events"),
             interface=interface,
@@ -48,8 +51,10 @@ class TestReminders(TestCase):
 
     def test__time_reminder_can_be_set_1_minute_from_now(self):
         interface = DummyInterface()
-        knowledge = SingleFileKnowledge(_wafl_example)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
         generated_events = GeneratedEvents(
+            config,
             knowledge,
             events=EventsCreatorFromModuleName("events"),
             interface=interface,

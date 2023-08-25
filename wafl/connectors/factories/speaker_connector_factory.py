@@ -8,4 +8,4 @@ class SpeakerConnectorFactory:
         if config.get_value("speaker_model")["model_is_local"]:
             return LocalSpeakerConnector(config.get_value("speaker_model"))
 
-        return RemoteSpeakerConnector(config.get_value("speaker_model"))
+        return RemoteSpeakerConnector(config.get_value("speaker_model")["remote_model"])

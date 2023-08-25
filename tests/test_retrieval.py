@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -32,7 +34,8 @@ the user wants the bot to remember something
 
 class TestRetrieval(TestCase):
     def test_retrieval(self):
-        retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        config = Configuration.load_local_config()
+        retriever = DenseRetriever("text_embedding_model", config)
         sentences = ["this is a test", "the food is hot on the table"]
         for index, sentence in enumerate(sentences):
             asyncio.run(retriever.add_text_and_index(sentence, str(index)))
@@ -43,9 +46,10 @@ class TestRetrieval(TestCase):
         assert predicted[0][0] == expected
 
     def test_retrieval_from_rules(self):
+        config = Configuration.load_local_config()
         interface = DummyInterface(to_utter=["tell me how the user is like"])
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_remember_rules, logger=_logger),
+            SingleFileKnowledge(config, _wafl_remember_rules, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -69,7 +73,8 @@ class TestRetrieval(TestCase):
         assert predicted[0][0] == expected
 
     def test_short_text_retrieves_nothing(self):
-        retriever = DenseRetriever("msmarco-distilbert-base-v3")
+        config = Configuration.load_local_config()
+        retriever = DenseRetriever("msmarco-distilbert-base-v3", config)
         sentences = ["The user greets"]
         for index, sentence in enumerate(sentences):
             asyncio.run(retriever.add_text_and_index(sentence, str(index)))
@@ -81,8 +86,9 @@ class TestRetrieval(TestCase):
 
     def test_input_during_inference(self):
         interface = DummyInterface(to_utter=["Please remember that my name is Alberto"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_remember_rules, logger=_logger),
+            SingleFileKnowledge(config, _wafl_remember_rules, logger=_logger),
             interface=interface,
             logger=_logger,
         )
