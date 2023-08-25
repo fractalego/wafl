@@ -1,7 +1,7 @@
-Running wafl init
------------------
+Initialization
+--------------
 
-What does this command do?
+This command initialises WAFL's work environment
 
 .. code-block:: bash
 
@@ -24,18 +24,24 @@ It creates a set of files that can be used to the interface side of WAFL.
 .. code-block:: text
 
     {
-      "allow_interruptions": true,                  # interruptions are allowed in the conversation
-      "waking_up_word": "computer",                 # the word that wakes up the LLM and the name of the chatbot
-      "waking_up_sound": true,                      # A sound is generated when the LLM is woken up
-      "deactivate_sound": true,                     # A sound is generated when the LLM is woken up
-      "listener_model": "openai/whisper-tiny.en",   # The model used for speech recognition.
-                                                    # Only whisper models are supported
-      "listener_hotword_logp": -8,                  # The threshold log probability of the hotword
-      "listener_volume_threshold": 0.6,             # The threshold volume when listening
-      "listener_silence_timeout": 0.7,              # The silence timeout when listening
-      "model_host": "127.0.0.1",                    # The host of the LLM
-      "model_port": 8080                            # The port of the LLM
+      "allow_interruptions": true,
+      "waking_up_word": "computer",
+      "waking_up_sound": true,
+      "deactivate_sound": true,
+      "improvise_tasks": true,
+      ...
     }
+
+These settings regulate the following:
+
+    * The "allow_interruptions" allows the user to create rules with the highest priority.
+      For example, the user might want a rule to be triggered in the middle of a conversation.
+
+    * "waking_up_word" is the name of the bot, used to wake up the system in the "run-audio" mode.
+
+    * "waking_up_sound" and "deactivate_sound" are played to signal the system is up or is back to idle.
+
+    * "improvise_tasks" allows the system to create its own rules to accomplish a goal.
 
 
 - The rules.wafl file contains the rules that guide the chatbot.

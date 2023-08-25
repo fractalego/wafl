@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running wafl init &mdash; WAFL  documentation</title>
+  <title>Initialization &mdash; WAFL  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -49,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rules.html#examples">Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Running wafl init</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Initialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="directory_structure.html">Directory structure</a></li>
 </ul>
 </li>
@@ -71,7 +71,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="examples.html">Examples</a></li>
-      <li class="breadcrumb-item active">Running wafl init</li>
+      <li class="breadcrumb-item active">Initialization</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/wafl_init.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,9 +81,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="running-wafl-init">
-<h1>Running wafl init<a class="headerlink" href="#running-wafl-init" title="Permalink to this heading"></a></h1>
-<p>What does this command do?</p>
+  <section id="initialization">
+<h1>Initialization<a class="headerlink" href="#initialization" title="Permalink to this heading"></a></h1>
+<p>This command initialises WAFL’s work environment</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wafl<span class="w"> </span>init
 </pre></div>
 </div>
@@ -101,20 +101,25 @@ testcases.txt
 <li><p>The <cite>config.json</cite> file contains the configuration.</p></li>
 </ul>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
-  &quot;allow_interruptions&quot;: true,                  # interruptions are allowed in the conversation
-  &quot;waking_up_word&quot;: &quot;computer&quot;,                 # the word that wakes up the LLM and the name of the chatbot
-  &quot;waking_up_sound&quot;: true,                      # A sound is generated when the LLM is woken up
-  &quot;deactivate_sound&quot;: true,                     # A sound is generated when the LLM is woken up
-  &quot;listener_model&quot;: &quot;openai/whisper-tiny.en&quot;,   # The model used for speech recognition.
-                                                # Only whisper models are supported
-  &quot;listener_hotword_logp&quot;: -8,                  # The threshold log probability of the hotword
-  &quot;listener_volume_threshold&quot;: 0.6,             # The threshold volume when listening
-  &quot;listener_silence_timeout&quot;: 0.7,              # The silence timeout when listening
-  &quot;model_host&quot;: &quot;127.0.0.1&quot;,                    # The host of the LLM
-  &quot;model_port&quot;: 8080                            # The port of the LLM
+  &quot;allow_interruptions&quot;: true,
+  &quot;waking_up_word&quot;: &quot;computer&quot;,
+  &quot;waking_up_sound&quot;: true,
+  &quot;deactivate_sound&quot;: true,
+  &quot;improvise_tasks&quot;: true,
+  ...
 }
 </pre></div>
 </div>
+<p>These settings regulate the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The “allow_interruptions” allows the user to create rules with the highest priority.
+For example, the user might want a rule to be triggered in the middle of a conversation.</p></li>
+<li><p>“waking_up_word” is the name of the bot, used to wake up the system in the “run-audio” mode.</p></li>
+<li><p>“waking_up_sound” and “deactivate_sound” are played to signal the system is up or is back to idle.</p></li>
+<li><p>“improvise_tasks” allows the system to create its own rules to accomplish a goal.</p></li>
+</ul>
+</div></blockquote>
 <ul class="simple">
 <li><p>The rules.wafl file contains the rules that guide the chatbot.
 The rules are written in the WAFL language, with a trigger condition on top and a list of actions below.</p></li>

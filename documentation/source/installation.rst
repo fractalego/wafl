@@ -33,9 +33,12 @@ Please see the examples in the following chapters.
 LLM side (needs a GPU)
 ----------------------
 
-The second part is a server that runs on a machine accessible from the interface side.
-This last machine will need to have a GPU to run the Large Language Model at a convenient speed.
-This part can be run using a docker image by running the script
+The second part is a machine that runs on a machine accessible from the interface side.
+The initial configuration is for a local deployment of language models.
+No action is needed to run WAFL if you want to run it as a local instance.
+
+However, a multi-user setup will benefit for a dedicated server.
+In this case, a docker image can be used
 
 .. code-block:: bash
 

@@ -103,9 +103,11 @@ Please see the examples in the following chapters.</p>
 </section>
 <section id="llm-side-needs-a-gpu">
 <h2>LLM side (needs a GPU)<a class="headerlink" href="#llm-side-needs-a-gpu" title="Permalink to this heading"></a></h2>
-<p>The second part is a server that runs on a machine accessible from the interface side.
-This last machine will need to have a GPU to run the Large Language Model at a convenient speed.
-This part can be run using a docker image by running the script</p>
+<p>The second part is a machine that runs on a machine accessible from the interface side.
+The initial configuration is for a local deployment of language models.
+No action is needed to run WAFL if you want to run it as a local instance.</p>
+<p>However, a multi-user setup will benefit for a dedicated server.
+In this case, a docker image can be used</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p8080:8080<span class="w"> </span>--env<span class="w"> </span><span class="nv">NVIDIA_DISABLE_REQUIRE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>fractalego/wafl-llm:latest
 </pre></div>
 </div>
