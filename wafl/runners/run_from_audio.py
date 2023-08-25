@@ -12,7 +12,7 @@ from wafl.scheduler.scheduler import Scheduler
 
 def run_from_audio():
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
     interface = VoiceInterface(config)
     conversation_events = ConversationEvents(
         knowledge,
@@ -28,6 +28,7 @@ def run_from_audio():
         activation_word=config.get_value("waking_up_word"),
     )
     generated_events = GeneratedEvents(
+        config,
         knowledge,
         events=EventsCreatorFromModuleName("events"),
         interface=interface,
