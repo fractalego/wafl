@@ -42,7 +42,7 @@ class LLMTaskCreatorBridge:
         retrieved_items = "\n\n\n".join(
             [item.text for item in retrieved_items][::-1][:5]
         )
-        prompt = f""""
+        prompt = f"""" + "\n"
 {retrieved_items}
 
 
@@ -56,7 +56,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {{...}}.
 Use the least steps:
         """.strip()
 

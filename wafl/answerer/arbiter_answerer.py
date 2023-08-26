@@ -72,6 +72,12 @@ class ArbiterAnswerer(BaseAnswerer):
         return ArbiterAnswerer(
             config,
             {
+                "The user greets and there is no rule for that query": DialogueAnswerer(
+                    config, knowledge, interface, logger
+                ),
+                "The user speaks about themselves and there is no rule for that query": DialogueAnswerer(
+                    config, knowledge, interface, logger
+                ),
                 "The user makes small talk and there is no rule for that query": DialogueAnswerer(
                     config, knowledge, interface, logger
                 ),

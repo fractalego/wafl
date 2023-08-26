@@ -1,9 +1,15 @@
 ### TODO
 
-* make stand-alone connectors (no need for server-side)
+* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
+* add a small wafl_home to the init, with folders and everything
+
+* rule creation for "hello" is terrible. Revise all rule creation
+
+
+/* make stand-alone connectors (no need for server-side)
   /* modify config for all connectors
-  * check remote connectors work!
-  * create note about local speaker for python 3.11
+/  * check remote connectors work!
+/  * create note about local speaker for python 3.11
 
 * rewrite documentation !!!!
    * talk about how the system will improvises rules

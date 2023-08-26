@@ -8,7 +8,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task. 
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to eat at a restaurant
    food_type = what type of food do you want?
@@ -25,7 +25,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to go somewhere
    location = where do you want to go?
@@ -43,7 +43,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to know if it is going to rain
    weather_forecast = the user wants to know the weather today
@@ -59,6 +59,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed). 
 A Python function can be added with instructions in English within <...>.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to repeat the first thing that they said 
    first_sentence = What did the user say first?
@@ -73,7 +74,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed). 
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to multiply 2 and 3
    result = multiply(2, 3) <multiply two numbers>
@@ -88,7 +89,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>. 
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to list all the files in a folder
    folder_name = which folder do you want to list?
@@ -105,7 +106,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to get the nth fibonacci number
    index = what is the index of the fibonacci number you want?
@@ -122,7 +123,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to know where to buy legos
    road_to_lego_shop = the user wants to know the road to the nearest lego shop
@@ -139,7 +140,7 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to know if they need snow boots
    weather_forecast = the user says ""what is the weather""
@@ -156,12 +157,12 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
 the user wants to know how the third planet from the sun is called
    answer = how is the third planet from the sun called
    SAY The third planet from the sun is called {answer}<|EOS|>"
-"The intention of the user is the following: the user wants to know where to go hiking in Edinburg
+"The intention of the user is the following: the user wants to know where to go hiking in Edinburgh
 
 The system has rules that are triggered by the following sentences
 - The user wants to know the road to somewhere
@@ -172,9 +173,9 @@ The first line is the rule trigger.
 The following lines are the steps to accomplish the task.
 These lines cannot contain the trigger (no recursive tasks are allowed).
 A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brakets {...}.
+The result of a query can be used within another query by using brackets {...}.
 Use the least steps:
-the user wants to know where to go hiking in Scotland
-   road_to_scotland_hike = the user wants to know the road to a good hiking location in Edinburg
-   result = Answer the following question given this road: {road_to_scotland_hike}. How to get to the hiking location in Edinburg?
+the user wants to know where to go hiking in Edinburgh
+   road_to_scotland_hike = the user wants to know the road to a good hiking location in Edinburgh
+   result = Answer the following question given this road: {road_to_scotland_hike}. How to get to the hiking location in Edinburgh?
    SAY {result}<|EOS|>"

@@ -1,13 +1,16 @@
+import logging
 import time
 import re
 import torch
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import StoppingCriteria
-from wafl.config import Configuration
+
+_system_logger = logging.getLogger(__file__)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-
+model = None
+tokenizer = None
 
 class LocalLLMConnector:
     _max_tries = 3
@@ -17,13 +20,18 @@ class LocalLLMConnector:
 
     def __init__(self, config):
         global model, tokenizer
-        model = AutoModelForCausalLM.from_pretrained(
-            config["local_model"],
-            init_device=device,
-            trust_remote_code=True,
-            torch_dtype=torch.half,
-        )
-        tokenizer = AutoTokenizer.from_pretrained(config["local_model"])
+        if not model:
+            _system_logger.info(f"Loading model {config['local_model']} locally.")
+            model = AutoModelForCausalLM.from_pretrained(
+                config["local_model"],
+                init_device=device,
+                trust_remote_code=True,
+                torch_dtype=torch.half,
+            )
+            _system_logger.info(f"The model is loaded.")
+
+        if not tokenizer:
+            tokenizer = AutoTokenizer.from_pretrained(config["local_model"])
 
         self._stop_at_eos = StopAtEOS(tokenizer)
 
