@@ -1,13 +1,50 @@
 ### TODO
 
-/* make all tests pass
-* REMOVE computer FROM UTTERANCES!! (after activation)
+* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
+* add a small wafl_home to the init, with folders and everything
 
-* modify wafl_llm to have a config file for the models to use/download
-* add a standard variable for the dialogue history to be used in rules space
-* only files declared with #using can be used in rules
-* rewrite documentation
+* rule creation for "hello" is terrible. Revise all rule creation
+
+
+/* make stand-alone connectors (no need for server-side)
+  /* modify config for all connectors
+/  * check remote connectors work!
+/  * create note about local speaker for python 3.11
+
+* rewrite documentation !!!!
+   * talk about how the system will improvises rules
+   * explain arbiter pipeline
+   * update config description (possibly with stand-alone connection) !!!!
+
+* add init-default (with modified wafl_home) and init (as empty)
+
+
 * push to main!
+* push wafl-llm to main
+  * and docker
+
+* add import from files in rules space
+
+
+
+/* split bullet lists into lists for mapping onto a query
+/   * add something for merging as well
+/* If the inference fail, should you try to improvise?
+
+/* make it so it is possible to navigate among levels of tasks
+/   * e.g.: what is the name of the list? that's not what i meant
+/   * INTERRUPTIONS: nevermind, nothing, no one, not what i meant
+/   * questions: answering a question with a question should trigger a new resolution tree
+    -> resolution: before answer_is_informative() I added an entailment check whether the answer makes sense/user doesn't want to answer
+
+/* add #using ../
+/* why does sqrt throw exception when eval(code)?
+/* make all tests pass
+/* REMOVE computer FROM UTTERANCES!! (after activation)
+
+/* modify wafl_llm to have a config file for the models to use/download
+/* add a standard variable for the dialogue history to be used in rules space
+/* only files declared with #using can be used in rules
 
 
 * retrievers for in-context learning
@@ -22,8 +59,8 @@
   Find a good way to entail what you need.
 
   - Issues were:
-     - Tetriever is not very good. There are a lot other rules scooped up when asking for a task
-     - Interrution rule must not be used for tasks
+     - Retriever is not very good. There are a lot other rules scooped up when asking for a task
+     - Interruption rule must not be used for tasks
      - Text-generation tasks are understood as questions, therefore no text generation
 
 * Maybe you need to add text_generation task right before searching the answer in rules

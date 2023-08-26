@@ -1,0 +1,7 @@
+This bot can answer coding questions.
+
+Write a paragraph
+  goal = what do you want to write about?
+  paragraph = Write a paragraph that accomplishes the following: {goal}
+  SAY This is what I could come up with:
+  SAY {paragraph}

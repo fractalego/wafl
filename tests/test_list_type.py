@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -12,10 +14,10 @@ _rules = """
 
 the user wants to write a book
     theme = what is the book about?
-    list_of_chapters = Generate a Python list of 4 chapters names for a space opera book. The output needs to be a python list of strings:
-    SAY {list_of_chapters}
-    chapter_texts = Generate a full paragraph based on this chapter title "{list_of_chapters}". The theme of the paragraph is {theme}. Include the characters "Alberto" and "Maria". Write at least three sentences.
-    SAY {chapter_texts}
+    list_of_chapters = Generate a bullet list of 4 chapters names for a book. The theme of the book is {theme}.
+    SAY [{list_of_chapters}]
+    chapter_texts = Generate a full paragraph based on this chapter title "[{list_of_chapters}]". Include the characters "Alberto" and "Maria". Write at least three sentences.
+    SAY [{chapter_texts}]
 
 """
 
@@ -28,8 +30,9 @@ class TestListType(TestCase):
                 "space opera",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, _rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         [print(item) for item in interface.get_utterances_list()]

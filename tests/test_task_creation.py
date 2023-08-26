@@ -1,8 +1,10 @@
 import asyncio
 
 from unittest import TestCase
-from wafl.connectors.llm_code_creator_connector import LLMCodeCreatorConnector
-from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
+
+from wafl.config import Configuration
+from wafl.connectors.bridges.llm_code_creator_bridge import LLMCodeCreatorBridge
+from wafl.connectors.bridges.llm_task_creator_bridge import LLMTaskCreatorBridge
 from wafl.events.conversation_events import ConversationEvents
 from wafl.extractors.code_creator import CodeCreator
 from wafl.extractors.task_creator import TaskCreator
@@ -24,7 +26,8 @@ The user wants to know the weather
 
 class TestTaskCreation(TestCase):
     def test__task_creation_connector(self):
-        connector = LLMTaskCreatorConnector()
+        config = Configuration.load_local_config()
+        connector = LLMTaskCreatorBridge(config)
         task = "the user wants to go swimming in the sea"
         triggers = "\n".join(
             [
@@ -43,8 +46,9 @@ the user wants to go swimming in the sea
         assert expected == prediction
 
     def test__task_creation1(self):
-        knowledge = SingleFileKnowledge(_wafl_example)
-        task_creator = TaskCreator(knowledge)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
+        task_creator = TaskCreator(config, knowledge)
         task = "the user wants to go swimming in the sea at brighton beach"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
@@ -58,8 +62,9 @@ the user wants to go swimming in the sea at brighton beach
         assert expected == answer.text.strip()
 
     def test__task_creation2(self):
-        knowledge = SingleFileKnowledge(_wafl_example)
-        task_creator = TaskCreator(knowledge)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
+        task_creator = TaskCreator(config, knowledge)
         task = "the user wants to know if they need and umbrella"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
@@ -72,8 +77,9 @@ the user wants to know if they need an umbrella
         assert expected == answer.text.strip()
 
     def test__task_creation3(self):
-        knowledge = SingleFileKnowledge(_wafl_example)
-        task_creator = TaskCreator(knowledge)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
+        task_creator = TaskCreator(config, knowledge)
         task = "the user wants to go from London to Manchester"
         answer = asyncio.run(task_creator.extract(task))
         expected = """
@@ -87,8 +93,11 @@ the user wants to go from London to Manchester
 
     def test__task_is_created_from_conversation(self):
         interface = DummyInterface(to_utter=["Tell me if I need an umbrella"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
@@ -97,7 +106,8 @@ the user wants to go from London to Manchester
         assert interface.get_utterances_list()[-1] == expected
 
     def test__code_creation(self):
-        connector = LLMCodeCreatorConnector()
+        config = Configuration.load_local_config()
+        connector = LLMCodeCreatorBridge(config)
         task = "connect to 'localhost:port' and return the data as json"
         function_shape = "json_data = connect_to_localhost(port)"
         prediction = asyncio.run(connector.get_answer("", function_shape, task))
@@ -113,8 +123,9 @@ def connect_to_localhost(port):
         assert expected == prediction
 
     def test__task_creation_with_function(self):
-        knowledge = SingleFileKnowledge(_wafl_example)
-        code_creator = CodeCreator(knowledge)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _wafl_example)
+        code_creator = CodeCreator(config, knowledge)
         task = "folders_list = list_subfolders('/var/') <the user wants list all the subfolders in a folder>"
         answer = asyncio.run(code_creator.extract(task))
         expected = """
@@ -123,7 +134,7 @@ def list_subfolders(folder_name):
 
     subfolders = []
     for subfolder in os.listdir(folder_name):
-        if os.path.isdir(subfolder):
+        if os.path.isdir(os.path.join(folder_name, subfolder)):
             subfolders.append(subfolder)
     return subfolders
             """.strip()
@@ -132,8 +143,11 @@ def list_subfolders(folder_name):
 
     def test__task_is_created_from_conversation_with_code(self):
         interface = DummyInterface(to_utter=["Please list of the subfolders of /var"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
             code_path="/",
         )
@@ -144,8 +158,11 @@ def list_subfolders(folder_name):
 
     def test__math_task_is_created_from_conversation(self):
         interface = DummyInterface(to_utter=["Multiply 100 and 43"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge.create_from_string(_wafl_example, knowledge_name="/"),
+            ProjectKnowledge.create_from_string(
+                config, _wafl_example, knowledge_name="/"
+            ),
             interface=interface,
             code_path="/",
         )

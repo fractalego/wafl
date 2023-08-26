@@ -48,25 +48,27 @@ _logger = logging.getLogger(__name__)
 class BackwardInference:
     def __init__(
         self,
+        config: "Configuration",
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
         narrator: "Narrator",
         module_names=None,
         max_depth: int = 3,
-        generate_rules: bool = True,
+        generate_rules: bool = False,
         logger=None,
     ):
         self._max_depth = max_depth
         self._knowledge = knowledge
         self._interface = interface
-        self._extractor = Extractor(narrator, logger)
-        self._prompt_predictor = PromptPredictor(logger)
-        self._task_extractor = TaskExtractor(interface)
-        self._task_creator = TaskCreator(knowledge, logger)
-        self._code_creator = CodeCreator(knowledge)
+        self._config = config
+        self._extractor = Extractor(config, narrator, logger)
+        self._prompt_predictor = PromptPredictor(config, logger)
+        self._task_extractor = TaskExtractor(config, interface)
+        self._task_creator = TaskCreator(config, knowledge, logger)
+        self._code_creator = CodeCreator(config, knowledge)
+
         self._narrator = narrator
         self._logger = logger
-        self._config = Configuration.load_local_config()
         self._generate_rules = generate_rules
         self._module = {}
         self._functions = {}
@@ -161,6 +163,11 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
@@ -169,6 +176,11 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers in working memory: " + answer.text, depth)
             return answer
 
@@ -177,6 +189,11 @@ class BackwardInference:
         )
         candidate_answers.append(answer)
         if answer and answer_is_informative(answer):
+            if not await self._answer_makes_sense(
+                query.text, answer.text, self._extractor.get_entailer()
+            ):
+                answer = Answer.create_neutral(variable=answer.variable)
+
             self._log("Answers by asking the user: " + answer.text, depth)
             return answer
 
@@ -211,7 +228,7 @@ class BackwardInference:
         rules = await self._knowledge.ask_for_rule_backward(
             query, knowledge_name=query_knowledge_name
         )
-        if not rules and self._generate_rules and policy.improvise:
+        if not rules and self._generate_rules:
             self._log(f"Creating rules for the task: {query.text}", depth)
             rules_answer = await self._task_creator.extract(query.text)
             if not rules_answer.is_neutral():
@@ -225,8 +242,6 @@ class BackwardInference:
 
         for rule in rules:
             index = 0
-            substitutions = {}
-
             substitutions = create_default_substitutions(self._interface)
             rule_effect_text = rule.effect.text
             knowledge_name = rule.knowledge_name
@@ -296,7 +311,7 @@ class BackwardInference:
 
                 if len(answers) > 1:
                     answer = Answer.create_from_text(
-                        str([item.text for item in answers])
+                        str([item.text for item in answers])[1:-1]
                     )
 
                 else:
@@ -491,7 +506,7 @@ class BackwardInference:
                 await self._interface.output(query.text)
                 user_input_text = await self._interface.input()
                 self._log(f"The user replies: {user_input_text}")
-                if await self._query_has_better_match(user_input_text):
+                if await self._query_has_better_match(query.text, user_input_text):
                     self._log(f"Found a better match for {user_input_text}", depth)
                     task_text = (
                         await self._task_extractor.extract(user_input_text)
@@ -669,7 +684,11 @@ class BackwardInference:
         if "=" not in cause_text:
             return Answer(text="False")
 
-        variable, prompt = cause_text.split("=")
+        position_of_assignment_operator = cause_text.find("=")
+        variable, prompt = (
+            cause_text[:position_of_assignment_operator].strip(),
+            cause_text[position_of_assignment_operator + 1 :].strip(),
+        )
         variable = variable.strip()
         prompt = prompt.strip()
         answer = await self._prompt_predictor.predict(prompt)
@@ -787,11 +806,38 @@ class BackwardInference:
         facts = await self._knowledge.ask_for_facts_with_threshold(query, threshold=0.5)
         return [Answer(text=item[0].text, variable=variable) for item in facts]
 
-    async def _query_has_better_match(self, text: str):
-        if is_question(text):
+    async def _query_has_better_match(
+        self,
+        query: str,
+        user_answer: str,
+    ):
+        if is_question(user_answer):
             return True
 
-        if await self._knowledge.has_better_match(text):
+        if await self._knowledge.has_better_match(user_answer):
             return True
 
         return False
+
+    async def _answer_makes_sense(
+        self, query: str, user_answer: str, entailer: "Entailer"
+    ):
+        result = await entailer.entails(
+            f"bot: {query} user: {user_answer}",
+            "the user refuses to answer",
+            threshold=0.9,
+            return_threshold=True,
+        )
+        if result:
+            return False
+
+        result = await entailer.entails(
+            f"bot: {query} user: {user_answer}",
+            "The answer gives no information",
+            threshold=0.9,
+            return_threshold=True,
+        )
+        if result:
+            return False
+
+        return True

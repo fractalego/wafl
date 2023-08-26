@@ -9,14 +9,14 @@ from wafl.extractors.extractor import Extractor
 
 
 class InferenceAnswerer(BaseAnswerer):
-    def __init__(self, interface, inference, logger):
-        self._qa = Extractor(logger)
+    def __init__(self, config, interface, inference, logger):
+        self._qa = Extractor(config, logger)
         self._logger = logger
         self._narrator = Narrator(interface)
         self._interface = interface
         self._inference = inference
-        self._task_extractor = TaskExtractor(interface)
-        self._entailer = Entailer(logger)
+        self._task_extractor = TaskExtractor(config, interface)
+        self._entailer = Entailer(config, logger)
 
     async def answer(self, query_text, policy):
         prior_conversation = self._narrator.summarize_dialogue()

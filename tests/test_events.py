@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from unittest import TestCase
 
+from wafl.config import Configuration
 from wafl.events.generated_events import GeneratedEvents
 from wafl.events.events_from_function_list import EventsCreatorFromFunctionList
 from wafl.events.events_from_module_name import EventsCreatorFromModuleName
@@ -44,8 +45,10 @@ class TestEvents(TestCase):
 
     def test__events_can_trigger_rule(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         generated_events = GeneratedEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            config,
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             events=EventsCreatorFromFunctionList([return_five_past_seven]),
             interface=interface,
             logger=_logger,
@@ -57,8 +60,10 @@ class TestEvents(TestCase):
 
     def test__events_does_not_trigger_rule(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         generated_events = GeneratedEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            config,
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             events=EventsCreatorFromFunctionList([return_four_past_seven]),
             interface=interface,
             logger=_logger,
@@ -69,8 +74,10 @@ class TestEvents(TestCase):
 
     def test__events_functions_can_be_loaded_from_file(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         generated_events = GeneratedEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            config,
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             events=EventsCreatorFromModuleName("events"),
             interface=interface,
             logger=_logger,

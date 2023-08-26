@@ -17,13 +17,12 @@ bot: I believe it was Christopher Reeve<|EOS|>"
 "In the dialogue below a user is speaking to a bot:
 user: what is the color of the sun
 The bot remembers: the sun is bright yellow
-bot: The sun is bright yellow<|EOS|>
-"
+bot: The sun is bright yellow<|EOS|>"
 "In the dialogue below a user is speaking to a bot:
 user: what is the height of my truck
-The bot remembers: The user's truck is 8ft
 The bot remembers: The user is Italian
 The bot remembers: The user has a one bedroom flat
+The bot remembers: The user's truck is 8ft
 bot: The user's truck is 8ft<|EOS|>"
 "In the dialogue below a user is speaking to a bot:
 user: My flat is a one bedroom
@@ -31,8 +30,8 @@ bot: nice to know<|EOS|>
 user: is my flat a 2 bedroom
 bot: no, it is a 1 bedroom<|EOS|>"
 "In the dialogue below a user is speaking to a bot:
-the bot remembers: The user's name is John
 the bot remembers: The user is tall
+the bot remembers: The user's name is John
 user: is my name Jane
 bot: no, your name is John<|EOS|>"
 "In the dialogue below a user is speaking to a bot:

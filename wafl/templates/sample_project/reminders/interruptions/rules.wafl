@@ -1,0 +1,33 @@
+# End the conversation
+
+_close
+  close_conversation()
+
+INTERRUPTION the user believes they don't need anything else
+  SAY ok
+  _close
+
+INTERRUPTION the user says "good bye"
+  SAY good bye!
+  _close
+
+INTERRUPTION the user says to shut up
+  SAY ok
+  _close
+
+INTERRUPTION the user asks this bot to be silent
+  _close
+
+INTERRUPTION the user says: "thank you"
+  _close
+
+INTERRUPTION the user says: "thank you this is all"
+  _close
+
+INTERRUPTION the user wants to stop
+  ! Do you want to continue?
+  close_task()
+
+INTERRUPTION "nevermind"
+  close_task()
+

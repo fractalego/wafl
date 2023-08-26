@@ -285,7 +285,31 @@ def get_list_from_string(text: str) -> List[Any]:
 
 
 def get_list_like_element(text: str) -> str:
-    return re.sub(r".*\[(.*)].*", r"[\1]", text, re.MULTILINE).strip()
+    start_pos = text.find("[")
+    if start_pos == -1:
+        return ""
+
+    end_pos = text.find("]", start_pos)
+    if end_pos == -1:
+        return ""
+
+    return text[start_pos : end_pos + 1]
+
+
+def create_python_list_from_bullet_list(text: str) -> List[str]:
+    new_list = text.split("\n")
+    if len(new_list) != 1:
+        return new_list
+
+    new_list = text.split("', '")
+    if len(new_list) != 1:
+        return new_list
+
+    new_list = text.split(",")
+    if len(new_list) != 1:
+        return new_list
+
+    return [text]
 
 
 def get_causes_list(text: str) -> List[str]:
@@ -301,10 +325,15 @@ def get_causes_list(text: str) -> List[str]:
         return [text]
 
     list_like_element = get_list_like_element(text)
-    if not string_is_python_list(list_like_element):
+    if not list_like_element:
         return [text]
 
-    items = get_list_from_string(list_like_element)
+    if not string_is_python_list(list_like_element):
+        items = create_python_list_from_bullet_list(list_like_element[1:-1])
+
+    else:
+        items = get_list_from_string(list_like_element)
+
     causes_list = []
     for item in items:
         causes_list.append(text.replace(list_like_element, item))
@@ -315,5 +344,5 @@ def get_causes_list(text: str) -> List[str]:
 def create_default_substitutions(interface: "BaseInterface") -> Dict[str, str]:
     substitutions = {}
     dialogue = " ".join(interface.get_utterances_list())
-    update_substitutions_from_results("_dialogue", dialogue, substitutions)
+    update_substitutions_from_results(dialogue, "_dialogue", substitutions)
     return substitutions

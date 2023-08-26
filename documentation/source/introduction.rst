@@ -1,8 +1,10 @@
 Introduction
 ============
 
-WAFL is a framework for home assistants.
-It is designed to combine Large Language Models and rules to create a predictable behavior.
+WAFL is a framework for personal agents.
+It integrates Large language models, speech recognition and text to speech.
+
+This framework combines Large Language Models and rules to create a predictable behavior.
 Specifically, instead of organising the work of an LLM into a chain of thoughts,
 WAFL intends to organise its behavior into inference trees.
 

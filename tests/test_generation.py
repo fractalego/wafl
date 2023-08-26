@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -27,8 +29,9 @@ The user says their name
 class TestGeneration(TestCase):
     def test__language_model_returns_first_letter_of_name(self):
         interface = DummyInterface(["My name is alberto"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, wafl_rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: The first letter of your name is a"
@@ -37,8 +40,9 @@ class TestGeneration(TestCase):
 
     def test__does_not_generate_if_it_is_not_instructions(self):
         interface = DummyInterface(["Hello"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, wafl_rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Yes"

@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -77,8 +79,9 @@ class TestConversation(TestCase):
 
     def test__say_command(self):
         interface = DummyInterface()
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -92,8 +95,9 @@ class TestConversation(TestCase):
         interface = DummyInterface(
             to_utter=["Can I register to the newsletter?", "test@example.com"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -110,8 +114,9 @@ class TestConversation(TestCase):
                 "What is the email of the user",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
@@ -124,8 +129,9 @@ class TestConversation(TestCase):
         interface = DummyInterface(
             to_utter=["the user's mother is called Ada", "How is the user's mum called"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example, logger=_logger),
+            SingleFileKnowledge(config, _wafl_example, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -137,8 +143,9 @@ class TestConversation(TestCase):
 
     def test__greeting(self):
         interface = DummyInterface(["My name is Albert", "What is my name"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge("", logger=_logger),
+            SingleFileKnowledge(config, "", logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -151,8 +158,9 @@ class TestConversation(TestCase):
 
     def test__greeting_with_alberto_as_name(self):
         interface = DummyInterface(["My name is Albert0", "What is my name"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -166,8 +174,9 @@ class TestConversation(TestCase):
 
     def test__yes(self):
         interface = DummyInterface(["My name is Ada", "am I called Ada"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -183,8 +192,9 @@ class TestConversation(TestCase):
 
     def test__no(self):
         interface = DummyInterface(["My name is Albert", "Is my name Bob?"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -200,8 +210,9 @@ class TestConversation(TestCase):
 
     def test__yes_no_questions_from_bot_with_answer_yes(self):
         interface = DummyInterface(["I want to join the club", "yes"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -212,8 +223,9 @@ class TestConversation(TestCase):
 
     def test__yes_no_questions_from_bot_with_answer_no(self):
         interface = DummyInterface(["I want to join the club", "no"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -226,8 +238,9 @@ class TestConversation(TestCase):
 
     def test__hello_and_username(self):
         interface = DummyInterface(["Hello", "Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings, logger=_logger),
+            SingleFileKnowledge(config, _wafl_greetings, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -239,8 +252,9 @@ class TestConversation(TestCase):
 
     def test__how_are_you(self):
         interface = DummyInterface(["How are you?"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_how_are_you, logger=_logger),
+            SingleFileKnowledge(config, _wafl_how_are_you, logger=_logger),
             interface=interface,
             logger=_logger,
         )
@@ -251,8 +265,9 @@ class TestConversation(TestCase):
         interface = DummyInterface(
             ["my name is Albert0 and I am a carpenter", "say something about me"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_dialogue_variable, logger=_logger),
+            SingleFileKnowledge(config, _wafl_dialogue_variable, logger=_logger),
             interface=interface,
             logger=_logger,
         )

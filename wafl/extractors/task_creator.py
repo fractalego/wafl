@@ -1,7 +1,7 @@
 import logging
 import os
 
-from wafl.connectors.llm_task_creator_connector import LLMTaskCreatorConnector
+from wafl.connectors.bridges.llm_task_creator_bridge import LLMTaskCreatorBridge
 from wafl.extractors.dataclasses import Answer, Query
 
 _path = os.path.dirname(__file__)
@@ -9,8 +9,8 @@ _logger = logging.getLogger(__file__)
 
 
 class TaskCreator:
-    def __init__(self, knowledge, logger=None):
-        self._connector = LLMTaskCreatorConnector()
+    def __init__(self, config, knowledge, logger=None):
+        self._connector = LLMTaskCreatorBridge(config)
         self._knowledge = knowledge
         self._logger = logger
 

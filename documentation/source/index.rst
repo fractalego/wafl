@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to WAFL's 0.0.45 documentation!
-================================
+=======================================
 
 .. toctree::
    :maxdepth: 3
@@ -13,6 +13,8 @@ Welcome to WAFL's 0.0.45 documentation!
    introduction
    installation
    running_WAFL
+   query_processing_pipeline
+   rules
    examples
    license
 

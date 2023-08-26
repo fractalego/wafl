@@ -31,8 +31,8 @@ class VoiceInterface(BaseInterface):
         self._deny_sound_filename = self.__get_deny_sound_from_config(config)
 
         self.listener_model_name = config.get_value("listener_model")
-        self._speaker = FairSeqSpeaker()
-        self._listener = WhisperListener()
+        self._speaker = FairSeqSpeaker(config)
+        self._listener = WhisperListener(config)
         self._listener.set_timeout(config.get_value("listener_silence_timeout"))
         self._listener.set_volume_threshold(
             config.get_value("listener_volume_threshold")

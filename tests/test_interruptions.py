@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -30,8 +32,9 @@ INTERRUPTION the user wants to stop the task
 class TestInterruptions(TestCase):
     def test_time_request_does_not_interrupt(self):
         interface = DummyInterface(["Hello", "Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
         asyncio.run(interface.output(utterance))
@@ -41,8 +44,9 @@ class TestInterruptions(TestCase):
 
     def test_time_request_does_interrupt(self):
         interface = DummyInterface(["Hello", "what's the time?", "Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings),
+            SingleFileKnowledge(config, _wafl_greetings),
             interface=interface,
             code_path="/",
         )
@@ -55,8 +59,9 @@ class TestInterruptions(TestCase):
 
     def test_time_shut_up_does_interrupt(self):
         interface = DummyInterface(["Hello", "shut up"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings),
+            SingleFileKnowledge(config, _wafl_greetings),
             interface=interface,
             code_path="/",
         )
@@ -72,8 +77,9 @@ class TestInterruptions(TestCase):
 
     def test_task_interrupt_task_does_interrupt(self):
         interface = DummyInterface(["Hello", "I want to stop the task"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings),
+            SingleFileKnowledge(config, _wafl_greetings),
             interface=interface,
             code_path="/",
         )

@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.task_memory import TaskMemory
 from wafl.interface.dummy_interface import DummyInterface
@@ -70,8 +72,9 @@ A:
                 "Hello, my name is Bob",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
@@ -83,8 +86,9 @@ A:
 
     def test__hello_does_not_get_into_task_memory(self):
         interface = DummyInterface(to_utter=["hello", "Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -101,8 +105,9 @@ A:
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -121,8 +126,9 @@ A:
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -139,8 +145,9 @@ A:
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
@@ -156,8 +163,9 @@ A:
                 "add bananas as well",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(memory_example),
+            SingleFileKnowledge(config, memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
@@ -176,8 +184,9 @@ A:
                 "ok now add apples",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(memory_example),
+            SingleFileKnowledge(config, memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),
@@ -197,8 +206,9 @@ A:
                 "add coffee filters",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(memory_example),
+            SingleFileKnowledge(config, memory_example),
             interface=interface,
             code_path="/",
             logger=LocalFileLogger(),

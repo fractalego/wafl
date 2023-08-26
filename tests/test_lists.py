@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -82,8 +84,9 @@ class TestLists(TestCase):
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, _rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
@@ -104,8 +107,9 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(config, _lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
@@ -129,8 +133,9 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(config, _lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
@@ -154,8 +159,9 @@ class TestLists(TestCase):
                 "what is in the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_lists_in_functions_rules),
+            SingleFileKnowledge(config, _lists_in_functions_rules),
             interface=interface,
             code_path="/",
         )
@@ -174,8 +180,9 @@ class TestLists(TestCase):
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, _rules), interface=interface, code_path="/"
         )
         hotword = "Computer"
         asyncio.run(conversation_events.process_next(activation_word=hotword))

@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.extractors.entailer import Entailer
 
 _path = os.path.dirname(__file__)
@@ -12,7 +14,8 @@ class TestEntailment(TestCase):
         premise = "The user says 'hello.'."
         hypothesis = "The user is greeting"
 
-        entailer = Entailer()
+        config = Configuration.load_local_config()
+        entailer = Entailer(config)
         prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
         self.assertTrue(prediction["entailment"] > 0.95)
 
@@ -20,7 +23,8 @@ class TestEntailment(TestCase):
         premise = "The user says 'What time is the train leaving.'"
         hypothesis = "The user inquires about transport time tables"
 
-        entailer = Entailer()
+        config = Configuration.load_local_config()
+        entailer = Entailer(config)
         prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
         print(prediction)
         self.assertTrue(prediction["entailment"] > 0.95)
@@ -29,5 +33,6 @@ class TestEntailment(TestCase):
         premise = "The user says 'my name is John.'."
         hypothesis = "The user says their name"
 
-        entailer = Entailer()
+        config = Configuration.load_local_config()
+        entailer = Entailer(config)
         self.assertEqual(asyncio.run(entailer.entails(premise, hypothesis)), "True")

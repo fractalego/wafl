@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -50,8 +52,9 @@ class TestLanguageInFunctions(TestCase):
                 "What's in the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -66,8 +69,9 @@ class TestLanguageInFunctions(TestCase):
                 "Please say hello twice",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -87,8 +91,9 @@ class TestLanguageInFunctions(TestCase):
 
     def test_double_functions(self):
         interface = DummyInterface(["Is the victoria line running"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_tube_line_rules),
+            SingleFileKnowledge(config, _tube_line_rules),
             interface=interface,
             code_path="/",
         )

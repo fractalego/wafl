@@ -1,8 +1,8 @@
 import logging
 import os
 
-from wafl.connectors.llm_code_creator_connector import LLMCodeCreatorConnector
-from wafl.extractors.dataclasses import Answer, Query
+from wafl.connectors.bridges.llm_code_creator_bridge import LLMCodeCreatorBridge
+from wafl.extractors.dataclasses import Answer
 from wafl.extractors.utils import get_function_description, get_code
 
 _path = os.path.dirname(__file__)
@@ -10,8 +10,8 @@ _logger = logging.getLogger(__file__)
 
 
 class CodeCreator:
-    def __init__(self, knowledge, logger=None):
-        self._connector = LLMCodeCreatorConnector()
+    def __init__(self, config, knowledge, logger=None):
+        self._connector = LLMCodeCreatorBridge(config)
         self._knowledge = knowledge
 
     async def extract(self, function_and_task: str) -> Answer:
