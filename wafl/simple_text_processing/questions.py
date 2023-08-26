@@ -8,6 +8,9 @@ def is_question(text):
     if not text:
         return False
 
+    if ":" in text:
+        return False
+
     if text[-1] == "?":
         return True
 

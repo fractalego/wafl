@@ -4,7 +4,6 @@ import re
 from wafl.events.answerer_creator import create_answerer
 from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
-
 from wafl.config import Configuration
 from wafl.events.utils import input_is_valid, remove_text_between_brackets
 from wafl.simple_text_processing.questions import is_question
@@ -22,22 +21,21 @@ class ConversationEvents:
         config=None,
         logger=None,
     ):
-        self._answerer = create_answerer(knowledge, interface, code_path, logger)
+        if not config:
+            config = Configuration.load_local_config()
+
+        self._answerer = create_answerer(
+            config, knowledge, interface, code_path, logger
+        )
         self._knowledge = knowledge
         self._interface = interface
-        self._policy = AnswerPolicy(interface, logger)
+        self._policy = AnswerPolicy(config, interface, logger)
         self._logger = logger
         if logger:
             self._logger.set_depth(0)
 
-        if not config:
-            self._config = Configuration.load_local_config()
-
-        else:
-            self._config = config
-
-    def output(self, text: str):
-        self._interface.output(text)
+    async def output(self, text: str):
+        await self._interface.output(text)
 
     async def _process_query(self, text: str):
         self._interface.bot_has_spoken(False)
@@ -46,39 +44,39 @@ class ConversationEvents:
             return False
 
         text_is_question = is_question(text)
-
+        self._policy.improvise = False
         try:
             answer = await self._answerer.answer(
                 remove_text_between_brackets(text), policy=self._policy
             )
 
         except InterruptTask:
-            self._interface.output("Task interrupted")
+            await self._interface.output("Task interrupted")
             return False
 
         if not self._interface.bot_has_spoken():
             if not text_is_question and not answer.is_neutral():
-                self.output(answer.text)
+                await self.output(answer.text)
 
             if text_is_question and answer.text not in ["True", "False"]:
-                self.output(answer.text)
+                await self.output(answer.text)
 
             if text_is_question and answer.is_false():
-                self.output("I don't know")
+                await self.output("I don't know")
 
             if (
                 not text_is_question
                 and answer.is_false()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("I don't know what to reply")
+                await self._interface.output("I don't know what to reply")
 
             if (
                 not text_is_question
                 and answer.is_true()
                 and not self._interface.bot_has_spoken()
             ):
-                self._interface.output("Yes")
+                await self._interface.output("Yes")
 
         return answer
 
@@ -104,7 +102,7 @@ class ConversationEvents:
         text = self.__remove_activation_word_and_normalize(activation_word, text)
         if self._interface.is_listening():
             answer = await self._process_query(text)
-            if answer and answer.text != "False":
+            if answer and not answer.is_false():
                 return True
 
         return False

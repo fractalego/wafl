@@ -9,6 +9,9 @@ class Query:
     is_question: bool
     variable: str = None
 
+    def is_neutral(self) -> bool:
+        return normalized(self.text) in ["unknown"]
+
     @staticmethod
     def create_from_text(text):
         return Query(text=text, is_question=is_question(text))
@@ -37,8 +40,8 @@ class Answer:
         return Answer(text="false")
 
     @staticmethod
-    def create_neutral():
-        return Answer(text="unknown")
+    def create_neutral(variable=None):
+        return Answer(text="unknown", variable=variable)
 
     @staticmethod
     def create_from_text(text):

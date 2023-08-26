@@ -1,6 +1,6 @@
 #using facts
 #using rules
-
+#using ../backward_import
 
 this bot is doing well
 
@@ -14,3 +14,7 @@ the user wants to know the time
 
 the user is italian
   something needs to be said in italian
+
+the user's name has five letters
+  result = what is the color of the sky?
+  say The sky is {result}

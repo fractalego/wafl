@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -61,7 +63,8 @@ the user wants to know what is in the shopping list
 
 class TestShoppingList(TestCase):
     def test_no_activation(self):
-        knowledge = SingleFileKnowledge(_rules)
+        config = Configuration.load_local_config()
+        knowledge = SingleFileKnowledge(config, _rules)
         results = asyncio.run(
             knowledge.ask_for_rule_backward(
                 Query(
@@ -81,8 +84,9 @@ class TestShoppingList(TestCase):
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_rules), interface=interface, code_path="/"
+            SingleFileKnowledge(config, _rules), interface=interface, code_path="/"
         )
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())

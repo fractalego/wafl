@@ -26,28 +26,43 @@ _path = os.path.dirname(__file__)
 class TestVoice(TestCase):
     def test_activation(self):
         interface = DummyInterface(to_utter=["computer", "my name is Jane"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example), interface=interface
+            SingleFileKnowledge(config, _wafl_example), interface=interface
         )
         interface.activate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         asyncio.run(conversation_events.process_next(activation_word="computer"))
-        assert len(interface.get_utterances_list()) == 2
+        assert len(interface.get_utterances_list()) == 3
 
     def test_no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_example), interface=interface
+            SingleFileKnowledge(config, _wafl_example), interface=interface
         )
         interface.deactivate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 1
 
+    def test_computer_name_is_removed_after_activation(self):
+        interface = DummyInterface(to_utter=["[computer] computer my name is bob"])
+        config = Configuration.load_local_config()
+        conversation_events = ConversationEvents(
+            SingleFileKnowledge(config, _wafl_example), interface=interface
+        )
+        interface.deactivate()
+        asyncio.run(conversation_events.process_next(activation_word="computer"))
+        print(interface.get_utterances_list())
+        assert interface.get_utterances_list()[-1].count("computer") == 0
+
     def test_hotwords_as_input(self):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
-        interface.add_hotwords_from_knowledge(
-            SingleFileKnowledge(_wafl_example), count_threshold=1
+        asyncio.run(
+            interface.add_hotwords_from_knowledge(
+                SingleFileKnowledge(config, _wafl_example), count_threshold=1
+            )
         )
         expected = ["jane", "name is", "is jane", "says", "says their", "their name"]
         assert interface._listener._hotwords == expected
@@ -55,8 +70,9 @@ class TestVoice(TestCase):
     def test_sound_file_is_translated_correctly(self):
         f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = WhisperListener("openai/whisper-tiny.en")
-        result = listener.input_waveform(waveform)
+        config = Configuration.load_local_config()
+        listener = WhisperListener(config)
+        result = asyncio.run(listener.input_waveform(waveform))
         result = _normalize_utterance(result)
         expected = "DELETE BATTERIES FROM THE GROCERY LIST"
         assert result == expected
@@ -64,8 +80,9 @@ class TestVoice(TestCase):
     def test_random_sounds_are_excluded(self):
         f = wave.open(os.path.join(_path, "data/random_sounds.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = WhisperListener("openai/whisper-tiny.en")
-        result = listener.input_waveform(waveform)
+        config = Configuration.load_local_config()
+        listener = WhisperListener(config)
+        result = asyncio.run(listener.input_waveform(waveform))
         expected = "[unclear]"
         assert result == expected
 
@@ -77,17 +94,19 @@ class TestVoice(TestCase):
     def test__hotword_listener_activated_using_recording_of_hotword(self):
         f = wave.open(os.path.join(_path, "data/computer.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = WhisperListener("openai/whisper-tiny.en")
-        listener.input_waveform(waveform)
-        result = listener.hotword_is_present("computer")
+        config = Configuration.load_local_config()
+        listener = WhisperListener(config)
+        asyncio.run(listener.input_waveform(waveform))
+        result = asyncio.run(listener.hotword_is_present("computer"))
         assert result
 
     def test__hotword_listener_is_not_activated_using_recording_of_not_hotword(self):
         f = wave.open(os.path.join(_path, "data/1002.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768
-        listener = WhisperListener("openai/whisper-tiny.en")
-        listener.input_waveform(waveform)
-        result = listener.hotword_is_present("computer")
+        config = Configuration.load_local_config()
+        listener = WhisperListener(config)
+        asyncio.run(listener.input_waveform(waveform))
+        result = asyncio.run(listener.hotword_is_present("computer"))
         assert not result
 
 

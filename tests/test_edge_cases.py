@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -125,8 +127,9 @@ the user wants to stop
 class TestEdgeCases(TestCase):
     def test__double_lower_case_questions_are_answered_correctly(self):
         interface = DummyInterface(["is the jubile line running"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_tube_line_rules),
+            SingleFileKnowledge(config, _tube_line_rules),
             interface=interface,
             code_path="/",
             logger=_logger,
@@ -136,8 +139,9 @@ class TestEdgeCases(TestCase):
 
     def test__clause_does_not_return_unknown(self):
         interface = DummyInterface(["is the jubili line running"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_tube_line_rules),
+            SingleFileKnowledge(config, _tube_line_rules),
             interface=interface,
             code_path="/",
             logger=_logger,
@@ -147,10 +151,12 @@ class TestEdgeCases(TestCase):
 
     def test__no_answer_if_retrieval_is_too_sparse(self):
         interface = DummyInterface(["I will i"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_tube_line_rules),
+            SingleFileKnowledge(config, _tube_line_rules),
             interface=interface,
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
         assert "unknown" not in interface.get_utterances_list()[-1]

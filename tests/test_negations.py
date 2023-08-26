@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -8,6 +10,7 @@ from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 wafl_example = """
   
 the user wants to know what is in the shopping list
+  ERASE MEMORY
   Does the user want to see the shopping list
   SAY So you do want to see it!  
 
@@ -22,8 +25,9 @@ class TestNegations(TestCase):
                 "yes",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: So you do want to see it!"
@@ -36,8 +40,9 @@ class TestNegations(TestCase):
                 "no",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: do you want to see the shopping list"
@@ -50,8 +55,9 @@ class TestNegations(TestCase):
                 "no thanks",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: do you want to see the shopping list"

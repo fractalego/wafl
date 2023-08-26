@@ -1,3 +1,4 @@
+import re
 import time
 
 from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
@@ -12,7 +13,7 @@ class DummyInterface(BaseInterface):
         self._bot_has_spoken = False
         self._dialogue = ""
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             print(text)
             return
@@ -23,8 +24,9 @@ class DummyInterface(BaseInterface):
 
     async def input(self) -> str:
         text = self._to_utter.pop(0).strip()
+        text = self.__remove_activation_word_and_normalize(text)
         while self._is_listening and not_good_enough(text):
-            self.output("I did not quite understand that")
+            await self.output("I did not quite understand that")
             text = from_user_to_bot(self._to_utter.pop(0))
 
         self._dialogue += "user: " + text + "\n"
@@ -40,3 +42,13 @@ class DummyInterface(BaseInterface):
 
     def get_dialogue(self):
         return self._dialogue
+
+    def __remove_activation_word_and_normalize(self, text):
+        activation_word = re.sub(r"\[(.*)\].*", r"\1", text)
+        text = re.sub(
+            f"^\[{activation_word}\] {activation_word} (.*)",
+            r"\1",
+            text,
+            flags=re.IGNORECASE,
+        )
+        return text

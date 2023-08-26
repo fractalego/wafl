@@ -53,9 +53,7 @@ def say_twice():
     utterances = ["HELLO", "HELLO"]
     while index < len(utterances):
         f"% SAY Please say: '{utterances[index]}' %"
-
         "% SAY Your input is recorded %"
-
         index += 1
 
 
@@ -161,3 +159,7 @@ def get_time_in_future(minutes_from_now):
     now = datetime.now()
     final_time = now + timedelta(minutes=num_minutes)
     return final_time.strftime("%H, %M")
+
+
+def cutoff_to_last_newline(text):
+    return text[: text.rfind("\n")]

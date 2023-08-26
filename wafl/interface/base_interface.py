@@ -10,10 +10,10 @@ class BaseInterface:
         self._facts = []
         self._utterances = []
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         raise NotImplementedError
 
-    def input(self) -> str:
+    async def input(self) -> str:
         raise NotImplementedError
 
     def bot_has_spoken(self, to_set: bool = None):
@@ -34,13 +34,13 @@ class BaseInterface:
     def add_hotwords(self, hotwords: List[str]):
         raise NotImplementedError
 
-    def add_choice(self, text):
+    async def add_choice(self, text):
         self._choices.append((time.time(), text))
-        self.output(f"Making the choice: {text}", silent=True)
+        await self.output(f"Making the choice: {text}", silent=True)
 
-    def add_fact(self, text):
+    async def add_fact(self, text):
         self._facts.append((time.time(), text))
-        self.output(f"{text}", silent=True)
+        await self.output(f"{text}", silent=True)
 
     def get_choices_and_timestamp(self):
         return self._choices
@@ -57,3 +57,4 @@ class BaseInterface:
     def reset_history(self):
         self._utterances = []
         self._choices = []
+        self._facts = []

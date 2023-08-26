@@ -1,0 +1,55 @@
+"In the dialogue below a user is speaking to a bot:
+User: hello
+bot: hello<|EOS|>
+"
+"In the dialogue below a user is speaking to a bot:
+user: you
+bot: what?<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: what
+bot: what?<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: what is the colour of the sky
+bot: I believe it is blue on a good day<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: who was the lead actor in superman (1978)
+bot: I believe it was Christopher Reeve<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: what is the color of the sun
+The bot remembers: the sun is bright yellow
+bot: The sun is bright yellow<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: what is the height of my truck
+The bot remembers: The user is Italian
+The bot remembers: The user has a one bedroom flat
+The bot remembers: The user's truck is 8ft
+bot: The user's truck is 8ft<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: My flat is a one bedroom
+bot: nice to know<|EOS|>
+user: is my flat a 2 bedroom
+bot: no, it is a 1 bedroom<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+the bot remembers: The user is tall
+the bot remembers: The user's name is John
+user: is my name Jane
+bot: no, your name is John<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: My address is 11 Coulton rd
+bot: good to know<|EOS|>
+user: what is my address
+the bot remembers: the user's name is John
+bot: Your address is 11 Coulton rd<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+bot:  Welcome to the website. How may I help you?<|EOS|>
+user: My name is John
+bot:  Hello john, how may I help you?<|EOS|>
+user: Is my name Jane?
+bot: No, your name is John<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: the user 's mother is called Ada
+bot:  Hello to you, bob!<|EOS|>
+user: How is the user 's mum called?
+The bot remembers: This bot name is fractalego.
+The bot remembers: The user 's name is bob.
+bot: the user’s mum is called Ada<|EOS|>"

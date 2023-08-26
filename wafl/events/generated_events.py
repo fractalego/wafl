@@ -12,22 +12,28 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 class GeneratedEvents:
     def __init__(
         self,
+        config,
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
         events: "BaseEventCreator",
         code_path=None,
-        config=None,
         logger=None,
     ):
         self._inference = BackwardInference(
-            knowledge, interface, Narrator(interface), code_path, logger=logger
+            config,
+            knowledge,
+            interface,
+            Narrator(interface),
+            code_path,
+            logger=logger,
+            generate_rules=False,
         )
         self._knowledge = knowledge
         self._interface = interface
         self._events = events
 
-    def output(self, text: str):
-        self._interface.output(text)
+    async def output(self, text: str):
+        await self._interface.output(text)
 
     async def _process_query(self, text: str):
         query = Query(text=text, is_question=is_question(text), variable="name")
@@ -42,7 +48,7 @@ class GeneratedEvents:
                     return True
 
             except InterruptTask:
-                self._interface.output("Task interrupted")
+                await self._interface.output("Task interrupted")
                 return False
 
         return False

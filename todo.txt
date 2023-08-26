@@ -1,28 +1,162 @@
 ### TODO
 
-* Write choices, tasks and remember in web interface
-* erase conversation after deactivation in voice interface
-/* refactor everyting to have a chat log with all the choices, retrieved facts
-  in the same prompt for chitchat
-  /* All answerers should have access to the same list of utterances, choices, and facts.
-    The only difference should be the final line of prompt.
-    /* MAKE TEST PASS
-    /* ADD CACHE TO ALL CONNECTORS (it cannot be done easily for async functions)
+* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
+* add a small wafl_home to the init, with folders and everything
 
-* BUG: Overflow error: out of range integral when decoding prediction from GPTJ in chitchat
-   * [computer] confuse her
+* rule creation for "hello" is terrible. Revise all rule creation
+
+
+/* make stand-alone connectors (no need for server-side)
+  /* modify config for all connectors
+/  * check remote connectors work!
+/  * create note about local speaker for python 3.11
+
+* rewrite documentation !!!!
+   * talk about how the system will improvises rules
+   * explain arbiter pipeline
+   * update config description (possibly with stand-alone connection) !!!!
+
+* add init-default (with modified wafl_home) and init (as empty)
+
+
+* push to main!
+* push wafl-llm to main
+  * and docker
+
+* add import from files in rules space
+
+
+
+/* split bullet lists into lists for mapping onto a query
+/   * add something for merging as well
+/* If the inference fail, should you try to improvise?
+
+/* make it so it is possible to navigate among levels of tasks
+/   * e.g.: what is the name of the list? that's not what i meant
+/   * INTERRUPTIONS: nevermind, nothing, no one, not what i meant
+/   * questions: answering a question with a question should trigger a new resolution tree
+    -> resolution: before answer_is_informative() I added an entailment check whether the answer makes sense/user doesn't want to answer
+
+/* add #using ../
+/* why does sqrt throw exception when eval(code)?
+/* make all tests pass
+/* REMOVE computer FROM UTTERANCES!! (after activation)
+
+/* modify wafl_llm to have a config file for the models to use/download
+/* add a standard variable for the dialogue history to be used in rules space
+/* only files declared with #using can be used in rules
+
+
+* retrievers for in-context learning
+  /* all answerers and extractors
+  /* create adversarial examples for task extractor
+
+* make this work:
+  - Do I need an umbrella?
+  - Tell me if I need an umbrella
+
+  The issue is that the relevant rule is not retrieved. The entailer gives ~0 btw the user says"do I need an umbrella" :- the user wants to know the weather
+  Find a good way to entail what you need.
+
+  - Issues were:
+     - Retriever is not very good. There are a lot other rules scooped up when asking for a task
+     - Interruption rule must not be used for tasks
+     - Text-generation tasks are understood as questions, therefore no text generation
+
+* Maybe you need to add text_generation task right before searching the answer in rules
+
+/* add feedback from frontend
+* Feebdack texts should be used in-context for dialogue and task extractor
+    * Use retriever to create dynamic prompts
+
+* make the text disappar in the input after you write
+* input should be frozen when the bot is thinking/speaking
+* add a check for rules that are too generic.
+  - For example, "the user wants to add something"
+  - The rule priority should be weighed down according to
+    how easy it is to trigger it from different utterances.
+* better web UI
+* add a way to change the rules on the fly
+* create a battery of tests for questions that interrupt a question
+  from the bot
+
+
+/* Make tests pass
+/* RETRIEVAL for prompts
+/* Add RETRIEVE as a command
+* add all the rules you have to the retrievable examples
+
+
+
+* only first level for #using
+* flexible config for faster answers:
+   * make it so the task extractor can be skipped
+   * same for task creator
+
+* allow for facts to be checked by the llm directly
+* create command line instructions "wafl list all the files"
+* why does "[computer] computer what should I buy" does not trigger a rule in wafl_home?
+
+
+* if utterance would trigger rule but task is unknown, then trigger the rule
+* interruptions should always be called. Make it so it is impossible to forget to call them
+* give the system the ability to create rules to solve tasks
+* use <internal_thoughts></internal_thoughts> in prompt for dialogue
+
+/* add interaction on lists (actions for each item in the list)
+/* allow code creation from task creator
+/*Does it make sense to have the task_extractor work only when the user issues a command?
+/  - Use LLM only after entailment with "The user asks to do something"
+
+/* prompt generation only if it is task
+/* otherwise = should return the result of a rule that is being executed
+/* implement rules in case the task has not immediate trigger
+
+/* is the sound wave sent to wafl-llm whisper_handler correct? is it corrupted
+/  - rememeber that the sound wave was corrupted the other way round0
+/  - you might want to use base64 encoding for the sending part as well
+/  - save sound file from whisper_handler.py and listen to it
+
+
+* why is it so slow??
+/- would .generate(do_sample=False) accelerate? in llm_handler.py
+/  - play around with early stopping and max_length. Use eos_token_id properly
+
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
+/  - USE past_key_values as argument in generate.
+/    This argument is returned when use_cache=True.
+/    Save first past_key_values and then use it as argument in generate.
+     -> It does not do much for a single query
+
+/  - try to go line-by-line in the code to see where the problem is
+/  - would .generate(do_sample=False) accelerate? in llm_handler.py
+  - would shorter prompt accelerate? maybe you can retrieve the examples that are most relevant
+
+
+/* thank you does not close the conversation because of the entailer in inference_answerer
+/* refactor sentence-transformer to backend
+
+* policy should only be about finding the correct rule to apply.
+    * no y/n stuff, only choose btw candidate rules and none of the above.
+    * erase y/n policy, only rule policy remains
+
+/* refactor whisper to backend
+/* refactor speaker
+
+/* better frontend (smaller facts and choices)
+/* Computer what is your name
+/  -> Correct remember
+/    -> answer is "I don't know". why?!
+/    explanation: question -> task from question -> answer from task
+/    solution: there should be a way to use the chitchat answerer to answer questions
+
 
 * make it so one can change rules on the fly (reload when changed)
-
-* The simple answerer tends to repeat the last utterance.
-  This is because in the events sometimes there is "the bot says:..." without any explanation.
-  Perhaps "the bot says" shouls be excluded from simple answerer?
-  Unless it is as the answer to a question "when the user asks...."
 
 * add definions to arbiter (what is tea...?)
 
 * add the ability to ask questions to activate a trigger rule.
-
 
 * Make chit chat work!
   * should you take it out of arbiter? Maybe it should be the last item in ListAnswerer
@@ -58,6 +192,16 @@
 
 * rules should be added and REMOVED!
 
+/* all sentences that are said when the interface is deactivated should not be appended to the conversation
+
+/* Write choices, tasks and remember in web interface
+/* erase conversation after deactivation in voice interface
+/* refactor everyting to have a chat log with all the choices, retrieved facts
+  in the same prompt for chitchat
+  /* All answerers should have access to the same list of utterances, choices, and facts.
+    The only difference should be the final line of prompt.
+    /* MAKE TEST PASS
+    /* ADD CACHE TO ALL CONNECTORS (it cannot be done easily for async functions)
 
 /* 1024 is limit in wafl_llm (deepspeed) change this to 2048
 /* make it sure 2048 is limit when using gptj
@@ -293,3 +437,4 @@ Fourth week:
 /* Use entailment to make generated qa more accurate
     /- Upload qa system to huggingface and pip
     /-**** Use conversation_qa -> refactor qa.py
+

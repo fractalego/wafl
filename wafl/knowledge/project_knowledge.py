@@ -1,33 +1,40 @@
 from typing import Dict, List
-
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.knowledge.utils import get_first_cluster_of_rules
 from wafl.parsing.rules_parser import get_dependency_list
 
 
 class ProjectKnowledge(BaseKnowledge):
-    def __init__(self, rules_filename, logger=None):
+    def __init__(self, config, rules_filename=None, logger=None):
+        self._config = config
         self._logger = logger
         self._dependency_dict = {}
-        self._knowledge_dict = self._populate_knowledge_structure(
-            rules_filename, self._dependency_dict
-        )
+        self._knowledge_dict = {}
+        self.rules_filename = None
+        if rules_filename:
+            self._knowledge_dict = self._populate_knowledge_structure(
+                rules_filename, self._dependency_dict
+            )
+            self.rules_filename = rules_filename
 
-    def add(self, text, knowledge_name=None):
+    async def add(self, text, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
-        self._knowledge_dict[knowledge_name].add(text, knowledge_name=knowledge_name)
-
-    def add_rule(self, text, knowledge_name=None):
-        if not knowledge_name:
-            knowledge_name = self.root_knowledge
-
-        self._knowledge_dict[knowledge_name].add_rule(
+        await self._knowledge_dict[knowledge_name].add(
             text, knowledge_name=knowledge_name
         )
 
-    def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
+    async def add_rule(self, text, knowledge_name=None):
+        if not knowledge_name:
+            knowledge_name = self.root_knowledge
+
+        await self._knowledge_dict[knowledge_name].add_rule(
+            text, knowledge_name=knowledge_name
+        )
+
+    async def ask_for_facts(self, query, is_from_user=False, knowledge_name=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
@@ -38,13 +45,13 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for facts in {name}")
 
                 to_return.extend(
-                    self._knowledge_dict[name].ask_for_facts(query, is_from_user)
+                    await self._knowledge_dict[name].ask_for_facts(query, is_from_user)
                 )
 
         return to_return
 
-    def ask_for_facts_with_threshold(
-        self, query, is_from_user=False, knowledge_name=None
+    async def ask_for_facts_with_threshold(
+        self, query, is_from_user=False, knowledge_name=None, threshold=None
     ):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
@@ -56,29 +63,33 @@ class ProjectKnowledge(BaseKnowledge):
                     self._logger.write(f"Project Knowledge: Asking for facts in {name}")
 
                 to_return.extend(
-                    self._knowledge_dict[name].ask_for_facts_with_threshold(
-                        query, is_from_user
+                    await self._knowledge_dict[name].ask_for_facts_with_threshold(
+                        query, is_from_user, threshold=threshold
                     )
                 )
 
-        return to_return
+        return sorted(to_return, key=lambda x: -x[1])
 
-    async def ask_for_rule_backward(self, query, knowledge_name=None):
+    async def ask_for_rule_backward(self, query, knowledge_name=None, first_n=None):
         if not knowledge_name:
             knowledge_name = self.root_knowledge
 
-        rules_list = []
+        rules_and_scores_list = []
 
         for name in self._knowledge_dict.keys():
             if name in self._get_all_dependency_names(knowledge_name):
                 if self._logger:
                     self._logger.write(f"Project Knowledge: Asking for rules in {name}")
 
-                rules_list.extend(
-                    await self._knowledge_dict[name].ask_for_rule_backward(query)
+                rules_and_scores_list.extend(
+                    await self._knowledge_dict[name]._ask_for_rule_backward_with_scores(
+                        query, knowledge_name=name, first_n=first_n
+                    )
                 )
 
-        return rules_list
+        rules_and_scores_list = sorted(rules_and_scores_list, key=lambda x: -x[1])
+        rules = get_first_cluster_of_rules(rules_and_scores_list)[:first_n]
+        return rules
 
     async def has_better_match(
         self, query_text: str, knowledge_name: str = None
@@ -101,8 +112,27 @@ class ProjectKnowledge(BaseKnowledge):
 
         return any(result_list)
 
+    def reload_rules(self, rules_filename: str):
+        self._knowledge_dict = self._populate_knowledge_structure(
+            rules_filename, self._dependency_dict
+        )
+
+    async def reinitialize_all_retrievers(self):
+        for knowledge in self._knowledge_dict.values():
+            await knowledge._initialize_retrievers()
+
     def get_dependencies_list(self):
         return self._get_all_dependency_names(self.root_knowledge)
+
+    @staticmethod
+    def create_from_string(
+        config: "Configuration", rules_text: str, knowledge_name: str
+    ) -> "ProjectKnowledge":
+        knowledge = ProjectKnowledge(config)
+        knowledge._knowledge_dict[knowledge_name] = SingleFileKnowledge(
+            config, rules_text
+        )
+        return knowledge
 
     def _populate_knowledge_structure(
         self, filename: str, dependency_dict: Dict[str, List[str]]
@@ -113,7 +143,7 @@ class ProjectKnowledge(BaseKnowledge):
 
         name = _get_module_name_from_filename(filename)
         knowledge_structure[name] = SingleFileKnowledge(
-            text, knowledge_name=name, logger=self._logger
+            self._config, text, knowledge_name=name, logger=self._logger
         )
         dependencies = get_dependency_list(text)
         dependency_dict.setdefault(name, [])

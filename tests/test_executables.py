@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -43,8 +45,8 @@ the user asks for the time
   time = get_time()
   SAY the time is {time}
     
-    
-sentence = What does the user want to say
+The user wants to say something  
+  sentence = What does the user want to say
   say_text(sentence)
   
 
@@ -58,8 +60,9 @@ the user says "please define speed":
 class TestExecutables(TestCase):
     def test_executables(self):
         interface = DummyInterface(to_utter=["test@example.com"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -72,8 +75,9 @@ class TestExecutables(TestCase):
 
     def test_add_to_list(self):
         interface = DummyInterface(to_utter=["Please add apples to the shopping list"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -88,8 +92,9 @@ class TestExecutables(TestCase):
                 "Please delete apples from the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -106,8 +111,9 @@ class TestExecutables(TestCase):
                 "What's in the shopping list",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -129,8 +135,9 @@ class TestExecutables(TestCase):
                 "What does the shopping list contain",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -146,8 +153,9 @@ class TestExecutables(TestCase):
 
     def test_question_activates_inference(self):
         interface = DummyInterface(to_utter=["What time is it?"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -157,19 +165,22 @@ class TestExecutables(TestCase):
 
     def test_negation(self):
         interface = DummyInterface(to_utter=["add batteries to the test list"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Batteries cannot be added to the list"
+        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test_say_command_in_functions(self):
         interface = DummyInterface(to_utter=["I want to say 'this is a test'"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )
@@ -179,8 +190,9 @@ class TestExecutables(TestCase):
 
     def test__facts_work_in_python_space(self):
         interface = DummyInterface(to_utter=["Please define speed"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example),
+            SingleFileKnowledge(config, wafl_example),
             interface=interface,
             code_path="/",
         )

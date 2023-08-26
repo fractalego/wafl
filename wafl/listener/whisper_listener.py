@@ -1,11 +1,12 @@
 import asyncio
+import math
 
 import pyaudio
 import time
 import numpy as np
 import torch.cuda
 
-from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from wafl.connectors.factories.whisper_connector_factory import WhisperConnectorFactory
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -18,21 +19,16 @@ class WhisperListener:
     _range = 32768
     _generation_max_length = 15
     _starting_tokens = [50257, 50362]
+    _ending_tokens = [50256]
 
-    def __init__(self, model_name):
+    def __init__(self, config):
         self._p = pyaudio.PyAudio()
         self._volume_threshold = 1
         self._original_volume_threshold = self._volume_threshold
         self._timeout = 1
         self._max_timeout = 4
         self._hotword_threshold = -8
-        self._model = WhisperForConditionalGeneration.from_pretrained(model_name).to(
-            device
-        )
-        if torch.cuda.is_available():
-            self._model.half()
-
-        self._processor = WhisperProcessor.from_pretrained(model_name)
+        self._connector = WhisperConnectorFactory.get_connector(config)
         self._hotwords = list()
         self.is_active = False
         self._last_waveform = None
@@ -103,7 +99,7 @@ class WhisperListener:
             if rms_val > self._volume_threshold:
                 waveform = self.record(start_with=inp)
                 self.deactivate()
-                return self.input_waveform(waveform)
+                return await self.input_waveform(waveform)
 
             else:
                 new_threshold = 2 * rms_val
@@ -111,64 +107,31 @@ class WhisperListener:
                     new_threshold, self._original_volume_threshold
                 )
 
-    def input_waveform(self, waveform):
+    async def input_waveform(self, waveform):
         self._last_waveform = waveform
-        input_features = self._processor(
-            waveform, return_tensors="pt", sampling_rate=16_000
-        ).input_features
-        output = self._model.generate(
-            input_features.to(device).half(),
-            num_beams=3,
-            return_dict_in_generate=True,
-            output_scores=True,
-            max_length=self._generation_max_length,
-        )
-        transcription = self._processor.batch_decode(
-            output.sequences, skip_special_tokens=True
-        )[0]
+        prediction = await self._connector.predict(waveform)
+        transcription = prediction["transcription"]
+        score = prediction["score"]
 
-        if torch.exp(output.sequences_scores) > 0.6:
+        if math.exp(score) > 0.5:
             return transcription
 
-        if torch.exp(output.sequences_scores) > 0.3:
-            return "[unclear]"
+        return "[unclear]"
 
-        return ""
-
-    def get_hotword_if_present(self):
+    async def get_hotword_if_present(self):
         for hotword in self._hotwords:
-            if self.hotword_is_present(hotword):
+            if await self.hotword_is_present(hotword):
                 return hotword
 
         return ""
 
-    def hotword_is_present(self, hotword):
+    async def hotword_is_present(self, hotword):
         if type(self._last_waveform) != np.ndarray:
             raise RuntimeError(
                 "The waveform has not been processed. Please call input_waveform() before hotword_is_present()"
             )
-
-        input_features = self._processor(
-            self._last_waveform, return_tensors="pt", sampling_rate=16_000
-        ).input_features
-        hotword_tokens = torch.tensor([self._processor.tokenizer.encode(f" {hotword}")])
-
-        input_ids = torch.tensor([self._starting_tokens]).to(device)
-        for _ in range(hotword_tokens.shape[1]):
-            logits = self._model(
-                input_features.to(device).half(),
-                decoder_input_ids=input_ids,
-            ).logits
-            new_token = torch.argmax(logits, dim=-1)
-            new_token = torch.tensor([[new_token[:, -1]]]).to(device)
-            input_ids = torch.cat([input_ids, new_token], dim=-1)
-
-        logprobs = torch.log(torch.softmax(logits, dim=-1))
-        sum_logp = 0
-        for logp, index in zip(logprobs[0][1:], hotword_tokens[0]):
-            sum_logp += logp[index]
-
-        return sum_logp > self._hotword_threshold
+        prediction = await self._connector.predict(self._last_waveform, hotword=hotword)
+        return prediction["logp"] > self._hotword_threshold
 
 
 def _rms(frame):

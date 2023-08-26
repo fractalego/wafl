@@ -14,23 +14,26 @@ def get_all_functions_names(module_name):
     return functions
 
 
-def clean_module_name(name):
-    if not name:
+def clean_module_name(module_name):
+    if not module_name:
         raise RuntimeError(
-            f"The name {name} is empty and cannot be used as a python module"
+            f"The name {module_name} is empty and cannot be used as a python module"
         )
 
-    if name[0] == "/":
-        name = name[1:]
+    names = module_name.split("/")
+    return_path = []
+    for name in names:
+        if name and name != "." and name != "..":
+            return_path.append(name)
 
-    if name and name[-1] == "/":
-        name = name[:-1]
+        if name == "..":
+            return_path.pop()
 
-    name = name.replace("/", ".")
-    if name:
-        name += "."
+    if not return_path:
+        return ""
 
-    return name
+    return_path = ".".join(return_path) + "."
+    return return_path
 
 
 def create_preprocessed(

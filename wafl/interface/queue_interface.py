@@ -11,7 +11,7 @@ class QueueInterface(BaseInterface):
         self.input_queue = []
         self.output_queue = []
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             self.output_queue.append({"text": text, "silent": True})
             return

@@ -10,3 +10,10 @@ class Rule:
 
     def toJSON(self):
         return str(self)
+
+    def __str__(self):
+        rule_str = self.effect.text
+        for cause in self.causes:
+            rule_str += "\n  " + cause.text
+
+        return rule_str

@@ -6,11 +6,11 @@ def text_is_exact_string(text):
     return text.strip() and text.strip()[0] == "_"
 
 
-def rules_are_too_different(retriever, rules):
+async def rules_are_too_different(retriever, rules):
     dot_products = []
     for item in rules[1:]:
         dot_products.append(
-            retriever.get_dot_product(item.effect.text, rules[0].effect.text)
+            await retriever.get_dot_product(item.effect.text, rules[0].effect.text)
         )
 
     if dot_products and min(dot_products) < 0.39:
@@ -24,8 +24,13 @@ def get_first_cluster_of_rules(rules_and_threshold):
     _cluster_margin = 0.1
 
     last_threshold = rules_and_threshold[0][1]
+    prior_rules = set()
     rules = []
     for rule, threshold in rules_and_threshold:
+        if str(rule) in prior_rules:
+            continue
+
+        prior_rules.add(str(rule))
         if abs(threshold - last_threshold) < _cluster_margin:
             rules.append(rule)
 

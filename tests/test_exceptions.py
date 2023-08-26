@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
@@ -17,8 +19,9 @@ The user says good bye
 class TestExceptions(TestCase):
     def test_runtime_warning_escapes_python_space(self):
         interface = DummyInterface(["Good bye!"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings),
+            SingleFileKnowledge(config, _wafl_greetings),
             interface=interface,
             code_path="/",
         )

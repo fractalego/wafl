@@ -3,6 +3,7 @@ import os
 
 from unittest import TestCase
 
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -22,10 +23,11 @@ The user wants delete something
 class TestTaskList(TestCase):
     def test__double_command_is_executed(self):
         interface = DummyInterface(
-            to_utter=["what is the weather and then delete apples"]
+            to_utter=["tell me about the weather and then delete the apples"]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(wafl_example), interface=interface
+            SingleFileKnowledge(config, wafl_example), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "the sun is shining"

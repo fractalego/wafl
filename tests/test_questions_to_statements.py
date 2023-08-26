@@ -2,6 +2,8 @@ import asyncio
 import os
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.narrator import Narrator
 from wafl.simple_text_processing.questions import get_sentence_from_yn_question
 from wafl.interface.dummy_interface import DummyInterface
@@ -39,6 +41,7 @@ class TestQuestionsToStatements(TestCase):
     def test__yn_questions_use_entailer_for_positive_answers(self):
         text = "This bot is doing well"
         query = Query("is this bot ok?", is_question=True)
-        qa = Extractor(Narrator(DummyInterface))
+        config = Configuration.load_local_config()
+        qa = Extractor(config, Narrator(DummyInterface))
         prediction = asyncio.run(qa.extract(query, text))
         self.assertEqual("yes", prediction.text.lower())

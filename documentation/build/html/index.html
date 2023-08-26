@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to WAFL’s documentation! &mdash; WAFL  documentation</title>
+  <title>Welcome to WAFL’s 0.0.45 documentation! &mdash; WAFL  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -44,6 +44,9 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running_WAFL.html">Running WAFL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_processing_pipeline.html">Query processing pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html#examples">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -62,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to WAFL’s documentation!</li>
+      <li class="breadcrumb-item active">Welcome to WAFL’s 0.0.45 documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,8 +75,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-wafl-s-documentation">
-<h1>Welcome to WAFL’s documentation!<a class="headerlink" href="#welcome-to-wafl-s-documentation" title="Permalink to this heading"></a></h1>
+  <section id="welcome-to-wafl-s-0-0-45-documentation">
+<h1>Welcome to WAFL’s 0.0.45 documentation!<a class="headerlink" href="#welcome-to-wafl-s-0-0-45-documentation" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -84,26 +87,32 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="running_WAFL.html">Running WAFL</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-audio">wafl run-audio</a></li>
-<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-server">wafl run-server</a></li>
-<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-cli">wafl run-cli</a></li>
-<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-tests">wafl run-tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-audio">$ wafl run-audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-server">$ wafl run-server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-cli">$ wafl run-cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_WAFL.html#wafl-run-tests">$ wafl run-tests</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="wafl_init.html">Running wafl init</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chitchat.html">Chitchat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rules.html">Rules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#say-command">SAY command</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#remember-command">REMEMBER command</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#asking-a-question">Asking a question</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#generate-a-text">Generate a text</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#triggering-of-another-rule">Triggering of another rule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#code-execution">Code execution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rules.html#entailment">Entailment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_processing_pipeline.html">Query processing pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html#examples">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing_the_rules.html">Writing the rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#say-command">SAY command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#remember-command">REMEMBER command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#retrieve-command">RETRIEVE command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#asking-a-question">Asking a question</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#generate-a-text">Generate a text</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#item-wise-execution">Item-wise execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#triggering-of-another-rule">Triggering of another rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#code-execution">Code execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_the_rules.html#entailment">Entailment</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="rules_and_backtracking.html">Rules and backtracking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wafl_init.html">Initialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="directory_structure.html">Directory structure</a></li>
 </ul>
 </li>

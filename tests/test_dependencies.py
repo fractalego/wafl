@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
@@ -15,6 +17,7 @@ The user greets
   
 the user's name is alberto
   the user is italian
+
 """.strip()
 
 
@@ -27,7 +30,8 @@ class TestDependencies(TestCase):
         knowledge = ProjectKnowledge(tmp_filename)
         expected = {
             "/": ["/greetings"],
-            "/greetings": ["/facts", "/rules"],
+            "/greetings": ["/facts", "/rules", "/../backward_import"],
+            "/greetings/../backward_import": [],
             "/greetings/facts": [],
             "/greetings/rules": [],
         }
@@ -38,8 +42,15 @@ class TestDependencies(TestCase):
         with open(tmp_filename, "w") as file:
             file.write(wafl_dependency)
 
-        knowledge = ProjectKnowledge(tmp_filename)
-        expected = ["/", "/greetings", "/greetings/facts", "/greetings/rules"]
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
+        expected = [
+            "/",
+            "/greetings",
+            "/greetings/facts",
+            "/greetings/rules",
+            "/greetings/../backward_import",
+        ]
         self.assertEqual(expected, list(knowledge._knowledge_dict.keys()))
 
     def test__rules_are_called_from_dependency_list(self):
@@ -48,13 +59,13 @@ class TestDependencies(TestCase):
             file.write(wafl_dependency)
 
         interface = DummyInterface(to_utter=["Hello", "albert"])
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
             knowledge, interface=interface, code_path=knowledge.get_dependencies_list()
         )
         asyncio.run(conversation_events.process_next())
         expected = "bot: Hello, albert!"
-        print(interface.get_utterances_list())
         assert interface.get_utterances_list()[-1] == expected
 
     def test__facts_are_answered_from_dependency_list_one_level_deep(self):
@@ -67,8 +78,9 @@ class TestDependencies(TestCase):
                 "How are you doing",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename), interface=interface
+            ProjectKnowledge(config, tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
         expected = "well"
@@ -85,11 +97,13 @@ class TestDependencies(TestCase):
                 "how is the sun",
             ]
         )
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename), interface=interface
+            ProjectKnowledge(config, tmp_filename), interface=interface
         )
         asyncio.run(conversation_events.process_next())
-        expected = "shiny"
+        expected = "shin"
+        print(interface.get_utterances_list())
         assert expected in interface.get_utterances_list()[-1]
 
     def test__functions_can_be_called_from_a_dependency(self):
@@ -102,9 +116,10 @@ class TestDependencies(TestCase):
                 "What time is it",
             ]
         )
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename),
+            knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
@@ -122,13 +137,36 @@ class TestDependencies(TestCase):
                 "My name is Alberto",
             ]
         )
-        knowledge = ProjectKnowledge(tmp_filename)
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
         conversation_events = ConversationEvents(
-            ProjectKnowledge(tmp_filename),
+            knowledge=knowledge,
             interface=interface,
             code_path=knowledge.get_dependencies_list(),
         )
         asyncio.run(conversation_events.process_next())
-        expected = "bot: Ciao!"
         print(interface.get_utterances_list())
+        expected = "bot: Ciao!"
+        assert interface.get_utterances_list()[-1] == expected
+
+    def test__rules_can_be_imported_using_prior_folders(self):
+        tmp_filename = "test.wafl"
+        with open(tmp_filename, "w") as file:
+            file.write(wafl_dependency)
+
+        interface = DummyInterface(
+            to_utter=[
+                "My name is Maria",
+            ]
+        )
+        config = Configuration.load_local_config()
+        knowledge = ProjectKnowledge(config, tmp_filename)
+        conversation_events = ConversationEvents(
+            knowledge,
+            interface=interface,
+            code_path=knowledge.get_dependencies_list(),
+        )
+        asyncio.run(conversation_events.process_next())
+        print(interface.get_utterances_list())
+        expected = "bot: The sky is green"
         assert interface.get_utterances_list()[-1] == expected

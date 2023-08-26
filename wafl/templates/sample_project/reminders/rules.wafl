@@ -1,0 +1,16 @@
+the user wants to set an alarm at a specific time
+  time = At what time?
+  ERASE MEMORY
+  sentence = what do you want to be reminded of?
+  REMEMBER the time is {time} :- SAY {sentence}
+  SAY An alarm was created for {time}
+  
+the user wants to set an alarm in minutes from now
+  minutes_from_now = how many minutes from now? do not use the word 'minute'
+  time = get_time_in_future(minutes_from_now)
+  ERASE MEMORY
+  sentence = what do you want to be reminded of?
+  REMEMBER the time is {time} :- SAY {sentence}
+  SAY An alarm was created in {minutes_from_now} minutes
+  SAY The alarm time is therefore {time}
+  SAY I will say the sentence {sentence}

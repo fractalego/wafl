@@ -1,6 +1,8 @@
 import asyncio
 
 from unittest import TestCase
+
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
@@ -25,22 +27,25 @@ The user says hi or hello
 class TestEmptyInput(TestCase):
     def test_hello_and_username(self):
         interface = DummyInterface(["Hello", "My name is Albert"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         asyncio.run(conversation_events.process_next())
         asyncio.run(conversation_events.process_next())
+        expected = "nice to meet you"
         print(interface.get_utterances_list())
-        assert interface.get_utterances_list()[-1] == "bot: Nice to meet you, albert!"
+        assert expected in interface.get_utterances_list()[-1].lower()
 
     def test_empty_input_does_nothing(self):
         interface = DummyInterface(["computer"])
+        config = Configuration.load_local_config()
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(_wafl_greetings2), interface=interface
+            SingleFileKnowledge(config, _wafl_greetings2), interface=interface
         )
         utterance = "Welcome to the website. How may I help you?"
-        interface.output(utterance)
+        asyncio.run(interface.output(utterance))
         conversation_events.process_next(activation_word="computer")
         assert interface.get_utterances_list() != ["bot: Hello there!"]

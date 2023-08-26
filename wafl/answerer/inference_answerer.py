@@ -9,14 +9,14 @@ from wafl.extractors.extractor import Extractor
 
 
 class InferenceAnswerer(BaseAnswerer):
-    def __init__(self, interface, inference, logger):
-        self._qa = Extractor(logger)
+    def __init__(self, config, interface, inference, logger):
+        self._qa = Extractor(config, logger)
         self._logger = logger
         self._narrator = Narrator(interface)
         self._interface = interface
         self._inference = inference
-        self._task_extractor = TaskExtractor(interface)
-        self._entailer = Entailer(logger)
+        self._task_extractor = TaskExtractor(config, interface)
+        self._entailer = Entailer(config, logger)
 
     async def answer(self, query_text, policy):
         prior_conversation = self._narrator.summarize_dialogue()
@@ -29,18 +29,26 @@ class InferenceAnswerer(BaseAnswerer):
                 f"InferenceAnswerer: The query is {query_text}", self._logger.level.INFO
             )
 
-        query_text = f"The user says: '{query_text.capitalize()}'"
-        task_texts = (await self._task_extractor.extract(query_text)).text
+        simple_task = f"The user says: '{query_text.capitalize()}'"
+        task_answer = await self._task_extractor.extract(simple_task)
+        if task_answer.is_neutral():
+            task = simple_task
+
+        else:
+            task = task_answer.text
+
+        task_texts = split_tasks(task)
         answers = []
-        for task_text in split_tasks(task_texts):
-            self._interface.add_choice(
+        for task_text in task_texts:
+            result = await self._entailer.entails(
+                simple_task, task_text, return_threshold=True, threshold=0.6
+            )
+            if not result:
+                task_text = simple_task
+
+            await self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"
             )
-            result = await self._entailer.entails(
-                task_text, query_text, return_threshold=True
-            )
-            if result:
-                task_text = query_text
 
             answers.append(
                 await get_answer_using_text(
@@ -55,11 +63,14 @@ class InferenceAnswerer(BaseAnswerer):
         if len(answers) > 1:
             return perform_and(answers)
 
+        if not answers:
+            return Answer.create_neutral()
+
         return answers[0]
 
 
 def split_tasks(task_text):
-    return [item.strip() for item in task_text.split("AND") if item]
+    return [item.strip() for item in task_text.split("|") if item]
 
 
 def perform_and(answers):

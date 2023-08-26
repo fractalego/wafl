@@ -1,5 +1,6 @@
 import asyncio
 
+from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
@@ -13,7 +14,8 @@ _logger = LocalFileLogger()
 
 def run_server():
     interface = QueueInterface()
-    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+    config = Configuration.load_local_config()
+    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
     interface.activate()
     conversation_events = ConversationEvents(
         knowledge,
@@ -28,7 +30,11 @@ def run_server():
         activation_word="",
         max_misses=-1,
     )
-    interface.output("Hello. How may I help you?")
-    web_loop = WebLoop(interface)
+    asyncio.run(interface.output("Hello. How may I help you?"))
+    web_loop = WebLoop(interface, knowledge)
     scheduler = Scheduler([conversation_loop, web_loop])
     asyncio.run(scheduler.run())
+
+
+if __name__ == "__main__":
+    run_server()

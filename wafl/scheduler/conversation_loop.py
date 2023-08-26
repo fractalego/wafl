@@ -15,17 +15,17 @@ class ConversationLoop:
         self._max_misses = max_misses
 
     async def run(self):
-        self._say_initial_greetings()
+        await self._say_initial_greetings()
         try:
             await self._main_loop()
 
         except (KeyboardInterrupt, EOFError):
-            self._interface.output("Good bye!")
+            await self._interface.output("Good bye!")
 
-    def _say_initial_greetings(self):
+    async def _say_initial_greetings(self):
         self._interface.activate()
         if self._activation_word:
-            self._interface.output(
+            await self._interface.output(
                 f"Please say '{self._activation_word}' to activate me"
             )
             self._interface.add_hotwords(self._activation_word)
@@ -71,12 +71,12 @@ class ConversationLoop:
                         self._interface.reset_history()
 
                     if interactions == 1:
-                        self._interface.output(
+                        await self._interface.output(
                             random.choice(["What can I do for you?"])
                         )
 
                     else:
-                        self._interface.output(
+                        await self._interface.output(
                             random.choice(["Sorry?", "Can you repeat?"])
                         )
 
@@ -89,3 +89,11 @@ class ConversationLoop:
                 )
                 self._interface.deactivate()
                 continue
+
+            except Exception as e:
+                self._logger.write(
+                    "Error in conversation loop", log_level=self._logger.level.ERROR
+                )
+                self._logger.write(str(e), log_level=self._logger.level.ERROR)
+                print("Error in conversation loop. Closing the conversation.")
+                print(str(e))

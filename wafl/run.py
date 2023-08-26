@@ -1,5 +1,6 @@
 import asyncio
 
+from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.command_line_interface import CommandLineInterface
@@ -19,14 +20,15 @@ def print_incipit():
 
 def run_from_command_line():
     interface = CommandLineInterface()
-    knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+    config = Configuration.load_local_config()
+    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
     conversation_events = ConversationEvents(
         knowledge,
         interface=interface,
         code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
-    interface.output("Hello. How may I help you?")
+    asyncio.run(interface.output("Hello. How may I help you?"))
 
     while True:
         try:
@@ -34,14 +36,16 @@ def run_from_command_line():
         except (CloseConversation, KeyboardInterrupt, EOFError):
             break
 
-    interface.output("Goodbye!")
+    asyncio.run(interface.output("Goodbye!"))
 
 
 def run_testcases():
     print("Running the testcases in testcases.txt\n")
-    knowledge = ProjectKnowledge("rules.wafl")
+    config = Configuration.load_local_config()
+    knowledge = ProjectKnowledge(config, "rules.wafl")
     test_cases_text = open("testcases.txt").read()
     testcases = ConversationTestCases(
+        config,
         test_cases_text,
         knowledge,
         code_path=knowledge.get_dependencies_list(),

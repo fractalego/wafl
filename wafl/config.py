@@ -1,24 +1,20 @@
 import json
 import os
+import shutil
 
 _path = os.path.dirname(__file__)
 
 
 def create_initial_files():
-    _rules_template = open(os.path.join(_path, "templates/rules.wafl"))
-    _functions_template = open(os.path.join(_path, "templates/functions.py"))
     _events_template = open(os.path.join(_path, "templates/events.py"))
     _config_template = open(os.path.join(_path, "templates/config.json"))
     _testcases_template = open(os.path.join(_path, "templates/testcases.txt"))
     _docker_start = open(os.path.join(_path, "templates/start_llm.sh"))
+    _sample_project_dir = os.path.join(_path, "templates/sample_project/")
 
     print("+ Initializing ... ", end="")
 
-    with open("rules.wafl", "w") as file:
-        file.write(_rules_template.read())
-
-    with open("functions.py", "w") as file:
-        file.write(_functions_template.read())
+    shutil.copytree(_sample_project_dir, "./", dirs_exist_ok=True)
 
     with open("config.json", "w") as file:
         file.write(_config_template.read())
@@ -65,5 +61,16 @@ class Configuration:
         except FileNotFoundError:
             print(
                 "Cannot load 'config.json'. Does the file exist in the execution path?"
+            )
+            exit(0)
+
+    @classmethod
+    def load_from_filename(cls, filename):
+        try:
+            return cls(filename)
+
+        except FileNotFoundError:
+            print(
+                f"Cannot load '{filename}'. Does the file exist in the execution path?"
             )
             exit(0)

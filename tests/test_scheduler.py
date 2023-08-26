@@ -35,7 +35,7 @@ the user greets
 class TestScheduler(TestCase):
     def test__conversation_loop_can_run(self):
         config = Configuration.load_local_config()
-        knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+        knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
         interface = DummyInterface(["hello!"])
         conversation_events = ConversationEvents(
             knowledge,
@@ -57,7 +57,7 @@ class TestScheduler(TestCase):
 
     def test__scheduler_can_run_with_conversation_loop(self):
         config = Configuration.load_local_config()
-        knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+        knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
         interface = DummyInterface(["hello!"])
         conversation_events = ConversationEvents(
             knowledge,
@@ -81,7 +81,7 @@ class TestScheduler(TestCase):
         self,
     ):
         config = Configuration.load_local_config()
-        knowledge = ProjectKnowledge("rules.wafl", logger=_logger)
+        knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
         interface = DummyInterface(["hello!"])
         conversation_events = ConversationEvents(
             knowledge,
@@ -118,7 +118,7 @@ class TestScheduler(TestCase):
         self,
     ):
         config = Configuration.load_local_config()
-        knowledge = SingleFileKnowledge(_wafl_example, logger=_logger)
+        knowledge = SingleFileKnowledge(config, _wafl_example, logger=_logger)
         interface = DummyInterface(["hello!"])
         conversation_events = ConversationEvents(
             knowledge,
@@ -136,6 +136,7 @@ class TestScheduler(TestCase):
         event_loop = GeneratedEventLoop(
             interface,
             GeneratedEvents(
+                config,
                 knowledge,
                 events=EventsCreatorFromFunctionList([return_four_past_seven]),
                 code_path="/",

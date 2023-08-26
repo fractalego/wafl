@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import time
 
 from wafl.events.utils import remove_text_between_brackets
@@ -30,8 +31,8 @@ class VoiceInterface(BaseInterface):
         self._deny_sound_filename = self.__get_deny_sound_from_config(config)
 
         self.listener_model_name = config.get_value("listener_model")
-        self._speaker = FairSeqSpeaker()
-        self._listener = WhisperListener(self.listener_model_name)
+        self._speaker = FairSeqSpeaker(config)
+        self._listener = WhisperListener(config)
         self._listener.set_timeout(config.get_value("listener_silence_timeout"))
         self._listener.set_volume_threshold(
             config.get_value("listener_volume_threshold")
@@ -40,7 +41,7 @@ class VoiceInterface(BaseInterface):
         self._bot_has_spoken = False
         self._utterances = []
 
-    def add_hotwords_from_knowledge(
+    async def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
     ):
         hotwords = get_most_common_words(
@@ -54,7 +55,7 @@ class VoiceInterface(BaseInterface):
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
-    def output(self, text: str, silent: bool = False):
+    async def output(self, text: str, silent: bool = False):
         if silent:
             print(text)
             return
@@ -66,20 +67,21 @@ class VoiceInterface(BaseInterface):
         text = from_bot_to_user(text)
         self._utterances.append((time.time(), f"bot: {text}"))
         print(COLOR_START + "bot> " + text + COLOR_END)
-        self._speaker.speak(text)
+        await self._speaker.speak(text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
         text = ""
         while not text:
             text = await self._listener.input()
-            hotword = self._listener.get_hotword_if_present()
+            text = self.__remove_activation_word_and_normalize(text)
+            hotword = await self._listener.get_hotword_if_present()
             if hotword:
                 text = f"[{hotword}] {text}"
 
         while self._is_listening and not_good_enough(text):
             print(COLOR_START + "user> " + text + COLOR_END)
-            self.output(random.choice(["Sorry?", "Can you repeat?"]))
+            await self.output(random.choice(["Sorry?", "Can you repeat?"]))
             text = await self._listener.input()
 
         text = text.lower().capitalize()
@@ -126,3 +128,13 @@ class VoiceInterface(BaseInterface):
             return os.path.join(_path, "../sounds/deny.wav")
 
         return None
+
+    def __remove_activation_word_and_normalize(self, text):
+        activation_word = re.sub(r"\[(.*)\].*", r"\1", text)
+        text = re.sub(
+            f"^\[{activation_word}\] {activation_word} (.*)",
+            r"\1",
+            text,
+            flags=re.IGNORECASE,
+        )
+        return text
