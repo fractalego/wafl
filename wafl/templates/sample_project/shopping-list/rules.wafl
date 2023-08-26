@@ -1,0 +1,55 @@
+#using interruptions
+
+# Shopping list
+
+There is only one list, the shopping list
+
+
+item = what does the user want to add to the shopping list?
+  add_shopping_list(item)
+
+item = what does the user want to remove from the shopping list?
+  remove_from_shopping_list(item)
+
+"remove or delete an item from the shopping list"
+  item = What do you want to remove?
+  remove_from_shopping_list(item)
+  SAY item removed
+
+the user wants to delete the shopping list
+  Do you want to delete the current shopping list
+  reset_shopping_list()
+  SAY The shopping list has been deleted
+
+the user wants to know what is in the shopping list
+  items = get_shopping_list_in_english()
+  SAY The shopping list contains: {items}
+
+the user wants to add something
+  item = what does the user want to add?
+  list_name = which list?
+  the user wants to add {item} to {list_name}
+
+the user wants to remove something
+  item = what does the user want to remove?
+  list_name = which list?
+  the user wants to remove {item} from {list_name}
+
+"What should I buy"
+  the user wants to know what is in the shopping list
+
+the user wants to remove the first item in the shopping list
+  remove_first_item_from_shopping_list()
+  SAY item removed
+
+the user wants to remove the first item
+  list_name = which list?
+  the user wants to remove the first item in {list_name}
+
+the user wants to remove the last item in the shopping list
+  remove_last_item_from_shopping_list()
+  SAY item removed
+
+the user wants to remove the last item
+  list_name = which list?
+  the user wants to remove the last item in {list_name}

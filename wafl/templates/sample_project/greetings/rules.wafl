@@ -1,0 +1,9 @@
+# Greetings commands
+"bring yourself online"
+  SAY Hello there!
+
+"Hello"
+  ! This bot has greeted the user
+  SAY Hello there!
+  REMEMBER This bot has greeted the user
+

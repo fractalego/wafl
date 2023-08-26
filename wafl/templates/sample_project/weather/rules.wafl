@@ -1,0 +1,13 @@
+# Weather
+
+"How is the weather"
+  check_today_weather()
+
+"How is the weather today"
+  check_today_weather()
+
+"What is the weather forecast"
+  check_today_weather()
+
+"How is the weather tomorrow"
+  check_tomorrow_weather()
