@@ -1,4 +1,4 @@
-# WAFL 0.0.45 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
+# WAFL 0.0.70 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
 
 Introduction
 ============
@@ -46,10 +46,12 @@ Please see the examples in the following chapters.
 
 
 ## LLM side (needs a GPU)
+The second part is a machine that runs on a machine accessible from the interface side.
+The initial configuration is for a local deployment of language models. 
+No action is needed to run WAFL if you want to run it as a local instance.
 
-The second part is a server that runs on a mmachine accessible from the interface side.
-This last machine will need to have a GPU to run the Large Language Model at a convenient speed.
-This part can be run using a docker image by running the script
+However, a multi-user setup will benefit for a dedicated server. 
+In this case, a docker image can be used
 
 ```bash
 $ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:latest

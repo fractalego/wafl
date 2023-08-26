@@ -1,10 +1,11 @@
 ### TODO
 
-* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
-* add a small wafl_home to the init, with folders and everything
-
 * rule creation for "hello" is terrible. Revise all rule creation
 
+
+
+/* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
+/* add a small wafl_home to the init, with folders and everything
 
 /* make stand-alone connectors (no need for server-side)
   /* modify config for all connectors
