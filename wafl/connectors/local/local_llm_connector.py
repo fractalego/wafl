@@ -12,6 +12,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = None
 tokenizer = None
 
+
 class LocalLLMConnector:
     _max_tries = 3
     _max_reply_length = 500

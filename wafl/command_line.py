@@ -10,7 +10,7 @@ from wafl.run import (
     download_models,
 )
 from wafl.runners.run_from_audio import run_from_audio
-from wafl.runners.run_web_interface import run_server
+from wafl.runners.selector import run_server
 
 
 def print_help():

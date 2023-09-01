@@ -1,0 +1,69 @@
+body {
+    background: #f0f8ff;
+    color: black;
+    font-family: monospace;
+    font-size: 25px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+}
+
+input {
+    font-family: monospace;
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    width: 50%;
+    position: relative;
+    bottom: 0;
+    border-radius: 5px;
+    border-color: #4e4a4a;
+}
+
+pre {
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+pre .dialogue {
+    width: 50vw;
+    height: 90vh;
+    display: flex;
+    padding: 10px;
+    margin-left: 8px;
+    flex-direction: column-reverse;
+    background: white;
+    opacity: 50%;
+}
+
+pre .logs {
+    width: 35vw;
+    height: 90vh;
+    display: flex;
+    padding: 10px;
+    margin-left: 15px;
+    flex-direction: column-reverse;
+    background: white;
+    opacity: 50%;
+}
+
+.controls {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 10px;
+    border-top: 1px solid #4e4a4a;
+}
+
+#banner {
+    width: 100%;
+    padding: 10px 10px;
+}
+
+#default-sidebar a{
+    cursor: pointer;
+    text-align: left;
+}

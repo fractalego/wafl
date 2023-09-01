@@ -12,8 +12,8 @@ _path = os.path.dirname(__file__)
 app = Flask(
     __name__,
     static_url_path="",
-    static_folder=os.path.join(_path, "../frontend/"),
-    template_folder=os.path.join(_path, "../frontend/"),
+    static_folder=os.path.join(_path, "../../frontend/"),
+    template_folder=os.path.join(_path, "../../frontend/"),
 )
 app.config.from_object(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -23,23 +23,30 @@ log.setLevel(logging.WARNING)
 
 
 class WebLoop:
-    def __init__(self, interface: QueueInterface, knowledge: "ProjectKnowledge"):
+    def __init__(
+        self,
+        interface: QueueInterface,
+        knowledge: "ProjectKnowledge",
+        conversation_id: int,
+    ):
         self._interface = interface
         self._knowledge = knowledge
         self._rules_filename = knowledge.rules_filename
-        self._hystory_logger = HistoryLogger(self._interface)
+        self._history_logger = HistoryLogger(self._interface)
+        self._conversation_id = conversation_id
 
-    async def run(self):
-        @app.route("/input", methods=["POST"])
-        async def handle_input():
-            query = request.form["query"]
-            self._interface.input_queue.append(query)
-            return f"""
+    async def index(self):
+        return render_template("index.html", conversation_id=self._conversation_id)
+
+    async def handle_input(self):
+        query = request.form["query"]
+        self._interface.input_queue.append(query)
+        return f"""
 <input autofocus name="query" id="query" class="input" type="text" placeholder="{query}"
-               data-hx-post="/input"
+               data-hx-post="/{self._conversation_id}/input"
                hx-swap="outerHTML"
                hx-trigger="keyup[keyCode==13]">
-<div data-hx-post="/load_messages"
+<div data-hx-post="/{self._conversation_id}/load_messages"
          hx-swap="innerHTML"
          hx-target="#messages"
          hx-trigger="load"
@@ -48,54 +55,42 @@ class WebLoop:
 </div>            
             """.strip()
 
-        @app.route("/reset_conversation", methods=["POST"])
-        async def reset_conversation():
-            self._interface.reset_history()
-            await self._interface.output("Hello. How may I help you?")
-            conversation = await self._get_conversation()
-            return conversation
+    async def reset_conversation(self):
+        self._interface.reset_history()
+        await self._interface.output("Hello. How may I help you?")
+        conversation = await self._get_conversation()
+        return conversation
 
-        @app.route("/reload_rules", methods=["POST"])
-        async def reload_rules():
-            async with asyncio.Lock():
-                self._knowledge.reload_rules(self._rules_filename)
-                await self._knowledge.reinitialize_all_retrievers()
-                print("Rules reloaded")
+    async def reload_rules(self):
+        async with asyncio.Lock():
+            self._knowledge.reload_rules(self._rules_filename)
+            await self._knowledge.reinitialize_all_retrievers()
+            print("Rules reloaded")
 
-            return ""
+        return ""
 
-        @app.route("/load_messages", methods=["POST"])
-        async def load_messages():
-            conversation = await self._get_conversation()
-            return conversation
+    async def load_messages(self):
+        conversation = await self._get_conversation()
+        return conversation
 
-        @app.route("/output")
-        async def handle_output():
-            if not self._interface.output_queue:
-                return jsonify({"text": "", "silent": False})
+    async def handle_output(self):
+        if not self._interface.output_queue:
+            return jsonify({"text": "", "silent": False})
 
-            output = self._interface.output_queue.pop(0)
-            return jsonify(output)
+        output = self._interface.output_queue.pop(0)
+        return jsonify(output)
 
-        @app.route("/thumbs_up", methods=["POST"])
-        async def thumbs_up():
-            self._hystory_logger.write("thumbs_up")
-            return jsonify("")
+    async def thumbs_up(self):
+        self._history_logger.write("thumbs_up")
+        return jsonify("")
 
-        @app.route("/thumbs_down", methods=["POST"])
-        async def thumbs_down():
-            self._hystory_logger.write("thumbs_down")
-            return jsonify("")
+    async def thumbs_down(self):
+        self._history_logger.write("thumbs_down")
+        return jsonify("")
 
-        @app.route("/")
-        async def index():
-            return render_template("index.html")
-
-        def run_app():
-            app.run(host="0.0.0.0", port=8889)
-
-        thread = threading.Thread(target=run_app)
-        thread.start()
+    async def run(self):
+        print(f"New web server instance {self._conversation_id} running!")
+        return
 
     async def _get_conversation(self):
         dialogue = self._interface.get_utterances_list_with_timestamp()

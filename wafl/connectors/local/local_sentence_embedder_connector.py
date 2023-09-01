@@ -6,6 +6,7 @@ _device = "cuda" if torch.cuda.is_available() else "cpu"
 
 models_dict = {}
 
+
 class LocalSentenceEmbedderConnector:
     _max_tries = 3
 
