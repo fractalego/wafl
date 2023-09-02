@@ -92,13 +92,19 @@ def add_new_rules(app, conversation_id, web_server_loop):
         f"/{conversation_id}/load_messages",
         f"load_messages_{conversation_id}",
         web_server_loop.load_messages,
-        methods=["POST"],
+        methods=["POST", "GET"],
     )
     app.add_url_rule(
-        f"/{conversation_id}/input",
+        f"/{conversation_id}/<textarea_index>/input",
         f"input_{conversation_id}",
         web_server_loop.handle_input,
-        methods=["POST"],
+        methods=["POST", "GET"],
+    )
+    app.add_url_rule(
+        f"/{conversation_id}/<item_index>/messages",
+        f"message_{conversation_id}",
+        web_server_loop.get_conversation_item,
+        methods=["POST", "GET"],
     )
     app.add_url_rule(
         f"/{conversation_id}/output",

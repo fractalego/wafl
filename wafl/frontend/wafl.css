@@ -35,8 +35,6 @@ pre .dialogue {
     padding: 10px;
     margin-left: 8px;
     flex-direction: column-reverse;
-    background: white;
-    opacity: 50%;
 }
 
 pre .logs {
@@ -66,4 +64,40 @@ pre .logs {
 #default-sidebar a{
     cursor: pointer;
     text-align: left;
+}
+
+.dialogue-row-user {
+    font-family: monospace;
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border-color: #7a7a9f;
+    border-width: 2px;
+    background-color: white;
+    padding: 10px;
+}
+
+.dialogue-row-bot {
+    font-family: monospace;
+    font-size: 30px;
+    color: gray;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border-color: #7a7a9f;
+    border-width: 2px;
+    background-color: white;
+    padding: 10px;
+}
+
+.dialogue-row-comment {
+    font-family: monospace;
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border-color: #7a7a9f;
+    border-width: 2px;
+    padding: 10px;
 }

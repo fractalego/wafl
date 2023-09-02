@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import os
-import threading
+import time
 
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
@@ -22,6 +22,40 @@ log = logging.getLogger("werkzeug")
 log.setLevel(logging.WARNING)
 
 
+def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_answer):
+    if text.find("bot:") == 0:
+        if bot_is_computing_answer:
+            return (
+                f"<div id='messages-{index}'"
+                f"hx-post='/{conversation_id}/{index}/messages'"
+                f"hx-swap='outerHTML'"
+                f"hx-target='#messages-{index}'"
+                f"hx-trigger='every 1s'"
+                f">" + text[4:].strip() + "</div>"
+            )
+
+        return (
+            f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
+            f">" + text[4:].strip() + "</div>"
+        )
+
+    if text.find("user:") == 0:
+        return (
+            f"<textarea class='shadow-lg dialogue-row-user' name='query' style='font-size:20px;' type='text'"
+            f"hx-post='/{conversation_id}/{index}/input'"
+            f"hx-swap='outerHTML'"
+            f"hx-target='#messages-{index+1}'"
+            f"hx-trigger='keyup[shiftKey&&keyCode==13]'"
+            f">" + text[5:] + "</textarea>"
+        )
+
+    return (
+        "<div class='dialogue-row-comment' style='font-size:20px; '>"
+        + text.strip()
+        + "</div>"
+    )
+
+
 class WebLoop:
     def __init__(
         self,
@@ -38,22 +72,31 @@ class WebLoop:
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
 
-    async def handle_input(self):
+    async def handle_input(self, textarea_index):
+        textarea_index = int(textarea_index)
         query = request.form["query"]
         self._interface.input_queue.append(query)
-        return f"""
-<input autofocus name="query" id="query" class="input" type="text" placeholder="{query}"
-               data-hx-post="/{self._conversation_id}/input"
-               hx-swap="outerHTML"
-               hx-trigger="keyup[keyCode==13]">
-<div data-hx-post="/{self._conversation_id}/load_messages"
-         hx-swap="innerHTML"
-         hx-target="#messages"
-         hx-trigger="load"
-         style="display:none;"
-         >
-</div>            
-            """.strip()
+        return get_html_from_dialogue_item(
+            "bot:",
+            textarea_index + 1,
+            self._conversation_id,
+            bot_is_computing_answer=True,
+        )
+
+    async def get_conversation_item(self, item_index):
+        item_index = int(item_index)
+        dialogue_items = self._interface.get_utterances_list_with_timestamp()
+        if len(dialogue_items) <= item_index:
+            return get_html_from_dialogue_item(
+                "bot:", item_index, self._conversation_id, bot_is_computing_answer=True
+            )
+
+        return get_html_from_dialogue_item(
+            dialogue_items[item_index + 1][1],
+            item_index,
+            self._conversation_id,
+            bot_is_computing_answer=False,
+        )
 
     async def reset_conversation(self):
         self._interface.reset_history()
@@ -70,7 +113,7 @@ class WebLoop:
         return ""
 
     async def load_messages(self):
-        conversation = await self._get_conversation()
+        conversation = await self._get_conversation(append_empty_textarea=True)
         return conversation
 
     async def handle_output(self):
@@ -92,17 +135,45 @@ class WebLoop:
         print(f"New web server instance {self._conversation_id} running!")
         return
 
-    async def _get_conversation(self):
-        dialogue = self._interface.get_utterances_list_with_timestamp()
-        dialogue = [
-            (
-                item[0],
-                "<div class='dialogue-row' style='font-size:20px; '>"
-                + item[1]
-                + "</div>",
+    async def _get_conversation(self, append_empty_textarea=False):
+        dialogue_items = self._interface.get_utterances_list_with_timestamp()
+        dialogue = []
+        for index, item in enumerate(dialogue_items):
+            dialogue.append(
+                (
+                    item[0],
+                    get_html_from_dialogue_item(
+                        item[1],
+                        index,
+                        self._conversation_id,
+                        bot_is_computing_answer=False,
+                    ),
+                )
             )
-            for item in dialogue
-        ]
+        if append_empty_textarea:
+            dialogue.append(
+                (
+                    time.time(),
+                    get_html_from_dialogue_item(
+                        "user:",
+                        index,
+                        self._conversation_id,
+                        bot_is_computing_answer=False,
+                    ),
+                )
+            )
+            dialogue.append(
+                (
+                    time.time(),
+                    get_html_from_dialogue_item(
+                        "bot:",
+                        index + 1,
+                        self._conversation_id,
+                        bot_is_computing_answer=True,
+                    ),
+                )
+            )
+
         choices = self._interface.get_choices_and_timestamp()
         choices = [
             (
@@ -129,7 +200,9 @@ class WebLoop:
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
         dialogue_items = [item[1] for item in dialogue_items]
-        conversation = "<div id='dialogue' class='dialogue shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+        conversation = (
+            "<div id='dialogue' class='dialogue overflow-y-scroll rounded-lg'>"
+        )
         conversation += "".join(dialogue_items)
         conversation += "</div>"
         conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"

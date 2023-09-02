@@ -1,5 +1,10 @@
 ### TODO
 * why does the weather not work?
+* implement notebook style web interface
+   * will you need to remove user: bot: from utterances?
+   * change the interface so you can navigate it
+   * allow for web components to write output
+      * test with output from matplotlib
 
 /* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
 /* add a small wafl_home to the init, with folders and everything
