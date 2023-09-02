@@ -1,10 +1,16 @@
 ### TODO
-* why does the weather not work?
+* avoid newline in textarea after pressing enter
+* sometimes (when I say "nothing/no/...") the conversation stops.
+  there is no answer and all the next replies are the queries themselves
+
 * implement notebook style web interface
    * will you need to remove user: bot: from utterances?
    * change the interface so you can navigate it
    * allow for web components to write output
       * test with output from matplotlib
+
+
+/* why does the weather not work?
 
 /* make system faster to load locally. Why does it load functions.py 4 times? why the long wait?
 /* add a small wafl_home to the init, with folders and everything

@@ -22,7 +22,7 @@ log = logging.getLogger("werkzeug")
 log.setLevel(logging.WARNING)
 
 
-def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_answer):
+def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_answer, reload_messages=False):
     if text.find("bot:") == 0:
         if bot_is_computing_answer:
             return (
@@ -34,18 +34,29 @@ def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_a
                 f">" + text[4:].strip() + "</div>"
             )
 
-        return (
-            f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
-            f">" + text[4:].strip() + "</div>"
-        )
+        if reload_messages:
+            return (
+                f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
+                f"hx-post='/{conversation_id}/load_messages'"
+                f"hx-swap='innerHTML'"
+                f"hx-target='#messages'"
+                f"hx-trigger='load'"
+                f">" + text[4:].strip() + "</div>"
+            )
+
+        else:
+            return (
+                    f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
+                    f">" + text[4:].strip() + "</div>"
+            )
 
     if text.find("user:") == 0:
         return (
-            f"<textarea class='shadow-lg dialogue-row-user' name='query' style='font-size:20px;' type='text'"
+            f"<textarea class='shadow-lg dialogue-row-user' name='query' rows='1' style='font-size:20px;' type='text'"
             f"hx-post='/{conversation_id}/{index}/input'"
             f"hx-swap='outerHTML'"
             f"hx-target='#messages-{index+1}'"
-            f"hx-trigger='keyup[shiftKey&&keyCode==13]'"
+            f"hx-trigger='keydown[!shiftKey&&keyCode==13]'"
             f">" + text[5:] + "</textarea>"
         )
 
@@ -77,7 +88,7 @@ class WebLoop:
         query = request.form["query"]
         self._interface.input_queue.append(query)
         return get_html_from_dialogue_item(
-            "bot:",
+            "bot: Typing...",
             textarea_index + 1,
             self._conversation_id,
             bot_is_computing_answer=True,
@@ -86,7 +97,7 @@ class WebLoop:
     async def get_conversation_item(self, item_index):
         item_index = int(item_index)
         dialogue_items = self._interface.get_utterances_list_with_timestamp()
-        if len(dialogue_items) <= item_index:
+        if len(dialogue_items) <= item_index + 1:
             return get_html_from_dialogue_item(
                 "bot:", item_index, self._conversation_id, bot_is_computing_answer=True
             )
@@ -96,6 +107,7 @@ class WebLoop:
             item_index,
             self._conversation_id,
             bot_is_computing_answer=False,
+            reload_messages=True,
         )
 
     async def reset_conversation(self):

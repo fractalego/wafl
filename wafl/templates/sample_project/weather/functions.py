@@ -4,6 +4,7 @@ import requests
 from datetime import datetime, timedelta
 
 # These are the coordinate of central London. Please change at your convenience
+# This file needs a secrets.json file with the keys for your connection to the weather API
 latitude = "51.5074"
 longitude = "0.1272"
 
