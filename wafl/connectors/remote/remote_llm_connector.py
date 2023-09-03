@@ -1,13 +1,7 @@
 import aiohttp
 import asyncio
-import csv
-import os
-import joblib
 import time
 import re
-
-from wafl.config import Configuration
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 
 class RemoteLLMConnector:
@@ -95,7 +89,7 @@ class RemoteLLMConnector:
         return candidate_answer
 
     async def check_connection(self):
-        payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
+        payload = {"data": "test<|EOS|>", "num_beams": 1, "num_tokens": 5}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
