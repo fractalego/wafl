@@ -53,22 +53,23 @@ def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_a
     if text.find("user:") == 0:
         autofocus_str = "autofocus" if autofocus else ""
         return (
-            f"<textarea {autofocus_str} class='shadow-lg dialogue-row-user' name='query' rows='1' style='font-size:20px;' type='text'"
+            f"<textarea {autofocus_str} id='textarea-{index}'"
+            f"class='shadow-lg dialogue-row-user' name='query' rows='1' style='font-size:20px; min-height:50px;' type='text'"
             f"hx-post='/{conversation_id}/{index}/input'"
             f"hx-swap='outerHTML'"
             f"hx-target='#messages-{index+1}'"
             f"hx-trigger='keydown[!shiftKey&&keyCode==13]'"
             f">" + text[5:] + "</textarea>"
-            """
+            f"""
 <script>
-$("textarea").keydown(function(e){
-// Enter was pressed without shift key
-if (e.keyCode == 13 && !e.shiftKey)
-{
-// prevent default behavior
-e.preventDefault();
-}
-});
+$("#textarea-{index}").on("keydown", function(e){{
+  if (e.keyCode == 13 && !e.shiftKey)
+  {{
+    // prevent default behavior
+    e.preventDefault();
+    return false;
+  }}
+}});
 </script>
             """
         )
@@ -114,7 +115,7 @@ class WebLoop:
         dialogue_items = self._interface.get_utterances_list_with_timestamp()
         if len(dialogue_items) <= item_index + 1:
             if self._bot_computing_answer:
-                bot_text = "bot: Typing"
+                bot_text = "bot: Typing..."
 
             else:
                 bot_text = "bot:"
@@ -199,7 +200,7 @@ class WebLoop:
                 )
             )
             if self._bot_computing_answer:
-                bot_text = "bot: Typing"
+                bot_text = "bot: Typing..."
 
             else:
                 bot_text = "bot:"

@@ -2,19 +2,10 @@
 <html lang="">
 <head>
     <title> WAFL frontend </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script>
-        $("textarea").keydown(function(e){
-        // Enter was pressed without shift key
-        if (e.keyCode == 13 && !e.shiftKey)
-        {
-            // prevent default behavior
-            e.preventDefault();
-        }
-        });
-    </script>
+    <script type="text/javascript" src="/wafl.js"></script>
     <link rel="stylesheet" href="/wafl.css">
 </head>
 <body>
