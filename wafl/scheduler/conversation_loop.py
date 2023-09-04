@@ -6,13 +6,14 @@ from wafl.exceptions import CloseConversation
 
 class ConversationLoop:
     def __init__(
-        self, interface, conversation, logger, activation_word="", max_misses=3
+        self, interface, conversation, logger, activation_word="", max_misses=3, deactivate_on_closed_conversation=True
     ):
         self._interface = interface
         self._conversation_events = conversation
         self._logger = logger
         self._activation_word = activation_word
         self._max_misses = max_misses
+        self._deactivate_on_closed_conversation=deactivate_on_closed_conversation
 
     async def run(self):
         await self._say_initial_greetings()
@@ -87,7 +88,12 @@ class ConversationLoop:
                 self._logger.write(
                     f"Closing the conversation", log_level=self._logger.level.INFO
                 )
-                self._interface.deactivate()
+                if self._deactivate_on_closed_conversation:
+                    self._interface.deactivate()
+
+                else:
+                    await self._interface.output("Marking this conversation as successful.")
+
                 continue
 
             except Exception as e:
@@ -96,4 +102,5 @@ class ConversationLoop:
                 )
                 self._logger.write(str(e), log_level=self._logger.level.ERROR)
                 print("Error in conversation loop. Closing the conversation.")
+                await self._interface.output("Error in the conversation loop. Marking this conversation as a failure.")
                 print(str(e))

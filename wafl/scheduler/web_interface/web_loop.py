@@ -22,7 +22,14 @@ log = logging.getLogger("werkzeug")
 log.setLevel(logging.WARNING)
 
 
-def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_answer, reload_messages=False, autofocus=False):
+def get_html_from_dialogue_item(
+    text,
+    index,
+    conversation_id,
+    bot_is_computing_answer,
+    reload_messages=False,
+    autofocus=False,
+):
     if text.find("bot:") == 0:
         if bot_is_computing_answer:
             return (
@@ -46,8 +53,8 @@ def get_html_from_dialogue_item(text, index, conversation_id, bot_is_computing_a
 
         else:
             return (
-                    f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
-                    f">" + text[4:].strip() + "</div>"
+                f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
+                f">" + text[4:].strip() + "</div>"
             )
 
     if text.find("user:") == 0:
@@ -113,6 +120,14 @@ class WebLoop:
     async def get_conversation_item(self, item_index):
         item_index = int(item_index)
         dialogue_items = self._interface.get_utterances_list_with_timestamp()
+        if not dialogue_items:
+            return get_html_from_dialogue_item(
+                "bot: This conversation has ended.",
+                item_index,
+                self._conversation_id,
+                bot_is_computing_answer=False,
+            )
+
         if len(dialogue_items) <= item_index + 1:
             if self._bot_computing_answer:
                 bot_text = "bot: Typing..."
@@ -121,7 +136,10 @@ class WebLoop:
                 bot_text = "bot:"
 
             return get_html_from_dialogue_item(
-                bot_text, item_index, self._conversation_id, bot_is_computing_answer=True
+                bot_text,
+                item_index,
+                self._conversation_id,
+                bot_is_computing_answer=True,
             )
 
         self._bot_computing_answer = False
@@ -136,6 +154,7 @@ class WebLoop:
     async def reset_conversation(self):
         self._interface.reset_history()
         self._bot_computing_answer = False
+        self._interface.deactivate()
         await self._interface.output("Hello. How may I help you?")
         conversation = await self._get_conversation(append_empty_textarea=True)
         return conversation
