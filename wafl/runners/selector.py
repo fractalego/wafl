@@ -60,7 +60,7 @@ def create_scheduler_and_webserver_loop(conversation_id):
         _logger,
         activation_word="",
         max_misses=-1,
-        deactivate_on_closed_conversation=False
+        deactivate_on_closed_conversation=False,
     )
     asyncio.run(interface.output("Hello. How may I help you?"))
     web_loop = WebLoop(interface, knowledge, conversation_id)

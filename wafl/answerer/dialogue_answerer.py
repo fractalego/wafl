@@ -4,6 +4,7 @@ from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
+from wafl.simple_text_processing.deixis import from_user_to_bot
 
 
 class DialogueAnswerer(BaseAnswerer):
@@ -19,9 +20,9 @@ class DialogueAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
-        query = Query.create_from_text(query_text)
+        query = Query.create_from_text(from_user_to_bot(query_text))
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, knowledge_name="/", threshold=0.5
+            query, is_from_user=True, knowledge_name="/", threshold=0.8
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts[::-1]:

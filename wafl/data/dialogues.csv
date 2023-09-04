@@ -53,3 +53,9 @@ user: How is the user 's mum called?
 The bot remembers: This bot name is fractalego.
 The bot remembers: The user 's name is bob.
 bot: the user’s mum is called Ada<|EOS|>"
+"In the dialogue below a user is speaking to a bot:
+user: what happens?
+bot:  I don't know what to reply<|EOS|>
+user: what is the capital of France?
+The bot remembers: The capital of France is Paris.
+bot: The capital of France is Paris.<|EOS|>"

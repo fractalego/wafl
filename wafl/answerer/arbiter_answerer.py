@@ -8,6 +8,7 @@ from wafl.extractors.task_extractor import TaskExtractor
 from wafl.inference.backward_inference import BackwardInference
 from wafl.inference.utils import answer_is_informative
 from wafl.extractors.dataclasses import Answer, Query
+from wafl.simple_text_processing.deixis import from_user_to_bot
 
 
 class ArbiterAnswerer(BaseAnswerer):
@@ -23,21 +24,31 @@ class ArbiterAnswerer(BaseAnswerer):
 
     async def answer(self, query_text, policy):
         simple_task = f"The user says: {query_text.capitalize()}"
-        task = await self._task_extractor.extract(simple_task)
-        if not task.is_neutral() and await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(task.text),
+        if await self._knowledge.ask_for_facts_with_threshold(
+            Query.create_from_text(from_user_to_bot(query_text)),
+            is_from_user=True,
             knowledge_name="/",
+            threshold=0.8,
         ):
-            simple_task += ". There is a rule for that request."
-
-        elif await self._knowledge.ask_for_rule_backward(
-            Query.create_from_text(simple_task),
-            knowledge_name="/",
-        ):
-            simple_task += ". There is a rule for that request."
+            simple_task += ". There is a fact related to that request"
 
         else:
-            simple_task += ". There is no rule for that request."
+            simple_task += ". There is no fact related to that request"
+            task = await self._task_extractor.extract(simple_task)
+            if not task.is_neutral() and await self._knowledge.ask_for_rule_backward(
+                Query.create_from_text(task.text),
+                knowledge_name="/",
+            ):
+                simple_task += ". There is a rule for that request"
+
+            elif await self._knowledge.ask_for_rule_backward(
+                Query.create_from_text(simple_task),
+                knowledge_name="/",
+            ):
+                simple_task += ". There is a rule for that request"
+
+            else:
+                simple_task += ". There is no rule for that request"
 
         score = 1
         keys_and_scores = []
@@ -54,7 +65,10 @@ class ArbiterAnswerer(BaseAnswerer):
 
         keys_and_scores = sorted(keys_and_scores, key=lambda x: -x[1])
         all_answers = []
-        for key, _ in keys_and_scores:
+        for key, score in keys_and_scores:
+            if not score:
+                break
+
             answerer = self._answerers_dict[key]
             answer = await answerer.answer(query_text, policy)
             all_answers.append(answer)
@@ -79,6 +93,9 @@ class ArbiterAnswerer(BaseAnswerer):
                     config, knowledge, interface, logger
                 ),
                 "The user makes small talk and there is no rule for that query": DialogueAnswerer(
+                    config, knowledge, interface, logger
+                ),
+                "The user makes small talk and there is a fact related to that query": DialogueAnswerer(
                     config, knowledge, interface, logger
                 ),
                 "The user gives an order or request and there is a rule for that query": InferenceAnswerer(

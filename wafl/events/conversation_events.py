@@ -66,7 +66,6 @@ class ConversationEvents:
 
             if (
                 not text_is_question
-                and answer.is_false()
                 and self._interface.get_utterances_list()[-1].find("user:") == 0
             ):
                 await self._interface.output("I don't know what to reply")
