@@ -155,6 +155,7 @@ class WebLoop:
         self._interface.reset_history()
         self._bot_computing_answer = False
         self._interface.deactivate()
+        self._interface.activate()
         await self._interface.output("Hello. How may I help you?")
         conversation = await self._get_conversation(append_empty_textarea=True)
         return conversation
