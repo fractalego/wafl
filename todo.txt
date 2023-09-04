@@ -1,13 +1,16 @@
 ### TODO
-* avoid newline in textarea after pressing enter
-* sometimes (when I say "nothing/no/...") the conversation stops.
-  there is no answer and all the next replies are the queries themselves
+
+* use temperature in generate: the system tends to repeat itself and is terrible.
 
 * implement notebook style web interface
-   * will you need to remove user: bot: from utterances?
+/   * will you need to remove user: bot: from utterances?
    * change the interface so you can navigate it
    * allow for web components to write output
       * test with output from matplotlib
+
+/* avoid newline in textarea after pressing enter
+/* sometimes (when I say "nothing/no/...") the conversation stops.
+  there is no answer and all the next replies are the queries themselves
 
 
 /* why does the weather not work?

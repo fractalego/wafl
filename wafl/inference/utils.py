@@ -346,3 +346,7 @@ def create_default_substitutions(interface: "BaseInterface") -> Dict[str, str]:
     dialogue = " ".join(interface.get_utterances_list())
     update_substitutions_from_results(dialogue, "_dialogue", substitutions)
     return substitutions
+
+
+def clause_has_unresolved_substitutions(cause_text):
+    return "{" in cause_text
