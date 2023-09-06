@@ -1,6 +1,13 @@
 ### TODO
 
 * use temperature in generate: the system tends to repeat itself and is terrible.
+* make it answer: who is the mayor of london, who was the first james bond
+    * find a way to re-load the knowledges from the answer bridges while the system is running
+    * make it so the system does not repeat questions that are in the trigger
+    * slim down the corpus task_creator.csv:
+       - do not repeat instructions for every item, just use instructions at the beginning.
+
+* solve issue about intermediate item taking the value of the prior textarea instead of "typing..."
 
 * implement notebook style web interface
 /   * will you need to remove user: bot: from utterances?

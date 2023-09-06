@@ -179,3 +179,19 @@ the user wants to know where to go hiking in Edinburgh
    road_to_scotland_hike = the user wants to know the road to a good hiking location in Edinburgh
    result = Answer the following question given this road: {road_to_scotland_hike}. How to get to the hiking location in Edinburgh?
    SAY {result}<|EOS|>"
+"The intention of the user is the following: the user wants to know where what is the tallest mountain
+
+The system has rules that are triggered by the following sentences
+- The user wants to know the road to somewhere
+- the user wants to add something to the shopping list
+
+Create a new rule to answer the user.
+The first line is the rule trigger.
+The following lines are the steps to accomplish the task.
+These lines cannot contain the trigger (no recursive tasks are allowed).
+A Python function can be added with instructions in English within <...>.
+The result of a query can be used within another query by using brackets {...}.
+Use the least steps:
+the user wants to know what is the tallest mountain
+   {tallest_mountain} = Answer the following: what is the tallest mountain:
+   SAY The tallest mountain is {tallest_mountain}<|EOS|>"

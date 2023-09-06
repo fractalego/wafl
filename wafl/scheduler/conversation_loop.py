@@ -99,7 +99,7 @@ class ConversationLoop:
 
                 else:
                     await self._interface.output(
-                        "Marking this conversation as successful."
+                        "I am not sure what to reply."
                     )
 
                 continue
