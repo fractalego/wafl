@@ -41,13 +41,11 @@ class LocalLLMConnector:
             prompt, return_tensors="pt", truncation=True, max_length=1008
         ).to(device)
         with torch.no_grad():
-            num_beams = 1
             num_tokens = 200
             output = model.generate(
                 input_ids,
                 max_new_tokens=num_tokens,
-                num_beams=num_beams,
-                num_return_sequences=1,
+                temperature=0.5,
                 pad_token_id=tokenizer.eos_token_id,
                 eos_token_id=tokenizer.eos_token_id,
                 use_cache=True,

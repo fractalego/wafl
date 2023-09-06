@@ -29,7 +29,7 @@ class RemoteLLMConnector:
     async def predict(self, prompt: str) -> str:
         payload = {
             "data": prompt,
-            "num_beams": 1,
+            "temperature": 0.5,
             "num_tokens": self._num_prediction_tokens,
         }
 

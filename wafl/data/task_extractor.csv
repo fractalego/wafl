@@ -86,3 +86,23 @@ bot: sure the list is a, b, c, d
 user: sorry I meant the numbers folder
 
 Say the user's intention in the last utterance: the user wants this bot to list the first four files in the numbers folder<|EOS|>"
+"The following conversation is taking place:
+user: Hello
+bot: Hello there!
+user: what is the colour of the sky?
+bot: it is blue
+user: what do you see there?
+
+Say the user's intention in the last utterance: The user wants to know what the bot sees in the sky<|EOS|>"
+"The following conversation is taking place:
+user: what is the talk about?
+bot: it is about dependency parsers
+user: when is it?
+
+Say the user's intention in the last utterance: The user wants to know when the talk about dependency parsers is<|EOS|>"
+"The following conversation is taking place:
+user: who is the mayor of Smalltown (fictional town)?
+bot: it is Lex Luthor
+user: where is he from?
+
+Say the user's intention in the last utterance: The user wants to know where Lex Luthor (mayor of Smalltown) is from<|EOS|>"

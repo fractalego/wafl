@@ -37,12 +37,22 @@ class LLMTaskCreatorBridge:
             )
 
         retrieved_items = await self._knowledge.ask_for_facts(
-            Query.create_from_text(task), threshold=0.0
+            Query.create_from_text(task), threshold=0.1
         )
         retrieved_items = "\n\n\n".join(
-            [item.text for item in retrieved_items][::-1][:5]
+            [item.text for item in retrieved_items][::-1][:3]
         )
-        prompt = f"""" + "\n"
+        prompt = f""""
+Create a new rule to answer the user.
+The first line is the rule trigger. 
+You may use similar rules to accomplish the task.
+The following lines are the steps to accomplish the task. 
+These lines cannot contain the trigger (no recursive tasks are allowed).
+A Python function can be added with instructions in English within <...>.
+The result of a query can be used within another query by using brackets {...}.
+Use the least steps.
+
+These are some examples:
 {retrieved_items}
 
 
@@ -51,13 +61,7 @@ The intention of the user is the following: {task}
 The system has rules that are triggered by the following sentences
 {triggers}
 
-Create a new rule to answer the user. 
-The first line is the rule trigger. 
-The following lines are the steps to accomplish the task.
-These lines cannot contain the trigger (no recursive tasks are allowed).
-A Python function can be added with instructions in English within <...>.
-The result of a query can be used within another query by using brackets {{...}}.
-Use the least steps:
+This is the new rule:
         """.strip()
 
         return prompt

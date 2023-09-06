@@ -1,6 +1,11 @@
 ### TODO
 
-* use temperature in generate: the system tends to repeat itself and is terrible.
+* add a dialogue answerer on top of everything (top-answerer) !!!!
+------------------------------------------------
+* remember: entailment is related to mutual information.
+* If the system generates a rule that has a question implying the trigger -> the answer to that question is unknown
+
+
 * make it answer: who is the mayor of london, who was the first james bond
     * find a way to re-load the knowledges from the answer bridges while the system is running
     * make it so the system does not repeat questions that are in the trigger
@@ -15,6 +20,7 @@
    * allow for web components to write output
       * test with output from matplotlib
 
+/* use temperature in generate: the system tends to repeat itself and is terrible.
 /* avoid newline in textarea after pressing enter
 /* sometimes (when I say "nothing/no/...") the conversation stops.
   there is no answer and all the next replies are the queries themselves

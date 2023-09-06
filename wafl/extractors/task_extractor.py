@@ -12,7 +12,7 @@ class TaskExtractor:
     def __init__(self, config, interface, logger=None):
         self._interface = interface
         self._connector = LLMTaskExtractorBridge(config)
-        self._max_num_past_utterances = 3
+        self._max_num_past_utterances = 6
         self._to_ignore = ["yes", "no", "ok", "okay", "sure", "nope", "yep", "you"]
 
     async def extract(self, query: str) -> Answer:

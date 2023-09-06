@@ -38,7 +38,7 @@ class TestConnection(TestCase):
 
     def test__connection_to_generative_model_can_generate_text(self):
         config = Configuration.load_local_config()
-        connector = RemoteLLMConnector(config)
+        connector = RemoteLLMConnector(config.get_value("llm_model"))
         prediction = asyncio.run(
             connector.predict(
                 'Generate a full paragraph based on this chapter title "The first contact". '

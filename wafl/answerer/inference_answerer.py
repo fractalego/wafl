@@ -40,12 +40,6 @@ class InferenceAnswerer(BaseAnswerer):
         task_texts = split_tasks(task)
         answers = []
         for task_text in task_texts:
-            result = await self._entailer.entails(
-                simple_task, task_text, return_threshold=True, threshold=0.6
-            )
-            if not result:
-                task_text = simple_task
-
             await self._interface.add_choice(
                 f"The bot understands the task to be '{task_text}'"
             )

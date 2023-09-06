@@ -33,7 +33,6 @@ class ArbiterAnswerer(BaseAnswerer):
             simple_task += ". There is a fact related to that request"
 
         else:
-            simple_task += ". There is no fact related to that request"
             task = await self._task_extractor.extract(simple_task)
             if not task.is_neutral() and await self._knowledge.ask_for_rule_backward(
                 Query.create_from_text(task.text),
@@ -49,6 +48,8 @@ class ArbiterAnswerer(BaseAnswerer):
 
             else:
                 simple_task += ". There is no rule for that request"
+
+            simple_task += ". There is no fact related to that request"
 
         score = 1
         keys_and_scores = []
