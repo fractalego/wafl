@@ -7,6 +7,7 @@ import threading
 from flask import Flask, render_template, redirect, url_for
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
+from wafl.filter.answer_filter import AnswerFilter
 from wafl.interface.queue_interface import QueueInterface
 from wafl.knowledge.project_knowledge import ProjectKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -44,8 +45,8 @@ def run_app():
 
 
 def create_scheduler_and_webserver_loop(conversation_id):
-    interface = QueueInterface()
     config = Configuration.load_local_config()
+    interface = QueueInterface(output_filter=AnswerFilter(config))
     knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
     interface.activate()
     conversation_events = ConversationEvents(
@@ -63,7 +64,7 @@ def create_scheduler_and_webserver_loop(conversation_id):
         deactivate_on_closed_conversation=False,
     )
     asyncio.run(interface.output("Hello. How may I help you?"))
-    web_loop = WebLoop(interface, knowledge, conversation_id)
+    web_loop = WebLoop(interface, knowledge, conversation_id, conversation_events)
     return {
         "scheduler": Scheduler([conversation_loop, web_loop]),
         "web_server_loop": web_loop,

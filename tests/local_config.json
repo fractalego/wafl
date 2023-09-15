@@ -6,7 +6,7 @@
   "improvise_tasks": true,
   "llm_model": {
     "model_is_local": true,
-    "local_model": "mosaicml/mpt-7b-instruct",
+    "local_model": "NousResearch/Nous-Hermes-llama-2-7b",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080

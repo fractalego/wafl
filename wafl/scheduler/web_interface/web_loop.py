@@ -94,13 +94,14 @@ class WebLoop:
         interface: QueueInterface,
         knowledge: "ProjectKnowledge",
         conversation_id: int,
+        conversation_events: "ConversationEvents"
     ):
         self._interface = interface
         self._knowledge = knowledge
         self._rules_filename = knowledge.rules_filename
         self._history_logger = HistoryLogger(self._interface)
         self._conversation_id = conversation_id
-        self._bot_computing_answer = False
+        self._conversation_events = conversation_events
 
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
@@ -109,7 +110,6 @@ class WebLoop:
         textarea_index = int(textarea_index)
         query = request.form["query"]
         self._interface.input_queue.append(query)
-        self._bot_computing_answer = True
         return get_html_from_dialogue_item(
             "bot: Typing...",
             textarea_index + 1,
@@ -129,7 +129,7 @@ class WebLoop:
             )
 
         if len(dialogue_items) <= item_index + 1:
-            if self._bot_computing_answer:
+            if self._conversation_events.is_computing():
                 bot_text = "bot: Typing..."
 
             else:
@@ -142,7 +142,17 @@ class WebLoop:
                 bot_is_computing_answer=True,
             )
 
-        self._bot_computing_answer = False
+        print("----")
+        print(item_index + 1, len(dialogue_items), len(dialogue_items) <= item_index + 1)
+        print("----")
+        print(dialogue_items)
+        print("----")
+        print("\n".join([item[1] for item in dialogue_items]))
+        print(dialogue_items[item_index + 1][1])
+        print("=====")
+        if "user:" in dialogue_items[item_index + 1][1]:
+            item_index -= 1
+
         return get_html_from_dialogue_item(
             dialogue_items[item_index + 1][1],
             item_index,
@@ -153,7 +163,6 @@ class WebLoop:
 
     async def reset_conversation(self):
         self._interface.reset_history()
-        self._bot_computing_answer = False
         self._interface.deactivate()
         self._interface.activate()
         await self._interface.output("Hello. How may I help you?")
@@ -219,7 +228,7 @@ class WebLoop:
                     ),
                 )
             )
-            if self._bot_computing_answer:
+            if self._conversation_events.is_computing():
                 bot_text = "bot: Typing..."
 
             else:

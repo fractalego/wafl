@@ -33,7 +33,8 @@ from wafl.inference.utils import (
     escape_characters,
     get_causes_list,
     text_has_retrieve_command,
-    create_default_substitutions, clause_has_unresolved_substitutions,
+    create_default_substitutions,
+    clause_has_unresolved_substitutions,
 )
 from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.utils import needs_substitutions
@@ -288,7 +289,9 @@ class BackwardInference:
                     apply_substitutions(code_description, substitutions)
 
                 if clause_has_unresolved_substitutions(cause_text):
-                    self._log(f"The clause {cause_text} has unresolved substitutions.", depth)
+                    self._log(
+                        f"The clause {cause_text} has unresolved substitutions.", depth
+                    )
                     break
 
                 cause_text, invert_results = check_negation(cause_text)

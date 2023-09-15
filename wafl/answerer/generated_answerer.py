@@ -8,14 +8,14 @@ class GeneratedAnswerer(BaseAnswerer):
     def __init__(self, narrator, logger):
         self._logger = logger
         self._narrator = narrator
-        self._connector = LLMGeneratedAnswerBridge()
+        self._bridge = LLMGeneratedAnswerBridge()
         self._entailer = Entailer(logger)
 
     async def answer(self, query_text, policy):
         if self._logger:
             self._logger.write(f"Generated Answerer: the query is {query_text}")
 
-        answer_text = await self._connector.get_answer(
+        answer_text = await self._bridge.get_answer(
             text="", dialogue=None, query=query_text
         )
         if self._logger:

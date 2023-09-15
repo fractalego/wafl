@@ -89,7 +89,7 @@ class RemoteLLMConnector:
         return candidate_answer
 
     async def check_connection(self):
-        payload = {"data": "test<|EOS|>", "num_beams": 1, "num_tokens": 5}
+        payload = {"data": "test", "temperature": 0.5, "num_tokens": 1}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)

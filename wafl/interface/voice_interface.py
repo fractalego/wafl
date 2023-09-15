@@ -19,7 +19,7 @@ COLOR_END = "\033[0m"
 
 
 class VoiceInterface(BaseInterface):
-    def __init__(self, config):
+    def __init__(self, config, output_filter=None):
         super().__init__()
         self._sound_speaker = SoundFileSpeaker()
         self._activation_sound_filename = self.__get_activation_sound_from_config(
@@ -40,6 +40,7 @@ class VoiceInterface(BaseInterface):
         self._listener.set_hotword_threshold(config.get_value("listener_hotword_logp"))
         self._bot_has_spoken = False
         self._utterances = []
+        self._output_filter = output_filter
 
     async def add_hotwords_from_knowledge(
         self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
@@ -62,6 +63,9 @@ class VoiceInterface(BaseInterface):
 
         if not text:
             return
+
+        if self._output_filter:
+            text = await self._output_filter.filter(self.get_utterances_list_with_timestamp(), text)
 
         self._listener.activate()
         text = from_bot_to_user(text)

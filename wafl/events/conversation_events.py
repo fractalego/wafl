@@ -31,6 +31,7 @@ class ConversationEvents:
         self._interface = interface
         self._policy = AnswerPolicy(config, interface, logger)
         self._logger = logger
+        self._is_computing = False
         if logger:
             self._logger.set_depth(0)
 
@@ -38,9 +39,10 @@ class ConversationEvents:
         await self._interface.output(text)
 
     async def _process_query(self, text: str):
+        self._is_computing = True
         self._interface.bot_has_spoken(False)
-
         if not input_is_valid(text):
+            self._is_computing = False
             return False
 
         text_is_question = is_question(text)
@@ -52,6 +54,7 @@ class ConversationEvents:
 
         except InterruptTask:
             await self._interface.output("Task interrupted")
+            self._is_computing = False
             return False
 
         if not self._interface.bot_has_spoken():
@@ -77,6 +80,7 @@ class ConversationEvents:
             ):
                 await self._interface.output("Yes")
 
+        self._is_computing = False
         return answer
 
     async def process_next(self, activation_word: str = "") -> bool:
@@ -105,6 +109,9 @@ class ConversationEvents:
                 return True
 
         return False
+
+    def is_computing(self):
+        return self._is_computing
 
     def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):

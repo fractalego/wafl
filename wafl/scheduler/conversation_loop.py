@@ -98,9 +98,7 @@ class ConversationLoop:
                     self._interface.deactivate()
 
                 else:
-                    await self._interface.output(
-                        "I am not sure what to reply."
-                    )
+                    await self._interface.output("I am not sure what to reply.")
 
                 continue
 

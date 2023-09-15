@@ -25,10 +25,9 @@ class LocalLLMConnector:
             _system_logger.info(f"Loading model {config['local_model']} locally.")
             model = AutoModelForCausalLM.from_pretrained(
                 config["local_model"],
-                init_device=device,
                 trust_remote_code=True,
                 torch_dtype=torch.half,
-            )
+            ).to(device)
             _system_logger.info(f"The model is loaded.")
 
         if not tokenizer:

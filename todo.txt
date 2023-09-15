@@ -1,6 +1,8 @@
 ### TODO
 
-* add a dialogue answerer on top of everything (top-answerer) !!!!
+* add a filter dialogue answerer on top of everything (top-answerer) !!!!
+  - add filter ability to all interfaces
+  - add filter to web interface when it runs from command line
 ------------------------------------------------
 * remember: entailment is related to mutual information.
 * If the system generates a rule that has a question implying the trigger -> the answer to that question is unknown

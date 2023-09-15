@@ -58,13 +58,14 @@ class LLMTaskExtractorBridge:
         )
         retrieved_string = (
             "\n\n\n".join([item[0].text for item in all_items_and_scores]) + "\n\n\n"
-        )
+        ).strip()
 
         prompt = f"""
 The task is to extract the user's intention from the last statement from the user.
 Prior statements only provide context and should not be used to determine the user's intention.
 Be as specific as possible.
 If the last statement has multiple intentions, separate them with a pipe character "|".
+Each utterance intention is separated. Do not append any prior intention to the list.  
 After the task is extracted, end the text with <|EOS|>.
 Some examples are below.
 
