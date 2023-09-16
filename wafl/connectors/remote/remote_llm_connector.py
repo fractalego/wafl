@@ -79,8 +79,7 @@ class RemoteLLMConnector:
         candidate_answer = text[start:end].split("bot: ")[-1].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
-        if prompt not in self._cache:
-            self._cache[prompt] = candidate_answer
+        self._cache[prompt] = candidate_answer
 
         print(time.time() - start_time)
         if not candidate_answer:

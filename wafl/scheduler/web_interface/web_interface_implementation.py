@@ -42,7 +42,7 @@ def get_html_from_dialogue_item(
             f"hx-swap='outerHTML'"
             f"hx-target='#messages-{index+1}'"
             f"hx-trigger='keydown[!shiftKey&&keyCode==13]'"
-            f">" + text[5:] + "</textarea>"
+            f">" + text[5:].strip() + "</textarea>"
             f"""
 <script>
 $("#textarea-{index}").on("keydown", function(e){{

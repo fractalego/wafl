@@ -76,6 +76,9 @@ Some examples are below.
 The following conversation is taking place:
 {dialogue}
 
+The last utterance from the user is:
+{query}
+
 Say the user's intention in the last utterance: 
         """.strip()
 

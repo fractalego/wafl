@@ -35,6 +35,8 @@ bot: {query}<|EOS|>
 Refer to "the user" in second person.
 Refer to "the bot" in first person.
 Do not add any information that is not in the bot's intention. Just rephrase it.
+Please never say "the user", just say "you".
+Try to rephrase bot's intention in your own polite words. For example "unknown" can be "I don't know".
 Write the best reply consistent with the bot's intention, in the context of the dialogue above:
 bot: 
         """.strip()
