@@ -1,5 +1,12 @@
 ### TODO
 
+* what is the weather like/what about tomorrow -> every new query gets a reply about the weather
+* items are not updated in the web interface:
+   - new utterances by the bot are not added to the list
+   - they only appear after the user has typed something
+   - should you wait to update list?
+   - should you yield all conversations in the conversations events and then say them all at once?
+
 * add a filter dialogue answerer on top of everything (top-answerer) !!!!
   - add filter ability to all interfaces
   - add filter to web interface when it runs from command line

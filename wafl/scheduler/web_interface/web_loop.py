@@ -7,6 +7,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from wafl.interface.queue_interface import QueueInterface
 from wafl.logger.history_logger import HistoryLogger
+from wafl.scheduler.web_interface.web_interface_implementation import get_html_from_dialogue_item
 
 _path = os.path.dirname(__file__)
 app = Flask(
@@ -20,72 +21,6 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.config["async_mode"] = "asyncio"
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.WARNING)
-
-
-def get_html_from_dialogue_item(
-    text,
-    index,
-    conversation_id,
-    bot_is_computing_answer,
-    reload_messages=False,
-    autofocus=False,
-):
-    if text.find("bot:") == 0:
-        if bot_is_computing_answer:
-            return (
-                f"<div id='messages-{index}'"
-                f"hx-post='/{conversation_id}/{index}/messages'"
-                f"hx-swap='outerHTML'"
-                f"hx-target='#messages-{index}'"
-                f"hx-trigger='every 1s'"
-                f">" + text[4:].strip() + "</div>"
-            )
-
-        if reload_messages:
-            return (
-                f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
-                f"hx-post='/{conversation_id}/load_messages'"
-                f"hx-swap='innerHTML'"
-                f"hx-target='#messages'"
-                f"hx-trigger='load'"
-                f">" + text[4:].strip() + "</div>"
-            )
-
-        else:
-            return (
-                f"<div id='messages-{index}' class='shadow-lg dialogue-row-bot' style='font-size:20px; '"
-                f">" + text[4:].strip() + "</div>"
-            )
-
-    if text.find("user:") == 0:
-        autofocus_str = "autofocus" if autofocus else ""
-        return (
-            f"<textarea {autofocus_str} id='textarea-{index}'"
-            f"class='shadow-lg dialogue-row-user' name='query' rows='1' style='font-size:20px; min-height:50px;' type='text'"
-            f"hx-post='/{conversation_id}/{index}/input'"
-            f"hx-swap='outerHTML'"
-            f"hx-target='#messages-{index+1}'"
-            f"hx-trigger='keydown[!shiftKey&&keyCode==13]'"
-            f">" + text[5:] + "</textarea>"
-            f"""
-<script>
-$("#textarea-{index}").on("keydown", function(e){{
-  if (e.keyCode == 13 && !e.shiftKey)
-  {{
-    // prevent default behavior
-    e.preventDefault();
-    return false;
-  }}
-}});
-</script>
-            """
-        )
-
-    return (
-        "<div class='dialogue-row-comment' style='font-size:20px; '>"
-        + text.strip()
-        + "</div>"
-    )
 
 
 class WebLoop:
@@ -102,6 +37,7 @@ class WebLoop:
         self._history_logger = HistoryLogger(self._interface)
         self._conversation_id = conversation_id
         self._conversation_events = conversation_events
+        self._prior_dialogue_items = []
 
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
@@ -195,6 +131,39 @@ class WebLoop:
     async def thumbs_down(self):
         self._history_logger.write("thumbs_down")
         return jsonify("")
+
+    async def ticker(self):
+        current_dialogue_items = self._interface.get_utterances_list_with_timestamp()
+        if self._prior_dialogue_items == current_dialogue_items:
+            return f"""
+<div id="ticker"
+     hx-post="/{self._conversation_id}/ticker"
+     hx-swap="outerHTML"
+     hx-target="#ticker"
+     hx-trigger="every 1s"
+>
+</div>
+            """.strip()
+
+        else:
+            self._prior_dialogue_items = current_dialogue_items.copy()
+            return f"""
+<div id="ticker"
+     hx-post="/{self._conversation_id}/ticker"
+     hx-swap="outerHTML"
+     hx-target="#ticker"
+     hx-trigger="every 1s"
+>
+    <pre id="loader" class="grid grid-flow-col"
+         hx-post="/{self._conversation_id}/load_messages"
+         hx-swap="innerHTML"
+         hx-target="#messages"
+         hx-trigger="load"
+    >
+    </pre>
+</div>        
+                    """.strip()
+
 
     async def run(self):
         print(f"New web server instance {self._conversation_id} running!")

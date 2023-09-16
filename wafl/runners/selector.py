@@ -126,3 +126,9 @@ def add_new_rules(app, conversation_id, web_server_loop):
         web_server_loop.thumbs_down,
         methods=["POST"],
     )
+    app.add_url_rule(
+        f"/{conversation_id}/ticker",
+        f"ticker_{conversation_id}",
+        web_server_loop.ticker,
+        methods=["POST", "GET"],
+    )

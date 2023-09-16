@@ -58,6 +58,17 @@ Say the user's intention in the last utterance: the user wants to know the time 
 "The following conversation is taking place:
 user: what is the weather like
 bot: it is sunny
+user: what is the time
+
+Say the user's intention in the last utterance: the user wants to know the time<|EOS|>"
+"The following conversation is taking place:
+user: tell me what time it is and then what is the weather tomorrow
+
+
+Say the user's intention in the last utterance: the user wants to know the time | the user wants to know the weather tomorrow<|EOS|>"
+"The following conversation is taking place:
+user: what is the weather like
+bot: it is sunny
 user: what music is playing
 
 Say the user's intention in the last utterance: the user wants to know which music is playing<|EOS|>"
