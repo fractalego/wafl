@@ -7,6 +7,7 @@ class AnswerFilter:
         self._max_num_past_utterances = 7
 
     async def filter(self, dialogue_list, query_text) -> str:
+        print("Text before filter:", query_text)
         dialogue = dialogue_list[
             -self._max_num_past_utterances :
         ]
