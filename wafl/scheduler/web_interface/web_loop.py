@@ -1,26 +1,13 @@
 import asyncio
-import logging
 import os
 import time
 
-from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
+from flask import render_template, request, jsonify
 from wafl.interface.queue_interface import QueueInterface
 from wafl.logger.history_logger import HistoryLogger
 from wafl.scheduler.web_interface.web_interface_implementation import get_html_from_dialogue_item
 
 _path = os.path.dirname(__file__)
-app = Flask(
-    __name__,
-    static_url_path="",
-    static_folder=os.path.join(_path, "../../frontend/"),
-    template_folder=os.path.join(_path, "../../frontend/"),
-)
-app.config.from_object(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-app.config["async_mode"] = "asyncio"
-log = logging.getLogger("werkzeug")
-log.setLevel(logging.WARNING)
 
 
 class WebLoop:

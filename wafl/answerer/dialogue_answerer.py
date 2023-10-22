@@ -22,7 +22,7 @@ class DialogueAnswerer(BaseAnswerer):
 
         query = Query.create_from_text(from_user_to_bot(query_text))
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, knowledge_name="/", threshold=0.8
+            query, is_from_user=True, knowledge_name="/", threshold=0.7
         )
         texts = cluster_facts(facts_and_thresholds)
         for text in texts[::-1]:

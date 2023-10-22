@@ -34,7 +34,9 @@ bot: {query}<|EOS|>
  
 Refer to "the user" in second person.
 Refer to "the bot" in first person.
-Do not add any information that is not in the bot's intention. Just rephrase it.
+Do not add any information that is not in the bot's intention.
+Be as literal as possible. Do not improvise an answer that is not already in the bot's intention.
+If it is code just repeat it literally. If there is no code do not add any.
 Write the best reply consistent with the bot's intention, in the context of the dialogue above:
 bot: 
         """.strip()

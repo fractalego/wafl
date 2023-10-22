@@ -6,7 +6,7 @@ import re
 
 class RemoteLLMConnector:
     _max_tries = 3
-    _max_reply_length = 500
+    _max_reply_length = 1024
     _num_prediction_tokens = 200
     _cache = {}
 
