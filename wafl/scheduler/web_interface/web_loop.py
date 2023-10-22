@@ -29,67 +29,28 @@ class WebLoop:
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
 
-    async def handle_input(self, textarea_index):
-        textarea_index = int(textarea_index)
+    async def handle_input(self):
         query = request.form["query"]
         self._interface.input_queue.append(query)
-        return get_html_from_dialogue_item(
-            "bot: Typing...",
-            textarea_index + 1,
-            self._conversation_id,
-            bot_is_computing_answer=True,
-        )
-
-    async def get_conversation_item(self, item_index):
-        item_index = int(item_index)
-        dialogue_items = self._interface.get_utterances_list_with_timestamp()
-        if not dialogue_items:
-            return get_html_from_dialogue_item(
-                "bot: This conversation has ended.",
-                item_index,
-                self._conversation_id,
-                bot_is_computing_answer=False,
-            )
-
-        if len(dialogue_items) <= item_index + 1:
-            if self._conversation_events.is_computing():
-                bot_text = "bot: Typing..."
-
-            else:
-                bot_text = "bot:"
-
-            return get_html_from_dialogue_item(
-                bot_text,
-                item_index,
-                self._conversation_id,
-                bot_is_computing_answer=True,
-            )
-
-        print("----")
-        print(item_index + 1, len(dialogue_items), len(dialogue_items) <= item_index + 1)
-        print("----")
-        print(dialogue_items)
-        print("----")
-        print("\n".join([item[1] for item in dialogue_items]))
-        print(dialogue_items[item_index + 1][1])
-        print("=====")
-        if "user:" in dialogue_items[item_index + 1][1]:
-            item_index -= 1
-
-        return get_html_from_dialogue_item(
-            dialogue_items[item_index + 1][1],
-            item_index,
-            self._conversation_id,
-            bot_is_computing_answer=False,
-            reload_messages=True,
-        )
+        return f"""
+    <textarea id="query" type="text"
+           class='shadow-lg'
+           placeholder="{query}"
+           name="query"
+           hx-post="/{self._conversation_id}/input"
+           hx-swap="outerHTML"
+           hx-target="#query"
+           hx-trigger="keydown[!shiftKey&&keyCode==13]"
+    >
+    </textarea>
+        """.strip()
 
     async def reset_conversation(self):
         self._interface.reset_history()
         self._interface.deactivate()
         self._interface.activate()
         await self._interface.output("Hello. How may I help you?")
-        conversation = await self._get_conversation(append_empty_textarea=True)
+        conversation = await self._get_conversation()
         return conversation
 
     async def reload_rules(self):
@@ -101,7 +62,7 @@ class WebLoop:
         return ""
 
     async def load_messages(self):
-        conversation = await self._get_conversation(append_empty_textarea=True)
+        conversation = await self._get_conversation()
         return conversation
 
     async def handle_output(self):
@@ -119,44 +80,11 @@ class WebLoop:
         self._history_logger.write("thumbs_down")
         return jsonify("")
 
-    async def ticker(self):
-        current_dialogue_items = self._interface.get_utterances_list_with_timestamp()
-        if self._prior_dialogue_items == current_dialogue_items:
-            return f"""
-<div id="ticker"
-     hx-post="/{self._conversation_id}/ticker"
-     hx-swap="outerHTML"
-     hx-target="#ticker"
-     hx-trigger="every 1s"
->
-</div>
-            """.strip()
-
-        else:
-            self._prior_dialogue_items = current_dialogue_items.copy()
-            return f"""
-<div id="ticker"
-     hx-post="/{self._conversation_id}/ticker"
-     hx-swap="outerHTML"
-     hx-target="#ticker"
-     hx-trigger="every 1s"
->
-    <pre id="loader" class="grid grid-flow-col"
-         hx-post="/{self._conversation_id}/load_messages"
-         hx-swap="innerHTML"
-         hx-target="#messages"
-         hx-trigger="load"
-    >
-    </pre>
-</div>        
-                    """.strip()
-
-
     async def run(self):
         print(f"New web server instance {self._conversation_id} running!")
         return
 
-    async def _get_conversation(self, append_empty_textarea=False):
+    async def _get_conversation(self):
         dialogue_items = self._interface.get_utterances_list_with_timestamp()
         dialogue = []
         for index, item in enumerate(dialogue_items):
@@ -165,39 +93,6 @@ class WebLoop:
                     item[0],
                     get_html_from_dialogue_item(
                         item[1],
-                        index,
-                        self._conversation_id,
-                        bot_is_computing_answer=False,
-                    ),
-                )
-            )
-        if append_empty_textarea:
-            dialogue.append(
-                (
-                    time.time(),
-                    get_html_from_dialogue_item(
-                        "user:",
-                        index,
-                        self._conversation_id,
-                        bot_is_computing_answer=False,
-                        autofocus=True,
-                    ),
-                )
-            )
-            if self._conversation_events.is_computing():
-                bot_text = "bot: Typing..."
-
-            else:
-                bot_text = "bot:"
-
-            dialogue.append(
-                (
-                    time.time(),
-                    get_html_from_dialogue_item(
-                        bot_text,
-                        index + 1,
-                        self._conversation_id,
-                        bot_is_computing_answer=True,
                     ),
                 )
             )

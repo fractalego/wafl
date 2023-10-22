@@ -14,9 +14,9 @@
      aria-label="Sidebar"
 >
     <div id="ticker"
-         hx-post="/{{conversation_id}}/ticker"
-         hx-swap="outerHTML"
-         hx-target="#ticker"
+         hx-post="/{{conversation_id}}/load_messages"
+         hx-swap="innerHTML"
+         hx-target="#messages"
          hx-trigger="every 1s"
     >
     </div>
@@ -24,7 +24,7 @@
         <ul class="space-y-2 font-medium">
             <li>
                 <a title="Reset conversation"
-                   data-hx-post="/{{conversation_id}}/reset_conversation"
+                   hx-post="/{{conversation_id}}/reset_conversation"
                    hx-swap="innerHTML scroll:bottom"
                    hx-target="#messages"
                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group">
@@ -33,7 +33,7 @@
             </li>
             <li>
                 <a title="Reload rules"
-                   data-hx-post="/{{conversation_id}}/reload_rules"
+                   hx-post="/{{conversation_id}}/reload_rules"
                    hx-swap="none"
                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group">
                     <span class="ml-2">&#128195;</span>
@@ -45,13 +45,17 @@
 <div id="screen" class="fixed top-0 left-20 margin-left-20">
     <div id="banner">
     </div>
-    <pre id="messages" class="grid grid-flow-col"
-         hx-post="/{{conversation_id}}/load_messages"
-         hx-swap="innerHTML"
-         hx-target="#messages"
-         hx-trigger="load"
-    >
+    <pre id="messages" class="grid grid-flow-col">
     </pre>
+    <input id="query" type="text"
+           class='shadow-lg'
+           name="query"
+           placeholder="Type your query here"
+           hx-post="/{{conversation_id}}/input"
+           hx-swap="outerHTML"
+           hx-target="#query"
+           hx-trigger="keydown[!shiftKey&&keyCode==13]"
+    >
 </div>
 </body>
 </html>

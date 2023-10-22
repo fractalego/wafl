@@ -8,16 +8,16 @@ body {
     padding-bottom: 50px;
 }
 
-input {
-    font-family: monospace;
-    font-size: 30px;
-    margin-top: 20px;
-    margin-bottom: 50px;
-    width: 50%;
-    position: relative;
-    bottom: 0;
+#query{
+    font-size: 20px;
+    margin: 20px;
+    min-height: 25px;
+    max-height: 50px;
+    width: 100%;
     border-radius: 5px;
-    border-color: #4e4a4a;
+    border-color: #7a7a9f;
+    border-width: 2px;
+    padding: 10px;
 }
 
 pre {

@@ -97,15 +97,9 @@ def add_new_rules(app, conversation_id, web_server_loop):
         methods=["POST", "GET"],
     )
     app.add_url_rule(
-        f"/{conversation_id}/<textarea_index>/input",
+        f"/{conversation_id}/input",
         f"input_{conversation_id}",
         web_server_loop.handle_input,
-        methods=["POST", "GET"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/<item_index>/messages",
-        f"message_{conversation_id}",
-        web_server_loop.get_conversation_item,
         methods=["POST", "GET"],
     )
     app.add_url_rule(
@@ -125,10 +119,4 @@ def add_new_rules(app, conversation_id, web_server_loop):
         f"thumbs_down_{conversation_id}",
         web_server_loop.thumbs_down,
         methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/ticker",
-        f"ticker_{conversation_id}",
-        web_server_loop.ticker,
-        methods=["POST", "GET"],
     )
