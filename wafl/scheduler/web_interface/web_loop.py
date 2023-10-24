@@ -41,8 +41,7 @@ class WebLoop:
            hx-swap="outerHTML"
            hx-target="#query"
            hx-trigger="keydown[!shiftKey&&keyCode==13]"
-    >
-    </textarea>
+    ></textarea>
         """.strip()
 
     async def reset_conversation(self):
