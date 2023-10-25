@@ -19,13 +19,14 @@ class LLMChitChatAnswerBridge:
         return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(self, text, query, dialogue=None):
-        dialogue = re.sub(r"bot:(.*)\n", r"bot: \1<|EOS|>\n", dialogue)
         prompt = f"""
 The following is a summary of a conversation. All the elements of the conversation are described briefly:
-The bot always say <|EOS|> after it has finished speaking.
 {text}                     
                                                                                                          
-Create a plausible dialogue based on the aforementioned summary. Do not repeat yourself. Be friendly but not too servile.
+Create a plausible dialogue based on the aforementioned summary. 
+Do not repeat yourself. Be friendly but not too servile.
+Wrap any code you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```).
+    
 {dialogue}
 bot:
         """.strip()

@@ -18,6 +18,7 @@ body {
     border-color: #7a7a9f;
     border-width: 2px;
     padding: 10px;
+    resize: none;
 }
 
 pre {
@@ -100,4 +101,14 @@ pre .logs {
     border-color: #7a7a9f;
     border-width: 2px;
     padding: 10px;
+}
+
+#code {
+    font-family: monospace;
+    color: #1d9d01;
+    background-color: #1f1d1d;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    resize: none;
 }

@@ -1,6 +1,5 @@
 import asyncio
 import os
-import time
 
 from flask import render_template, request, jsonify
 from wafl.interface.queue_interface import QueueInterface
@@ -127,7 +126,7 @@ class WebLoop:
         )
         conversation += "".join(dialogue_items)
         conversation += "</div>"
-        conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+        conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg width' style='flex-direction: column-reverse;'>"
         conversation += "".join(choices_and_facts)
         conversation += "</div>"
         return conversation

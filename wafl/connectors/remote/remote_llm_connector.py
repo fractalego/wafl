@@ -31,6 +31,7 @@ class RemoteLLMConnector:
             "data": prompt,
             "temperature": 0.5,
             "num_tokens": self._num_prediction_tokens,
+            "last_strings": ["\nuser:", "\nbot:"],
         }
 
         for _ in range(self._max_tries):
@@ -58,7 +59,7 @@ class RemoteLLMConnector:
         while (
             all(
                 item not in text[start:]
-                for item in ["<|EOS|>", "user:", "\nThe bot", "bot:"]
+                for item in ["\nuser:", "\nbot:", "<|EOS|>"]
             )
             and len(text) < start + self._max_reply_length
         ):
@@ -67,8 +68,7 @@ class RemoteLLMConnector:
         end_set = set()
         end_set.add(text.find("\nuser:", start))
         end_set.add(text.find("\nbot:", start))
-        end_set.add(text.find("<|EOS|>", start))
-        end_set.add(text.find("\nThe bot", start))
+        end_set.add(text.find("\n<|EOS|>:", start))
         if -1 in end_set:
             end_set.remove(-1)
 
