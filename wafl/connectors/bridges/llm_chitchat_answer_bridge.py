@@ -22,7 +22,7 @@ class LLMChitChatAnswerBridge:
         prompt = f"""
 The following is a summary of a conversation. All the elements of the conversation are described briefly:
 {text}
-Rules:                     
+Rules:
 a) If the following applies: "The user asks you run a code" then follow all the steps below from top to bottom. 
     Do *not* skip any step. Each step is a new interaction with the user. Do not complete more than one step at a time.
     Step 1: If the code does not exist write it out.
