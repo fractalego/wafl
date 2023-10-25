@@ -25,7 +25,7 @@ class WebLoop:
         self._history_logger = HistoryLogger(self._interface)
         self._conversation_id = conversation_id
         self._conversation_events = conversation_events
-        self._prior_dialogue_items = []
+        self._prior_dialogue_items = ""
 
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
@@ -60,6 +60,22 @@ class WebLoop:
             print("Rules reloaded")
 
         return ""
+
+    async def check_for_new_messages(self):
+        conversation = await self._get_conversation()
+        if conversation != self._prior_dialogue_items:
+            self._prior_dialogue_items = conversation
+            return f"""
+            <div id="load_conversation" 
+               hx-post="/{self._conversation_id}/load_messages"
+               hx-swap="innerHTML"
+               hx-target="#messages"
+               hx-trigger="load"
+            ></div>"""
+
+        else:
+            self._prior_dialogue_items = conversation
+            return "<div id='load_conversation'></div>"
 
     async def load_messages(self):
         conversation = await self._get_conversation()

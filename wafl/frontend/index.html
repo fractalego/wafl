@@ -14,12 +14,16 @@
      aria-label="Sidebar"
 >
     <div id="ticker"
-         hx-post="/{{conversation_id}}/load_messages"
-         hx-swap="innerHTML"
-         hx-target="#messages"
+         hx-post="/{{conversation_id}}/check_new_messages"
+         hx-swap="outerHTML"
+         hx-target="#load_conversation"
          hx-trigger="every 1s"
-    >
-    </div>
+    ></div>
+    <div id="load_conversation"
+       hx-post="/{{conversation_id}}/load_messages"
+       hx-swap="innerHTML"
+       hx-target="#messages"
+       hx-trigger="load"></div>
     <div class="h-full px-3 py-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
             <li>

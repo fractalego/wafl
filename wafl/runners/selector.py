@@ -91,6 +91,12 @@ def add_new_rules(app, conversation_id, web_server_loop):
         methods=["POST"],
     )
     app.add_url_rule(
+        f"/{conversation_id}/check_new_messages",
+        f"check_new_messages_{conversation_id}",
+        web_server_loop.check_for_new_messages,
+        methods=["POST"],
+    )
+    app.add_url_rule(
         f"/{conversation_id}/load_messages",
         f"load_messages_{conversation_id}",
         web_server_loop.load_messages,

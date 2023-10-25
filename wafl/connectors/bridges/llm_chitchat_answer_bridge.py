@@ -23,7 +23,7 @@ class LLMChitChatAnswerBridge:
 The following is a summary of a conversation. All the elements of the conversation are described briefly:
 {text}
 Rules:
-a) If the following applies: "The user asks you run a code" then follow all the steps below from top to bottom. 
+a) If the following applies: "The user wants to run a code" then follow all the steps below from top to bottom. 
     Do *not* skip any step. Each step is a new interaction with the user. Do not complete more than one step at a time.
     Step 1: If the code does not exist write it out.
     Output the dialogue above and then write <step>1a</step> on a new line.
@@ -31,8 +31,8 @@ a) If the following applies: "The user asks you run a code" then follow all the 
     Step 2: If the code already exists in the conversation ask the user if they want to change something in the code.
     Output the dialogue above and then write <step>2a</step> on a new line.
 
-    Step 3: If the user still wants to go ahead, run the code locally as below
-      - Wrap it in the xml tag <execute> ... </execute>. Do *not* indent. Do *not* any other tag except <execute>.
+    Step 3: If the user still wants to go ahead, wrap the in the xml tag <execute> ... </execute>. 
+            Do *not* indent. Do *not* any other tag except <execute>.
     Output the dialogue above and then write <step>3a</step> on a new line.
 
 Create a plausible dialogue based on the aforementioned summary. 
