@@ -4,7 +4,9 @@ import os
 from flask import render_template, request, jsonify
 from wafl.interface.queue_interface import QueueInterface
 from wafl.logger.history_logger import HistoryLogger
-from wafl.scheduler.web_interface.web_interface_implementation import get_html_from_dialogue_item
+from wafl.scheduler.web_interface.web_interface_implementation import (
+    get_html_from_dialogue_item,
+)
 
 _path = os.path.dirname(__file__)
 
@@ -15,7 +17,7 @@ class WebLoop:
         interface: QueueInterface,
         knowledge: "ProjectKnowledge",
         conversation_id: int,
-        conversation_events: "ConversationEvents"
+        conversation_events: "ConversationEvents",
     ):
         self._interface = interface
         self._knowledge = knowledge

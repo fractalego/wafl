@@ -18,7 +18,9 @@ class QueueInterface(BaseInterface):
             return
 
         if self._output_filter:
-            text = await self._output_filter.filter(self.get_utterances_list_with_timestamp(), text)
+            text = await self._output_filter.filter(
+                self.get_utterances_list_with_timestamp(), text
+            )
 
         utterance = text
         self.output_queue.append({"text": utterance, "silent": False})

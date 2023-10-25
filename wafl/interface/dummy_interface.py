@@ -20,7 +20,9 @@ class DummyInterface(BaseInterface):
             return
 
         if self._output_filter:
-            text = await self._output_filter.filter(self.get_utterances_list_with_timestamp(), text)
+            text = await self._output_filter.filter(
+                self.get_utterances_list_with_timestamp(), text
+            )
 
         self._dialogue += "bot: " + text + "\n"
         self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))

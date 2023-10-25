@@ -5,6 +5,7 @@ from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswer
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 from wafl.simple_text_processing.deixis import from_user_to_bot
+from wafl.simple_text_processing.questions import is_question
 
 
 class DialogueAnswerer(BaseAnswerer):
@@ -29,8 +30,20 @@ class DialogueAnswerer(BaseAnswerer):
         for text in texts[::-1]:
             await self._interface.add_fact(f"The bot remembers: {text}")
 
-        self._prior_facts = self._prior_facts[-self._max_num_past_utterances:]
-        self._prior_facts.append("\n".join(texts))
+        if texts:
+            self._prior_facts = self._prior_facts[-self._max_num_past_utterances :]
+            self._prior_facts.append("\n".join(texts))
+            facts = "\n".join(self._prior_facts)
+
+        else:
+            self._prior_facts = self._prior_facts[-self._max_num_past_utterances :]
+            facts = "\n".join(
+                self._prior_facts
+                + [
+                    f"The answer to {query_text} is not in the knowledge base."
+                    "The bot can answer the question while informing the user that the answer was not retrieved"
+                ] if is_question(query_text) else []
+            )
 
         dialogue = self._interface.get_utterances_list_with_timestamp()[
             -self._max_num_past_utterances :
@@ -47,7 +60,7 @@ class DialogueAnswerer(BaseAnswerer):
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
         answer_text = await self._bridge.get_answer(
-            text="\n".join(self._prior_facts),
+            text=facts,
             dialogue=dialogue_items,
             query=query_text,
         )

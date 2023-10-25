@@ -22,9 +22,10 @@ The user says hello
 class TestDecorator(TestCase):
     def test__filter(self):
         config = Configuration.load_local_config()
-        interface = DummyInterface(["Hello"],
-                                   output_filter=AnswerFilter(config),
-                                   )
+        interface = DummyInterface(
+            ["Hello"],
+            output_filter=AnswerFilter(config),
+        )
 
         conversation_events = ConversationEvents(
             SingleFileKnowledge(config, wafl_rules),

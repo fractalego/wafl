@@ -57,10 +57,7 @@ class RemoteLLMConnector:
         text = prompt
         start = len(text)
         while (
-            all(
-                item not in text[start:]
-                for item in ["\nuser:", "\nbot:", "<|EOS|>"]
-            )
+            all(item not in text[start:] for item in ["\nuser:", "\nbot:", "<|EOS|>"])
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
