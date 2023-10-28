@@ -23,7 +23,7 @@ def get_facts_and_rules_from_text(text: str, knowledge_name=None):
         rules.append(
             Rule(
                 effect=Fact(text=list(rule_dict.keys())[0]),
-                causes=list(rule_dict.values())[0],
+                causes=[Fact(item) for item in list(rule_dict.values())[0]],
             )
         )
 

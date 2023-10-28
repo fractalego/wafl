@@ -26,8 +26,8 @@ class DialogueAnswerer(BaseAnswerer):
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
         query = Query.create_from_text(from_user_to_bot(query_text))
-        rules_texts = self._get_relevant_rules(query)
-        facts = self._get_relevant_facts(query, has_prior_rules=bool(rules_texts))
+        rules_texts = await self._get_relevant_rules(query)
+        facts = await self._get_relevant_facts(query, has_prior_rules=bool(rules_texts))
 
         dialogue = self._interface.get_utterances_list_with_timestamp()[
             -self._max_num_past_utterances :
@@ -57,7 +57,7 @@ class DialogueAnswerer(BaseAnswerer):
 
         return Answer.create_neutral()
 
-    def _get_relevant_facts(self, query, has_prior_rules):
+    async def _get_relevant_facts(self, query, has_prior_rules):
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=True, knowledge_name="/", threshold=0.7
         )
@@ -84,18 +84,23 @@ class DialogueAnswerer(BaseAnswerer):
 
         return facts
 
-    def _get_relevant_rules(self, query, max_num_rules=2):
+    async def _get_relevant_rules(self, query, max_num_rules=2):
         rules = await self._knowledge.ask_for_rule_backward(
             query,
             knowledge_name="/",
-        )[:max_num_rules]
+        )
+        rules = rules[:max_num_rules]
         rules_texts = []
         for rule in rules:
-            rules_text = f"- If {rule.effect.text}} then "
+            rules_text = f"- If {rule.effect.text} then "
             for causes in rule.causes:
                 rules_text += f"{causes.text}, "
 
-            rules_texts.append(rules_text[:-2] + ".")
+            rules_text = rules_text[:-2]
+            if rules_text in self._prior_rules:
+                continue
+
+            rules_texts.append(rules_text)
 
         self._prior_rules = self._prior_rules[-self._max_num_past_utterances_for_rules:]
 

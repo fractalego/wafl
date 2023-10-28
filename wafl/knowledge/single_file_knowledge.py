@@ -305,19 +305,7 @@ class SingleFileKnowledge(BaseKnowledge):
         ][: self._max_rules_per_type]
 
         rules_and_scores = fact_rules + question_rules + incomplete_rules
-        rules = [item[0] for item in sorted(rules_and_scores, key=lambda x: -x[1])]
-        if not first_n and await rules_are_too_different(
-            self._rules_fact_retriever, rules
-        ):
-            return []
-
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
             query, rules_and_scores
         )
-
-        if not first_n:
-            rules_and_scores = await filter_out_rules_through_entailment(
-                self._entailer, query, rules_and_scores
-            )
-
         return rules_and_scores

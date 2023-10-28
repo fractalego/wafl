@@ -15,13 +15,10 @@ class WebLoop:
     def __init__(
         self,
         interface: QueueInterface,
-        knowledge: "ProjectKnowledge",
         conversation_id: int,
         conversation_events: "ConversationEvents",
     ):
         self._interface = interface
-        self._knowledge = knowledge
-        self._rules_filename = knowledge.rules_filename
         self._history_logger = HistoryLogger(self._interface)
         self._conversation_id = conversation_id
         self._conversation_events = conversation_events
@@ -55,9 +52,7 @@ class WebLoop:
 
     async def reload_rules(self):
         async with asyncio.Lock():
-            self._knowledge.reload_rules(self._rules_filename)
-            await self._knowledge.reinitialize_all_retrievers()
-            print("Rules reloaded")
+            print("Not implemented yet")
 
         return ""
 
