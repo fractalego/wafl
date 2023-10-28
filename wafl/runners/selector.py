@@ -9,7 +9,7 @@ from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.filter.answer_filter import AnswerFilter
 from wafl.interface.queue_interface import QueueInterface
-from wafl.knowledge.project_knowledge import ProjectKnowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.scheduler import Scheduler
@@ -46,13 +46,16 @@ def run_app():
 
 def create_scheduler_and_webserver_loop(conversation_id):
     config = Configuration.load_local_config()
-    interface = QueueInterface(output_filter=AnswerFilter(config))
-    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
+    interface = QueueInterface(output_filter=AnswerFilter(config),
+                               code_path=config.get_value("functions"),
+                               )
+    knowledge = SingleFileKnowledge(
+        config, open(config.get_value("rules")).read(), logger=_logger
+    )
     interface.activate()
     conversation_events = ConversationEvents(
         knowledge,
         interface=interface,
-        code_path=knowledge.get_dependencies_list(),
         logger=_logger,
     )
     conversation_loop = ConversationLoop(

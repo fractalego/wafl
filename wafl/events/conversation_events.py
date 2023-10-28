@@ -17,7 +17,6 @@ class ConversationEvents:
         self,
         knowledge: "BaseKnowledge",
         interface: "BaseInterface",
-        code_path=None,
         config=None,
         logger=None,
     ):
@@ -25,7 +24,7 @@ class ConversationEvents:
             config = Configuration.load_local_config()
 
         self._answerer = create_answerer(
-            config, knowledge, interface, code_path, logger
+            config, knowledge, interface, logger
         )
         self._knowledge = knowledge
         self._interface = interface
