@@ -1,19 +1,16 @@
 import asyncio
 import time
-from importlib import import_module
-from inspect import getmembers, isfunction
 
 from wafl.interface.base_interface import BaseInterface
 
 
 class QueueInterface(BaseInterface):
-    def __init__(self, code_path: str, output_filter=None):
+    def __init__(self, output_filter=None):
         super().__init__()
         self._bot_has_spoken = False
         self.input_queue = []
         self.output_queue = []
         self._output_filter = output_filter
-        self._init_python_module(code_path.replace(".py", ""))
 
     async def output(self, text: str, silent: bool = False):
         if silent:
@@ -43,9 +40,3 @@ class QueueInterface(BaseInterface):
             self._bot_has_spoken = to_set
 
         return self._bot_has_spoken
-
-    def _init_python_module(self, module_name):
-        self._module = import_module(module_name)
-        self._functions = [
-            item[0] for item in getmembers(self._module, isfunction)
-        ]

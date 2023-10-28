@@ -1,5 +1,9 @@
+import re
 import time
+import traceback
 
+from importlib import import_module
+from inspect import getmembers, isfunction
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.extractors.dataclasses import Query, Answer
@@ -9,16 +13,17 @@ from wafl.simple_text_processing.questions import is_question
 
 
 class DialogueAnswerer(BaseAnswerer):
-    def __init__(self, config, knowledge, interface, logger):
+    def __init__(self, config, knowledge, interface, code_path, logger):
         self._bridge = LLMChitChatAnswerBridge(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 3
+        self._max_num_past_utterances_for_rules = 1
         self._prior_facts = []
         self._prior_rules = []
+        self._init_python_module(code_path.replace(".py", ""))
 
     async def answer(self, query_text, policy):
         print(__name__)
@@ -47,8 +52,9 @@ class DialogueAnswerer(BaseAnswerer):
         answer_text = await self._bridge.get_answer(
             text=facts,
             dialogue=dialogue_items,
-            query=rules_texts,
+            query=rules_texts if rules_texts else "No specific rules.",
         )
+        answer_text = await self._substitute_results_in_answer(answer_text)
         if self._logger:
             self._logger.write(f"Answer within dialogue: The answer is {answer_text}")
 
@@ -101,6 +107,7 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             rules_texts.append(rules_text)
+            self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
 
         self._prior_rules = self._prior_rules[-self._max_num_past_utterances_for_rules:]
 
@@ -111,4 +118,37 @@ class DialogueAnswerer(BaseAnswerer):
         else:
             rules_texts = "\n".join(self._prior_rules)
 
+        rules_texts = "\n".join(set(rules_texts.split("\n")))
         return rules_texts
+
+    def _init_python_module(self, module_name):
+        self._module = import_module(module_name)
+        self._functions = [
+            item[0] for item in getmembers(self._module, isfunction)
+        ]
+
+    async def _substitute_results_in_answer(self, answer_text):
+        matches = re.finditer(r"<execute>(.*?)</execute>", answer_text, re.DOTALL)
+        for match in matches:
+            to_execute = match.group(1)
+            result = await self._run_code(to_execute)
+            answer_text = answer_text.replace(match.group(0), result)
+
+        return answer_text
+
+    async def _run_code(self, to_execute):
+        result = None
+        try:
+            if any(
+                item + "(" in to_execute for item in self._functions
+            ):
+                result = eval(f"self._module.{to_execute}")
+
+        except Exception as e:
+            traceback.print_exc()
+            result = f"Error in the code to execute: {str(e)}"
+
+        if not result:
+            result = "unknown"
+
+        return result
