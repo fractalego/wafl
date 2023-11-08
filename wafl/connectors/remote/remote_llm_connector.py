@@ -10,10 +10,15 @@ class RemoteLLMConnector:
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config):
+    def __init__(self, config, last_strings=None):
         host = config["remote_model"]["model_host"]
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
+        if not last_strings:
+            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>"]
+
+        else:
+            self._last_strings = last_strings
 
         try:
             loop = asyncio.get_running_loop()
@@ -26,12 +31,18 @@ class RemoteLLMConnector:
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str) -> str:
+    async def predict(self, prompt: str, temperature=None, num_tokens=None) -> str:
+        if not temperature:
+            temperature = 0.5
+
+        if not num_tokens:
+            num_tokens = self._num_prediction_tokens
+
         payload = {
             "data": prompt,
-            "temperature": 0.5,
-            "num_tokens": self._num_prediction_tokens,
-            "last_strings": ["\nuser:", "\nbot:"],
+            "temperature": temperature,
+            "num_tokens": num_tokens,
+            "last_strings": self._last_strings,
         }
 
         for _ in range(self._max_tries):
@@ -57,15 +68,15 @@ class RemoteLLMConnector:
         text = prompt
         start = len(text)
         while (
-            all(item not in text[start:] for item in ["\nuser:", "\nbot:", "<|EOS|>"])
+            all(item not in text[start:] for item in self._last_strings)
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find("\nuser:", start))
-        end_set.add(text.find("\nbot:", start))
-        end_set.add(text.find("\n<|EOS|>:", start))
+        for item in self._last_strings:
+            end_set.add(text.find(item, start))
+
         if -1 in end_set:
             end_set.remove(-1)
 
@@ -73,7 +84,7 @@ class RemoteLLMConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split("bot: ")[-1].strip()
+        candidate_answer = text[start:end].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         self._cache[prompt] = candidate_answer

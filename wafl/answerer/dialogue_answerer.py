@@ -11,7 +11,6 @@ from wafl.inference.utils import cluster_facts
 from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.simple_text_processing.questions import is_question
 
-
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._bridge = LLMChitChatAnswerBridge(config)
@@ -44,7 +43,6 @@ class DialogueAnswerer(BaseAnswerer):
         if not dialogue:
             dialogue = [(time.time(), f"user: {query_text}")]
 
-
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
@@ -72,12 +70,14 @@ class DialogueAnswerer(BaseAnswerer):
             await self._interface.add_fact(f"The bot remembers: {text}")
 
         if texts:
-            self._prior_facts = self._prior_facts[-self._max_num_past_utterances_for_facts:]
+            self._prior_facts = self._prior_facts[
+                -self._max_num_past_utterances_for_facts :
+            ]
             self._prior_facts.append("\n".join(texts))
             facts = "\n".join(self._prior_facts)
 
         else:
-            self._prior_facts = self._prior_facts[-self._max_num_past_utterances:]
+            self._prior_facts = self._prior_facts[-self._max_num_past_utterances :]
             facts = "\n".join(
                 self._prior_facts
                 + [
@@ -98,34 +98,32 @@ class DialogueAnswerer(BaseAnswerer):
         rules = rules[:max_num_rules]
         rules_texts = []
         for rule in rules:
-            rules_text = f"- If {rule.effect.text} then "
+            rules_text = f"- If {rule.effect.text}:\n"
             for causes in rule.causes:
-                rules_text += f"{causes.text}, "
+                rules_text += f"    {causes.text}\n"
 
-            rules_text = rules_text[:-2]
-            if rules_text in self._prior_rules:
+            if any(rules_text in item for item in self._prior_rules):
                 continue
 
             rules_texts.append(rules_text)
             self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
 
-        self._prior_rules = self._prior_rules[-self._max_num_past_utterances_for_rules:]
+        self._prior_rules = self._prior_rules[
+            -self._max_num_past_utterances_for_rules :
+        ]
 
         if rules_texts:
-            self._prior_rules.append("\n".join(rules_texts))
-            rules_texts = "\n".join(self._prior_rules)
+            self._prior_rules.append("".join(rules_texts))
+            rules_texts = "".join(set(self._prior_rules))
 
         else:
-            rules_texts = "\n".join(self._prior_rules)
+            rules_texts = "".join(self._prior_rules)
 
-        rules_texts = "\n".join(set(rules_texts.split("\n")))
         return rules_texts
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)
-        self._functions = [
-            item[0] for item in getmembers(self._module, isfunction)
-        ]
+        self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
     async def _substitute_results_in_answer(self, answer_text):
         matches = re.finditer(r"<execute>(.*?)</execute>", answer_text, re.DOTALL)
@@ -139,9 +137,7 @@ class DialogueAnswerer(BaseAnswerer):
     async def _run_code(self, to_execute):
         result = None
         try:
-            if any(
-                item + "(" in to_execute for item in self._functions
-            ):
+            if any(item + "(" in to_execute for item in self._functions):
                 result = eval(f"self._module.{to_execute}")
 
         except Exception as e:

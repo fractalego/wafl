@@ -23,9 +23,7 @@ class ConversationEvents:
         if not config:
             config = Configuration.load_local_config()
 
-        self._answerer = create_answerer(
-            config, knowledge, interface, logger
-        )
+        self._answerer = create_answerer(config, knowledge, interface, logger)
         self._knowledge = knowledge
         self._interface = interface
         self._policy = AnswerPolicy(config, interface, logger)

@@ -21,15 +21,21 @@ class LLMChitChatAnswerBridge:
     async def _get_answer_prompt(self, text, rules_text, dialogue=None):
         prompt = f"""
 The following is a summary of a conversation. All the elements of the conversation are described briefly:
+<summary>        
 A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.
-{text}
+{text.strip()} 
+</summary>
 
-The following are the rules of the conversation. They *must* be followed closely:
-{rules_text}
+These are the rules that the bot is following:
+<rules>
+{rules_text.strip()}
+</rules>
 
+<instructions>
 Create a plausible dialogue based on the aforementioned summary and rules. 
 Do not repeat yourself. Be friendly but not too servile.
 Wrap any code or html you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```) unless it is between <execute> tags.
+</instructions>
 
 This is the dialogue:
 {dialogue}

@@ -1,5 +1,14 @@
 ### TODO
 
+* Put the answer of <execute> in the facts and re-compute the answer
+* fine-tune the llm to follow the rules
+  - create dataset of about 50 examples
+  - fine tune only last layer
+
+
+------------------------------------------------
+
+
 * use perplexity in arbiter to determine what to do
   - use a perplexity budget?
 
