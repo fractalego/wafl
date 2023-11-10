@@ -50,7 +50,7 @@ class DialogueAnswerer(BaseAnswerer):
         answer_text = await self._bridge.get_answer(
             text=facts,
             dialogue=dialogue_items,
-            query=rules_texts if rules_texts else "No specific rules.",
+            query=rules_texts,
         )
         answer_text = await self._substitute_results_in_answer(answer_text)
         if self._logger:
@@ -78,15 +78,21 @@ class DialogueAnswerer(BaseAnswerer):
 
         else:
             self._prior_facts = self._prior_facts[-self._max_num_past_utterances :]
-            facts = "\n".join(
-                self._prior_facts
-                + [
+            if is_question(query.text) and not has_prior_rules:
+                to_add = [
                     f"The answer to {query.text} is not in the knowledge base."
                     "The bot can answer the question while informing the user that the answer was not retrieved"
                 ]
-                if is_question(query.text) and not has_prior_rules
-                else []
-            )
+
+            elif has_prior_rules:
+                to_add = [
+                    f"The bot tries to answer {query.text} following the rules from the user."
+                ]
+
+            else:
+                to_add = []
+
+            facts = "\n".join(self._prior_facts + to_add)
 
         return facts
 
@@ -99,8 +105,8 @@ class DialogueAnswerer(BaseAnswerer):
         rules_texts = []
         for rule in rules:
             rules_text = f"- If {rule.effect.text}:\n"
-            for causes in rule.causes:
-                rules_text += f"    {causes.text}\n"
+            for cause_index, causes in enumerate(rule.causes):
+                rules_text += f"    {cause_index + 1}) {causes.text}\n"
 
             if any(rules_text in item for item in self._prior_rules):
                 continue
@@ -108,18 +114,7 @@ class DialogueAnswerer(BaseAnswerer):
             rules_texts.append(rules_text)
             self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
 
-        self._prior_rules = self._prior_rules[
-            -self._max_num_past_utterances_for_rules :
-        ]
-
-        if rules_texts:
-            self._prior_rules.append("".join(rules_texts))
-            rules_texts = "".join(set(self._prior_rules))
-
-        else:
-            rules_texts = "".join(self._prior_rules)
-
-        return rules_texts
+        return "".join(rules_texts)
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)

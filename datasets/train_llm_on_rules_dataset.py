@@ -101,4 +101,6 @@ if __name__ == '__main__':
     )
     trainer.train()
     trainer.save_model("wafl-mistral")
-    trainer.push_to_hub("fractalego/wafl-mistral")
+    model = trainer.model
+    model.push_to_hub("fractalego/wafl-mistral")
+    tokenizer.push_to_hub("fractalego/wafl-mistral")
