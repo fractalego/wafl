@@ -1,9 +1,31 @@
 ### TODO
 
-* Put the answer of <execute> in the facts and re-compute the answer
-* fine-tune the llm to follow the rules
-  - create dataset of about 50 examples
-  - fine tune only last layer
+* multi-step interactions for function execution are still hard.
+  - perhaps the rules need to stay in the prior discourse for longer
+      - the same rule appears after the first execution, therefore the bot thinks it has already executed it
+      - user: follow rules...
+        user: compute stuff
+        bot: answer
+
+        user: compute stuff
+        bot: answer
+        user: follow rules... (this was at the beginning in the prior discourse)
+        user: do it again
+
+        maybe you need a tag for user: follow rule. Maybe a superuser tag that is removed from the output (but stays in the interface)?
+
+
+
+#### keep prior rules for a couple of turns
+#### log execute in green and memory in blue
+#### keep the temp low  0.2 (otherwise it doesn't follow multi-pointPharazonE
+# rules well)
+
+/* Put the answer of <execute> in the facts and re-compute the answer
+/* fine-tune the llm to follow the rules
+/  - create dataset of about 50 examples
+/  - fine tune only last layer
+   This does not work
 
 
 ------------------------------------------------

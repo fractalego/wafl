@@ -19,7 +19,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._interface = interface
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 1
+        self._max_num_past_utterances_for_rules = 2
         self._prior_facts = []
         self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
@@ -49,17 +49,21 @@ class DialogueAnswerer(BaseAnswerer):
         dialogue_items = "\n".join(dialogue_items)
 
         while True:
-            answer_text = await self._bridge.get_answer(
+            original_answer_text = await self._bridge.get_answer(
                 text=facts,
                 dialogue=dialogue_items,
                 query=rules_texts,
             )
-            answer_text = await self._substitute_results_in_answer(answer_text)
-            answer_text, memories = await self._substitute_memory_in_answer_and_get_memories_if_present(answer_text)
+            await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
+            answer_text, memories = await self._substitute_memory_in_answer_and_get_memories_if_present(
+                await self._substitute_results_in_answer(original_answer_text)
+            )
             if not memories:
                 break
 
             facts += "\n" + "\n".join(memories)
+            self._prior_facts.append("\n".join(memories))
+            dialogue_items += f"\nbot: {original_answer_text}"
 
         if self._logger:
             self._logger.write(f"Answer within dialogue: The answer is {answer_text}")
@@ -112,7 +116,7 @@ class DialogueAnswerer(BaseAnswerer):
         rules = rules[:max_num_rules]
         rules_texts = []
         for rule in rules:
-            rules_text = f"- If {rule.effect.text}:\n"
+            rules_text = f"- If {rule.effect.text} go through the following points:\n"
             for cause_index, causes in enumerate(rule.causes):
                 rules_text += f"    {cause_index + 1}) {causes.text}\n"
 
@@ -120,9 +124,13 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             rules_texts.append(rules_text)
-            await self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
+            await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 
-        return "".join(rules_texts)
+        if rules_texts:
+            self._prior_rules.append("".join(rules_texts))
+
+        self._prior_rules = self._prior_rules[-self._max_num_past_utterances_for_rules :]
+        return "".join(self._prior_rules)
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)

@@ -112,9 +112,7 @@ class WebLoop:
         choices = [
             (
                 item[0],
-                "<div class='log-row'>"
-                + item[1]
-                + "</div>",
+                "<div class='log-row'>" + item[1] + "</div>",
             )
             for item in choices
         ]
@@ -122,9 +120,7 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='log-row'>"
-                + item[1]
-                + "</div>",
+                "<div class='log-row'>" + item[1] + "</div>",
             )
             for item in facts
         ]

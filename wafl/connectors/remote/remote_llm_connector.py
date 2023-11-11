@@ -15,7 +15,7 @@ class RemoteLLMConnector:
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         if not last_strings:
-            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</memory>"]
+            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</remember>" , "</execute>\n"]
 
         else:
             self._last_strings = last_strings
@@ -33,7 +33,7 @@ class RemoteLLMConnector:
 
     async def predict(self, prompt: str, temperature=None, num_tokens=None) -> str:
         if not temperature:
-            temperature = 0.5
+            temperature = 0.2
 
         if not num_tokens:
             num_tokens = self._num_prediction_tokens
@@ -75,6 +75,9 @@ class RemoteLLMConnector:
 
         end_set = set()
         for item in self._last_strings:
+            if "</" in item:
+                continue
+
             end_set.add(text.find(item, start))
 
         if -1 in end_set:

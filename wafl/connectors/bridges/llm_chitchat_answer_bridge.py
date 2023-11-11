@@ -1,10 +1,6 @@
-import asyncio
 import os
-import re
 
-from wafl.connectors.bridges.bridge_implementation import load_knowledge_from_file
 from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
-from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
@@ -23,7 +19,10 @@ class LLMChitChatAnswerBridge:
             rules_to_use = f"I want you to follow these rules:\n{rules_text.strip()}\n"
             pattern = "\nuser: "
             last_user_position = dialogue.rfind(pattern)
-            before_user_dialogue, after_user_dialogue = dialogue[:last_user_position], dialogue[last_user_position + len(pattern):]
+            before_user_dialogue, after_user_dialogue = (
+                dialogue[:last_user_position],
+                dialogue[last_user_position + len(pattern) :],
+            )
             dialogue = f"{before_user_dialogue}\nuser: {rules_to_use}\nuser: {after_user_dialogue}"
 
         prompt = f"""
