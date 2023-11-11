@@ -112,7 +112,7 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             rules_texts.append(rules_text)
-            self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
+            await self._interface.add_fact(f"The bot remembers the rule: {rules_text}")
 
         return "".join(rules_texts)
 

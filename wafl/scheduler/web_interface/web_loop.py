@@ -112,7 +112,7 @@ class WebLoop:
         choices = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row'>"
                 + item[1]
                 + "</div>",
             )
@@ -122,7 +122,7 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
+                "<div class='log-row'>"
                 + item[1]
                 + "</div>",
             )
