@@ -47,12 +47,20 @@ class DialogueAnswerer(BaseAnswerer):
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
-        answer_text = await self._bridge.get_answer(
-            text=facts,
-            dialogue=dialogue_items,
-            query=rules_texts,
-        )
-        answer_text = await self._substitute_results_in_answer(answer_text)
+
+        while True:
+            answer_text = await self._bridge.get_answer(
+                text=facts,
+                dialogue=dialogue_items,
+                query=rules_texts,
+            )
+            answer_text = await self._substitute_results_in_answer(answer_text)
+            answer_text, memories = await self._substitute_memory_in_answer_and_get_memories_if_present(answer_text)
+            if not memories:
+                break
+
+            facts += "\n" + "\n".join(memories)
+
         if self._logger:
             self._logger.write(f"Answer within dialogue: The answer is {answer_text}")
 
@@ -128,6 +136,16 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text = answer_text.replace(match.group(0), result)
 
         return answer_text
+
+    async def _substitute_memory_in_answer_and_get_memories_if_present(self, answer_text):
+        matches = re.finditer(r"<remember>(.*?)</remember>", answer_text, re.DOTALL)
+        memories = []
+        for match in matches:
+            to_execute = match.group(1)
+            answer_text = answer_text.replace(match.group(0), "")
+            memories.append(to_execute)
+
+        return answer_text, memories
 
     async def _run_code(self, to_execute):
         result = None

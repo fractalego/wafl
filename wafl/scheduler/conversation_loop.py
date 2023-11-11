@@ -1,5 +1,6 @@
 import asyncio
 import random
+import traceback
 
 from wafl.exceptions import CloseConversation
 
@@ -112,3 +113,4 @@ class ConversationLoop:
                     "Error in the conversation loop. Marking this conversation as a failure."
                 )
                 print(str(e))
+                traceback.print_stack()

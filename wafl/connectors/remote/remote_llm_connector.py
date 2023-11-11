@@ -15,7 +15,7 @@ class RemoteLLMConnector:
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         if not last_strings:
-            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>"]
+            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</memory>"]
 
         else:
             self._last_strings = last_strings
