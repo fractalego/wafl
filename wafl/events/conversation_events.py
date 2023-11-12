@@ -2,7 +2,6 @@ import os
 import re
 
 from wafl.events.answerer_creator import create_answerer
-from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
 from wafl.config import Configuration
 from wafl.events.utils import input_is_valid, remove_text_between_brackets
@@ -26,7 +25,6 @@ class ConversationEvents:
         self._answerer = create_answerer(config, knowledge, interface, logger)
         self._knowledge = knowledge
         self._interface = interface
-        self._policy = AnswerPolicy(config, interface, logger)
         self._logger = logger
         self._is_computing = False
         if logger:
@@ -43,11 +41,8 @@ class ConversationEvents:
             return False
 
         text_is_question = is_question(text)
-        self._policy.improvise = False
         try:
-            answer = await self._answerer.answer(
-                remove_text_between_brackets(text), policy=self._policy
-            )
+            answer = await self._answerer.answer(text)
 
         except InterruptTask:
             await self._interface.output("Task interrupted")

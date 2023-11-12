@@ -18,7 +18,7 @@
 
 #### keep prior rules for a couple of turns
 #### log execute in green and memory in blue
-#### keep the temp low  0.2 (otherwise it doesn't follow multi-pointPharazonE
+#### keep the temp low  0.2 (otherwise it doesn't follow multi-point
 # rules well)
 
 /* Put the answer of <execute> in the facts and re-compute the answer

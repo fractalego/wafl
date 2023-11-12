@@ -43,7 +43,6 @@ setup(
             "sounds/*",
             "models/*",
             "frontend/*",
-            "data/*.csv",
         ],
     },
     install_requires=[

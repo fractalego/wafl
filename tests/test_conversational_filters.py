@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
-from wafl.filter.answer_filter import AnswerFilter
+from wafl.filter.base_filter import BaseAnswerFilter
 from wafl.interface.dummy_interface import DummyInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
@@ -24,7 +24,7 @@ class TestDecorator(TestCase):
         config = Configuration.load_local_config()
         interface = DummyInterface(
             ["Hello"],
-            output_filter=AnswerFilter(config),
+            output_filter=BaseAnswerFilter(config),
         )
 
         conversation_events = ConversationEvents(

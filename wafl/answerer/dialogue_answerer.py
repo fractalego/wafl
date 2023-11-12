@@ -24,7 +24,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
 
-    async def answer(self, query_text, policy):
+    async def answer(self, query_text):
         print(__name__)
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
@@ -68,10 +68,7 @@ class DialogueAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Answer within dialogue: The answer is {answer_text}")
 
-        if await policy.accept(answer_text):
-            return Answer.create_from_text(answer_text)
-
-        return Answer.create_neutral()
+        return Answer.create_from_text(answer_text)
 
     async def _get_relevant_facts(self, query, has_prior_rules):
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
