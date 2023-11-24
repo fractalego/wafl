@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <title> WAFL frontend </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="/wafl.js"></script>
+    <link rel="stylesheet" href="/wafl.css">
+</head>
+<body>
+<div style="margin-top:20px;"
+     hx-post="/create_new_instance"
+     hx-trigger="load">
+    Creating a new instance. This may take a few seconds...
+</div>
+</body>
+</html>

@@ -1,25 +1,26 @@
 import aiohttp
 import asyncio
-import csv
-import os
-import joblib
 import time
 import re
 
-from wafl.config import Configuration
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
+from wafl.connectors.utils import select_best_answer
 
 
 class RemoteLLMConnector:
     _max_tries = 3
-    _max_reply_length = 500
+    _max_reply_length = 1024
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config):
+    def __init__(self, config, last_strings=None):
         host = config["remote_model"]["model_host"]
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
+        if not last_strings:
+            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
+
+        else:
+            self._last_strings = last_strings
 
         try:
             loop = asyncio.get_running_loop()
@@ -32,11 +33,19 @@ class RemoteLLMConnector:
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str) -> str:
+    async def predict(self, prompt: str, temperature=None, num_tokens=None) -> str:
+        if not temperature:
+            temperature = 0.5
+
+        if not num_tokens:
+            num_tokens = self._num_prediction_tokens
+
         payload = {
             "data": prompt,
-            "num_beams": 1,
-            "num_tokens": self._num_prediction_tokens,
+            "temperature": temperature,
+            "num_tokens": num_tokens,
+            "last_strings": self._last_strings,
+            "num_replicas": 3,
         }
 
         for _ in range(self._max_tries):
@@ -45,10 +54,7 @@ class RemoteLLMConnector:
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()
-                    if not answer:
-                        answer = "<|EOS|>"
-
-                    return answer
+                    return select_best_answer(answer.split("<||>"))
 
         return "UNKNOWN"
 
@@ -62,19 +68,18 @@ class RemoteLLMConnector:
         text = prompt
         start = len(text)
         while (
-            all(
-                item not in text[start:]
-                for item in ["<|EOS|>", "user:", "\nThe bot", "bot:"]
-            )
+            all(item not in text[start:] for item in self._last_strings)
             and len(text) < start + self._max_reply_length
         ):
             text += await self.predict(text)
 
         end_set = set()
-        end_set.add(text.find("\nuser:", start))
-        end_set.add(text.find("\nbot:", start))
-        end_set.add(text.find("<|EOS|>", start))
-        end_set.add(text.find("\nThe bot", start))
+        for item in self._last_strings:
+            if "</remember>" in item or "</execute>" in item:
+                continue
+
+            end_set.add(text.find(item, start))
+
         if -1 in end_set:
             end_set.remove(-1)
 
@@ -82,11 +87,10 @@ class RemoteLLMConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split("bot: ")[-1].strip()
+        candidate_answer = text[start:end].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
-        if prompt not in self._cache:
-            self._cache[prompt] = candidate_answer
+        self._cache[prompt] = candidate_answer
 
         print(time.time() - start_time)
         if not candidate_answer:
@@ -95,7 +99,7 @@ class RemoteLLMConnector:
         return candidate_answer
 
     async def check_connection(self):
-        payload = {"data": "test", "num_beams": 1, "num_tokens": 5}
+        payload = {"data": "test", "temperature": 0.6, "num_tokens": 1}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)

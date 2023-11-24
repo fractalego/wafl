@@ -1,11 +1,9 @@
 This bot can answer coding questions.
+This bot can write code only in Python
 
-Create a function in Python
-  language = what language is the function in?
+Write a function in Python
   name = what is the name of the function?
   goal = what is the goal of the function?
   function = Write a {language} code called {name} that accomplishes the following: {goal}
   SAY This is what I could come up with:
-  SAY <code>
   SAY {function}
-  SAY </code>

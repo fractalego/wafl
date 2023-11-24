@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to WAFL's 0.0.45 documentation!
+Welcome to WAFL's 0.0.70 documentation!
 =======================================
 
 .. toctree::

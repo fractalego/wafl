@@ -1,3 +1,4 @@
+import functools
 import importlib
 import os
 import re
@@ -36,6 +37,7 @@ def clean_module_name(module_name):
     return return_path
 
 
+@functools.lru_cache
 def create_preprocessed(
     module: str,
     functions_standard_name=_functions_standard_name,
