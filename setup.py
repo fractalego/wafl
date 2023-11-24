@@ -55,7 +55,7 @@ setup(
         "optimum==1.8.5",
         "transformers==4.35.0",
         "nltk==3.6.2",
-        "gensim==4.0.1",
+        "gensim==4.3.1",
         "sklearn==0.0",
         "python-Levenshtein==0.12.2",
         "wave==0.0.2",
