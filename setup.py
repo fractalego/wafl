@@ -24,6 +24,7 @@ setup(
         "wafl.events",
         "wafl.extractors",
         "wafl.filter",
+        "wafl.inference",
         "wafl.interface",
         "wafl.knowledge",
         "wafl.listener",

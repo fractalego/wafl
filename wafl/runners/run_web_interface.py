@@ -1,4 +1,4 @@
-from wafl.runners.selector import run_app
+from wafl.runners.routes import run_app
 
 
 if __name__ == "__main__":

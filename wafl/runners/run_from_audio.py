@@ -3,7 +3,7 @@ from wafl.events.conversation_events import ConversationEvents
 from wafl.events.events_from_module_name import EventsCreatorFromModuleName
 from wafl.events.generated_events import GeneratedEvents
 from wafl.interface.voice_interface import VoiceInterface
-from wafl.knowledge.project_knowledge import ProjectKnowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.generated_event_loop import GeneratedEventLoop
@@ -14,7 +14,9 @@ _logger = LocalFileLogger()
 
 def run_from_audio():
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
+    knowledge = SingleFileKnowledge(
+        config, open(config.get_value("rules")).read(), logger=_logger
+    )
     interface = VoiceInterface(config)
     conversation_events = ConversationEvents(
         knowledge,
