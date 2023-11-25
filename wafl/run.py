@@ -4,7 +4,7 @@ from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.command_line_interface import CommandLineInterface
-from wafl.knowledge.project_knowledge import ProjectKnowledge
+from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
@@ -21,7 +21,9 @@ def print_incipit():
 def run_from_command_line():
     interface = CommandLineInterface()
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge(config, "rules.wafl", logger=_logger)
+    knowledge = SingleFileKnowledge(
+        config, open(config.get_value("rules")).read(), logger=_logger
+    )
     conversation_events = ConversationEvents(
         knowledge,
         interface=interface,
@@ -42,7 +44,9 @@ def run_from_command_line():
 def run_testcases():
     print("Running the testcases in testcases.txt\n")
     config = Configuration.load_local_config()
-    knowledge = ProjectKnowledge(config, "rules.wafl")
+    knowledge = SingleFileKnowledge(
+        config, open(config.get_value("rules")).read(), logger=_logger
+    )
     test_cases_text = open("testcases.txt").read()
     testcases = ConversationTestCases(
         config,

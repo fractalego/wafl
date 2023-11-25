@@ -7,13 +7,12 @@ import threading
 from flask import Flask, render_template, redirect, url_for
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
-from wafl.filter.base_filter import BaseAnswerFilter
 from wafl.interface.queue_interface import QueueInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.scheduler import Scheduler
-from wafl.scheduler.web_interface.web_loop import WebLoop
+from wafl.scheduler.web_loop import WebLoop
 
 _path = os.path.dirname(__file__)
 _logger = LocalFileLogger()

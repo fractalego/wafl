@@ -4,7 +4,7 @@ import os
 from flask import render_template, request, jsonify
 from wafl.interface.queue_interface import QueueInterface
 from wafl.logger.history_logger import HistoryLogger
-from wafl.scheduler.web_interface.web_interface_implementation import (
+from wafl.scheduler.web_interface_implementation import (
     get_html_from_dialogue_item,
 )
 
