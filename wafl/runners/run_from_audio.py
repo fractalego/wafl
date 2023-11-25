@@ -1,7 +1,6 @@
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.events.events_from_module_name import EventsCreatorFromModuleName
-from wafl.events.generated_events import GeneratedEvents
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
@@ -31,18 +30,7 @@ def run_from_audio():
         _logger,
         activation_word=config.get_value("waking_up_word"),
     )
-    generated_events = GeneratedEvents(
-        config,
-        knowledge,
-        events=EventsCreatorFromModuleName("events"),
-        interface=interface,
-    )
-    events_loop = GeneratedEventLoop(
-        interface,
-        generated_events,
-        logger=_logger,
-    )
-    scheduler = Scheduler([conversation_loop, events_loop])
+    scheduler = Scheduler([conversation_loop])
     scheduler.run()
 
 
