@@ -5,6 +5,7 @@ import sys
 import threading
 
 from flask import Flask, render_template, redirect, url_for
+from flask_cors import CORS
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
@@ -22,6 +23,7 @@ app = Flask(
     static_folder=os.path.join(_path, "../frontend/"),
     template_folder=os.path.join(_path, "../frontend/"),
 )
+CORS(app)
 
 
 @app.route("/create_new_instance", methods=["POST"])
