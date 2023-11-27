@@ -1,11 +1,9 @@
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
-from wafl.events.events_from_module_name import EventsCreatorFromModuleName
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
-from wafl.scheduler.generated_event_loop import GeneratedEventLoop
 from wafl.scheduler.scheduler import Scheduler
 
 _logger = LocalFileLogger()

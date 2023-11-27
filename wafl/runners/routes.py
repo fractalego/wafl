@@ -39,8 +39,8 @@ async def index():
     return render_template("selector.html")
 
 
-def run_app():
-    app.run(host="0.0.0.0", port=8889)
+def get_app():
+    return app
 
 
 def create_scheduler_and_webserver_loop(conversation_id):
