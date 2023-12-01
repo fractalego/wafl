@@ -1,4 +1,11 @@
 ### TODO
+* no more than one rule (two rules it already gets confused)
+* better ui
+* better documentation
+* better tests
+# the dimension of the sentence emn model 384 should be in config
+
+
 
 * multi-step interactions for function execution are still hard.
   - perhaps the rules need to stay in the prior discourse for longer
