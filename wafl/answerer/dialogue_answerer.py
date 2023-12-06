@@ -158,6 +158,12 @@ class DialogueAnswerer(BaseAnswerer):
             if any(item + "(" in to_execute for item in self._functions):
                 result = eval(f"self._module.{to_execute}")
 
+            else:
+                ldict = {}
+                exec(to_execute, globals(), ldict)
+                if "result" in ldict:
+                    result = str(ldict["result"])
+
         except Exception as e:
             traceback.print_exc()
             result = f"Error in the code to execute: {str(e)}"

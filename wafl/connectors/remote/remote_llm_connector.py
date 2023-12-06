@@ -1,6 +1,5 @@
 import aiohttp
 import asyncio
-import time
 import re
 
 from wafl.connectors.utils import select_best_answer
@@ -17,7 +16,7 @@ class RemoteLLMConnector:
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         if not last_strings:
-            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
+            self._last_strings = ["\nuser", "\nbot", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
 
         else:
             self._last_strings = last_strings
@@ -59,10 +58,7 @@ class RemoteLLMConnector:
         return "UNKNOWN"
 
     async def generate(self, prompt: str) -> str:
-        print(__name__)
-        start_time = time.time()
         if prompt in self._cache:
-            print(time.time() - start_time)
             return self._cache[prompt]
 
         text = prompt
@@ -71,7 +67,7 @@ class RemoteLLMConnector:
             all(item not in text[start:] for item in self._last_strings)
             and len(text) < start + self._max_reply_length
         ):
-            text += await self.predict(text)
+            text += await self.predict(text) + " "
 
         end_set = set()
         for item in self._last_strings:
@@ -91,8 +87,6 @@ class RemoteLLMConnector:
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         self._cache[prompt] = candidate_answer
-
-        print(time.time() - start_time)
         if not candidate_answer:
             candidate_answer = "unknown"
 

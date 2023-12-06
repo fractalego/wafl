@@ -1,5 +1,23 @@
 ### TODO
 
+**** what to do with conversational collapse?
+  - the system just repeats the last utterance
+    - how much is 2+2, what is the real name of bon jovi, how tall is mt everest
+    - the collapse is due to <execute>NUMBER</execute> being returing unknown (execute becomes more likely after one prior <execute>)
+    - the system is also more likely to return unknown after one unknown. Select the answer that has no unknowns?
+
+* solve math expression execute (import do not work in eval and exec needs a print on stdout)
+
+* add a memory that the execute command was called/not called.
+
+* no more than one rule (two rules it already gets confused)
+* better ui
+* better documentation
+* better tests
+# the dimension of the sentence emn model 384 should be in config
+
+
+
 * multi-step interactions for function execution are still hard.
   - perhaps the rules need to stay in the prior discourse for longer
       - the same rule appears after the first execution, therefore the bot thinks it has already executed it

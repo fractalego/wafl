@@ -1,5 +1,3 @@
-import time
-
 import aiohttp
 import asyncio
 import json
