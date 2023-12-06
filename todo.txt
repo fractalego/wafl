@@ -1,5 +1,7 @@
 ### TODO
 
+**** make it so the computer does not repeat! reset conversation when the bot repeats itself
+
 * only one rule at the time!!
    * if a rule is executed, it is then consumed
 

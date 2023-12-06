@@ -4,28 +4,14 @@ import traceback
 
 from importlib import import_module
 from inspect import getmembers, isfunction
+
+from wafl.answerer.answerer_implementation import get_last_bot_utterance, get_last_user_utterance
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
 from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.simple_text_processing.questions import is_question
-
-
-def get_last_bot_utterance(dialogue_items):
-    for item in reversed(dialogue_items):
-        if item[1].startswith("bot:"):
-            return item[1]
-
-    return ""
-
-
-def get_last_user_utterance(dialogue_items):
-    for item in reversed(dialogue_items):
-        if item[1].startswith("user:"):
-            return item[1]
-
-    return ""
 
 
 class DialogueAnswerer(BaseAnswerer):
