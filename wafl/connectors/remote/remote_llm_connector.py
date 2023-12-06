@@ -16,7 +16,7 @@ class RemoteLLMConnector:
         port = config["remote_model"]["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         if not last_strings:
-            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
+            self._last_strings = ["\nuser", "\nbot", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
 
         else:
             self._last_strings = last_strings
@@ -67,7 +67,7 @@ class RemoteLLMConnector:
             all(item not in text[start:] for item in self._last_strings)
             and len(text) < start + self._max_reply_length
         ):
-            text += await self.predict(text)
+            text += await self.predict(text) + " "
 
         end_set = set()
         for item in self._last_strings:

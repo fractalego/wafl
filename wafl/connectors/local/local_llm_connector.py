@@ -43,7 +43,7 @@ class LocalLLMConnector:
 
 
         if not last_strings:
-            self._last_strings = ["\nuser:", "\nbot:", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
+            self._last_strings = ["\nuser", "\nbot", "<|EOS|>", "</remember>", "</execute>\n", "</execute>\n", "</s>"]
 
         else:
             self._last_strings = last_strings
