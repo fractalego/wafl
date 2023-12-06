@@ -1,6 +1,5 @@
 import aiohttp
 import asyncio
-import time
 import re
 
 from wafl.connectors.utils import select_best_answer
@@ -59,10 +58,7 @@ class RemoteLLMConnector:
         return "UNKNOWN"
 
     async def generate(self, prompt: str) -> str:
-        print(__name__)
-        start_time = time.time()
         if prompt in self._cache:
-            print(time.time() - start_time)
             return self._cache[prompt]
 
         text = prompt
@@ -91,8 +87,6 @@ class RemoteLLMConnector:
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         self._cache[prompt] = candidate_answer
-
-        print(time.time() - start_time)
         if not candidate_answer:
             candidate_answer = "unknown"
 
