@@ -129,9 +129,15 @@ class StopAtEOS(StoppingCriteria):
     def __call__(
         self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs
     ) -> bool:
-        generated_text = self._tokenizer.decode(input_ids[0], skip_special_tokens=True)
-        for last_string in self._last_strings:
-            if generated_text.endswith(last_string):
+        num_ending_tokens = 0
+        for token_ids in input_ids:
+            generated_text = self._tokenizer.decode(token_ids)
+            for last_string in self._last_strings:
+                if generated_text.endswith(last_string):
+                    num_ending_tokens += 1
+                    break
+
+            if num_ending_tokens >= 1:
                 return True
 
         return False

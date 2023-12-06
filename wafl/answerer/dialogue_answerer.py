@@ -11,6 +11,23 @@ from wafl.inference.utils import cluster_facts
 from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.simple_text_processing.questions import is_question
 
+
+def get_last_bot_utterance(dialogue_items):
+    for item in reversed(dialogue_items):
+        if item[1].startswith("bot:"):
+            return item[1]
+
+    return ""
+
+
+def get_last_user_utterance(dialogue_items):
+    for item in reversed(dialogue_items):
+        if item[1].startswith("user:"):
+            return item[1]
+
+    return ""
+
+
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._bridge = LLMChitChatAnswerBridge(config)
@@ -23,6 +40,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._prior_facts = []
         self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
+        self._max_predictions = 3
 
     async def answer(self, query_text):
         print(__name__)
@@ -45,10 +63,12 @@ class DialogueAnswerer(BaseAnswerer):
 
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
+        last_bot_utterance = get_last_bot_utterance(dialogue_items)
+        last_user_utterance = get_last_user_utterance(dialogue_items)
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
 
-        while True:
+        for _ in range(self._max_predictions):
             original_answer_text = await self._bridge.get_answer(
                 text=facts,
                 dialogue=dialogue_items,
@@ -58,6 +78,10 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text, memories = await self._substitute_memory_in_answer_and_get_memories_if_present(
                 await self._substitute_results_in_answer(original_answer_text)
             )
+            if answer_text == last_bot_utterance:
+                dialogue_items = last_user_utterance
+                continue
+
             if not memories:
                 break
 
