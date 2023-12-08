@@ -69,6 +69,9 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             if not memories:
+                if "<execute>" in answer_text:
+                    self._remove_last_rule()
+
                 break
 
             facts += "\n" + "\n".join(memories)
@@ -115,7 +118,7 @@ class DialogueAnswerer(BaseAnswerer):
 
         return facts
 
-    async def _get_relevant_rules(self, query, max_num_rules=2):
+    async def _get_relevant_rules(self, query, max_num_rules=1):
         rules = await self._knowledge.ask_for_rule_backward(
             query,
             knowledge_name="/",
@@ -182,3 +185,10 @@ class DialogueAnswerer(BaseAnswerer):
             result = "unknown"
 
         return result
+
+    def _remove_last_rule(self):
+        """
+        remove the last rule from memory if it was executed during the dialogue
+        """
+        self._prior_rules = self._prior_rules[:-1]
+
