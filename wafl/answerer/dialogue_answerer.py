@@ -5,7 +5,10 @@ import traceback
 from importlib import import_module
 from inspect import getmembers, isfunction
 
-from wafl.answerer.answerer_implementation import get_last_bot_utterance, get_last_user_utterance
+from wafl.answerer.answerer_implementation import (
+    get_last_bot_utterance,
+    get_last_user_utterance,
+)
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.extractors.dataclasses import Query, Answer
@@ -61,7 +64,10 @@ class DialogueAnswerer(BaseAnswerer):
                 query=rules_texts,
             )
             await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
-            answer_text, memories = await self._substitute_memory_in_answer_and_get_memories_if_present(
+            (
+                answer_text,
+                memories,
+            ) = await self._substitute_memory_in_answer_and_get_memories_if_present(
                 await self._substitute_results_in_answer(original_answer_text)
             )
             if answer_text == last_bot_utterance:
@@ -139,7 +145,9 @@ class DialogueAnswerer(BaseAnswerer):
         if rules_texts:
             self._prior_rules.append("".join(rules_texts))
 
-        self._prior_rules = self._prior_rules[-self._max_num_past_utterances_for_rules :]
+        self._prior_rules = self._prior_rules[
+            -self._max_num_past_utterances_for_rules :
+        ]
         return "".join(self._prior_rules)
 
     def _init_python_module(self, module_name):
@@ -155,7 +163,9 @@ class DialogueAnswerer(BaseAnswerer):
 
         return answer_text
 
-    async def _substitute_memory_in_answer_and_get_memories_if_present(self, answer_text):
+    async def _substitute_memory_in_answer_and_get_memories_if_present(
+        self, answer_text
+    ):
         matches = re.finditer(r"<remember>(.*?)</remember>", answer_text, re.DOTALL)
         memories = []
         for match in matches:
@@ -191,4 +201,3 @@ class DialogueAnswerer(BaseAnswerer):
         remove the last rule from memory if it was executed during the dialogue
         """
         self._prior_rules = self._prior_rules[:-1]
-

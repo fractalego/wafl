@@ -1,18 +1,21 @@
 ### TODO
 
+
 * don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
+  * do it in the local llm connector first
   * use sequence_bias in generate() together with epsilon_cutoff
     (for example if the <execute> token is not likely its prob should not be increased)
 
   * ALTERNATIVELY increase the number of replicas to 6?
 
-* merge remote and local llm connector. Both should derive from the same class with common functions
+* update wafl init: It should create the project the modern way.
+* update the docs
 
 
 
 
 
-
+/* merge remote and local llm connector. Both should derive from the same class with common functions
 /**** make it so the computer does not repeat! reset conversation when the bot repeats itself
 
 /* only one rule at the time!!
