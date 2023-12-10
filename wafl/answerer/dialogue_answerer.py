@@ -6,7 +6,7 @@ from importlib import import_module
 from inspect import getmembers, isfunction
 
 from wafl.answerer.answerer_implementation import (
-    get_last_bot_utterance,
+    get_last_bot_utterances,
     get_last_user_utterance,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
@@ -52,7 +52,7 @@ class DialogueAnswerer(BaseAnswerer):
 
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])
-        last_bot_utterance = get_last_bot_utterance(dialogue_items)
+        last_bot_utterances = get_last_bot_utterances(dialogue_items, num_utterances=3)
         last_user_utterance = get_last_user_utterance(dialogue_items)
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
@@ -70,7 +70,7 @@ class DialogueAnswerer(BaseAnswerer):
             ) = await self._substitute_memory_in_answer_and_get_memories_if_present(
                 await self._substitute_results_in_answer(original_answer_text)
             )
-            if answer_text == last_bot_utterance:
+            if answer_text in last_bot_utterances:
                 dialogue_items = last_user_utterance
                 continue
 
