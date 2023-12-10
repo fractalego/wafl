@@ -10,6 +10,7 @@ class RemoteLLMConnector(BaseLLMConnector):
     _max_reply_length = 1024
     _num_prediction_tokens = 200
     _cache = {}
+    _num_replicas = 10
 
     def __init__(self, config, last_strings=None):
         super().__init__(last_strings)
@@ -40,7 +41,7 @@ class RemoteLLMConnector(BaseLLMConnector):
             "temperature": temperature,
             "num_tokens": num_tokens,
             "last_strings": self._last_strings,
-            "num_replicas": 3,
+            "num_replicas": self._num_replicas,
         }
 
         for _ in range(self._max_tries):
@@ -59,7 +60,7 @@ class RemoteLLMConnector(BaseLLMConnector):
             "temperature": 0.6,
             "num_tokens": 1,
             "last_strings": self._last_strings,
-            "num_replicas": 3,
+            "num_replicas": self._num_replicas,
         }
         try:
             async with aiohttp.ClientSession(
