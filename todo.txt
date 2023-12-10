@@ -1,20 +1,24 @@
 ### TODO
 
 
-* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
-  * do it in the local llm connector first
-  * use sequence_bias in generate() together with epsilon_cutoff
-    (for example if the <execute> token is not likely its prob should not be increased)
+* when an import throws an exception, add import <module> to the code and try again
 
-  * ALTERNATIVELY increase the number of replicas to 6?
 
 * update wafl init: It should create the project the modern way.
 * update the docs
 
 
+/* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
+/  * do it in the local llm connector first
+/  * use sequence_bias in generate() together with epsilon_cutoff
+/    (for example if the <execute> token is not likely its prob should not be increased)
+    DOESN'T WORK: It needs to use beam search, but I want to keep sampling with temperature
+
+/  * ALTERNATIVELY increase the number of replicas to 6?
 
 
-
+/* quantize the model to 4 bits
+   TOO SLOW on 3090
 /* merge remote and local llm connector. Both should derive from the same class with common functions
 /**** make it so the computer does not repeat! reset conversation when the bot repeats itself
 
