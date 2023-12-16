@@ -1,11 +1,16 @@
 ### TODO
 
+* I am not sure the system is cancelling code that has been executed. Check the whole pipeline of prior_functions
 
-* when an import throws an exception, add import <module> to the code and try again
+/* when an import throws an exception, add import <module> to the code and try again
+/   * if the import does not exist, return the code as is without <execute> substitution
+
+* aggregate rules into a tree using a rule builder (like in the old system)
 
 
 * update wafl init: It should create the project the modern way.
 * update the docs
+
 
 
 /* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)

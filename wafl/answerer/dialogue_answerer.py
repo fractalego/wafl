@@ -25,14 +25,13 @@ class DialogueAnswerer(BaseAnswerer):
         self._interface = interface
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 2
+        self._max_num_past_utterances_for_rules = 0
         self._prior_facts = []
         self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
         self._max_predictions = 3
 
     async def answer(self, query_text):
-        print(__name__)
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
@@ -177,22 +176,30 @@ class DialogueAnswerer(BaseAnswerer):
 
     async def _run_code(self, to_execute):
         result = None
-        try:
-            if any(item + "(" in to_execute for item in self._functions):
-                result = eval(f"self._module.{to_execute}")
+        for _ in range(3):
+            try:
+                if any(item + "(" in to_execute for item in self._functions):
+                    result = eval(f"self._module.{to_execute}")
 
-            else:
-                ldict = {}
-                exec(to_execute, globals(), ldict)
-                if "result" in ldict:
-                    result = str(ldict["result"])
+                else:
+                    ldict = {}
+                    exec(to_execute, globals(), ldict)
+                    if "result" in ldict:
+                        result = str(ldict["result"])
 
-        except Exception as e:
-            traceback.print_exc()
-            result = f"Error in the code to execute: {str(e)}"
+            except NameError as e:
+                match = re.search(r'\'(\w+)\' is not defined', str(e))
+                if match:
+                    to_import = match.group(1)
+                    to_execute = f"import {to_import}\n{to_execute}"
+
+            except Exception as e:
+                result = f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                traceback.print_exc()
+                break
 
         if not result:
-            result = "unknown"
+            result = f'\n"""python\n{to_execute}\n"""'
 
         return result
 
