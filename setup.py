@@ -21,6 +21,7 @@ setup(
         "wafl.connectors.factories",
         "wafl.connectors.local",
         "wafl.connectors.remote",
+        "wafl.entailment",
         "wafl.events",
         "wafl.extractors",
         "wafl.filter",
@@ -39,7 +40,6 @@ setup(
     package_data={
         "wafl": [
             "templates/*",
-            "templates/**/*",
             "sounds/*",
             "models/*",
             "frontend/*",

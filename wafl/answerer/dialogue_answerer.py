@@ -180,12 +180,14 @@ class DialogueAnswerer(BaseAnswerer):
             try:
                 if any(item + "(" in to_execute for item in self._functions):
                     result = eval(f"self._module.{to_execute}")
+                    break
 
                 else:
                     ldict = {}
                     exec(to_execute, globals(), ldict)
                     if "result" in ldict:
                         result = str(ldict["result"])
+                        break
 
             except NameError as e:
                 match = re.search(r'\'(\w+)\' is not defined', str(e))

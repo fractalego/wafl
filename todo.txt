@@ -1,17 +1,29 @@
 ### TODO
 
-* I am not sure the system is cancelling code that has been executed. Check the whole pipeline of prior_functions
+* add rules for
+   / shopping lists
+   trains and music
 
-/* when an import throws an exception, add import <module> to the code and try again
-/   * if the import does not exist, return the code as is without <execute> substitution
+* re-train the whisper model using the distilled version
+* add yaml like in the github issue
+* make rules reloadable
+* test testcases work (only local entailer)
+
+* update wafl init: It should create the project the modern way.
+* update the docs
+* use deci-lm
+* make sure system works with audio too
 
 * aggregate rules into a tree using a rule builder (like in the old system)
 
 
-* update wafl init: It should create the project the modern way.
-* update the docs
 
 
+
+/* I am not sure the system is cancelling code that has been executed. Check the whole pipeline of prior_functions
+
+/* when an import throws an exception, add import <module> to the code and try again
+/   * if the import does not exist, return the code as is without <execute> substitution
 
 /* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
 /  * do it in the local llm connector first
