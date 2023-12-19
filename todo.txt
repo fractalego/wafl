@@ -1,16 +1,22 @@
 ### TODO
 
+* make rules reloadable
+* update tests
+* update the docs
+* re-train the whisper model using the distilled version
+* redeploy locally and on the server
+* new version on github
+
 * add rules for
    / shopping lists
    trains and music
 
-* re-train the whisper model using the distilled version
+
 * add yaml like in the github issue
-* make rules reloadable
 * test testcases work (only local entailer)
 
-* update wafl init: It should create the project the modern way.
-* update the docs
+/* update wafl init: It should create the project the modern way.
+
 * use deci-lm
 * make sure system works with audio too
 

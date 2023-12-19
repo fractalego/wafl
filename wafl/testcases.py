@@ -1,3 +1,5 @@
+import _lzma
+
 from wafl.entailment.entailer import Entailer
 from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
