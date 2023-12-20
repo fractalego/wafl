@@ -54,7 +54,6 @@ setup(
         "bitsandbytes==0.41.3",
         "torch==2.0.0",
         "optimum==1.15.0",
-        "flash-attn==2.3.6",
         "transformers==4.35.2",
         "nltk==3.6.2",
         "gensim==4.3.1",
