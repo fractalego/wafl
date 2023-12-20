@@ -1,7 +1,7 @@
 import logging
-from typing import List
-
 import torch
+
+from typing import List
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 from transformers import StoppingCriteria
 
@@ -26,7 +26,6 @@ class LocalLLMConnector(BaseLLMConnector):
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 config=AutoConfig.from_pretrained(model_name, trust_remote_code=True),
-                use_flash_attention_2=True,
                 torch_dtype=torch.half,
                 trust_remote_code=True,
                 device_map=device,
