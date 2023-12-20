@@ -2,7 +2,6 @@ import logging
 from typing import List
 
 import torch
-
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 from transformers import StoppingCriteria
 
@@ -13,7 +12,6 @@ _system_logger = logging.getLogger(__file__)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = None
 tokenizer = None
-tokenizer_with_prefix_space = None
 
 
 class LocalLLMConnector(BaseLLMConnector):
@@ -21,13 +19,14 @@ class LocalLLMConnector(BaseLLMConnector):
 
     def __init__(self, config, last_strings=None):
         super().__init__(last_strings)
-        global model, tokenizer, tokenizer_with_prefix_space
+        global model, tokenizer
         if not model:
             _system_logger.info(f"Loading model {config['local_model']} locally.")
             model_name = config["local_model"]
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 config=AutoConfig.from_pretrained(model_name, trust_remote_code=True),
+                use_flash_attention_2=True,
                 torch_dtype=torch.half,
                 trust_remote_code=True,
                 device_map=device,
@@ -43,16 +42,12 @@ class LocalLLMConnector(BaseLLMConnector):
             tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
             tokenizer.truncation_side = "left"
 
-        if not tokenizer_with_prefix_space:
-            model_name = config["local_model"]
-            tokenizer_with_prefix_space = AutoTokenizer.from_pretrained(model_name, add_prefix_space=True)
-
         self._stop_at_eos = StopAtEOS(tokenizer, self._last_strings)
 
     async def predict(self, prompt: str) -> [str]:
         input_ids = tokenizer.encode(
             prompt, return_tensors="pt", truncation=True, max_length=1008
-        ).to(device)
+        )
         with torch.no_grad():
             input_ids = torch.cat([input_ids] * self._num_replicas, dim=0)
             output_ids = model.generate(
@@ -68,11 +63,6 @@ class LocalLLMConnector(BaseLLMConnector):
             answers = tokenizer.batch_decode(output_ids[:, input_ids.shape[1] :])
 
         return answers
-
-
-    def _get_tokens_as_tuple(self, word):
-        return tuple(tokenizer_with_prefix_space([word], add_special_tokens=False).input_ids[0])
-
 
 
 class StopAtEOS(StoppingCriteria):

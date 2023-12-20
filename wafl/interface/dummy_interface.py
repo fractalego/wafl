@@ -1,7 +1,7 @@
 import re
 import time
 
-from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
+from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
@@ -33,10 +33,10 @@ class DummyInterface(BaseInterface):
         text = self.__remove_activation_word_and_normalize(text)
         while self._is_listening and not_good_enough(text):
             await self.output("I did not quite understand that")
-            text = from_user_to_bot(self._to_utter.pop(0))
+            text = self._to_utter.pop(0)
 
         self._dialogue += "user: " + text + "\n"
-        utterance = from_user_to_bot(text)
+        utterance = text
         self._utterances.append((time.time(), f"user: {utterance}"))
         return utterance
 

@@ -10,8 +10,6 @@ from wafl.config import Configuration
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.connectors.local.local_llm_connector import LocalLLMConnector
 from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
-from wafl.connectors.bridges.llm_qa_bridge import LLMQABridge
-from wafl.extractors.entailer import Entailer
 from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 
@@ -19,23 +17,6 @@ _path = os.path.dirname(__file__)
 
 
 class TestConnection(TestCase):
-    def test__connection_to_generative_model_hostname_is_active(self):
-        config = Configuration.load_local_config()
-        LLMQABridge(config)
-
-    def test__connection_to_generative_model_hostname_answer_a_question_correctly(self):
-        config = Configuration.load_local_config()
-        connector = LLMQABridge(config)
-        answer_text = asyncio.run(
-            connector.get_answer(
-                text="The bot remembers: The sky is blue",
-                dialogue="",
-                query="what color is the sky?",
-            )
-        )
-        expected = "blue"
-        self.assertEqual(expected, answer_text)
-
     def test__connection_to_generative_model_can_generate_text(self):
         config = Configuration.load_local_config()
         connector = RemoteLLMConnector(config.get_value("llm_model"))
@@ -86,14 +67,6 @@ Complete the following task and add <|EOS|> at the end: {text}
         dialogue_bridge = LLMChitChatAnswerBridge(config)
         answer = asyncio.run(dialogue_bridge.get_answer("", "", "bot: hello"))
         assert len(answer) > 0
-
-    def test__entailment_local_connector(self):
-        premise = "The user says 'hello.'."
-        hypothesis = "The user is greeting"
-        config = Configuration.load_from_filename("local_config.json")
-        entailer = Entailer(config)
-        prediction = asyncio.run(entailer.get_relation(premise, hypothesis))
-        self.assertTrue(prediction["entailment"] > 0.95)
 
     def test__listener_local_connector(self):
         config = Configuration.load_from_filename("local_config.json")

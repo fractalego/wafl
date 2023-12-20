@@ -1,20 +1,53 @@
 ### TODO
 
-
-* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
-  * do it in the local llm connector first
-  * use sequence_bias in generate() together with epsilon_cutoff
-    (for example if the <execute> token is not likely its prob should not be increased)
-
-  * ALTERNATIVELY increase the number of replicas to 6?
-
-* update wafl init: It should create the project the modern way.
+* re-train the whisper model using the distilled version
+  * add system to find out threshold for activation word
+* make rules reloadable
+* nicer UI?
+   * New icons
+   * darker left bar
+* update tests
 * update the docs
 
+* redeploy locally and on the server
+* new version on github
+
+* add rules for
+   / shopping lists
+   trains and music
+
+
+* add yaml like in the github issue
+* test testcases work (only local entailer)
+
+/* update wafl init: It should create the project the modern way.
+
+* use deci-lm
+* make sure system works with audio too
+
+* aggregate rules into a tree using a rule builder (like in the old system)
+    * perhaps one use-case is for diary entries: what is my diary for next week requires today's date first
 
 
 
 
+
+/* I am not sure the system is cancelling code that has been executed. Check the whole pipeline of prior_functions
+
+/* when an import throws an exception, add import <module> to the code and try again
+/   * if the import does not exist, return the code as is without <execute> substitution
+
+/* don't use replicas, use a beam decoder where <execute> and <remember> are pushed upwards. (this means no sampling - perhaps there is a better way)
+/  * do it in the local llm connector first
+/  * use sequence_bias in generate() together with epsilon_cutoff
+/    (for example if the <execute> token is not likely its prob should not be increased)
+    DOESN'T WORK: It needs to use beam search, but I want to keep sampling with temperature
+
+/  * ALTERNATIVELY increase the number of replicas to 6?
+
+
+/* quantize the model to 4 bits
+   TOO SLOW on 3090
 /* merge remote and local llm connector. Both should derive from the same class with common functions
 /**** make it so the computer does not repeat! reset conversation when the bot repeats itself
 

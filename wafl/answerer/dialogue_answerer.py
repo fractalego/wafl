@@ -11,9 +11,9 @@ from wafl.answerer.answerer_implementation import (
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
+from wafl.exceptions import CloseConversation
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
-from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.simple_text_processing.questions import is_question
 
 
@@ -25,18 +25,17 @@ class DialogueAnswerer(BaseAnswerer):
         self._interface = interface
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 2
+        self._max_num_past_utterances_for_rules = 0
         self._prior_facts = []
         self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
         self._max_predictions = 3
 
     async def answer(self, query_text):
-        print(__name__)
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
-        query = Query.create_from_text(from_user_to_bot(query_text))
+        query = Query.create_from_text(query_text)
         rules_texts = await self._get_relevant_rules(query)
         facts = await self._get_relevant_facts(query, has_prior_rules=bool(rules_texts))
 
@@ -177,22 +176,35 @@ class DialogueAnswerer(BaseAnswerer):
 
     async def _run_code(self, to_execute):
         result = None
-        try:
-            if any(item + "(" in to_execute for item in self._functions):
-                result = eval(f"self._module.{to_execute}")
+        for _ in range(3):
+            try:
+                if any(item + "(" in to_execute for item in self._functions):
+                    result = eval(f"self._module.{to_execute}")
+                    break
 
-            else:
-                ldict = {}
-                exec(to_execute, globals(), ldict)
-                if "result" in ldict:
-                    result = str(ldict["result"])
+                else:
+                    ldict = {}
+                    exec(to_execute, globals(), ldict)
+                    if "result" in ldict:
+                        result = str(ldict["result"])
+                        break
 
-        except Exception as e:
-            traceback.print_exc()
-            result = f"Error in the code to execute: {str(e)}"
+            except NameError as e:
+                match = re.search(r'\'(\w+)\' is not defined', str(e))
+                if match:
+                    to_import = match.group(1)
+                    to_execute = f"import {to_import}\n{to_execute}"
+
+            except CloseConversation as e:
+                raise e
+
+            except Exception as e:
+                result = f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                traceback.print_exc()
+                break
 
         if not result:
-            result = "unknown"
+            result = f'\n"""python\n{to_execute}\n"""'
 
         return result
 

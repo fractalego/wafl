@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from fuzzywuzzy import process
 from word2number import w2n
 from wafl.exceptions import CloseConversation, InterruptTask
-from preprocess_test_functions import b, c
 
 _logger = logging.getLogger(__file__)
 

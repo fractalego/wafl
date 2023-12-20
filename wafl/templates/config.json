@@ -3,18 +3,20 @@
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
-  "improvise_tasks": true,
+  "improvise_tasks": false,
+  "rules": "rules.yaml",
+  "functions": "functions.py",
   "llm_model": {
-    "model_is_local": true,
-    "local_model": "mosaicml/mpt-7b-instruct",
+    "model_is_local": false,
+    "local_model": "mistralai/Mistral-7B-Instruct-v0.1",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080
     }
   },
   "listener_model": {
-    "model_is_local": true,
-    "local_model": "fractalego/personal-whisper-medium.en-model",
+    "model_is_local": false,
+    "local_model": "fractalego/personal-whisper-distilled-model",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080
@@ -24,7 +26,7 @@
     "listener_silence_timeout": 0.7
   },
   "speaker_model": {
-    "model_is_local": true,
+    "model_is_local": false,
     "local_model": "facebook/fastspeech2-en-ljspeech",
     "remote_model": {
       "model_host": "localhost",
@@ -32,24 +34,12 @@
     }
   },
   "entailment_model": {
-    "model_is_local": true,
-    "local_model": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    }
+    "model_is_local": false,
+    "local_model": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
   },
   "text_embedding_model": {
-    "model_is_local": true,
-    "local_model": "msmarco-distilbert-base-v3",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    }
-  },
-  "qa_embedding_model": {
-    "model_is_local": true,
-    "local_model": "multi-qa-distilbert-dot-v1",
+    "model_is_local": false,
+    "local_model": "TaylorAI/gte-tiny",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080
