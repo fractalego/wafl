@@ -9,6 +9,7 @@ latitude = "51.5074"
 longitude = "0.1272"
 _db_filename = "db.json"
 
+
 def check_today_weather():
     today = datetime.now().strftime("%Y-%m-%d")
     return check_weather_lat_long(latitude, longitude, today)

@@ -31,11 +31,15 @@ class VoiceInterface(BaseInterface):
         self.listener_model_name = config.get_value("listener_model")["local_model"]
         self._speaker = FairSeqSpeaker(config)
         self._listener = WhisperListener(config)
-        self._listener.set_timeout(config.get_value("listener_model")["listener_silence_timeout"])
+        self._listener.set_timeout(
+            config.get_value("listener_model")["listener_silence_timeout"]
+        )
         self._listener.set_volume_threshold(
             config.get_value("listener_model")["listener_volume_threshold"]
         )
-        self._listener.set_hotword_threshold(config.get_value("listener_model")["listener_hotword_logp"])
+        self._listener.set_hotword_threshold(
+            config.get_value("listener_model")["listener_hotword_logp"]
+        )
         self._bot_has_spoken = False
         self._utterances = []
         self._output_filter = output_filter

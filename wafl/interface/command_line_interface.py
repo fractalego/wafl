@@ -24,7 +24,7 @@ class CommandLineInterface(BaseInterface):
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
-        text =input("user> ").strip()
+        text = input("user> ").strip()
         while not_good_enough(text):
             await self.output("I did not quite understand that")
             text = input("user> ")

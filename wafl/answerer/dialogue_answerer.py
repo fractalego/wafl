@@ -190,7 +190,7 @@ class DialogueAnswerer(BaseAnswerer):
                         break
 
             except NameError as e:
-                match = re.search(r'\'(\w+)\' is not defined', str(e))
+                match = re.search(r"\'(\w+)\' is not defined", str(e))
                 if match:
                     to_import = match.group(1)
                     to_execute = f"import {to_import}\n{to_execute}"
@@ -199,7 +199,9 @@ class DialogueAnswerer(BaseAnswerer):
                 raise e
 
             except Exception as e:
-                result = f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                result = (
+                    f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                )
                 traceback.print_exc()
                 break
 

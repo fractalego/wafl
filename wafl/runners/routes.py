@@ -48,12 +48,9 @@ def get_app():
 def create_scheduler_and_webserver_loop(conversation_id):
     config = Configuration.load_local_config()
     interface = QueueInterface()
-    knowledge = SingleFileKnowledge(
-        config, open(config.get_value("rules")).read(), logger=_logger
-    )
     interface.activate()
     conversation_events = ConversationEvents(
-        knowledge,
+        config=config,
         interface=interface,
         logger=_logger,
     )
