@@ -2,7 +2,6 @@ import aiohttp
 import asyncio
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
-from wafl.connectors.utils import select_best_answer
 
 
 class RemoteLLMConnector(BaseLLMConnector):

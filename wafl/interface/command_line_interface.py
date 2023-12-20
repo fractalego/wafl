@@ -1,6 +1,6 @@
 import time
 
-from wafl.simple_text_processing.deixis import from_bot_to_user, from_user_to_bot
+from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
@@ -24,10 +24,10 @@ class CommandLineInterface(BaseInterface):
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
-        text = from_user_to_bot(input("user> ")).strip()
+        text =input("user> ").strip()
         while not_good_enough(text):
             await self.output("I did not quite understand that")
-            text = from_user_to_bot(input("user> "))
+            text = input("user> ")
 
         self._utterances.append((time.time(), f"user: {text}"))
         return text

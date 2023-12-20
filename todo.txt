@@ -1,9 +1,14 @@
 ### TODO
 
+* re-train the whisper model using the distilled version
+  * add system to find out threshold for activation word
 * make rules reloadable
+* nicer UI?
+   * New icons
+   * darker left bar
 * update tests
 * update the docs
-* re-train the whisper model using the distilled version
+
 * redeploy locally and on the server
 * new version on github
 
@@ -21,6 +26,7 @@
 * make sure system works with audio too
 
 * aggregate rules into a tree using a rule builder (like in the old system)
+    * perhaps one use-case is for diary entries: what is my diary for next week requires today's date first
 
 
 

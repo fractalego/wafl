@@ -16,7 +16,7 @@
   },
   "listener_model": {
     "model_is_local": false,
-    "local_model": "fractalego/personal-whisper-medium.en-model",
+    "local_model": "fractalego/personal-whisper-distilled-model",
     "remote_model": {
       "model_host": "localhost",
       "model_port": 8080

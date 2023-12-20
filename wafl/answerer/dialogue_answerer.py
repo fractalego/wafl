@@ -11,9 +11,9 @@ from wafl.answerer.answerer_implementation import (
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
+from wafl.exceptions import CloseConversation
 from wafl.extractors.dataclasses import Query, Answer
 from wafl.inference.utils import cluster_facts
-from wafl.simple_text_processing.deixis import from_user_to_bot
 from wafl.simple_text_processing.questions import is_question
 
 
@@ -35,7 +35,7 @@ class DialogueAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
-        query = Query.create_from_text(from_user_to_bot(query_text))
+        query = Query.create_from_text(query_text)
         rules_texts = await self._get_relevant_rules(query)
         facts = await self._get_relevant_facts(query, has_prior_rules=bool(rules_texts))
 
@@ -194,6 +194,9 @@ class DialogueAnswerer(BaseAnswerer):
                 if match:
                     to_import = match.group(1)
                     to_execute = f"import {to_import}\n{to_execute}"
+
+            except CloseConversation as e:
+                raise e
 
             except Exception as e:
                 result = f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
