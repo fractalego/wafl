@@ -27,7 +27,6 @@ class DialogueAnswerer(BaseAnswerer):
         self._max_num_past_utterances_for_facts = 5
         self._max_num_past_utterances_for_rules = 0
         self._prior_facts = []
-        self._prior_rules = []
         self._init_python_module(code_path.replace(".py", ""))
         self._max_predictions = 3
 
@@ -56,6 +55,8 @@ class DialogueAnswerer(BaseAnswerer):
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
         dialogue_items = "\n".join(dialogue_items)
 
+        #### lots of duplicates in facts! Avoid that
+
         for _ in range(self._max_predictions):
             original_answer_text = await self._bridge.get_answer(
                 text=facts,
@@ -74,9 +75,6 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             if not memories:
-                if "<execute>" in answer_text:
-                    self._remove_last_rule()
-
                 break
 
             facts += "\n" + "\n".join(memories)
@@ -135,19 +133,10 @@ class DialogueAnswerer(BaseAnswerer):
             for cause_index, causes in enumerate(rule.causes):
                 rules_text += f"    {cause_index + 1}) {causes.text}\n"
 
-            if any(rules_text in item for item in self._prior_rules):
-                continue
-
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 
-        if rules_texts:
-            self._prior_rules.append("".join(rules_texts))
-
-        self._prior_rules = self._prior_rules[
-            -self._max_num_past_utterances_for_rules :
-        ]
-        return "".join(self._prior_rules)
+        return "\n".join(rules_texts)
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)
@@ -209,9 +198,3 @@ class DialogueAnswerer(BaseAnswerer):
             result = f'\n"""python\n{to_execute}\n"""'
 
         return result
-
-    def _remove_last_rule(self):
-        """
-        remove the last rule from memory if it was executed during the dialogue
-        """
-        self._prior_rules = self._prior_rules[:-1]
