@@ -5,5 +5,5 @@ class WhisperConnectorFactory:
     @staticmethod
     def get_connector(config):
         return RemoteWhisperConnector(
-            config.get_value("listener_model")["remote_model"]
+            config.get_value("listener_model")
         )

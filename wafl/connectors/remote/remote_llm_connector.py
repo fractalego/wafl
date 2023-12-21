@@ -13,8 +13,8 @@ class RemoteLLMConnector(BaseLLMConnector):
 
     def __init__(self, config, last_strings=None):
         super().__init__(last_strings)
-        host = config["remote_model"]["model_host"]
-        port = config["remote_model"]["model_port"]
+        host = config["model_host"]
+        port = config["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
 
         try:

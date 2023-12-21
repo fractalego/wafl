@@ -4,4 +4,4 @@ from wafl.connectors.remote.remote_speaker_connector import RemoteSpeakerConnect
 class SpeakerConnectorFactory:
     @staticmethod
     def get_connector(config):
-        return RemoteSpeakerConnector(config.get_value("speaker_model")["remote_model"])
+        return RemoteSpeakerConnector(config.get_value("speaker_model"))

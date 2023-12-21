@@ -10,11 +10,9 @@ class RemoteSentenceEmbedderConnector:
     _max_tries = 3
 
     def __init__(self, config):
-        host = config["remote_model"]["model_host"]
-        port = config["remote_model"]["model_port"]
-        model_name = config["local_model"]
+        host = config["model_host"]
+        port = config["model_port"]
 
-        self._model_name = model_name
         self._server_url = f"https://{host}:" f"{port}/predictions/sentence_embedder"
         try:
             loop = asyncio.get_running_loop()
@@ -28,7 +26,7 @@ class RemoteSentenceEmbedderConnector:
             raise RuntimeError("Cannot connect a running Entailment Model.")
 
     async def predict(self, text: str) -> Dict[str, List[float]]:
-        payload = {"text": text, "model_name": self._model_name}
+        payload = {"text": text}
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False)
@@ -42,7 +40,7 @@ class RemoteSentenceEmbedderConnector:
         return {"embedding": [0.0]}
 
     async def check_connection(self):
-        payload = {"text": "test", "model_name": "model_name"}
+        payload = {"text": "test"}
         try:
             async with aiohttp.ClientSession(
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)

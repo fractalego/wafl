@@ -61,7 +61,8 @@ def process_cli():
 
         else:
             print("Unknown argument.\n")
-            print_help()
+    else:
+        print_help()
 
 
 def main():
