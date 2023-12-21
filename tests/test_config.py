@@ -28,5 +28,6 @@ class TestConfig(TestCase):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
         self.assertEqual(
-            interface._listener._timeout, config.get_value("listener_model")["listener_silence_timeout"]
+            interface._listener._timeout,
+            config.get_value("listener_model")["listener_silence_timeout"],
         )

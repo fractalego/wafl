@@ -8,7 +8,6 @@ from wafl.config import Configuration
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.listener.whisper_listener import WhisperListener
 
 _wafl_example = """
@@ -27,9 +26,8 @@ class TestVoice(TestCase):
     def test__activation(self):
         interface = DummyInterface(to_utter=["computer", "my name is Jane"])
         config = Configuration.load_local_config()
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(config, _wafl_example), interface=interface
-        )
+        config.set_value("rules", _wafl_example)
+        conversation_events = ConversationEvents(config=config, interface=interface)
         interface.activate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         asyncio.run(conversation_events.process_next(activation_word="computer"))
@@ -38,9 +36,7 @@ class TestVoice(TestCase):
     def test__no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])
         config = Configuration.load_local_config()
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(config, _wafl_example), interface=interface
-        )
+        conversation_events = ConversationEvents(config=config, interface=interface)
         interface.deactivate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert len(interface.get_utterances_list()) == 1
@@ -48,9 +44,7 @@ class TestVoice(TestCase):
     def test__computer_name_is_removed_after_activation(self):
         interface = DummyInterface(to_utter=["[computer] computer my name is bob"])
         config = Configuration.load_local_config()
-        conversation_events = ConversationEvents(
-            SingleFileKnowledge(config, _wafl_example), interface=interface
-        )
+        conversation_events = ConversationEvents(config=config, interface=interface)
         interface.deactivate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         assert interface.get_utterances_list()[-1].count("computer") == 0
@@ -77,7 +71,10 @@ class TestVoice(TestCase):
     def test__voice_interface_receives_config(self):
         config = Configuration.load_local_config()
         interface = VoiceInterface(config)
-        assert interface.listener_model_name == config.get_value("listener_model")["local_model"]
+        assert (
+            interface.listener_model_name
+            == config.get_value("listener_model")["local_model"]
+        )
 
     def test__hotword_listener_activated_using_recording_of_hotword(self):
         f = wave.open(os.path.join(_path, "data/computer.wav"), "rb")

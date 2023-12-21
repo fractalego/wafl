@@ -4,7 +4,7 @@ import re
 from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid, remove_text_between_brackets
+from wafl.events.utils import input_is_valid, load_knowledge
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
@@ -14,16 +14,13 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 class ConversationEvents:
     def __init__(
         self,
-        knowledge: "BaseKnowledge",
+        config: "Configuration",
         interface: "BaseInterface",
-        config=None,
         logger=None,
     ):
-        if not config:
-            config = Configuration.load_local_config()
-
-        self._answerer = create_answerer(config, knowledge, interface, logger)
-        self._knowledge = knowledge
+        self._config = config
+        self._knowledge = load_knowledge(config, logger)
+        self._answerer = create_answerer(config, self._knowledge, interface, logger)
         self._interface = interface
         self._logger = logger
         self._is_computing = False
@@ -104,6 +101,9 @@ class ConversationEvents:
 
     def is_computing(self):
         return self._is_computing
+
+    def reload_knowledge(self):
+        self._knowledge = load_knowledge(self._config, self._logger)
 
     def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):

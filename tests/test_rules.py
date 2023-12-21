@@ -4,9 +4,7 @@ from unittest import TestCase
 
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
-from wafl.exceptions import CloseConversation
 from wafl.interface.dummy_interface import DummyInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 
 wafl_example = """
 rules:
@@ -26,8 +24,9 @@ class TestRules(TestCase):
             ]
         )
         config = Configuration.load_local_config()
+        config.set_value("rules", wafl_example)
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(config, wafl_example),
+            config=config,
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
@@ -41,11 +40,11 @@ class TestRules(TestCase):
             ]
         )
         config = Configuration.load_local_config()
+        config.set_value("rules", wafl_example)
         conversation_events = ConversationEvents(
-            SingleFileKnowledge(config, wafl_example),
+            config=config,
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        print(interface.get_utterances_list())
         unexpected = "bot: the horse is tall"
         self.assertNotEqual(unexpected, interface.get_utterances_list()[-1])

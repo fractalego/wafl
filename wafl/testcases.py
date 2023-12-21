@@ -1,6 +1,7 @@
 import _lzma
 
 from wafl.entailment.entailer import Entailer
+from wafl.events.utils import load_knowledge
 from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
@@ -14,9 +15,9 @@ class ConversationTestCases:
     GREEN_COLOR_START = "\033[32m"
     COLOR_END = "\033[0m"
 
-    def __init__(self, config, text, knowledge, code_path=None, logger=None):
+    def __init__(self, config, text, code_path=None, logger=None):
         self._testcase_data = get_user_and_bot_lines_from_text(text)
-        self._knowledge = knowledge
+        self._knowledge = load_knowledge(config, logger)
         self._entailer = Entailer(config, logger)
         self._code_path = code_path if code_path else "/"
 

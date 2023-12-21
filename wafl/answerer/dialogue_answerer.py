@@ -26,8 +26,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
         self._max_num_past_utterances_for_rules = 0
-        self._prior_facts = []
-        self._prior_rules = []
+        self._prior_facts_with_timestamp = []
         self._init_python_module(code_path.replace(".py", ""))
         self._max_predictions = 3
 
@@ -37,7 +36,6 @@ class DialogueAnswerer(BaseAnswerer):
 
         query = Query.create_from_text(query_text)
         rules_texts = await self._get_relevant_rules(query)
-        facts = await self._get_relevant_facts(query, has_prior_rules=bool(rules_texts))
 
         dialogue = self._interface.get_utterances_list_with_timestamp()[
             -self._max_num_past_utterances :
@@ -54,6 +52,12 @@ class DialogueAnswerer(BaseAnswerer):
         last_bot_utterances = get_last_bot_utterances(dialogue_items, num_utterances=3)
         last_user_utterance = get_last_user_utterance(dialogue_items)
         dialogue_items = [item[1] for item in dialogue_items if item[0] >= start_time]
+        conversational_timestamp = len(dialogue_items)
+        facts = await self._get_relevant_facts(
+            query,
+            has_prior_rules=bool(rules_texts),
+            conversational_timestamp=conversational_timestamp,
+        )
         dialogue_items = "\n".join(dialogue_items)
 
         for _ in range(self._max_predictions):
@@ -74,13 +78,9 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             if not memories:
-                if "<execute>" in answer_text:
-                    self._remove_last_rule()
-
                 break
 
             facts += "\n" + "\n".join(memories)
-            self._prior_facts.append("\n".join(memories))
             dialogue_items += f"\nbot: {original_answer_text}"
 
         if self._logger:
@@ -88,40 +88,37 @@ class DialogueAnswerer(BaseAnswerer):
 
         return Answer.create_from_text(answer_text)
 
-    async def _get_relevant_facts(self, query, has_prior_rules):
+    async def _get_relevant_facts(
+        self, query, has_prior_rules, conversational_timestamp
+    ):
+        memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
+        self._prior_facts_with_timestamp = [
+            item
+            for item in self._prior_facts_with_timestamp
+            if item[1]
+            > conversational_timestamp - self._max_num_past_utterances_for_facts
+        ]
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, knowledge_name="/", threshold=0.7
+            query, is_from_user=True, knowledge_name="/", threshold=0.8
         )
-        texts = cluster_facts(facts_and_thresholds)
-        for text in texts[::-1]:
-            await self._interface.add_fact(f"The bot remembers: {text}")
-
-        if texts:
-            self._prior_facts = self._prior_facts[
-                -self._max_num_past_utterances_for_facts :
-            ]
-            self._prior_facts.append("\n".join(texts))
-            facts = "\n".join(self._prior_facts)
+        if facts_and_thresholds:
+            facts = [item[0].text for item in facts_and_thresholds if item[0].text not in memory]
+            self._prior_facts_with_timestamp.extend(
+                (item, conversational_timestamp) for item in facts
+            )
+            memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
 
         else:
-            self._prior_facts = self._prior_facts[-self._max_num_past_utterances :]
             if is_question(query.text) and not has_prior_rules:
-                to_add = [
-                    f"The answer to {query.text} is not in the knowledge base."
+                memory += (
+                    f"\nThe answer to {query.text} is not in the knowledge base."
                     "The bot can answer the question while informing the user that the answer was not retrieved"
-                ]
+                )
 
-            elif has_prior_rules:
-                to_add = [
-                    f"The bot tries to answer {query.text} following the rules from the user."
-                ]
+        if has_prior_rules:
+            memory += f"\nThe bot tries to answer {query.text} following the rules from the user."
 
-            else:
-                to_add = []
-
-            facts = "\n".join(self._prior_facts + to_add)
-
-        return facts
+        return memory
 
     async def _get_relevant_rules(self, query, max_num_rules=1):
         rules = await self._knowledge.ask_for_rule_backward(
@@ -135,19 +132,10 @@ class DialogueAnswerer(BaseAnswerer):
             for cause_index, causes in enumerate(rule.causes):
                 rules_text += f"    {cause_index + 1}) {causes.text}\n"
 
-            if any(rules_text in item for item in self._prior_rules):
-                continue
-
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 
-        if rules_texts:
-            self._prior_rules.append("".join(rules_texts))
-
-        self._prior_rules = self._prior_rules[
-            -self._max_num_past_utterances_for_rules :
-        ]
-        return "".join(self._prior_rules)
+        return "\n".join(rules_texts)
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)
@@ -190,7 +178,7 @@ class DialogueAnswerer(BaseAnswerer):
                         break
 
             except NameError as e:
-                match = re.search(r'\'(\w+)\' is not defined', str(e))
+                match = re.search(r"\'(\w+)\' is not defined", str(e))
                 if match:
                     to_import = match.group(1)
                     to_execute = f"import {to_import}\n{to_execute}"
@@ -199,7 +187,9 @@ class DialogueAnswerer(BaseAnswerer):
                 raise e
 
             except Exception as e:
-                result = f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                result = (
+                    f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                )
                 traceback.print_exc()
                 break
 
@@ -207,9 +197,3 @@ class DialogueAnswerer(BaseAnswerer):
             result = f'\n"""python\n{to_execute}\n"""'
 
         return result
-
-    def _remove_last_rule(self):
-        """
-        remove the last rule from memory if it was executed during the dialogue
-        """
-        self._prior_rules = self._prior_rules[:-1]
