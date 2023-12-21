@@ -1,13 +1,11 @@
 import logging
 import re
-import torch
 
 
 from wafl.connectors.utils import select_best_answer
 
 _system_logger = logging.getLogger(__file__)
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
 model = None
 tokenizer = None
 

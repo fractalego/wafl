@@ -13,7 +13,6 @@ from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.exceptions import CloseConversation
 from wafl.extractors.dataclasses import Query, Answer
-from wafl.inference.utils import cluster_facts
 from wafl.simple_text_processing.questions import is_question
 
 
