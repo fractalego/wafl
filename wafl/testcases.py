@@ -1,6 +1,4 @@
-import _lzma
-
-from wafl.entailment.entailer import Entailer
+from fuzzywuzzy import fuzz
 from wafl.events.utils import load_knowledge
 from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
@@ -18,7 +16,6 @@ class ConversationTestCases:
     def __init__(self, config, text, code_path=None, logger=None):
         self._testcase_data = get_user_and_bot_lines_from_text(text)
         self._knowledge = load_knowledge(config, logger)
-        self._entailer = Entailer(config, logger)
         self._code_path = code_path if code_path else "/"
 
     async def test_single_case(self, name):
@@ -47,7 +44,7 @@ class ConversationTestCases:
         generated_lines = interface.get_utterances_list()
         for test_line, generated_line in zip(test_lines, generated_lines):
             test_line = self._apply_deixis(test_line)
-            if not await self._lhs_entails_rhs(generated_line, test_line):
+            if not await self._lhs_is_similar_to(generated_line, test_line):
                 print(f" [test_line] {test_line}")
                 print(f" [predicted_line] {generated_line}")
                 is_consistent = False
@@ -74,7 +71,7 @@ class ConversationTestCases:
 
         return to_return
 
-    async def _lhs_entails_rhs(self, lhs, rhs):
+    async def _lhs_is_similar_to(self, lhs, rhs):
         lhs_name = lhs.split(":")[0].strip()
         rhs_name = rhs.split(":")[0].strip()
         if lhs_name != rhs_name:
@@ -82,7 +79,7 @@ class ConversationTestCases:
 
         lhs = ":".join(item.strip() for item in lhs.split(":")[1:])
         rhs = ":".join(item.strip() for item in rhs.split(":")[1:])
-        return await self._entailer.entails(lhs, rhs) == "True"
+        return fuzz.ratio(lhs, rhs) > 80
 
     def _apply_deixis(self, line):
         name = line.split(":")[0].strip()
