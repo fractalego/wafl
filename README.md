@@ -46,12 +46,8 @@ Please see the examples in the following chapters.
 
 
 ## LLM side (needs a GPU)
-The second part is a machine that runs on a machine accessible from the interface side.
-The initial configuration is for a local deployment of language models. 
-No action is needed to run WAFL if you want to run it as a local instance.
-
-However, a multi-user setup will benefit for a dedicated server. 
-In this case, a docker image can be used
+The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
+A docker image can be used to run it as in the following:
 
 ```bash
 $ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
