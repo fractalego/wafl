@@ -1,48 +1,26 @@
 {
-  "allow_interruptions": true,
   "waking_up_word": "computer",
   "waking_up_sound": true,
   "deactivate_sound": true,
-  "improvise_tasks": false,
   "rules": "rules.yaml",
   "functions": "functions.py",
   "llm_model": {
-    "model_is_local": false,
-    "local_model": "mistralai/Mistral-7B-Instruct-v0.1",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    }
+    "model_host": "localhost",
+    "model_port": 8080
   },
   "listener_model": {
-    "model_is_local": false,
-    "local_model": "fractalego/personal-whisper-distilled-model",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    },
+    "model_host": "localhost",
+    "model_port": 8080,
     "listener_hotword_logp": -8,
     "listener_volume_threshold": 0.6,
     "listener_silence_timeout": 0.7
   },
   "speaker_model": {
-    "model_is_local": false,
-    "local_model": "facebook/fastspeech2-en-ljspeech",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    }
-  },
-  "entailment_model": {
-    "model_is_local": false,
-    "local_model": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
+    "model_host": "localhost",
+    "model_port": 8080
   },
   "text_embedding_model": {
-    "model_is_local": false,
-    "local_model": "TaylorAI/gte-tiny",
-    "remote_model": {
-      "model_host": "localhost",
-      "model_port": 8080
-    }
+    "model_host": "localhost",
+    "model_port": 8080
   }
 }
