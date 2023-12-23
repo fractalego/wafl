@@ -15,19 +15,6 @@ class LLMChitChatAnswerBridge:
         return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(self, text, rules_text, dialogue=None):
-        if rules_text:
-            rules_to_use = f"I want you to follow these rules:\n{rules_text.strip()}\n"
-            pattern = "\nuser: "
-            if pattern in dialogue:
-                last_user_position = dialogue.rfind(pattern)
-                before_user_dialogue, after_user_dialogue = (
-                    dialogue[:last_user_position],
-                    dialogue[last_user_position + len(pattern) :],
-                )
-                dialogue = f"{before_user_dialogue}\nuser: {rules_to_use}\nuser: {after_user_dialogue}"
-            else:
-                dialogue = f"user: {rules_to_use}\n{dialogue}"
-
         prompt = f"""
 The following is a summary of a conversation. All the elements of the conversation are described briefly:
 <summary>        
