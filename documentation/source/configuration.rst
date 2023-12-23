@@ -1,0 +1,64 @@
+Configuration
+--------------
+
+The file `config.json` contains some parameters for the chatbot and the url to connect to for the backend.
+
+A typical configuration file looks like this:
+
+.. code-block:: text
+
+    {
+      "waking_up_word": "computer",
+      "waking_up_sound": true,
+      "deactivate_sound": true,
+      "rules": "rules.yaml",
+      "functions": "functions.py",
+      "llm_model": {
+        "model_host": "localhost",
+        "model_port": 8080
+      },
+      "listener_model": {
+        "model_host": "localhost",
+        "model_port": 8080,
+        "listener_hotword_logp": -8,
+        "listener_volume_threshold": 0.6,
+        "listener_silence_timeout": 0.7
+      },
+      "speaker_model": {
+        "model_host": "localhost",
+        "model_port": 8080
+      },
+      "text_embedding_model": {
+        "model_host": "localhost",
+        "model_port": 8080
+      }
+    }
+
+
+These settings regulate the following:
+
+    * "waking_up_word" is the name of the bot, used to wake up the system in the "run-audio" mode.
+
+    * "waking_up_sound" and "deactivate_sound" are played to signal the system is up or is back to idle.
+
+    * "rules" is the file containing the facts and rules that guide the chatbot. The default is "rules.yaml".
+
+    * "functions" is the file containing the functions that can be used in the rules. The default is "functions.py".
+
+    * "llm_model" is the configuration to connect to the LLM model in the backend. The default is "localhost:8080".
+
+    * "listener_model" is the configuration to connect to the listener model in the backend. The default is "localhost:8080".
+
+       - The listener model is used to detect the wake-up word.
+         The similarity threshold for the detection can be set with the "listener_hotword_logp" parameter.
+
+       - The "listener_volume_threshold" parameter is used to set the volume threshold for any conversation.
+         Any word uttered with a volume below this threshold is ignored.
+
+       - The "listener_silence_timeout" parameter is used to set the silence timeout for any conversation.
+         If no word is uttered for a time longer than this timeout, the conversation is considered finished.
+
+    * "speaker_model" is the configuration to connect to the speaker model in the backend. The default is "localhost:8080".
+
+    * "text_embedding_model" is the configuration to connect to the text embedding model in the backend. The default is "localhost:8080".
+

@@ -1,6 +1,10 @@
 ### TODO
 
-* no local llms, only remote
+
+* push docker image to docker hub
+* update all to the vast.ai
+* write new docs
+* new version on github!
 * make it easy to run the llm on the server (something more than docker perhaps)?
 
 /* re-train the whisper model using the distilled version
@@ -15,7 +19,7 @@
   * use timestamp for facts (or an index in terms of conversation item)
   * select only most n recent timestamps
   * do not add facts that are already in the list (before cluster_facts)
-* update the docs
+
 
 * redeploy locally and on the server
 * new version on github
