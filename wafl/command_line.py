@@ -7,7 +7,7 @@ from wafl.run import (
     run_from_command_line,
     run_testcases,
     print_incipit,
-    download_models,
+    download_models, run_action,
 )
 from wafl.runners.run_from_audio import run_from_audio
 from wafl.runners.run_web_interface import run_app
@@ -21,6 +21,7 @@ def print_help():
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")
     print("> wafl run-tests: Run the tests in testcases.txt")
+    print("> wafl run-action <ACTION_NAME>: Run the action <ACTION_NAME> from actions.yaml")
     print()
 
 
@@ -55,6 +56,16 @@ def process_cli():
         elif command == "run-tests":
             run_testcases()
             remove_preprocessed("/")
+
+        elif command == "run-action":
+            if len(arguments) > 2:
+                action_name = arguments[2]
+
+            else:
+                print("Please provide the action name as the second argument.")
+                return
+
+            run_action(action_name)
 
         elif command == "help":
             print_help()

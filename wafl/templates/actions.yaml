@@ -1,0 +1,3 @@
+action_1_summarise_guardian:
+  - summarise https://theguardian.com
+  - write the output to the file summary_guardian.txt
