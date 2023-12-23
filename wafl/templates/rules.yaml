@@ -1,7 +1,6 @@
 facts:
   - This bot is doing well
   - This bot is called Computer
-  - The user lives in Eltham, London
 
 rules:
   - the user wants to compute some math operation:
