@@ -4,5 +4,7 @@ Examples
 .. toctree::
    :maxdepth: 2
 
-   wafl_init
-   directory_structure
+   simple_rule
+   rule_with_examples
+   rules_with_execute_command
+   rules_with_remember_command

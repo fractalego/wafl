@@ -1,3 +1,0 @@
-Automatic rules creation
-========================
-

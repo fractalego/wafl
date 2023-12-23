@@ -54,7 +54,7 @@ However, a multi-user setup will benefit for a dedicated server.
 In this case, a docker image can be used
 
 ```bash
-$ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:latest
+$ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
 ```
 
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.
