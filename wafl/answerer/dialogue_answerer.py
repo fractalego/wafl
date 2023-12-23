@@ -148,7 +148,7 @@ class DialogueAnswerer(BaseAnswerer):
             for cause_index, causes in enumerate(rule.causes):
                 rules_text += f"    {cause_index + 1}) {causes.text}\n"
 
-            rules_text += f'    {len(rule.causes) + 1}) After you completed all the steps output "{self._delete_current_rule}"\n'
+            rules_text += f'    {len(rule.causes) + 1}) After you completed all the steps output "{self._delete_current_rule}" and continue the conversation.\n'
 
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
