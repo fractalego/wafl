@@ -1,5 +1,5 @@
-Rule with execute command
-=========================
+Rule with remember command
+==========================
 
 There are two special tags that can be used in the rules: <execute> and <remember>.
 The <remember> tag is used to remember an intermediate result that can be used to generate the final output.
