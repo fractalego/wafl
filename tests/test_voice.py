@@ -68,14 +68,6 @@ class TestVoice(TestCase):
         expected = "[unclear]"
         assert result == expected
 
-    def test__voice_interface_receives_config(self):
-        config = Configuration.load_local_config()
-        interface = VoiceInterface(config)
-        assert (
-            interface.listener_model_name
-            == config.get_value("listener_model")["local_model"]
-        )
-
     def test__hotword_listener_activated_using_recording_of_hotword(self):
         f = wave.open(os.path.join(_path, "data/computer.wav"), "rb")
         waveform = np.frombuffer(f.readframes(f.getnframes()), dtype=np.int16) / 32768

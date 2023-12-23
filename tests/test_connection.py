@@ -8,7 +8,6 @@ import numpy as np
 
 from wafl.config import Configuration
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
-from wafl.connectors.local.local_llm_connector import LocalLLMConnector
 from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
 from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker

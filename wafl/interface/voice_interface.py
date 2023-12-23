@@ -28,7 +28,6 @@ class VoiceInterface(BaseInterface):
         self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(
             config
         )
-        self.listener_model_name = config.get_value("listener_model")["local_model"]
         self._speaker = FairSeqSpeaker(config)
         self._listener = WhisperListener(config)
         self._listener.set_timeout(
