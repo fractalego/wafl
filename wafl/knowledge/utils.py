@@ -16,6 +16,8 @@ async def rules_are_too_different(retriever, rules):
     if dot_products and min(dot_products) < 0.39:
         return False
 
+    return True
+
 
 def get_first_cluster_of_rules(rules_and_threshold):
     if not rules_and_threshold:

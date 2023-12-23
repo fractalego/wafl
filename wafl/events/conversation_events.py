@@ -2,10 +2,9 @@ import os
 import re
 
 from wafl.events.answerer_creator import create_answerer
-from wafl.policy.answerer_policy import AnswerPolicy
 from wafl.simple_text_processing.normalize import normalized
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid, remove_text_between_brackets
+from wafl.events.utils import input_is_valid, load_knowledge
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
@@ -15,22 +14,16 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 class ConversationEvents:
     def __init__(
         self,
-        knowledge: "BaseKnowledge",
+        config: "Configuration",
         interface: "BaseInterface",
-        code_path=None,
-        config=None,
         logger=None,
     ):
-        if not config:
-            config = Configuration.load_local_config()
-
-        self._answerer = create_answerer(
-            config, knowledge, interface, code_path, logger
-        )
-        self._knowledge = knowledge
+        self._config = config
+        self._knowledge = load_knowledge(config, logger)
+        self._answerer = create_answerer(config, self._knowledge, interface, logger)
         self._interface = interface
-        self._policy = AnswerPolicy(config, interface, logger)
         self._logger = logger
+        self._is_computing = False
         if logger:
             self._logger.set_depth(0)
 
@@ -38,20 +31,19 @@ class ConversationEvents:
         await self._interface.output(text)
 
     async def _process_query(self, text: str):
+        self._is_computing = True
         self._interface.bot_has_spoken(False)
-
         if not input_is_valid(text):
+            self._is_computing = False
             return False
 
         text_is_question = is_question(text)
-        self._policy.improvise = False
         try:
-            answer = await self._answerer.answer(
-                remove_text_between_brackets(text), policy=self._policy
-            )
+            answer = await self._answerer.answer(text)
 
         except InterruptTask:
             await self._interface.output("Task interrupted")
+            self._is_computing = False
             return False
 
         if not self._interface.bot_has_spoken():
@@ -66,8 +58,7 @@ class ConversationEvents:
 
             if (
                 not text_is_question
-                and answer.is_false()
-                and not self._interface.bot_has_spoken()
+                and self._interface.get_utterances_list()[-1].find("user:") == 0
             ):
                 await self._interface.output("I don't know what to reply")
 
@@ -78,6 +69,7 @@ class ConversationEvents:
             ):
                 await self._interface.output("Yes")
 
+        self._is_computing = False
         return answer
 
     async def process_next(self, activation_word: str = "") -> bool:
@@ -106,6 +98,12 @@ class ConversationEvents:
                 return True
 
         return False
+
+    def is_computing(self):
+        return self._is_computing
+
+    def reload_knowledge(self):
+        self._knowledge = load_knowledge(self._config, self._logger)
 
     def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):

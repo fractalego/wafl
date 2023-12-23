@@ -4,11 +4,12 @@ from typing import List
 
 
 class BaseInterface:
-    def __init__(self):
+    def __init__(self, decorator=None):
         self._is_listening = True
         self._choices = []
         self._facts = []
         self._utterances = []
+        self._decorator = decorator
 
     async def output(self, text: str, silent: bool = False):
         raise NotImplementedError
@@ -58,3 +59,9 @@ class BaseInterface:
         self._utterances = []
         self._choices = []
         self._facts = []
+
+    def _decorate_reply(self, text: str) -> str:
+        if not self._decorator:
+            return text
+
+        return self._decorator.extract(text, self._utterances)

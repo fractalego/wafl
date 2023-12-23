@@ -18,7 +18,7 @@ class DenseRetriever(BaseRetriever):
         self._connector = SentenceEmbedderConnectorFactory.get_connector(
             model_name, config
         )
-        self._embeddings_model = KeyedVectors(768)
+        self._embeddings_model = KeyedVectors(384)
 
     async def add_text_and_index(self, text: str, index: str):
         embeddings = await self._get_embeddings_from_text(text)

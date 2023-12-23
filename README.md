@@ -1,4 +1,4 @@
-# WAFL 0.0.70 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
+# WAFL 0.0.80 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
 
 Introduction
 ============
@@ -46,16 +46,11 @@ Please see the examples in the following chapters.
 
 
 ## LLM side (needs a GPU)
-
-The second part is a machine that runs on a machine accessible from the interface side.
-The initial configuration is for a local deployment of language models. 
-No action is needed to run WAFL if you want to run it as a local instance.
-
-However, a multi-user setup will benefit for a dedicated server. 
-In this case, a docker image can be used
+The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
+A docker image can be used to run it as in the following:
 
 ```bash
-$ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:latest
+$ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
 ```
 
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.

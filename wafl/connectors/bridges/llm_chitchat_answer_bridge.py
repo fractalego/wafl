@@ -1,10 +1,6 @@
-import asyncio
 import os
-import re
 
-from wafl.connectors.bridges.bridge_implementation import load_knowledge_from_file
 from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
-from wafl.extractors.dataclasses import Query
 
 _path = os.path.dirname(__file__)
 
@@ -14,47 +10,38 @@ class LLMChitChatAnswerBridge:
         self._connector = LLMConnectorFactory.get_connector(config)
         self._config = config
 
-        try:
-            loop = asyncio.get_running_loop()
-
-        except RuntimeError:
-            loop = None
-
-        if loop and loop.is_running():
-            self._knowledge = None
-
-        else:
-            self._knowledge = asyncio.run(
-                load_knowledge_from_file("dialogues", self._config)
-            )
-
     async def get_answer(self, text: str, dialogue: str, query: str) -> str:
         prompt = await self._get_answer_prompt(text, query, dialogue)
         return await self._connector.generate(prompt)
 
-    async def _get_answer_prompt(self, text, query, dialogue=None):
-        if not self._knowledge:
-            self._knowledge = await load_knowledge_from_file("dialogues", self._config)
+    async def _get_answer_prompt(self, text, rules_text, dialogue=None):
+        if rules_text:
+            rules_to_use = f"I want you to follow these rules:\n{rules_text.strip()}\n"
+            pattern = "\nuser: "
+            if pattern in dialogue:
+                last_user_position = dialogue.rfind(pattern)
+                before_user_dialogue, after_user_dialogue = (
+                    dialogue[:last_user_position],
+                    dialogue[last_user_position + len(pattern) :],
+                )
+                dialogue = f"{before_user_dialogue}\nuser: {rules_to_use}\nuser: {after_user_dialogue}"
+            else:
+                dialogue = f"user: {rules_to_use}\n{dialogue}"
 
-        retrieved_dialogues = await self._knowledge.ask_for_facts(
-            Query.create_from_text(dialogue), threshold=0.1
-        )
-        retrieved_dialogues = "\n\n\n".join(
-            [item.text for item in retrieved_dialogues][:3]
-        )
-        dialogue = re.sub(r"bot:(.*)\n", r"bot: \1<|EOS|>\n", dialogue)
         prompt = f"""
-The user and the bot talk.
-The bot ends every utterance line with <|EOS|>.
-This bot answers are short and to the point. Do not use more than one sentence to reply.
-The bot should not repeat itself. Every reply should be different from the previous ones.
-some examples are as follows:
+The following is a summary of a conversation. All the elements of the conversation are described briefly:
+<summary>        
+A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.
+{text.strip()}
+</summary>
 
+<instructions>
+Create a plausible dialogue based on the aforementioned summary and rules. 
+Do not repeat yourself. Be friendly but not too servile.
+Wrap any code or html you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```) unless it is between <execute> tags.
+</instructions>
 
-{retrieved_dialogues}
-
-
-In the dialogue below a user is speaking to a bot:
+This is the dialogue:
 {dialogue}
 bot:
         """.strip()

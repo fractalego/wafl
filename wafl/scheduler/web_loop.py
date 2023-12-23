@@ -1,120 +1,119 @@
 import asyncio
-import logging
 import os
-import threading
 
-from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
+from flask import render_template, request, jsonify
 from wafl.interface.queue_interface import QueueInterface
 from wafl.logger.history_logger import HistoryLogger
+from wafl.scheduler.web_interface_implementation import (
+    get_html_from_dialogue_item,
+)
 
 _path = os.path.dirname(__file__)
-app = Flask(
-    __name__,
-    static_url_path="",
-    static_folder=os.path.join(_path, "../frontend/"),
-    template_folder=os.path.join(_path, "../frontend/"),
-)
-app.config.from_object(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-app.config["async_mode"] = "asyncio"
-log = logging.getLogger("werkzeug")
-log.setLevel(logging.WARNING)
 
 
 class WebLoop:
-    def __init__(self, interface: QueueInterface, knowledge: "ProjectKnowledge"):
+    def __init__(
+        self,
+        interface: QueueInterface,
+        conversation_id: int,
+        conversation_events: "ConversationEvents",
+    ):
         self._interface = interface
-        self._knowledge = knowledge
-        self._rules_filename = knowledge.rules_filename
-        self._hystory_logger = HistoryLogger(self._interface)
+        self._history_logger = HistoryLogger(self._interface)
+        self._conversation_id = conversation_id
+        self._conversation_events = conversation_events
+        self._prior_dialogue_items = ""
+
+    async def index(self):
+        return render_template("index.html", conversation_id=self._conversation_id)
+
+    async def handle_input(self):
+        query = request.form["query"]
+        self._interface.input_queue.append(query)
+        return f"""
+    <textarea id="query" type="text"
+           class='shadow-lg'
+           placeholder="{query}"
+           name="query"
+           hx-post="/{self._conversation_id}/input"
+           hx-swap="outerHTML"
+           hx-target="#query"
+           hx-trigger="keydown[!shiftKey&&keyCode==13]"
+    ></textarea>
+        """.strip()
+
+    async def reset_conversation(self):
+        self._interface.reset_history()
+        self._interface.deactivate()
+        self._interface.activate()
+        self._conversation_events.reload_knowledge()
+        await self._interface.output("Hello. How may I help you?")
+        conversation = await self._get_conversation()
+        return conversation
+
+    async def reload_rules(self):
+        async with asyncio.Lock():
+            print("Not implemented yet")
+
+        return ""
+
+    async def check_for_new_messages(self):
+        conversation = await self._get_conversation()
+        if conversation != self._prior_dialogue_items:
+            self._prior_dialogue_items = conversation
+            return f"""
+            <div id="load_conversation" 
+               hx-post="/{self._conversation_id}/load_messages"
+               hx-swap="innerHTML"
+               hx-target="#messages"
+               hx-trigger="load"
+            ></div>"""
+
+        else:
+            self._prior_dialogue_items = conversation
+            return "<div id='load_conversation'></div>"
+
+    async def load_messages(self):
+        conversation = await self._get_conversation()
+        return conversation
+
+    async def handle_output(self):
+        if not self._interface.output_queue:
+            return jsonify({"text": "", "silent": False})
+
+        output = self._interface.output_queue.pop(0)
+        return jsonify(output)
+
+    async def thumbs_up(self):
+        self._history_logger.write("thumbs_up")
+        return jsonify("")
+
+    async def thumbs_down(self):
+        self._history_logger.write("thumbs_down")
+        return jsonify("")
 
     async def run(self):
-        @app.route("/input", methods=["POST"])
-        async def handle_input():
-            query = request.form["query"]
-            self._interface.input_queue.append(query)
-            return f"""
-<input autofocus name="query" id="query" class="input" type="text" placeholder="{query}"
-               data-hx-post="/input"
-               hx-swap="outerHTML"
-               hx-trigger="keyup[keyCode==13]">
-<div data-hx-post="/load_messages"
-         hx-swap="innerHTML"
-         hx-target="#messages"
-         hx-trigger="load"
-         style="display:none;"
-         >
-</div>            
-            """.strip()
-
-        @app.route("/reset_conversation", methods=["POST"])
-        async def reset_conversation():
-            self._interface.reset_history()
-            await self._interface.output("Hello. How may I help you?")
-            conversation = await self._get_conversation()
-            return conversation
-
-        @app.route("/reload_rules", methods=["POST"])
-        async def reload_rules():
-            async with asyncio.Lock():
-                self._knowledge.reload_rules(self._rules_filename)
-                await self._knowledge.reinitialize_all_retrievers()
-                print("Rules reloaded")
-
-            return ""
-
-        @app.route("/load_messages", methods=["POST"])
-        async def load_messages():
-            conversation = await self._get_conversation()
-            return conversation
-
-        @app.route("/output")
-        async def handle_output():
-            if not self._interface.output_queue:
-                return jsonify({"text": "", "silent": False})
-
-            output = self._interface.output_queue.pop(0)
-            return jsonify(output)
-
-        @app.route("/thumbs_up", methods=["POST"])
-        async def thumbs_up():
-            self._hystory_logger.write("thumbs_up")
-            return jsonify("")
-
-        @app.route("/thumbs_down", methods=["POST"])
-        async def thumbs_down():
-            self._hystory_logger.write("thumbs_down")
-            return jsonify("")
-
-        @app.route("/")
-        async def index():
-            return render_template("index.html")
-
-        def run_app():
-            app.run(host="0.0.0.0", port=8889)
-
-        thread = threading.Thread(target=run_app)
-        thread.start()
+        print(f"New web server instance {self._conversation_id} running!")
+        return
 
     async def _get_conversation(self):
-        dialogue = self._interface.get_utterances_list_with_timestamp()
-        dialogue = [
-            (
-                item[0],
-                "<div class='dialogue-row' style='font-size:20px; '>"
-                + item[1]
-                + "</div>",
+        dialogue_items = self._interface.get_utterances_list_with_timestamp()
+        dialogue = []
+        for index, item in enumerate(dialogue_items):
+            dialogue.append(
+                (
+                    item[0],
+                    get_html_from_dialogue_item(
+                        item[1],
+                    ),
+                )
             )
-            for item in dialogue
-        ]
+
         choices = self._interface.get_choices_and_timestamp()
         choices = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
-                + item[1]
-                + "</div>",
+                "<div class='log-row'>" + item[1] + "</div>",
             )
             for item in choices
         ]
@@ -122,9 +121,7 @@ class WebLoop:
         facts = [
             (
                 item[0],
-                "<div class='log-row' style='font-size:11px; margin-left=30px;margin-top=10px;color:#2a2a2a;'>"
-                + item[1]
-                + "</div>",
+                "<div class='log-row'>" + item[1] + "</div>",
             )
             for item in facts
         ]
@@ -134,10 +131,12 @@ class WebLoop:
         dialogue_items = dialogue
         dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
         dialogue_items = [item[1] for item in dialogue_items]
-        conversation = "<div id='dialogue' class='dialogue shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+        conversation = (
+            "<div id='dialogue' class='dialogue overflow-y-scroll rounded-lg'>"
+        )
         conversation += "".join(dialogue_items)
         conversation += "</div>"
-        conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg' style='flex-direction: column-reverse;'>"
+        conversation += "<div id='logs' class='logs shadow-lg overflow-y-scroll rounded-lg width' style='flex-direction: column-reverse;'>"
         conversation += "".join(choices_and_facts)
         conversation += "</div>"
         return conversation

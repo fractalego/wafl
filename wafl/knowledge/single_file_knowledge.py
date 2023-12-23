@@ -10,14 +10,11 @@ from wafl.simple_text_processing.normalize import normalized
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,
-    rules_are_too_different,
     get_first_cluster_of_rules,
     filter_out_rules_that_are_too_dissimilar_to_query,
-    filter_out_rules_through_entailment,
 )
 from wafl.parsing.line_rules_parser import parse_rule_from_single_line
 from wafl.parsing.rules_parser import get_facts_and_rules_from_text
-from wafl.extractors.entailer import Entailer
 from wafl.extractors.dataclasses import Query
 from wafl.retriever.string_retriever import StringRetriever
 from wafl.retriever.dense_retriever import DenseRetriever
@@ -45,10 +42,9 @@ class SingleFileKnowledge(BaseKnowledge):
         self._rules_dict = {}
         self._facts_retriever = DenseRetriever("text_embedding_model", config)
         self._facts_retriever_for_questions = DenseRetriever(
-            "qa_embedding_model",
+            "text_embedding_model",
             config,
         )
-        self._entailer = Entailer(config, logger)
         self._rules_incomplete_retriever = DenseRetriever(
             "text_embedding_model", config
         )
@@ -305,19 +301,7 @@ class SingleFileKnowledge(BaseKnowledge):
         ][: self._max_rules_per_type]
 
         rules_and_scores = fact_rules + question_rules + incomplete_rules
-        rules = [item[0] for item in sorted(rules_and_scores, key=lambda x: -x[1])]
-        if not first_n and await rules_are_too_different(
-            self._rules_fact_retriever, rules
-        ):
-            return []
-
         rules_and_scores = filter_out_rules_that_are_too_dissimilar_to_query(
             query, rules_and_scores
         )
-
-        if not first_n:
-            rules_and_scores = await filter_out_rules_through_entailment(
-                self._entailer, query, rules_and_scores
-            )
-
         return rules_and_scores

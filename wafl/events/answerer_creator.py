@@ -1,14 +1,7 @@
-from wafl.answerer.arbiter_answerer import ArbiterAnswerer
-from wafl.answerer.list_answerer import ListAnswerer
+from wafl.answerer.dialogue_answerer import DialogueAnswerer
 
 
-def create_answerer(config, knowledge, interface, code_path, logger):
-    return ListAnswerer(
-        [
-            ArbiterAnswerer.create_answerer(
-                config, knowledge, interface, code_path, logger
-            ),
-        ],
-        interface,
-        logger,
+def create_answerer(config, knowledge, interface, logger):
+    return DialogueAnswerer(
+        config, knowledge, interface, config.get_value("functions"), logger
     )
