@@ -1,6 +1,10 @@
 ### TODO
 
-* create actions from command line ####
+* create actions from command line
+   * add condition of when to stop to the actions
+
+* BUG: the prior memory leaks even when re-loading the interface!!!
+
 * clean single_file_knowledge: it still divides facts, question, and incomplete for rule retrieval.
   Use just one retriever and threshold for all
 

@@ -53,12 +53,16 @@ class DialogueAnswerer(BaseAnswerer):
         if rules_texts:
             last_timestamp = dialogue_items[-1][0]
             self._prior_rule_with_timestamp = (last_timestamp, rules_texts)
-            dialogue_items = self._insert_rule_into_dialogue_items(rules_texts, last_timestamp, dialogue_items)
+            dialogue_items = self._insert_rule_into_dialogue_items(
+                rules_texts, last_timestamp, dialogue_items
+            )
 
         elif self._prior_rule_with_timestamp:
             last_timestamp = self._prior_rule_with_timestamp[0]
             rules_texts = self._prior_rule_with_timestamp[1]
-            dialogue_items = self._insert_rule_into_dialogue_items(rules_texts, last_timestamp, dialogue_items)
+            dialogue_items = self._insert_rule_into_dialogue_items(
+                rules_texts, last_timestamp, dialogue_items
+            )
 
         last_bot_utterances = get_last_bot_utterances(dialogue_items, num_utterances=3)
         last_user_utterance = get_last_user_utterance(dialogue_items)
@@ -118,11 +122,16 @@ class DialogueAnswerer(BaseAnswerer):
             query, is_from_user=True, knowledge_name="/", threshold=0.8
         )
         if facts_and_thresholds:
-            facts = [item[0].text for item in facts_and_thresholds if item[0].text not in memory]
+            facts = [
+                item[0].text
+                for item in facts_and_thresholds
+                if item[0].text not in memory
+            ]
             self._prior_facts_with_timestamp.extend(
                 (item, conversational_timestamp) for item in facts
             )
             memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
+            await self._interface.add_fact(f"The bot remembers the facts:\n{memory}")
 
         else:
             if is_question(query.text) and not has_prior_rules:
@@ -216,12 +225,23 @@ class DialogueAnswerer(BaseAnswerer):
 
         return result
 
-    def _insert_rule_into_dialogue_items(self, rules_texts, rule_timestamp, dialogue_items):
+    def _insert_rule_into_dialogue_items(
+        self, rules_texts, rule_timestamp, dialogue_items
+    ):
         new_dialogue_items = []
         already_inserted = False
         for timestamp, utterance in dialogue_items:
-            if not already_inserted and utterance.startswith("user:") and rule_timestamp == timestamp:
-                new_dialogue_items.append((rule_timestamp, f"user: I want you to follow these rules:\n{rules_texts}"))
+            if (
+                not already_inserted
+                and utterance.startswith("user:")
+                and rule_timestamp == timestamp
+            ):
+                new_dialogue_items.append(
+                    (
+                        rule_timestamp,
+                        f"user: I want you to follow these rules:\n{rules_texts}",
+                    )
+                )
                 already_inserted = True
 
             new_dialogue_items.append((timestamp, utterance))

@@ -105,6 +105,11 @@ class ConversationEvents:
     def reload_knowledge(self):
         self._knowledge = load_knowledge(self._config, self._logger)
 
+    def reset_discourse_memory(self):
+        self._answerer = create_answerer(
+            self._config, self._knowledge, self._interface, logger
+        )
+
     def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):
             return True
