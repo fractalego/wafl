@@ -154,7 +154,7 @@ class DialogueAnswerer(BaseAnswerer):
         return memory
 
     async def _get_relevant_rules(self, query):
-        return self._rule_creator.create_from_query(query)
+        return await self._rule_creator.create_from_query(query)
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)

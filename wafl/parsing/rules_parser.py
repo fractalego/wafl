@@ -5,7 +5,7 @@ from wafl.rules import Rule
 from wafl.simple_text_processing.deixis import from_user_to_bot
 
 
-def get_facts_and_rules_from_text(text: str, knowledge_name=None):
+def get_facts_and_rules_from_text(text: str):
     parsed_text_dict = yaml.safe_load(text)
     fact_strings = parsed_text_dict.get("facts", [])
     rules_list = parsed_text_dict.get("rules", {})
