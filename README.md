@@ -47,6 +47,16 @@ Please see the examples in the following chapters.
 
 ## LLM side (needs a GPU)
 The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
+
+#### Installation
+In order to quickly run the LLM side, you can use the following installation commands:
+```bash
+pip install wafl-llm
+wafl-llm start
+```
+which will use the default models and start the server on port 8080.
+
+#### Docker
 A docker image can be used to run it as in the following:
 
 ```bash
