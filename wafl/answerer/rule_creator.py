@@ -36,5 +36,15 @@ class RuleCreator:
 
         return "\n".join(rules_texts)
 
-    async def recursively_add_rules(self, query_text):
-        pass
+    async def recursively_add_rules(self, query_text, depth=2):
+        rules = await self._knowledge.ask_for_rule_backward(query_text, threshold=0.95)
+        rules = rules[: self._max_num_rules]
+        rules_texts = []
+        for rule in rules:
+            rules_text = f"- If {rule.effect.text} go through the following points:\n"
+            for cause_index, causes in enumerate(rule.causes):
+                indentation = self._indent_str * depth
+                rules_text += f"{indentation}{cause_index + 1}) {causes.text}\n"
+                rules_text += await self.recursively_add_rules(causes.text, depth + 1)
+
+            rules_texts.append(rules_text)

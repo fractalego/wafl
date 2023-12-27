@@ -15,5 +15,5 @@ class BaseKnowledge:
     ):
         raise NotImplementedError()
 
-    async def ask_for_rule_backward(self, query):
+    async def ask_for_rule_backward(self, query, threshold=None):
         raise NotImplementedError()

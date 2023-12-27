@@ -28,9 +28,7 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.49
     _threshold_for_facts = 0.4
-    _threshold_for_fact_rules = 0.6
-    _threshold_for_fact_rules_for_creation = 0.6
-    _threshold_for_partial_facts = 0.6
+    _threshold_for_rules = 0.9
     _max_rules_per_type = 3
 
     def __init__(self, config, rules_text=None, logger=None):
@@ -42,11 +40,7 @@ class SingleFileKnowledge(BaseKnowledge):
             "text_embedding_model",
             config,
         )
-        self._rules_incomplete_retriever = DenseRetriever(
-            "text_embedding_model", config
-        )
-        self._rules_fact_retriever = DenseRetriever("text_embedding_model", config)
-        self._rules_question_retriever = DenseRetriever("text_embedding_model", config)
+        self._rules_retriever = DenseRetriever("text_embedding_model", config)
         self._rules_string_retriever = StringRetriever()
         if rules_text:
             facts_and_rules = get_facts_and_rules_from_text(rules_text)
@@ -82,7 +76,7 @@ class SingleFileKnowledge(BaseKnowledge):
         index = str(len(self._rules_dict))
         index = f"R{index}"
         self._rules_dict[index] = rule
-        await self._rules_fact_retriever.add_text_and_index(
+        await self._rules_retriever.add_text_and_index(
             clean_text_for_retrieval(rule.effect.text), index=index
         )
 
@@ -148,8 +142,10 @@ class SingleFileKnowledge(BaseKnowledge):
             if item[1] > threshold
         ]
 
-    async def ask_for_rule_backward(self, query):
-        rules_and_scores = await self._ask_for_rule_backward_with_scores(query)
+    async def ask_for_rule_backward(self, query, threshold=None):
+        rules_and_scores = await self._ask_for_rule_backward_with_scores(
+            query, threshold=threshold
+        )
         return get_first_cluster_of_rules(rules_and_scores)
 
     def get_facts_and_rule_as_text(self):
@@ -179,21 +175,9 @@ class SingleFileKnowledge(BaseKnowledge):
             if text_is_exact_string(rule.effect.text):
                 continue
 
-            if "{" in rule.effect.text:
-                await self._rules_incomplete_retriever.add_text_and_index(
-                    clean_text_for_retrieval(rule.effect.text), index
-                )
-                continue
-
-            elif rule.effect.is_question:
-                await self._rules_question_retriever.add_text_and_index(
-                    clean_text_for_retrieval(rule.effect.text), index
-                )
-
-            else:
-                await self._rules_fact_retriever.add_text_and_index(
-                    clean_text_for_retrieval(rule.effect.text), index
-                )
+            await self._rules_retriever.add_text_and_index(
+                clean_text_for_retrieval(rule.effect.text), index
+            )
 
         for index, rule in self._rules_dict.items():
             if not text_is_exact_string(rule.effect.text):
@@ -216,7 +200,7 @@ class SingleFileKnowledge(BaseKnowledge):
 
         return knowledge
 
-    async def _ask_for_rule_backward_with_scores(self, query):
+    async def _ask_for_rule_backward_with_scores(self, query, threshold=None):
         if text_is_exact_string(query.text):
             indices_and_scores = (
                 await self._rules_string_retriever.get_indices_and_scores_from_text(
@@ -226,55 +210,21 @@ class SingleFileKnowledge(BaseKnowledge):
             return [(self._rules_dict[item[0]], item[1]) for item in indices_and_scores]
 
         indices_and_scores = (
-            await self._rules_fact_retriever.get_indices_and_scores_from_text(
-                query.text
-            )
+            await self._rules_retriever.get_indices_and_scores_from_text(query.text)
         )
-        if not first_n:
-            fact_rules = [
-                (self._rules_dict[item[0]], item[1])
-                for item in indices_and_scores
-                if item[1] > self._threshold_for_fact_rules
-            ]
 
-        else:
-            fact_rules = [
-                (self._rules_dict[item[0]], item[1])
-                for item in indices_and_scores
-                if item[1] > self._threshold_for_fact_rules_for_creation
-            ]
+        if threshold == None:
+            threshold = self._threshold_for_rules
 
-        fact_rules = [item for item in sorted(fact_rules, key=lambda x: -x[1])][
+        rules = [
+            (self._rules_dict[item[0]], item[1])
+            for item in indices_and_scores
+            if item[1] > threshold
+        ]
+
+        rules = [item for item in sorted(rules, key=lambda x: -x[1])][
             : self._max_rules_per_type
         ]
 
-        indices_and_scores = (
-            await self._rules_question_retriever.get_indices_and_scores_from_text(
-                query.text
-            )
-        )
-        question_rules = [
-            (self._rules_dict[item[0]], item[1])
-            for item in indices_and_scores
-            if item[1] > self._threshold_for_questions_in_rules
-        ]
-        question_rules = [item for item in sorted(question_rules, key=lambda x: -x[1])][
-            : self._max_rules_per_type
-        ]
-
-        indices_and_scores = (
-            await self._rules_incomplete_retriever.get_indices_and_scores_from_text(
-                query.text
-            )
-        )
-        incomplete_rules = [
-            (self._rules_dict[item[0]], item[1])
-            for item in indices_and_scores
-            if item[1] > self._threshold_for_partial_facts
-        ]
-        incomplete_rules = [
-            item for item in sorted(incomplete_rules, key=lambda x: -x[1])
-        ][: self._max_rules_per_type]
-
-        rules_and_scores = fact_rules + question_rules + incomplete_rules
+        rules_and_scores = rules
         return rules_and_scores
