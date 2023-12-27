@@ -1,7 +1,8 @@
 ### TODO
 
-* create actions from command line
+/* create actions from command line
    * add condition of when to stop to the actions
+   * Perhaps the expectation pattern could be build in the rules themselves
 
 * BUG: the prior memory leaks even when re-loading the interface!!!
 

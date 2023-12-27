@@ -27,8 +27,8 @@ class SingleFileKnowledge(BaseKnowledge):
     _threshold_for_questions_from_user = 0.55
     _threshold_for_questions_from_bot = 0.6
     _threshold_for_questions_in_rules = 0.49
-    _threshold_for_facts = 0.4
-    _threshold_for_rules = 0.9
+    _threshold_for_facts = 0.7
+    _threshold_for_rules = 0.85
     _max_rules_per_type = 3
 
     def __init__(self, config, rules_text=None, logger=None):
