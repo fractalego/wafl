@@ -1,8 +1,15 @@
 ### TODO
 
 /* create actions from command line
-   * add condition of when to stop to the actions #### EXPECTATION PATTERN
-   * Perhaps the expectation pattern could be build in the rules themselves
+   /* add condition of when to stop to the actions
+
+#### Find way to delete cache in remote llm connector
+#### Put colors in action output (and dummy interface)
+#### Add green for when an expectation is matched
+#### write docs about actions
+#### push new version to main
+
+* Perhaps the expectation pattern could be build in the rules themselves
 
 /* BUG: the prior memory leaks even when re-loading the interface!!!
 

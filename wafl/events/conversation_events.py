@@ -21,6 +21,7 @@ class ConversationEvents:
         self._config = config
         self._knowledge = load_knowledge(config, logger)
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
+        self._answerer._bridge._connector._cache = {}
         self._interface = interface
         self._logger = logger
         self._is_computing = False

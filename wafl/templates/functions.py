@@ -90,7 +90,6 @@ def add_to_shopping_list(list_of_items_to_add):
             db["shopping_list"].append(item)
 
     json.dump(db, open(_db_filename, "w"))
-
     return "Item added"
 
 
@@ -101,7 +100,6 @@ def remove_shopping_list(list_of_items_to_remove):
             db["shopping_list"].remove(item)
 
     json.dump(db, open(_db_filename, "w"))
-
     return "Item removed"
 
 

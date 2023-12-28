@@ -14,7 +14,6 @@ class Entailer:
         prompt = await self._get_answer_prompt(lhs, rhs, dialogue)
         result = await self._connector.generate(prompt)
         result = self._clean_result(result)
-        print(result)
         return result == "yes"
 
     async def _get_answer_prompt(self, lhs, rhs, dialogue):
