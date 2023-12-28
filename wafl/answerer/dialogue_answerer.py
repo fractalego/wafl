@@ -43,9 +43,8 @@ class DialogueAnswerer(BaseAnswerer):
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
-        query = Query.create_from_text(query_text)
+        query = Query.create_from_text("The user says: " + query_text)
         rules_texts = await self._get_relevant_rules(query)
-
         dialogue = self._interface.get_utterances_list_with_timestamp()[
             -self._max_num_past_utterances :
         ]
