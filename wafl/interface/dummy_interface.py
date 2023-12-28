@@ -5,6 +5,9 @@ from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
+COLOR_START = "\033[94m"
+COLOR_END = "\033[0m"
+
 
 class DummyInterface(BaseInterface):
     def __init__(self, to_utter=None, print_utterances=False):
@@ -20,7 +23,7 @@ class DummyInterface(BaseInterface):
                 print(text)
 
             else:
-                print("bot> " + text)
+                print(COLOR_START + "bot> " + text + COLOR_END)
 
         if not silent:
             self._dialogue += "bot: " + text + "\n"
@@ -31,7 +34,7 @@ class DummyInterface(BaseInterface):
         text = self._to_utter.pop(0).strip()
         text = self.__remove_activation_word_and_normalize(text)
         if self._print_utterances:
-            print("user> " + text)
+            print(COLOR_START + "user> " + text + COLOR_END)
 
         while self._is_listening and not_good_enough(text):
             await self.output("I did not quite understand that")
