@@ -47,6 +47,7 @@ class WebLoop:
         self._interface.deactivate()
         self._interface.activate()
         self._conversation_events.reload_knowledge()
+        self._conversation_events.reset_discourse_memory()
         await self._interface.output("Hello. How may I help you?")
         conversation = await self._get_conversation()
         return conversation

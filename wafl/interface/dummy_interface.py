@@ -5,32 +5,37 @@ from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 
+COLOR_START = "\033[94m"
+COLOR_END = "\033[0m"
+
 
 class DummyInterface(BaseInterface):
-    def __init__(self, to_utter=None, output_filter=None):
+    def __init__(self, to_utter=None, print_utterances=False):
         super().__init__()
         self._to_utter = to_utter
         self._bot_has_spoken = False
         self._dialogue = ""
-        self._output_filter = output_filter
+        self._print_utterances = print_utterances
 
     async def output(self, text: str, silent: bool = False):
-        if silent:
-            print(text)
-            return
+        if self._print_utterances:
+            if silent:
+                print(text)
 
-        if self._output_filter:
-            text = await self._output_filter.filter(
-                self.get_utterances_list_with_timestamp(), text
-            )
+            else:
+                print(COLOR_START + "bot> " + text + COLOR_END)
 
-        self._dialogue += "bot: " + text + "\n"
-        self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))
-        self.bot_has_spoken(True)
+        if not silent:
+            self._dialogue += "bot: " + text + "\n"
+            self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))
+            self.bot_has_spoken(True)
 
     async def input(self) -> str:
         text = self._to_utter.pop(0).strip()
         text = self.__remove_activation_word_and_normalize(text)
+        if self._print_utterances:
+            print(COLOR_START + "user> " + text + COLOR_END)
+
         while self._is_listening and not_good_enough(text):
             await self.output("I did not quite understand that")
             text = self._to_utter.pop(0)

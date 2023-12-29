@@ -22,7 +22,6 @@ setup(
         "wafl.connectors.remote",
         "wafl.events",
         "wafl.extractors",
-        "wafl.filter",
         "wafl.inference",
         "wafl.interface",
         "wafl.knowledge",

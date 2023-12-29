@@ -53,6 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="running_WAFL.html">Running WAFL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="facts_and_rules.html">The rules.yaml file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testcases.html">Creating a testcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Running Actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -103,17 +105,21 @@ Please see the examples in the following chapters.</p>
 </section>
 <section id="llm-side-needs-a-gpu">
 <h2>LLM side (needs a GPU)<a class="headerlink" href="#llm-side-needs-a-gpu" title="Permalink to this heading"></a></h2>
-<p>The second part is a machine that runs on a machine accessible from the interface side.
-The initial configuration is for a local deployment of language models.
-No action is needed to run WAFL if you want to run it as a local instance.</p>
-<p>However, a multi-user setup will benefit for a dedicated server.
-In this case, a docker image can be used</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p8080:8080<span class="w"> </span>--env<span class="w"> </span><span class="nv">NVIDIA_DISABLE_REQUIRE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>fractalego/wafl-llm:latest
+<p>The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
+In order to quickly run the LLM side, you can use the following installation commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>wafl-llm
+$<span class="w"> </span>wafl-llm<span class="w"> </span>start
+
+which<span class="w"> </span>will<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>default<span class="w"> </span>models<span class="w"> </span>and<span class="w"> </span>start<span class="w"> </span>the<span class="w"> </span>server<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">8080</span>.
+</pre></div>
+</div>
+<p>Alternatively, a Docker image can be used to run it as in the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p8080:8080<span class="w"> </span>--env<span class="w"> </span><span class="nv">NVIDIA_DISABLE_REQUIRE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>fractalego/wafl-llm:0.80
 </pre></div>
 </div>
 <p>The interface side has a <cite>config.json</cite> file that needs to be filled with the IP address of the LLM side.
-The default is localhost.
-Alternatively, you can run the LLM side by cloning <a class="reference external" href="https://github.com/fractalego/wafl-llm">this repository</a>.</p>
+The default is localhost.</p>
+<p>Finally, you can run the LLM side by cloning [this repository](<a class="reference external" href="https://github.com/fractalego/wafl-llm">https://github.com/fractalego/wafl-llm</a>).</p>
 </section>
 </section>
 
