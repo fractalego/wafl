@@ -21,6 +21,7 @@ class ConversationEvents:
         self._config = config
         self._knowledge = load_knowledge(config, logger)
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
+        self._answerer._bridge._connector._cache = {}
         self._interface = interface
         self._logger = logger
         self._is_computing = False
@@ -104,6 +105,11 @@ class ConversationEvents:
 
     def reload_knowledge(self):
         self._knowledge = load_knowledge(self._config, self._logger)
+
+    def reset_discourse_memory(self):
+        self._answerer = create_answerer(
+            self._config, self._knowledge, self._interface, logger
+        )
 
     def _activation_word_in_text(self, activation_word, text):
         if f"[{normalized(activation_word)}]" in normalized(text):

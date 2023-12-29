@@ -4,6 +4,4 @@ from wafl.connectors.remote.remote_whisper_connector import RemoteWhisperConnect
 class WhisperConnectorFactory:
     @staticmethod
     def get_connector(config):
-        return RemoteWhisperConnector(
-            config.get_value("listener_model")
-        )
+        return RemoteWhisperConnector(config.get_value("listener_model"))

@@ -42,20 +42,6 @@ def get_first_cluster_of_rules(rules_and_threshold):
     return rules
 
 
-def filter_out_rules_that_are_too_dissimilar_to_query(query, rules_and_scores):
-    num_query_words = len(query.text.split())
-    new_rules_and_scores = []
-    for item in rules_and_scores:
-        rule = item[0]
-        num_rule_effect_words = len(rule.effect.text.split())
-        if num_query_words < num_rule_effect_words / 3:
-            continue
-
-        new_rules_and_scores.append(item)
-
-    return new_rules_and_scores
-
-
 async def filter_out_rules_through_entailment(entailer, query, rules_and_scores):
     new_rules_and_scores = []
     for rule, score in rules_and_scores:

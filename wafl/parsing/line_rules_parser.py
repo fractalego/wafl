@@ -3,7 +3,7 @@ from wafl.facts import Fact
 from wafl.rules import Rule
 
 
-def parse_rule_from_single_line(text, knowledge_name=None):
+def parse_rule_from_single_line(text):
     if ":-" not in text:
         return None
 
@@ -12,13 +12,11 @@ def parse_rule_from_single_line(text, knowledge_name=None):
     effect = Fact(
         text=effect_text.strip(),
         is_question=is_question(effect_text),
-        knowledge_name=knowledge_name,
     )
     causes = [
         Fact(
             text=item.strip(),
             is_question=is_question(item),
-            knowledge_name=knowledge_name,
         )
         for item in causes_text.split(";")
     ]

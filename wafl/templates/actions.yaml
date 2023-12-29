@@ -1,0 +1,7 @@
+action_1_summarise_guardian:
+  -
+    action: get the news from the guardian website
+    expected: the bot outputs a list of headlines
+  -
+    action: write the list of news headlines above as a text into the file summary_news.txt
+    expected:

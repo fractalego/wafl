@@ -1,11 +1,26 @@
 ### TODO
 
+/* create actions from command line
+   /* add condition of when to stop to the actions
 
-* push docker image to docker hub
-* update all to the vast.ai
-* write new docs
-* new version on github!
-* make it easy to run the llm on the server (something more than docker perhaps)?
+#### Find way to delete cache in remote llm connector
+#### Put colors in action output (and dummy interface)
+#### Add green for when an expectation is matched
+#### write docs about actions
+#### push new version to main
+
+* Perhaps the expectation pattern could be build in the rules themselves
+
+/* BUG: the prior memory leaks even when re-loading the interface!!!
+
+* clean single_file_knowledge: it still divides facts, question, and incomplete for rule retrieval.
+  Use just one retriever and threshold for all
+
+/* push docker image to docker hub
+/* update all to the vast.ai
+/* write new docs
+/* new version on github!
+/* make it easy to run the llm on the server (something more than docker perhaps)?
 
 /* re-train the whisper model using the distilled version
 /* make rules reloadable
@@ -15,16 +30,16 @@
 /* update tests
 
 
-* lots of duplicates in facts! Avoid that
-  * use timestamp for facts (or an index in terms of conversation item)
-  * select only most n recent timestamps
-  * do not add facts that are already in the list (before cluster_facts)
+/* lots of duplicates in facts! Avoid that
+/  * use timestamp for facts (or an index in terms of conversation item)
+/  * select only most n recent timestamps
+/  * do not add facts that are already in the list (before cluster_facts)
 
 
-* redeploy locally and on the server
-* new version on github
+/* redeploy locally and on the server
+/* new version on github
 
-* add rules for
+/* add rules for
    / shopping lists
    trains and music
 

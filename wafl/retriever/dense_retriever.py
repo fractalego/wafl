@@ -28,9 +28,6 @@ class DenseRetriever(BaseRetriever):
     async def get_indices_and_scores_from_text(
         self, text: str
     ) -> List[Tuple[str, float]]:
-        if not text or len(text) < self._threshold_length:
-            return []
-
         embeddings = await self._get_embeddings_from_text(text)
         return self._embeddings_model.similar_by_vector(embeddings, topn=5)
 
