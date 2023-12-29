@@ -17,6 +17,8 @@ Welcome to WAFL's 0.0.80 documentation!
    running_WAFL
    facts_and_rules
    examples
+   testcases
+   actions
    license
 
 Indices and tables
