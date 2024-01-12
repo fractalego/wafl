@@ -17,7 +17,7 @@ class RuleCreator:
         self._indent_str = "    "
 
     async def create_from_query(self, query):
-        rules = await self._knowledge.ask_for_rule_backward(query)
+        rules = await self._knowledge.ask_for_rule_backward(query, threshold=0.95)
         rules = rules[: self._max_num_rules]
         rules_texts = []
         for rule in rules:
@@ -34,6 +34,9 @@ class RuleCreator:
         return "\n".join(rules_texts)
 
     async def recursively_add_rules(self, query, depth=2):
+        if depth > self._max_indentation:
+            return ""
+
         rules = await self._knowledge.ask_for_rule_backward(query, threshold=0.95)
         rules = rules[: self._max_num_rules]
         rules_texts = []
@@ -42,7 +45,7 @@ class RuleCreator:
             for cause_index, causes in enumerate(rule.causes):
                 indentation = self._indent_str * depth
                 rules_text += f"{indentation}{cause_index + 1}) {causes.text}\n"
-                rules_text += await self.recursively_add_rules(causes.text, depth + 1)
+                rules_text += await self.recursively_add_rules(causes, depth + 1)
 
             rules_texts.append(rules_text)
 
