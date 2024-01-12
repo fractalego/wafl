@@ -126,7 +126,7 @@ class DialogueAnswerer(BaseAnswerer):
             > conversational_timestamp - self._max_num_past_utterances_for_facts
         ]
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, threshold=0.8
+            query, is_from_user=True, threshold=0.95
         )
         if facts_and_thresholds:
             facts = [
