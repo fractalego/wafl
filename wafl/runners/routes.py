@@ -9,7 +9,6 @@ from flask_cors import CORS
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.scheduler import Scheduler
