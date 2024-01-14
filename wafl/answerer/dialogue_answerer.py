@@ -212,7 +212,7 @@ class DialogueAnswerer(BaseAnswerer):
                 break
 
         if not result:
-            result = f'\n"""python\n{to_execute}\n"""'
+            result = f"\n```python\n{to_execute}\n```"
 
         return result
 

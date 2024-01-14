@@ -41,11 +41,11 @@ def predict_action(config, actions_list, expected_list):
             raise ValueError("The agent did not say anything.")
 
         if expected and not asyncio.run(
-                entailer.left_entails_right(
-                    last_utterance,
-                    expected,
-                    "\n".join(interface.get_utterances_list()[:-1]),
-                )
+            entailer.left_entails_right(
+                last_utterance,
+                expected,
+                "\n".join(interface.get_utterances_list()[:-1]),
+            )
         ):
             del entailer, conversation_events, interface
             raise ValueError(
