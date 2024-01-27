@@ -1,4 +1,4 @@
-class RuleCreator:
+class RuleMaker:
     def __init__(
         self,
         knowledge,
@@ -21,7 +21,7 @@ class RuleCreator:
         self._indent_str = "    "
 
     async def create_from_query(self, query):
-        rules = await self._knowledge.ask_for_rule_backward(query, threshold=0.95)
+        rules = await self._knowledge.ask_for_rule_backward(query, threshold=0.92)
         rules = rules[: self._max_num_rules]
         rules_texts = []
         for rule in rules:

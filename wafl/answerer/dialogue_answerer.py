@@ -10,7 +10,7 @@ from wafl.answerer.answerer_implementation import (
     get_last_user_utterance,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.answerer.rule_creator import RuleCreator
+from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.exceptions import CloseConversation
 from wafl.extractors.dataclasses import Query, Answer
@@ -31,7 +31,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rule_with_timestamp = None
         self._max_predictions = 3
-        self._rule_creator = RuleCreator(
+        self._rule_creator = RuleMaker(
             knowledge,
             config,
             interface,
@@ -206,7 +206,7 @@ class DialogueAnswerer(BaseAnswerer):
 
             except Exception as e:
                 result = (
-                    f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                    f'Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}'
                 )
                 traceback.print_exc()
                 break
