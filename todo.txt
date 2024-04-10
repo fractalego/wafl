@@ -1,6 +1,20 @@
+1) train on more steps
+   a) try 3 epochs, save each
+   b) use lr=1e-6
+   c) use batch_size=4
+   d) do not use 4 bit original model, use 16 bit (on the GPU)
+2) evaluate result
+3) Upload to hf
+4) create a test set of 50 elements for paper. Find a way to test it. repeat from 1)
+5) refactor code
+6) maybe change voice model
+6) write paper
+
+
+
 ### TODO
 
-* script to add wrong <tags> when none are needed PharazonE
+* script to add wrong <tags> when none are needed
 
 
 On the to_modify set:
