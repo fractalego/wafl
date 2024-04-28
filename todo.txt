@@ -1,3 +1,7 @@
+* on wafl_llm make it so only some LLMs are supported
+* change speaker model with newer one
+
+
 1) train on more steps
    a) try 3 epochs, save each
    b) use lr=1e-6
