@@ -9,13 +9,13 @@ class RemoteLLMConnector(BaseLLMConnector):
     _max_reply_length = 1024
     _num_prediction_tokens = 200
     _cache = {}
-    _num_replicas = 10
 
-    def __init__(self, config, last_strings=None):
+    def __init__(self, config, last_strings=None, num_replicas=3):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
+        self._num_replicas = num_replicas
 
         try:
             loop = asyncio.get_running_loop()
@@ -28,24 +28,28 @@ class RemoteLLMConnector(BaseLLMConnector):
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str, temperature=None, num_tokens=None) -> [str]:
+    async def predict(self, prompt: str, temperature=None, num_tokens=None, num_replicas=None) -> [str]:
         if not temperature:
             temperature = 0.5
 
         if not num_tokens:
             num_tokens = self._num_prediction_tokens
 
+        if not num_replicas:
+            num_replicas = self._num_replicas
+
         payload = {
             "data": prompt,
             "temperature": temperature,
             "num_tokens": num_tokens,
             "last_strings": self._last_strings,
-            "num_replicas": self._num_replicas,
+            "num_replicas": num_replicas,
         }
 
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(ssl=False)
+                conn_timeout=6000,
+                connector=aiohttp.TCPConnector(ssl=False),
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
                     answer = await response.text()

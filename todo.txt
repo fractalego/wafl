@@ -1,8 +1,62 @@
+* on wafl_llm make it so only some LLMs are supported
+* change speaker model with newer one
+
+
+1) train on more steps
+   a) try 3 epochs, save each
+   b) use lr=1e-6
+   c) use batch_size=4
+   d) do not use 4 bit original model, use 16 bit (on the GPU)
+2) evaluate result
+3) Upload to hf
+4) create a test set of 50 elements for paper. Find a way to test it. repeat from 1)
+5) refactor code
+6) maybe change voice model
+6) write paper
+
+
+
 ### TODO
+
+* script to add wrong <tags> when none are needed
+
+
+On the to_modify set:
+* sometimes the user answers yes (after "do you confirm?") and the dialogue does not have "user: yes"
+
+
+On the accepted set:
+* CHANGE <|USER|>\n into user: (some of the elements are in the wrong format)
+* Perhaps change <memory>function()</memory> into <memory|retrieve><execute>function()</execute></memory> (the memory should store the results of the function)
+* Create a first paragraphs with the summary of the conversation: The conversation must always be grounded on the summary (USE LLM TO CREATE THE SUMMARY)
+* The LLM wrote text after </execute|run|running> hallucinating the result of the execution. Think about how to deal with that.
+* all the rules that says "two level of retrieval" should have the trigger rewritten to something more specific
+* change "bot" into "assistant" some of times
+* some sentences are between [] and should be removed
+* put the items in <memory> so far in the conversation summary. If it is a function then you need to simulaten the relevant output using the LLM
+* sometimes at the end of the conversation the bot says "Process finished with exit code 0". Erase this
+* add ability to index files and files in entire folders
+* if the bot uses a function to retrieve information, you should add <memory>. This is symmetrical to <memory> with a function call when necessary.
+* some tags like <output> should end the training item text
+* todo User -> user, or at least be internally consistent
+
+* find a way to use HuggingFaceH4/ultrachat_200k as a starting point for each item
+   - each item should be easy to copy into a csv.
+   - Separate the items with special tokens/lines
+* Create a dataset with about 500 elements
+   - use hugginface chat dataset as a starting point for
+       - themes
+       - conversation guide in prompt
+   - use LLM to create corresponding python code
+* retriever in create_prompt
+* change num_replicas back to 10 in remote_llm_connector
+
 
 /* create actions from command line
    /* add condition of when to stop to the actions
 
+
+Actions:
 #### Find way to delete cache in remote llm connector
 #### Put colors in action output (and dummy interface)
 #### Add green for when an expectation is matched

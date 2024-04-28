@@ -4,6 +4,7 @@
   "deactivate_sound": true,
   "rules": "rules.yaml",
   "functions": "functions.py",
+  "max_recursion": 2,
   "llm_model": {
     "model_host": "localhost",
     "model_port": 8080

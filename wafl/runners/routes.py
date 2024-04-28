@@ -9,7 +9,6 @@ from flask_cors import CORS
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
-from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.scheduler.conversation_loop import ConversationLoop
 from wafl.scheduler.scheduler import Scheduler
@@ -123,5 +122,11 @@ def add_new_rules(app, conversation_id, web_server_loop):
         f"/{conversation_id}/thumbs_down",
         f"thumbs_down_{conversation_id}",
         web_server_loop.thumbs_down,
+        methods=["POST"],
+    )
+    app.add_url_rule(
+        f"/{conversation_id}/toggle_logs",
+        f"toggle_logs_{conversation_id}",
+        web_server_loop.toggle_logs,
         methods=["POST"],
     )
