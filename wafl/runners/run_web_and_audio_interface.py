@@ -5,6 +5,8 @@ import threading
 
 from flask import render_template, redirect, url_for
 
+from wafl.interface.list_interface import ListInterface
+from wafl.interface.voice_interface import VoiceInterface
 from wafl.scheduler.scheduler import Scheduler
 from wafl.scheduler.web_loop import WebLoop
 from wafl.scheduler.conversation_loop import ConversationLoop
@@ -35,7 +37,7 @@ def run_app():
 
     def create_scheduler_and_webserver_loop(conversation_id):
         config = Configuration.load_local_config()
-        interface = QueueInterface()
+        interface = ListInterface([VoiceInterface(config), QueueInterface()])
         interface.activate()
         conversation_events = ConversationEvents(
             config=config,

@@ -2,7 +2,7 @@ import asyncio
 import os
 
 from flask import render_template, request, jsonify
-from wafl.interface.queue_interface import QueueInterface
+from wafl.interface.base_interface import BaseInterface
 from wafl.logger.history_logger import HistoryLogger
 from wafl.scheduler.messages_creator import MessagesCreator
 
@@ -12,7 +12,7 @@ _path = os.path.dirname(__file__)
 class WebLoop:
     def __init__(
         self,
-        interface: QueueInterface,
+        interface: BaseInterface,
         conversation_id: int,
         conversation_events: "ConversationEvents",
     ):

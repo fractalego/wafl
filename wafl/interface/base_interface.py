@@ -32,9 +32,6 @@ class BaseInterface:
         self._facts = []
         self._utterances = []
 
-    def add_hotwords(self, hotwords: List[str]):
-        raise NotImplementedError
-
     async def add_choice(self, text):
         self._choices.append((time.time(), text))
         await self.output(f"Making the choice: {text}", silent=True)
