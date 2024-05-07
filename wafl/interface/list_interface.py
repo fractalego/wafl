@@ -42,6 +42,8 @@ class ListInterface(BaseInterface):
         for interface in self._interfaces_list:
             interface.deactivate()
         super().deactivate()
+        self._synchronize_interfaces()
+
 
     def add_hotwords(self, hotwords):
         for interface in self._interfaces_list:

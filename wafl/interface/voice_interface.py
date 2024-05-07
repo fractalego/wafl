@@ -3,9 +3,8 @@ import random
 import re
 
 from wafl.events.utils import remove_text_between_brackets
-from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
-from wafl.interface.utils import get_most_common_words, not_good_enough
+from wafl.interface.utils import not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker

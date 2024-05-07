@@ -48,8 +48,7 @@ def run_app():
             interface,
             conversation_events,
             _logger,
-            activation_word="", #config.get_value("waking_up_word"),
-            max_misses=-1,
+            activation_word=config.get_value("waking_up_word"),
         )
         web_loop = WebLoop(interface, conversation_id, conversation_events)
         return {
