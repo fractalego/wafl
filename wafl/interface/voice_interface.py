@@ -1,12 +1,10 @@
 import os
 import random
 import re
-import time
 
 from wafl.events.utils import remove_text_between_brackets
-from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
-from wafl.interface.utils import get_most_common_words, not_good_enough
+from wafl.interface.utils import not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
 from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
@@ -42,17 +40,6 @@ class VoiceInterface(BaseInterface):
         self._bot_has_spoken = False
         self._utterances = []
 
-    async def add_hotwords_from_knowledge(
-        self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
-    ):
-        hotwords = get_most_common_words(
-            knowledge.get_facts_and_rule_as_text(),
-            max_num_words=max_num_words,
-            count_threshold=count_threshold,
-        )
-        hotwords = [word.lower() for word in hotwords]
-        self._listener.add_hotwords(hotwords)
-
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
@@ -65,8 +52,8 @@ class VoiceInterface(BaseInterface):
             return
 
         self._listener.activate()
-        text = from_bot_to_user(text)
-        self._utterances.append((time.time(), f"bot: {text}"))
+        text = text
+        self._insert_utterance("bot", text)
         print(COLOR_START + "bot> " + text + COLOR_END)
         await self._speaker.speak(text)
         self.bot_has_spoken(True)
@@ -89,7 +76,7 @@ class VoiceInterface(BaseInterface):
         print(COLOR_START + "user> " + text + COLOR_END)
         utterance = remove_text_between_brackets(text)
         if utterance.strip():
-            self._utterances.append((time.time(), f"user: {text}"))
+            self._insert_utterance("user", text)
 
         return text
 

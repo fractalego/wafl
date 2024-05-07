@@ -17,4 +17,8 @@ def convert_numbers_to_words(text):
 
         new_words.append(new_word)
 
-    return " ".join(new_words).replace("-", " ")
+    return _clean_text(" ".join(new_words))
+
+
+def _clean_text(text):
+    return text.replace(":", ": ").replace("-", " ")

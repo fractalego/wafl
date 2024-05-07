@@ -84,7 +84,7 @@ def get_guardian_headlines():
 
 
 def get_time():
-    return datetime.now().strftime("%H:%M")
+    return datetime.now().strftime("%H,%M")
 
 
 def get_date():
