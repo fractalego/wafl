@@ -48,11 +48,9 @@ def run_app():
             interface,
             conversation_events,
             _logger,
-            activation_word="",   ### use activation word in config!!
+            activation_word="", #config.get_value("waking_up_word"),
             max_misses=-1,
-            deactivate_on_closed_conversation=False,
         )
-        asyncio.run(interface.output("Hello. How may I help you?"))
         web_loop = WebLoop(interface, conversation_id, conversation_events)
         return {
             "scheduler": Scheduler([conversation_loop, web_loop]),

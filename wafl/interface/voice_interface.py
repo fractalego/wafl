@@ -41,17 +41,6 @@ class VoiceInterface(BaseInterface):
         self._bot_has_spoken = False
         self._utterances = []
 
-    async def add_hotwords_from_knowledge(
-        self, knowledge: "Knowledge", max_num_words: int = 100, count_threshold: int = 5
-    ):
-        hotwords = get_most_common_words(
-            knowledge.get_facts_and_rule_as_text(),
-            max_num_words=max_num_words,
-            count_threshold=count_threshold,
-        )
-        hotwords = [word.lower() for word in hotwords]
-        self._listener.add_hotwords(hotwords)
-
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
 
@@ -64,7 +53,7 @@ class VoiceInterface(BaseInterface):
             return
 
         self._listener.activate()
-        text = from_bot_to_user(text)
+        text = text
         self._insert_utterance("bot", text)
         print(COLOR_START + "bot> " + text + COLOR_END)
         await self._speaker.speak(text)

@@ -60,6 +60,9 @@ class BaseInterface:
         self._choices = []
         self._facts = []
 
+    def add_hotwords(self, hotwords):
+        pass
+
     def _decorate_reply(self, text: str) -> str:
         if not self._decorator:
             return text

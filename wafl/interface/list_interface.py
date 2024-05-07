@@ -23,9 +23,29 @@ class ListInterface(BaseInterface):
         )
         return done.pop().result()
 
+    async def insert_input(self, text: str):
+        await asyncio.wait(
+            [interface.insert_input(text) for interface in self._interfaces_list],
+            return_when=asyncio.ALL_COMPLETED
+        )
+
     def bot_has_spoken(self, to_set: bool = None):
         for interface in self._interfaces_list:
             interface.bot_has_spoken(to_set)
+
+    def activate(self):
+        for interface in self._interfaces_list:
+            interface.activate()
+        super().activate()
+
+    def deactivate(self):
+        for interface in self._interfaces_list:
+            interface.deactivate()
+        super().deactivate()
+
+    def add_hotwords(self, hotwords):
+        for interface in self._interfaces_list:
+            interface.add_hotwords(hotwords)
 
     def _synchronize_interfaces(self):
         for interface in self._interfaces_list:
