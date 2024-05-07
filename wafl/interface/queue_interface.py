@@ -1,5 +1,4 @@
 import asyncio
-import time
 
 from wafl.interface.base_interface import BaseInterface
 
@@ -16,9 +15,8 @@ class QueueInterface(BaseInterface):
             self.output_queue.append({"text": text, "silent": True})
             return
 
-        utterance = text
-        self.output_queue.append({"text": utterance, "silent": False})
-        self._utterances.append((time.time(), f"bot: {text}"))
+        self.output_queue.append({"text": text, "silent": False})
+        self._insert_utterance("bot", text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
@@ -26,8 +24,11 @@ class QueueInterface(BaseInterface):
             await asyncio.sleep(0.1)
 
         text = self.input_queue.pop(0)
-        self._utterances.append((time.time(), f"user: {text}"))
+        self._insert_utterance("user", text)
         return text
+
+    async def insert_input(self, text: str):
+        self.input_queue.append(text)
 
     def bot_has_spoken(self, to_set: bool = None):
         if to_set != None:

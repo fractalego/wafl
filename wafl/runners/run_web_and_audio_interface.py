@@ -48,7 +48,7 @@ def run_app():
             interface,
             conversation_events,
             _logger,
-            activation_word="",
+            activation_word="",   ### use activation word in config!!
             max_misses=-1,
             deactivate_on_closed_conversation=False,
         )

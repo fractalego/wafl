@@ -20,6 +20,9 @@ class BaseInterface:
     def bot_has_spoken(self, to_set: bool = None):
         raise NotImplementedError
 
+    async def insert_input(self, text: str):
+        pass
+
     def is_listening(self):
         return self._is_listening
 
@@ -62,3 +65,7 @@ class BaseInterface:
             return text
 
         return self._decorator.extract(text, self._utterances)
+
+    def _insert_utterance(self, speaker, text: str):
+        if self._utterances == [] or text != self._utterances[-1][1].replace(f"{speaker}: ", ""):
+            self._utterances.append((time.time(), f"{speaker}: {text}"))

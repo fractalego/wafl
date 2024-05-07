@@ -1,5 +1,6 @@
 import os
 import re
+import traceback
 
 from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
@@ -59,6 +60,7 @@ class ConversationEvents:
 
             if (
                 not text_is_question
+                and self._interface.get_utterances_list()
                 and self._interface.get_utterances_list()[-1].find("user:") == 0
             ):
                 await self._interface.output("I don't know what to reply")
@@ -108,7 +110,7 @@ class ConversationEvents:
 
     def reset_discourse_memory(self):
         self._answerer = create_answerer(
-            self._config, self._knowledge, self._interface, logger
+            self._config, self._knowledge, self._interface, self._logger
         )
 
     def _activation_word_in_text(self, activation_word, text):

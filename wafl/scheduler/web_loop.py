@@ -28,7 +28,7 @@ class WebLoop:
 
     async def handle_input(self):
         query = request.form["query"]
-        self._interface.input_queue.append(query)
+        await self._interface.insert_input(query)
         return f"""
     <textarea id="query" type="text"
            class='shadow-lg'

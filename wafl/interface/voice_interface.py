@@ -1,7 +1,6 @@
 import os
 import random
 import re
-import time
 
 from wafl.events.utils import remove_text_between_brackets
 from wafl.simple_text_processing.deixis import from_bot_to_user
@@ -66,7 +65,7 @@ class VoiceInterface(BaseInterface):
 
         self._listener.activate()
         text = from_bot_to_user(text)
-        self._utterances.append((time.time(), f"bot: {text}"))
+        self._insert_utterance("bot", text)
         print(COLOR_START + "bot> " + text + COLOR_END)
         await self._speaker.speak(text)
         self.bot_has_spoken(True)
@@ -89,7 +88,7 @@ class VoiceInterface(BaseInterface):
         print(COLOR_START + "user> " + text + COLOR_END)
         utterance = remove_text_between_brackets(text)
         if utterance.strip():
-            self._utterances.append((time.time(), f"user: {text}"))
+            self._insert_utterance("user", text)
 
         return text
 
