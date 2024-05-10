@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
 class Fact:
-    text: str
+    text: Union[str, dict]
     is_question: bool = False
     variable: str = None
     is_interruption: bool = False

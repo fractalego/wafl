@@ -5,6 +5,7 @@ from unittest import TestCase
 from wafl.config import Configuration
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.dummy_interface import DummyInterface
+from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 
 wafl_example = """
 rules:
@@ -15,14 +16,12 @@ rules:
     - reply casually to the conversation"
     
   - the user wants to buy coffee:
-    - the bot says the coffee prices
+    - the bot says the coffee prices:
+        - decaf is 1.50
+        - regular is 1.00
+        - espresso is 2.00
     - ask for which price range
     - tell them the right coffee
-    
-  - the bot says the coffee prices:
-    - decaf is 1.50
-    - regular is 1.00
-    - espresso is 2.00
 """
 
 
@@ -75,3 +74,23 @@ class TestRules(TestCase):
         self.assertIn("decaf", interface.get_facts_and_timestamp()[0][1])
         self.assertIn("regular", interface.get_facts_and_timestamp()[0][1])
         self.assertIn("espresso", interface.get_facts_and_timestamp()[0][1])
+
+    def test__nested_rules_are_printed_correctly(self):
+        rule_text = """
+rules:        
+    - the user wants to know the time:
+        - output "The time is <execute>get_time()</execute>":
+            - if the time is before 12:00 say "Good morning"
+            - if the time is after 12:00 say "Good afternoon"        
+        """.strip()
+
+        facts_and_rules = get_facts_and_rules_from_text(rule_text)
+        rule = facts_and_rules["rules"][0]
+        expected = """
+the user wants to know the time
+  -output "The time is <execute>get_time()</execute>"
+    -if the time is before 12:00 say "Good morning"
+    -if the time is after 12:00 say "Good afternoon"        
+        """.strip()
+        self.assertEqual(expected, str(rule).strip())
+
