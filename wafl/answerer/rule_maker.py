@@ -24,7 +24,7 @@ class RuleMaker:
         rules_texts = []
         for rule in rules:
             rules_text = rule.get_string_using_template(
-                "- If {effect} go through the following points:\n"
+                "- If {effect} go through the following points:"
             )
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
