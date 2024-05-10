@@ -1,12 +1,12 @@
 class RuleMaker:
     def __init__(
         self,
-        knowledge,
-        config,
-        interface,
-        max_num_rules,
-        delete_current_rule,
-        max_recursion=3,
+        knowledge: "Knowledge",
+        config: "BaseConfig",
+        interface: "BaseInterface",
+        max_num_rules: int,
+        delete_current_rule: str,
+        max_recursion: int = 3,
     ):
         self._knowledge = knowledge
         self._config = config
@@ -26,6 +26,8 @@ class RuleMaker:
             rules_text = rule.get_string_using_template(
                 "- If {effect} go through the following points:"
             )
+            rules_text += f'{rule.indent_str}- After you completed all the steps output "{self._delete_current_rule}" and continue the conversation.\n'
+
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 

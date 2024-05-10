@@ -88,9 +88,8 @@ rules:
         rule = facts_and_rules["rules"][0]
         expected = """
 the user wants to know the time
-  -output "The time is <execute>get_time()</execute>"
-    -if the time is before 12:00 say "Good morning"
-    -if the time is after 12:00 say "Good afternoon"        
+  - output "The time is <execute>get_time()</execute>"
+    - if the time is before 12:00 say "Good morning"
+    - if the time is after 12:00 say "Good afternoon"        
         """.strip()
         self.assertEqual(expected, str(rule).strip())
-

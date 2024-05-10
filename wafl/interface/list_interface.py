@@ -13,20 +13,20 @@ class ListInterface(BaseInterface):
     async def output(self, text: str, silent: bool = False):
         await asyncio.wait(
             [interface.output(text, silent) for interface in self._interfaces_list],
-            return_when=asyncio.ALL_COMPLETED
+            return_when=asyncio.ALL_COMPLETED,
         )
 
     async def input(self) -> str:
         done, pending = await asyncio.wait(
             [interface.input() for interface in self._interfaces_list],
-            return_when=asyncio.FIRST_COMPLETED
+            return_when=asyncio.FIRST_COMPLETED,
         )
         return done.pop().result()
 
     async def insert_input(self, text: str):
         await asyncio.wait(
             [interface.insert_input(text) for interface in self._interfaces_list],
-            return_when=asyncio.ALL_COMPLETED
+            return_when=asyncio.ALL_COMPLETED,
         )
 
     def bot_has_spoken(self, to_set: bool = None):
@@ -43,7 +43,6 @@ class ListInterface(BaseInterface):
             interface.deactivate()
         super().deactivate()
         self._synchronize_interfaces()
-
 
     def add_hotwords(self, hotwords):
         for interface in self._interfaces_list:

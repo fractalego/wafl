@@ -28,7 +28,9 @@ class RemoteLLMConnector(BaseLLMConnector):
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str, temperature=None, num_tokens=None, num_replicas=None) -> [str]:
+    async def predict(
+        self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
+    ) -> [str]:
         if not temperature:
             temperature = 0.5
 

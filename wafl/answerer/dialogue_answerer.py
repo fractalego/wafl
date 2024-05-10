@@ -206,7 +206,7 @@ class DialogueAnswerer(BaseAnswerer):
 
             except Exception as e:
                 result = (
-                    f'Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}'
+                    f"Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}"
                 )
                 traceback.print_exc()
                 break

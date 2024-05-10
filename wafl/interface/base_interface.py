@@ -70,5 +70,7 @@ class BaseInterface:
         return self._decorator.extract(text, self._utterances)
 
     def _insert_utterance(self, speaker, text: str):
-        if self._utterances == [] or text != self._utterances[-1][1].replace(f"{speaker}: ", ""):
+        if self._utterances == [] or text != self._utterances[-1][1].replace(
+            f"{speaker}: ", ""
+        ):
             self._utterances.append((time.time(), f"{speaker}: {text}"))
