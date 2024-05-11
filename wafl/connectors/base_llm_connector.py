@@ -1,7 +1,6 @@
 import logging
 import re
 
-
 from wafl.connectors.utils import select_best_answer
 
 _system_logger = logging.getLogger(__file__)
