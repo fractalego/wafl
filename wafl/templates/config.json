@@ -7,7 +7,8 @@
   "frontend_port": 8090,
   "llm_model": {
     "model_host": "localhost",
-    "model_port": 8080
+    "model_port": 8080,
+    "temperature": 0.4
   },
   "listener_model": {
     "model_host": "localhost",

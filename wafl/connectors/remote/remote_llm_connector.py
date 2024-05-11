@@ -17,6 +17,7 @@ class RemoteLLMConnector(BaseLLMConnector):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]
+        self._default_temperature = config["temperature"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         self._num_replicas = num_replicas
 
@@ -35,7 +36,7 @@ class RemoteLLMConnector(BaseLLMConnector):
         self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
     ) -> [str]:
         if not temperature:
-            temperature = 0.1
+            temperature = self._default_temperature
 
         if not num_tokens:
             num_tokens = self._num_prediction_tokens
