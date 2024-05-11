@@ -13,6 +13,7 @@ A typical configuration file looks like this:
       "deactivate_sound": true,
       "rules": "rules.yaml",
       "functions": "functions.py",
+      "frontend_port": 8081,
       "llm_model": {
         "model_host": "localhost",
         "model_port": 8080
@@ -44,6 +45,8 @@ These settings regulate the following:
     * "rules" is the file containing the facts and rules that guide the chatbot. The default is "rules.yaml".
 
     * "functions" is the file containing the functions that can be used in the rules. The default is "functions.py".
+
+    * "frontend_port" is the port where the web frontend is running. The default is 8090.
 
     * "llm_model" is the configuration to connect to the LLM model in the backend. The default is "localhost:8080".
 
