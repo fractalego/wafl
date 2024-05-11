@@ -1,7 +1,10 @@
+import json
+
 import aiohttp
 import asyncio
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.variables import is_supported
 
 
 class RemoteLLMConnector(BaseLLMConnector):
@@ -14,6 +17,7 @@ class RemoteLLMConnector(BaseLLMConnector):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]
+        self._default_temperature = config["temperature"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         self._num_replicas = num_replicas
 
@@ -28,9 +32,11 @@ class RemoteLLMConnector(BaseLLMConnector):
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str, temperature=None, num_tokens=None, num_replicas=None) -> [str]:
+    async def predict(
+        self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
+    ) -> [str]:
         if not temperature:
-            temperature = 0.5
+            temperature = self._default_temperature
 
         if not num_tokens:
             num_tokens = self._num_prediction_tokens
@@ -52,8 +58,11 @@ class RemoteLLMConnector(BaseLLMConnector):
                 connector=aiohttp.TCPConnector(ssl=False),
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    answer = await response.text()
-                    return answer.split("<||>")
+                    answer = json.loads(await response.text())
+                    status = answer["status"]
+                    if status != "success":
+                        raise RuntimeError(f"Error in prediction: {answer}")
+                    return answer["prediction"].split("<||>")
 
         return [""]
 
@@ -70,7 +79,14 @@ class RemoteLLMConnector(BaseLLMConnector):
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    await response.text()
+                    answer = json.loads(await response.text())
+                    wafl_llm_version = answer["version"]
+                    print(f"Connected to wafl-llm v{wafl_llm_version}.")
+                    if not is_supported(wafl_llm_version):
+                        print("This version of wafl-llm is not supported.")
+                        print("Please update wafl-llm.")
+                        raise aiohttp.client.InvalidURL
+
                     return True
 
         except aiohttp.client.InvalidURL:

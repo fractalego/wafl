@@ -39,7 +39,9 @@ class RemoteWhisperConnector:
                     data = await response.text()
                     prediction = json.loads(data)
                     if "transcription" not in prediction:
-                        raise RuntimeError("No transcription found in prediction. Is your microphone working?")
+                        raise RuntimeError(
+                            "No transcription found in prediction. Is your microphone working?"
+                        )
 
                     transcription = prediction["transcription"]
                     score = prediction["score"]

@@ -7,7 +7,7 @@ class Rule:
     effect: "Fact"
     causes: List["Fact"]
     _max_indentation = 3
-    _indent_str = "  "
+    indent_str = "  "
 
     def toJSON(self):
         return str(self)
@@ -33,20 +33,19 @@ class Rule:
 
         return rule_str
 
-
-    def _recursively_add_clauses(self, query: str, depth: int=1) -> str:
-        indentation = self._indent_str * depth
+    def _recursively_add_clauses(self, query: str, depth: int = 1) -> str:
+        indentation = self.indent_str * depth
         if type(query) == str:
-            return f"{indentation}-{query}\n"
+            return f"{indentation}- {query}\n"
 
         if type(query.text) == str:
-            return f"{indentation}-{query.text}\n"
+            return f"{indentation}- {query.text}\n"
 
         if depth > self._max_indentation:
             return ""
 
         clause = list(query.text.keys())[0]
-        rules_text = f"{indentation}-{clause}\n"
+        rules_text = f"{indentation}- {clause}\n"
         for clauses in query.text.values():
             for cause_index, clause in enumerate(clauses):
                 rules_text += self._recursively_add_clauses(clause, depth + 1)

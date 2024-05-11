@@ -160,9 +160,19 @@ class DialogueAnswerer(BaseAnswerer):
         self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
     async def _substitute_results_in_answer(self, answer_text):
-        matches = re.finditer(r"<execute>(.*?)</execute>", answer_text, re.DOTALL)
+        matches = re.finditer(r"<execute>(.*?)</execute>|<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
         for match in matches:
             to_execute = match.group(1)
+            if not to_execute:
+                continue
+            result = await self._run_code(to_execute)
+            answer_text = answer_text.replace(match.group(0), result)
+
+        matches = re.finditer(r"<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
+        for match in matches:
+            to_execute = match.group(1)
+            if not to_execute:
+                continue
             result = await self._run_code(to_execute)
             answer_text = answer_text.replace(match.group(0), result)
 
@@ -172,6 +182,13 @@ class DialogueAnswerer(BaseAnswerer):
         self, answer_text
     ):
         matches = re.finditer(r"<remember>(.*?)</remember>", answer_text, re.DOTALL)
+        memories = []
+        for match in matches:
+            to_execute = match.group(1)
+            answer_text = answer_text.replace(match.group(0), "")
+            memories.append(to_execute)
+
+        matches = re.finditer(r"<remember>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
         memories = []
         for match in matches:
             to_execute = match.group(1)
@@ -206,7 +223,7 @@ class DialogueAnswerer(BaseAnswerer):
 
             except Exception as e:
                 result = (
-                    f'Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}'
+                    f"Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}"
                 )
                 traceback.print_exc()
                 break
