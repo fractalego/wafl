@@ -19,7 +19,7 @@ app = get_app()
 _logger = LocalFileLogger()
 
 
-def run_app():
+def run_server_only_app():
     @app.route("/create_new_instance", methods=["POST"])
     def create_new_instance():
         conversation_id = random.randint(0, sys.maxsize)
@@ -61,4 +61,4 @@ def run_app():
 
 
 if __name__ == "__main__":
-    run_app()
+    run_server_only_app()

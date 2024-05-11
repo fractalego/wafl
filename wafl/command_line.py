@@ -11,13 +11,15 @@ from wafl.run import (
 )
 from wafl.runners.run_from_actions import run_action
 from wafl.runners.run_from_audio import run_from_audio
-from wafl.runners.run_web_interface import run_app
+from wafl.runners.run_web_and_audio_interface import run_app
+from wafl.runners.run_web_interface import run_server_only_app
 
 
 def print_help():
     print("\n")
     print("These are the available commands:")
     print("> wafl init: Initialize the current folder")
+    print("> wafl run: Starts all the available interfaces of the chatbot at the same time")
     print("> wafl run-cli: Run a cli version of the chatbot")
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")
@@ -44,6 +46,10 @@ def process_cli():
             create_initial_files()
             download_models()
 
+        if command == "run":
+            run_app()
+            remove_preprocessed("/")
+
         elif command == "run-cli":
             run_from_command_line()
             remove_preprocessed("/")
@@ -53,7 +59,7 @@ def process_cli():
             remove_preprocessed("/")
 
         elif command == "run-server":
-            run_app()
+            run_server_only_app()
             remove_preprocessed("/")
 
         elif command == "run-tests":

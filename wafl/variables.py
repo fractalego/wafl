@@ -1,6 +1,6 @@
 def get_variables():
     return {
-        "version": "0.0.83",
+        "version": "0.0.84",
     }
 
 

@@ -6,9 +6,9 @@
 /* let user decide port for frontend
 /* update docs about port
 /* push new version
-* update pypi with wafl and wafl-llm
-* clean code for llm eval and make it public
-* update huggingface readme
+/* update pypi with wafl and wafl-llm
+/* clean code for llm eval and make it public
+/* update huggingface readme
 * read overleaf paper
 
 
