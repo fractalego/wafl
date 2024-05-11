@@ -188,6 +188,13 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text = answer_text.replace(match.group(0), "")
             memories.append(to_execute)
 
+        matches = re.finditer(r"<remember>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
+        memories = []
+        for match in matches:
+            to_execute = match.group(1)
+            answer_text = answer_text.replace(match.group(0), "")
+            memories.append(to_execute)
+
         return answer_text, memories
 
     async def _run_code(self, to_execute):
