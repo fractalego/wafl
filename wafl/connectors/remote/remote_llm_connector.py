@@ -1,7 +1,10 @@
+import json
+
 import aiohttp
 import asyncio
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.variables import is_supported
 
 
 class RemoteLLMConnector(BaseLLMConnector):
@@ -9,13 +12,14 @@ class RemoteLLMConnector(BaseLLMConnector):
     _max_reply_length = 1024
     _num_prediction_tokens = 200
     _cache = {}
-    _num_replicas = 10
 
-    def __init__(self, config, last_strings=None):
+    def __init__(self, config, last_strings=None, num_replicas=3):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]
+        self._default_temperature = config["temperature"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
+        self._num_replicas = num_replicas
 
         try:
             loop = asyncio.get_running_loop()
@@ -28,28 +32,37 @@ class RemoteLLMConnector(BaseLLMConnector):
         ):
             raise RuntimeError("Cannot connect a running LLM.")
 
-    async def predict(self, prompt: str, temperature=None, num_tokens=None) -> [str]:
+    async def predict(
+        self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
+    ) -> [str]:
         if not temperature:
-            temperature = 0.5
+            temperature = self._default_temperature
 
         if not num_tokens:
             num_tokens = self._num_prediction_tokens
+
+        if not num_replicas:
+            num_replicas = self._num_replicas
 
         payload = {
             "data": prompt,
             "temperature": temperature,
             "num_tokens": num_tokens,
             "last_strings": self._last_strings,
-            "num_replicas": self._num_replicas,
+            "num_replicas": num_replicas,
         }
 
         for _ in range(self._max_tries):
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(ssl=False)
+                conn_timeout=6000,
+                connector=aiohttp.TCPConnector(ssl=False),
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    answer = await response.text()
-                    return answer.split("<||>")
+                    answer = json.loads(await response.text())
+                    status = answer["status"]
+                    if status != "success":
+                        raise RuntimeError(f"Error in prediction: {answer}")
+                    return answer["prediction"].split("<||>")
 
         return [""]
 
@@ -66,7 +79,14 @@ class RemoteLLMConnector(BaseLLMConnector):
                 conn_timeout=3, connector=aiohttp.TCPConnector(ssl=False)
             ) as session:
                 async with session.post(self._server_url, json=payload) as response:
-                    await response.text()
+                    answer = json.loads(await response.text())
+                    wafl_llm_version = answer["version"]
+                    print(f"Connected to wafl-llm v{wafl_llm_version}.")
+                    if not is_supported(wafl_llm_version):
+                        print("This version of wafl-llm is not supported.")
+                        print("Please update wafl-llm.")
+                        raise aiohttp.client.InvalidURL
+
                     return True
 
         except aiohttp.client.InvalidURL:

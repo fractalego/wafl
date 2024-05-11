@@ -1,7 +1,6 @@
 import logging
 import re
 
-
 from wafl.connectors.utils import select_best_answer
 
 _system_logger = logging.getLogger(__file__)
@@ -39,11 +38,7 @@ class BaseLLMConnector:
 
         text = prompt
         start = len(text)
-        while (
-            all(item not in text[start:] for item in self._last_strings)
-            and len(text) < start + self._max_reply_length
-        ):
-            text += select_best_answer(await self.predict(text), self._last_strings)
+        text += select_best_answer(await self.predict(text), self._last_strings)
 
         end_set = set()
         for item in self._last_strings:
@@ -59,7 +54,7 @@ class BaseLLMConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].split("bot: ")[-1].strip()
+        candidate_answer = text[start:end].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         if prompt not in self._cache:

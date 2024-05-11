@@ -91,7 +91,12 @@ class WhisperListener:
 
         while True:
             await asyncio.sleep(0)
-            inp = self.stream.read(self._chunk)
+            try:
+                inp = self.stream.read(self._chunk)
+            except IOError:
+                self.activate()
+                inp = self.stream.read(self._chunk)
+
             rms_val = _rms(inp)
             if rms_val > self._volume_threshold:
                 waveform = self.record(start_with=inp)

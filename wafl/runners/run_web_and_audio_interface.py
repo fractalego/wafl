@@ -1,10 +1,11 @@
-import asyncio
 import random
 import sys
 import threading
 
 from flask import render_template, redirect, url_for
 
+from wafl.interface.list_interface import ListInterface
+from wafl.interface.voice_interface import VoiceInterface
 from wafl.scheduler.scheduler import Scheduler
 from wafl.scheduler.web_loop import WebLoop
 from wafl.scheduler.conversation_loop import ConversationLoop
@@ -35,7 +36,7 @@ def run_app():
 
     def create_scheduler_and_webserver_loop(conversation_id):
         config = Configuration.load_local_config()
-        interface = QueueInterface()
+        interface = ListInterface([VoiceInterface(config), QueueInterface()])
         interface.activate()
         conversation_events = ConversationEvents(
             config=config,
@@ -46,11 +47,8 @@ def run_app():
             interface,
             conversation_events,
             _logger,
-            activation_word="",
-            max_misses=-1,
-            deactivate_on_closed_conversation=False,
+            activation_word=config.get_value("waking_up_word"),
         )
-        asyncio.run(interface.output("Hello. How may I help you?"))
         web_loop = WebLoop(interface, conversation_id, conversation_events)
         return {
             "scheduler": Scheduler([conversation_loop, web_loop]),

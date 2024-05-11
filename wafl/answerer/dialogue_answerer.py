@@ -10,7 +10,7 @@ from wafl.answerer.answerer_implementation import (
     get_last_user_utterance,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
-from wafl.answerer.rule_creator import RuleCreator
+from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.exceptions import CloseConversation
 from wafl.extractors.dataclasses import Query, Answer
@@ -31,7 +31,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rule_with_timestamp = None
         self._max_predictions = 3
-        self._rule_creator = RuleCreator(
+        self._rule_creator = RuleMaker(
             knowledge,
             config,
             interface,
@@ -126,7 +126,7 @@ class DialogueAnswerer(BaseAnswerer):
             > conversational_timestamp - self._max_num_past_utterances_for_facts
         ]
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
-            query, is_from_user=True, threshold=0.8
+            query, is_from_user=True, threshold=0.85
         )
         if facts_and_thresholds:
             facts = [
@@ -160,9 +160,19 @@ class DialogueAnswerer(BaseAnswerer):
         self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
     async def _substitute_results_in_answer(self, answer_text):
-        matches = re.finditer(r"<execute>(.*?)</execute>", answer_text, re.DOTALL)
+        matches = re.finditer(r"<execute>(.*?)</execute>|<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
         for match in matches:
             to_execute = match.group(1)
+            if not to_execute:
+                continue
+            result = await self._run_code(to_execute)
+            answer_text = answer_text.replace(match.group(0), result)
+
+        matches = re.finditer(r"<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
+        for match in matches:
+            to_execute = match.group(1)
+            if not to_execute:
+                continue
             result = await self._run_code(to_execute)
             answer_text = answer_text.replace(match.group(0), result)
 
@@ -172,6 +182,13 @@ class DialogueAnswerer(BaseAnswerer):
         self, answer_text
     ):
         matches = re.finditer(r"<remember>(.*?)</remember>", answer_text, re.DOTALL)
+        memories = []
+        for match in matches:
+            to_execute = match.group(1)
+            answer_text = answer_text.replace(match.group(0), "")
+            memories.append(to_execute)
+
+        matches = re.finditer(r"<remember>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
         memories = []
         for match in matches:
             to_execute = match.group(1)
@@ -206,13 +223,13 @@ class DialogueAnswerer(BaseAnswerer):
 
             except Exception as e:
                 result = (
-                    f'Error while executing\n\n"""python\n{to_execute}\n"""\n\n{str(e)}'
+                    f"Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}"
                 )
                 traceback.print_exc()
                 break
 
         if not result:
-            result = f'\n"""python\n{to_execute}\n"""'
+            result = f"\n```python\n{to_execute}\n```"
 
         return result
 
