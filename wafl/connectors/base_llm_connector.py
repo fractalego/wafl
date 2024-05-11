@@ -39,11 +39,7 @@ class BaseLLMConnector:
 
         text = prompt
         start = len(text)
-        while (
-            all(item not in text[start:] for item in self._last_strings)
-            and len(text) < start + self._max_reply_length
-        ):
-            text += select_best_answer(await self.predict(text), self._last_strings)
+        text += select_best_answer(await self.predict(text), self._last_strings)
 
         end_set = set()
         for item in self._last_strings:

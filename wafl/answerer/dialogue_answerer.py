@@ -160,9 +160,19 @@ class DialogueAnswerer(BaseAnswerer):
         self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
     async def _substitute_results_in_answer(self, answer_text):
-        matches = re.finditer(r"<execute>(.*?)</execute>", answer_text, re.DOTALL)
+        matches = re.finditer(r"<execute>(.*?)</execute>|<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
         for match in matches:
             to_execute = match.group(1)
+            if not to_execute:
+                continue
+            result = await self._run_code(to_execute)
+            answer_text = answer_text.replace(match.group(0), result)
+
+        matches = re.finditer(r"<execute>(.*?\))$", answer_text, re.DOTALL|re.MULTILINE)
+        for match in matches:
+            to_execute = match.group(1)
+            if not to_execute:
+                continue
             result = await self._run_code(to_execute)
             answer_text = answer_text.replace(match.group(0), result)
 
