@@ -24,9 +24,10 @@ After installing the requirements, you can initialize the interface by running t
 .. code-block:: bash
 
     $ wafl init
+    $ wafl run
 
-which creates a `config.json` file that you can edit to change the default settings.
-A standard rule file is also created as `wafl.rules`.
+The first command creates a set of template files, including a configuration in `config.json` that you can edit to change the default settings.
+The second command starts the audio interface as well as a web server on port 8090 by default.
 Please see the examples in the following chapters.
 
 
