@@ -9,7 +9,7 @@ from wafl.scheduler.messages_creator import MessagesCreator
 _path = os.path.dirname(__file__)
 
 
-class WebLoop:
+class WebHandler:
     def __init__(
         self,
         interface: BaseInterface,

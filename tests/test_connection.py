@@ -3,9 +3,7 @@ import os
 
 from unittest import TestCase
 from wafl.config import Configuration
-from wafl.connectors.bridges.llm_chitchat_answer_bridge import LLMChitChatAnswerBridge
 from wafl.connectors.remote.remote_llm_connector import RemoteLLMConnector
-from wafl.speaker.fairseq_speaker import FairSeqSpeaker
 
 _path = os.path.dirname(__file__)
 

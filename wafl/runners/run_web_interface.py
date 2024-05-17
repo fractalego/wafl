@@ -6,8 +6,8 @@ import threading
 from flask import render_template, redirect, url_for
 
 from wafl.scheduler.scheduler import Scheduler
-from wafl.scheduler.web_loop import WebLoop
-from wafl.scheduler.conversation_loop import ConversationLoop
+from wafl.scheduler.web_handler import WebHandler
+from wafl.scheduler.conversation_handler import ConversationHandler
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
@@ -42,7 +42,7 @@ def run_server_only_app():
             interface=interface,
             logger=_logger,
         )
-        conversation_loop = ConversationLoop(
+        conversation_loop = ConversationHandler(
             interface,
             conversation_events,
             _logger,
@@ -51,7 +51,7 @@ def run_server_only_app():
             deactivate_on_closed_conversation=False,
         )
         asyncio.run(interface.output("Hello. How may I help you?"))
-        web_loop = WebLoop(interface, conversation_id, conversation_events)
+        web_loop = WebHandler(interface, conversation_id, conversation_events)
         return {
             "scheduler": Scheduler([conversation_loop, web_loop]),
             "web_server_loop": web_loop,
