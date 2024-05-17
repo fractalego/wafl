@@ -57,7 +57,10 @@ def run_server_only_app():
             "web_server_loop": web_loop,
         }
 
-    app.run(host="0.0.0.0", port=Configuration.load_local_config().get_value("frontend_port"))
+    app.run(
+        host="0.0.0.0",
+        port=Configuration.load_local_config().get_value("frontend_port"),
+    )
 
 
 if __name__ == "__main__":
