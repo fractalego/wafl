@@ -43,13 +43,6 @@ In order to quickly run the LLM side, you can use the following installation com
 
     which will use the default models and start the server on port 8080.
 
-Alternatively, a Docker image can be used to run it as in the following:
-
-.. code-block:: bash
-
-    $ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
-
-
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.
 The default is localhost.
 
