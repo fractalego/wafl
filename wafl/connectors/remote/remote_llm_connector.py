@@ -4,6 +4,7 @@ import aiohttp
 import asyncio
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.connectors.prompt_template import PromptTemplate
 from wafl.variables import is_supported
 
 
@@ -33,7 +34,11 @@ class RemoteLLMConnector(BaseLLMConnector):
             raise RuntimeError("Cannot connect a running LLM.")
 
     async def predict(
-        self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
+        self,
+        prompt: PromptTemplate,
+        temperature=None,
+        num_tokens=None,
+        num_replicas=None,
     ) -> [str]:
         if not temperature:
             temperature = self._default_temperature
@@ -45,7 +50,7 @@ class RemoteLLMConnector(BaseLLMConnector):
             num_replicas = self._num_replicas
 
         payload = {
-            "data": prompt,
+            "data": prompt.to_dict(),
             "temperature": temperature,
             "num_tokens": num_tokens,
             "num_replicas": num_replicas,

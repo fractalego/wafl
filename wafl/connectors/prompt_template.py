@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Prompt:
+class PromptTemplate:
     system_prompt: str = ""
     conversation: "Conversation" = None
 
@@ -15,8 +15,8 @@ class Prompt:
 
 class PrompCreator:
     @staticmethod
-    def create(system_prompt: str, conversation: "Conversation") -> Prompt:
-        prompt = Prompt()
+    def create(system_prompt: str, conversation: "Conversation") -> PromptTemplate:
+        prompt = PromptTemplate()
         prompt.system_prompt = system_prompt
         prompt.conversation = conversation
         return prompt

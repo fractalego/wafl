@@ -32,20 +32,17 @@ class BaseLLMConnector:
     async def predict(self, prompt: str) -> [str]:
         raise NotImplementedError
 
-    async def generate(self, prompt: str) -> str:
+    async def generate(self, prompt: "PromptTemplate") -> str:
         if prompt in self._cache:
             return self._cache[prompt]
 
-        text = prompt
-        start = len(text)
-        text += select_best_answer(await self.predict(text), self._important_strings)
-
+        text = select_best_answer(await self.predict(prompt), self._important_strings)
         end_set = set()
         for item in self._important_strings:
             if "</remember>" in item or "</execute>" in item:
                 continue
 
-            end_set.add(text.find(item, start))
+            end_set.add(text.find(item))
 
         if -1 in end_set:
             end_set.remove(-1)
@@ -54,7 +51,7 @@ class BaseLLMConnector:
         if end_set:
             end = min(end_set)
 
-        candidate_answer = text[start:end].strip()
+        candidate_answer = text[:end].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
         if prompt not in self._cache:

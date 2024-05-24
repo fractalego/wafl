@@ -86,7 +86,6 @@ class DialogueAnswerer(BaseAnswerer):
             original_answer_text = await self._bridge.get_answer(
                 text=facts,
                 dialogue=dialogue_items,
-                query=rules_texts,
             )
             await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
             (

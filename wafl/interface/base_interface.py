@@ -1,6 +1,6 @@
 import time
 
-from wafl.interface.conversation import Conversation
+from wafl.interface.conversation import Conversation, Utterance
 
 
 class BaseInterface:
@@ -8,7 +8,7 @@ class BaseInterface:
         self._is_listening = True
         self._choices = []
         self._facts = []
-        self._utterances = Conversation()    #### USE THIS AND CHANGE CODE ACCORDINGLY
+        self._utterances = Conversation()
         self._decorator = decorator
 
     async def output(self, text: str, silent: bool = False):
@@ -70,7 +70,6 @@ class BaseInterface:
         return self._decorator.extract(text, self._utterances)
 
     def _insert_utterance(self, speaker, text: str):
-        if self._utterances == [] or text != self._utterances[-1][1].replace(
-            f"{speaker}: ", ""
-        ):
-            self._utterances.append((time.time(), f"{speaker}: {text}"))
+        self._utterances.add_utterance(
+            Utterance(text=text, speaker=speaker, timestamp=time.time())
+        )
