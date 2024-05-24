@@ -14,7 +14,7 @@ class Utterance:
 
 @dataclass
 class Conversation:
-    utterances: List[Utterance] = []
+    utterances: List[Utterance] = None
 
     def to_dict(self):
         return {"utterances": [utterance.to_dict() for utterance in self.utterances]}

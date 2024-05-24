@@ -48,7 +48,6 @@ class RemoteLLMConnector(BaseLLMConnector):
             "data": prompt,
             "temperature": temperature,
             "num_tokens": num_tokens,
-            "last_strings": self._last_strings,
             "num_replicas": num_replicas,
         }
 
@@ -71,7 +70,7 @@ class RemoteLLMConnector(BaseLLMConnector):
             "data": "test",
             "temperature": 0.6,
             "num_tokens": 1,
-            "last_strings": self._last_strings,
+            "last_strings": self._important_strings,
             "num_replicas": self._num_replicas,
         }
         try:

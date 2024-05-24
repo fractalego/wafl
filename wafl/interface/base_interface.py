@@ -1,6 +1,6 @@
 import time
 
-from typing import List
+from wafl.interface.conversation import Conversation
 
 
 class BaseInterface:
@@ -8,7 +8,7 @@ class BaseInterface:
         self._is_listening = True
         self._choices = []
         self._facts = []
-        self._utterances = []
+        self._utterances = Conversation()    #### USE THIS AND CHANGE CODE ACCORDINGLY
         self._decorator = decorator
 
     async def output(self, text: str, silent: bool = False):

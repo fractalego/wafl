@@ -1,3 +1,5 @@
+* substitute utterances in base_interface with the conversation class
+
 * add config file for model names
     - llm model name
     - whisper model name
