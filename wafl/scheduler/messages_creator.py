@@ -20,7 +20,7 @@ class MessagesCreator:
 
         return conversation
 
-    async def _get_dialogue(self): #### make this work with the new conversation class
+    async def _get_dialogue(self):
         dialogue_items = self._interface.get_utterances_list()
         dialogue_items = [get_html_from_dialogue_item(item) for item in dialogue_items[::-1]]
         conversation = (

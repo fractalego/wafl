@@ -1,3 +1,4 @@
+import re
 import time
 from typing import List
 
@@ -51,6 +52,9 @@ class BaseInterface:
         return self._facts
 
     def get_utterances_list(self) -> List[str]:
+        if not self._utterances:
+            return []
+
         return [
             f"{utterance.speaker}: {utterance.text}"
             for utterance in self._utterances.utterances
@@ -77,6 +81,7 @@ class BaseInterface:
         return self._decorator.extract(text, self._utterances)
 
     def _insert_utterance(self, speaker, text: str):
+        text = re.sub(r"\[.*?\]", "", text)
         self._utterances.add_utterance(
             Utterance(text=text, speaker=speaker, timestamp=time.time())
         )

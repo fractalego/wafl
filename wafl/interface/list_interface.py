@@ -30,6 +30,9 @@ class ListInterface(BaseInterface):
         )
 
     def bot_has_spoken(self, to_set: bool = None):
+        if to_set == None:
+            return all(interface.bot_has_spoken() for interface in self._interfaces_list)
+
         for interface in self._interfaces_list:
             interface.bot_has_spoken(to_set)
 

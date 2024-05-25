@@ -105,7 +105,11 @@ class Conversation:
         return [utterance.to_dict() for utterance in self.utterances]
 
     def get_utterances_list(self) -> List[Utterance]:
+        if not self.utterances:
+            return []
         return self.utterances
 
     def __len__(self):
+        if not self.utterances:
+            return 0
         return len(self.utterances)
