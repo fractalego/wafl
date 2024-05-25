@@ -20,22 +20,22 @@ class LLMChitChatAnswerClient:
         self, text: str, dialogue: "Conversation" = None
     ) -> PromptTemplate:
         return PromptTemplate(
-            system_prompt=self._get_prompt_text(text), conversation=dialogue
+            system_prompt=self._get_system_prompt(text), conversation=dialogue
         )
 
-    def _get_prompt_text(self, text):
+    def _get_system_prompt(self, text):
         return textwrap.dedent(
             f"""
-The following is a summary of a conversation. All the elements of the conversation are described briefly:
-<summary>        
-A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.
-{text.strip()}
-</summary>
-
-<instructions>
-Create a plausible dialogue based on the aforementioned summary and rules. 
-Do not repeat yourself. Be friendly but not too servile.
-Wrap any code or html you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```) unless it is between <execute> tags.
-</instructions>
-"""
+        The following is a summary of a conversation. All the elements of the conversation are described briefly:
+        <summary>        
+        A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.
+        {text.strip()}
+        </summary>
+        
+        <instructions>
+        Create a plausible dialogue based on the aforementioned summary and rules. 
+        Do not repeat yourself. Be friendly but not too servile.
+        Wrap any code or html you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```) unless it is between <execute> tags.
+        </instructions>
+        """
         )

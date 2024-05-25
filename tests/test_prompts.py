@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 
 from wafl.interface.conversation import Conversation, Utterance
-from wafl.connectors.prompt import PromptTemplate, PrompCreator
+from wafl.connectors.prompt_template import PrompCreator
 
 _path = os.path.dirname(__file__)
 

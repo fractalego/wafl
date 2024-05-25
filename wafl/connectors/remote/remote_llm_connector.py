@@ -72,7 +72,10 @@ class RemoteLLMConnector(BaseLLMConnector):
 
     async def check_connection(self):
         payload = {
-            "data": "test",
+            "data": {
+                "system_prompt": "Hello!",
+                "conversation": [{"speaker": "user", "text": "Hi!"}],
+            },
             "temperature": 0.6,
             "num_tokens": 1,
             "last_strings": self._important_strings,

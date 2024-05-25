@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List
 
 
@@ -8,6 +9,13 @@ class Utterance:
     speaker: str
     timestamp: float
 
+    def __init__(self, text: str, speaker: str, timestamp: float = None):
+        self.text = text
+        self.speaker = speaker
+        self.timestamp = timestamp
+        if self.timestamp is None:
+            self.timestamp = datetime.now().timestamp()
+
     def to_dict(self):
         return {"text": self.text, "speaker": self.speaker, "timestamp": self.timestamp}
 
@@ -15,6 +23,9 @@ class Utterance:
 @dataclass
 class Conversation:
     utterances: List[Utterance] = None
+
+    def __init__(self, utterances: List[Utterance] = None):
+        self.utterances = utterances
 
     def add_utterance(self, utterance: Utterance):
         if self.utterances is None:
@@ -30,4 +41,4 @@ class Conversation:
         self.utterances.append(utterance)
 
     def to_dict(self):
-        return {"utterances": [utterance.to_dict() for utterance in self.utterances]}
+        return [utterance.to_dict() for utterance in self.utterances]
