@@ -33,8 +33,8 @@ class BaseLLMConnector:
         raise NotImplementedError
 
     async def generate(self, prompt: "PromptTemplate") -> str:
-        if prompt in self._cache:
-            return self._cache[prompt]
+        if str(prompt.to_dict()) in self._cache:
+            return self._cache[str(prompt.to_dict())]
 
         text = select_best_answer(await self.predict(prompt), self._important_strings)
         end_set = set()
@@ -54,8 +54,8 @@ class BaseLLMConnector:
         candidate_answer = text[:end].strip()
         candidate_answer = re.sub(r"(.*)<\|.*\|>", r"\1", candidate_answer).strip()
 
-        if prompt not in self._cache:
-            self._cache[prompt] = candidate_answer
+        if str(prompt.to_dict()) not in self._cache:
+            self._cache[str(prompt.to_dict())] = candidate_answer
 
         if not candidate_answer:
             candidate_answer = "unknown"

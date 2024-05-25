@@ -11,7 +11,7 @@ class PromptTemplate:
     def to_dict(self):
         return {
             "system_prompt": self.system_prompt,
-            "conversation": self.conversation.to_dict(),
+            "conversation": self.conversation.to_dict() if self.conversation else [],
         }
 
 

@@ -30,7 +30,8 @@ class TestVoice(TestCase):
         interface.activate()
         asyncio.run(conversation_events.process_next(activation_word="computer"))
         asyncio.run(conversation_events.process_next(activation_word="computer"))
-        assert interface.get_utterances_list()[-1] == "bot: I hear you"
+        print(interface.get_utterances_list())
+        assert "I hear you" in interface.get_utterances_list()[-1]
 
     def test__no_activation(self):
         interface = DummyInterface(to_utter=["my name is bob"])

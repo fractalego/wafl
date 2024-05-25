@@ -20,22 +20,9 @@ class MessagesCreator:
 
         return conversation
 
-    async def _get_dialogue(self):
-        dialogue_items = self._interface.get_utterances_list_with_timestamp()
-        dialogue = []
-        for index, item in enumerate(dialogue_items):
-            dialogue.append(
-                (
-                    item[0],
-                    get_html_from_dialogue_item(
-                        item[1],
-                    ),
-                )
-            )
-
-        dialogue_items = dialogue
-        dialogue_items = sorted(dialogue_items, key=lambda x: x[0])[::-1]
-        dialogue_items = [item[1] for item in dialogue_items]
+    async def _get_dialogue(self): #### make this work with the new conversation class
+        dialogue_items = self._interface.get_utterances_list()
+        dialogue_items = [get_html_from_dialogue_item(item) for item in dialogue_items[::-1]]
         conversation = (
             "<div id='dialogue' class='dialogue overflow-y-scroll rounded-lg'>"
         )

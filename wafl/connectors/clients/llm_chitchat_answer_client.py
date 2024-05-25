@@ -12,30 +12,29 @@ class LLMChitChatAnswerClient:
         self._connector = LLMConnectorFactory.get_connector(config)
         self._config = config
 
-    async def get_answer(self, text: str, dialogue: str) -> str:
-        prompt = await self._get_answer_prompt(text, dialogue)
+    async def get_answer(self, text: str, dialogue: str, rules_text: str) -> str:
+        prompt = await self._get_answer_prompt(text, dialogue, rules_text)
         return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(
-        self, text: str, dialogue: "Conversation" = None
+        self, text: str, dialogue: "Conversation" = None, rules_text: str = None
     ) -> PromptTemplate:
         return PromptTemplate(
-            system_prompt=self._get_system_prompt(text), conversation=dialogue
+            system_prompt=self._get_system_prompt(text, rules_text),
+            conversation=dialogue,
         )
 
-    def _get_system_prompt(self, text):
-        return textwrap.dedent(
-            f"""
-        The following is a summary of a conversation. All the elements of the conversation are described briefly:
-        <summary>        
-        A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.
-        {text.strip()}
-        </summary>
-        
-        <instructions>
-        Create a plausible dialogue based on the aforementioned summary and rules. 
-        Do not repeat yourself. Be friendly but not too servile.
-        Wrap any code or html you output in the with the markdown syntax for code blocks (i.e. use triple backticks ```) unless it is between <execute> tags.
-        </instructions>
-        """
-        )
+    def _get_system_prompt(self, text, rules_text):
+        return f"""
+A user is chatting with a bot. The chat is happening through a web interface. The user is typing the messages and the bot is replying.        
+
+This is summary of the bot's knowledge: 
+{text.strip()}
+
+The rules that *must* be followed are:
+{rules_text.strip()}
+
+Create a plausible dialogue based on the aforementioned summary and rules. 
+Do not repeat yourself. Be friendly but not too servile.
+Follow the rules if present and they apply to the dialogue. Do not improvise if rules are present. 
+        """.strip()

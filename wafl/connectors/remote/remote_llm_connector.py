@@ -14,7 +14,7 @@ class RemoteLLMConnector(BaseLLMConnector):
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config, last_strings=None, num_replicas=3):
+    def __init__(self, config, last_strings=None, num_replicas=1):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]

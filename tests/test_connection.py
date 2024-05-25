@@ -36,10 +36,9 @@ Complete the following task and add <|EOS|> at the end: {text}
                 """.strip()
 
         prediction = asyncio.run(
-            connector.predict(
-                PromptCreator.create_from_one_instruction(prompt)
-            )
+            connector.predict(PromptCreator.create_from_one_instruction(prompt))
         )
+        print(prediction)
         assert len(prediction) > 0
 
     def test__connection_to_generative_model_can_generate_a_python_list(self):
@@ -48,8 +47,6 @@ Complete the following task and add <|EOS|> at the end: {text}
         connector._num_prediction_tokens = 200
         prompt = "Generate a Python list of 4 chapters names for a space opera book. The output needs to be a python list of strings: "
         prediction = asyncio.run(
-            connector.predict(
-                PromptCreator.create_from_one_instruction(prompt)
-            )
+            connector.predict(PromptCreator.create_from_one_instruction(prompt))
         )
         assert len(prediction) > 0

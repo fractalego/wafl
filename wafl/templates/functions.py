@@ -106,7 +106,7 @@ def add_to_shopping_list(list_of_items_to_add):
     return "Item added"
 
 
-def remove_shopping_list(list_of_items_to_remove):
+def remove_from_shopping_list(list_of_items_to_remove):
     db = json.load(open(_db_filename))
     for item in list_of_items_to_remove:
         if item in db["shopping_list"]:
