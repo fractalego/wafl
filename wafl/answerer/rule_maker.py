@@ -23,11 +23,7 @@ class RuleMaker:
         rules = rules[: self._max_num_rules]
         rules_texts = []
         for rule in rules:
-            rules_text = rule.get_string_using_template(
-                "- If {effect} go through the following points:"
-            )
-            rules_text += f'{rule.indent_str}- After you completed all the steps output "{self._delete_current_rule}" and continue the conversation.\n'
-
+            rules_text = rule.get_string_using_template('- {effect}:\n{clauses} and then output "{self._delete_current_rule}".\n')
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 

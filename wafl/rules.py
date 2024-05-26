@@ -13,14 +13,16 @@ class Rule:
         return str(self)
 
     def get_string_using_template(self, effect_template: str) -> str:
-        rule_str = effect_template.replace("{effect}", self.effect.text) + "\n"
-        return self._add_clauses(rule_str)
+        rule_str = effect_template.replace("{effect}", self.effect.text)
+        rule_str = rule_str.replace("{clauses}", self._get_clauses())
+        return rule_str
 
     def __str__(self):
         rule_str = self.effect.text + "\n"
-        return self._add_clauses(rule_str)
+        return rule_str + self._get_clauses()
 
-    def _add_clauses(self, rule_str: str) -> str:
+    def _get_clauses(self) -> str:
+        rule_str = ""
         for cause in self.causes:
             try:
                 rule_str += self._recursively_add_clauses(cause)
