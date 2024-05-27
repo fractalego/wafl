@@ -15,7 +15,7 @@ from wafl.simple_text_processing.questions import is_question
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._delete_current_rule = "<delete_rule>"
-        self._bridge = LLMChitChatAnswerClient(config)
+        self._client = LLMChitChatAnswerClient(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
@@ -65,8 +65,9 @@ class DialogueAnswerer(BaseAnswerer):
             conversational_timestamp=conversational_timestamp,
         )
 
+        final_answer_text = ""
         for _ in range(self._max_predictions):
-            original_answer_text = await self._bridge.get_answer(
+            original_answer_text = await self._client.get_answer(
                 text=facts,
                 rules_text=rules_text,
                 dialogue=conversation,
@@ -93,27 +94,36 @@ class DialogueAnswerer(BaseAnswerer):
                 self._prior_rules = None
                 conversation.add_utterance(
                     Utterance(
-                        original_answer_text,
+                        answer_text,
                         "bot",
                     )
                 )
                 continue
 
+            final_answer_text += answer_text
             if not memories:
                 break
 
             facts += "\n" + "\n".join(memories)
+
             conversation.add_utterance(
                 Utterance(
-                    original_answer_text,
+                    answer_text,
                     "bot",
                 )
             )
+            conversation.add_utterance(
+                Utterance(
+                    "Continue",
+                    "user",
+                )
+            )
+
 
         if self._logger:
-            self._logger.write(f"Answer within dialogue: The answer is {answer_text}")
+            self._logger.write(f"Answer within dialogue: The answer is {final_answer_text}")
 
-        return Answer.create_from_text(answer_text)
+        return Answer.create_from_text(final_answer_text)
 
     async def _get_relevant_facts(
         self, query, has_prior_rules, conversational_timestamp
@@ -189,21 +199,29 @@ class DialogueAnswerer(BaseAnswerer):
     async def _substitute_memory_in_answer_and_get_memories_if_present(
         self, answer_text
     ):
-        matches = re.finditer(r"<remember>(.*?)</remember>", answer_text, re.DOTALL)
-        memories = []
-        for match in matches:
-            to_execute = match.group(1)
-            answer_text = answer_text.replace(match.group(0), "")
-            memories.append(to_execute)
-
         matches = re.finditer(
-            r"<remember>(.*?\))$", answer_text, re.DOTALL | re.MULTILINE
+            r"<remember>(.*?)</remember>|<remember>(.*?)$",
+            answer_text,
+            re.DOTALL | re.MULTILINE,
         )
         memories = []
         for match in matches:
-            to_execute = match.group(1)
-            answer_text = answer_text.replace(match.group(0), "")
-            memories.append(to_execute)
+            to_substitute = match.group(1)
+            if not to_substitute:
+                continue
+            answer_text = answer_text.replace(match.group(0), "[Output in memory]")
+            memories.append(to_substitute)
+
+        matches = re.finditer(
+            r"<remember>(.*?)$", answer_text, re.DOTALL | re.MULTILINE
+        )
+        memories = []
+        for match in matches:
+            to_substitute = match.group(1)
+            if not to_substitute:
+                continue
+            answer_text = answer_text.replace(match.group(0), "[Output in memory]")
+            memories.append(to_substitute)
 
         return answer_text, memories
 

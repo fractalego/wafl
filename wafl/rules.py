@@ -33,7 +33,7 @@ class Rule:
                 print()
                 raise e
 
-        return rule_str
+        return rule_str[:-1]
 
     def _recursively_add_clauses(self, query: str, depth: int = 1) -> str:
         indentation = self.indent_str * depth
