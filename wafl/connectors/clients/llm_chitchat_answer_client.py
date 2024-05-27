@@ -1,5 +1,6 @@
 import os
 import textwrap
+from typing import List
 
 from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
 from wafl.connectors.prompt_template import PromptTemplate
@@ -12,8 +13,8 @@ class LLMChitChatAnswerClient:
         self._connector = LLMConnectorFactory.get_connector(config)
         self._config = config
 
-    async def get_answer(self, text: str, dialogue: str, rules_text: str) -> str:
-        prompt = await self._get_answer_prompt(text, dialogue, rules_text)
+    async def get_answer(self, text: str, dialogue: str, rules_text: List[str]) -> str:
+        prompt = await self._get_answer_prompt(text, dialogue, "\n".join(rules_text))
         return await self._connector.generate(prompt)
 
     async def _get_answer_prompt(

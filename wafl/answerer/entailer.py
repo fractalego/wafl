@@ -38,6 +38,4 @@ Your task is to determine whether two sentences are similar.
 2) {rhs.lower()}
 Please answer "yes" if the two sentences are similar or "no" if not: 
         """.strip()
-        return Conversation(
-            [Utterance(speaker="user", text=text)]
-        )
+        return Conversation([Utterance(speaker="user", text=text)])

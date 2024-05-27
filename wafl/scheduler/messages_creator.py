@@ -22,7 +22,9 @@ class MessagesCreator:
 
     async def _get_dialogue(self):
         dialogue_items = self._interface.get_utterances_list()
-        dialogue_items = [get_html_from_dialogue_item(item) for item in dialogue_items[::-1]]
+        dialogue_items = [
+            get_html_from_dialogue_item(item) for item in dialogue_items[::-1]
+        ]
         conversation = (
             "<div id='dialogue' class='dialogue overflow-y-scroll rounded-lg'>"
         )

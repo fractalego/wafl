@@ -18,12 +18,8 @@ class TestPrompts(TestCase):
         )
 
     def test_conversation(self):
-        utterance1 = Utterance(
-            text="Hello", speaker="user", timestamp=2
-        )
-        utterance2 = Utterance(
-            text="Hi", speaker="bot", timestamp=1
-        )
+        utterance1 = Utterance(text="Hello", speaker="user", timestamp=2)
+        utterance2 = Utterance(text="Hi", speaker="bot", timestamp=1)
         conversation = Conversation(utterances=[utterance1, utterance2])
         self.assertEqual(
             conversation.to_dict(),
@@ -38,16 +34,12 @@ class TestPrompts(TestCase):
                     "speaker": "bot",
                     "timestamp": 1,
                 },
-            ]
+            ],
         )
 
     def test_prompt(self):
-        utterance1 = Utterance(
-            text="Hello", speaker="user", timestamp=2
-        )
-        utterance2 = Utterance(
-            text="Hi", speaker="bot", timestamp=1
-        )
+        utterance1 = Utterance(text="Hello", speaker="user", timestamp=2)
+        utterance2 = Utterance(text="Hi", speaker="bot", timestamp=1)
         conversation = Conversation(utterances=[utterance1, utterance2])
         prompt = PromptCreator.create(system_prompt="Hello", conversation=conversation)
         self.assertEqual(
@@ -65,6 +57,6 @@ class TestPrompts(TestCase):
                         "speaker": "bot",
                         "timestamp": 1,
                     },
-                ]
+                ],
             },
         )

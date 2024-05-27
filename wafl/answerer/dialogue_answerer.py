@@ -24,13 +24,13 @@ class DialogueAnswerer(BaseAnswerer):
         self._max_num_past_utterances_for_rules = 0
         self._prior_facts_with_timestamp = []
         self._init_python_module(code_path.replace(".py", ""))
-        self._prior_rules = None
+        self._prior_rules = []
         self._max_predictions = 3
         self._rule_creator = RuleMaker(
             knowledge,
             config,
             interface,
-            max_num_rules=2,
+            max_num_rules=1,
             delete_current_rule=self._delete_current_rule,
         )
 
@@ -91,7 +91,7 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
 
             if self._delete_current_rule in answer_text:
-                self._prior_rules = None
+                self._prior_rules = []
                 final_answer_text += answer_text
                 break
 
@@ -114,9 +114,10 @@ class DialogueAnswerer(BaseAnswerer):
                 )
             )
 
-
         if self._logger:
-            self._logger.write(f"Answer within dialogue: The answer is {final_answer_text}")
+            self._logger.write(
+                f"Answer within dialogue: The answer is {final_answer_text}"
+            )
 
         return Answer.create_from_text(final_answer_text)
 
@@ -156,11 +157,10 @@ class DialogueAnswerer(BaseAnswerer):
 
     async def _get_relevant_rules(self, query):
         rules = await self._rule_creator.create_from_query(query)
-        if not rules and self._prior_rules:
-            rules = self._prior_rules
-        self._prior_rules = rules
-        return rules
-
+        for rule in rules:
+            if rule not in self._prior_rules:
+                self._prior_rules.append(rule)
+        return self._prior_rules
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)
@@ -218,7 +218,6 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
             answer_text = answer_text.replace(match.group(0), "[Output in memory]")
             memories.append(to_substitute)
-
 
         return answer_text, memories
 
