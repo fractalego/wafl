@@ -14,7 +14,7 @@ from wafl.simple_text_processing.questions import is_question
 
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
-        self._delete_current_rule = "<delete_rule>"
+        self._delete_current_rule = "[delete_rule]"
         self._client = LLMChitChatAnswerClient(config)
         self._knowledge = knowledge
         self._logger = logger
@@ -92,13 +92,8 @@ class DialogueAnswerer(BaseAnswerer):
 
             if self._delete_current_rule in answer_text:
                 self._prior_rules = None
-                conversation.add_utterance(
-                    Utterance(
-                        answer_text,
-                        "bot",
-                    )
-                )
-                continue
+                final_answer_text += answer_text
+                break
 
             final_answer_text += answer_text
             if not memories:
@@ -212,6 +207,7 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text = answer_text.replace(match.group(0), "[Output in memory]")
             memories.append(to_substitute)
 
+        answer_text = answer_text.replace("<br>", "\n")
         matches = re.finditer(
             r"<remember>(.*?)$", answer_text, re.DOTALL | re.MULTILINE
         )
@@ -222,6 +218,7 @@ class DialogueAnswerer(BaseAnswerer):
                 continue
             answer_text = answer_text.replace(match.group(0), "[Output in memory]")
             memories.append(to_substitute)
+
 
         return answer_text, memories
 

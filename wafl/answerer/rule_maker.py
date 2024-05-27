@@ -23,7 +23,7 @@ class RuleMaker:
         rules = rules[: self._max_num_rules]
         rules_texts = []
         for rule in rules:
-            rules_text = rule.get_string_using_template('- {effect}:\n{clauses} and then output ' + f'"{self._delete_current_rule}".\n')
+            rules_text = rule.get_string_using_template('- {effect}:\n{clauses}\nAfter you completed all the steps output ' + f'"{self._delete_current_rule}".\n')
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 
