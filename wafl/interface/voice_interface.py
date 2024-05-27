@@ -53,7 +53,7 @@ class VoiceInterface(BaseInterface):
 
         self._listener.activate()
         text = text
-        self._insert_utterance("bot", text)
+        self._insert_utterance(speaker="bot", text=text)
         print(COLOR_START + "bot> " + text + COLOR_END)
         await self._speaker.speak(text)
         self.bot_has_spoken(True)
@@ -76,7 +76,7 @@ class VoiceInterface(BaseInterface):
         print(COLOR_START + "user> " + text + COLOR_END)
         utterance = remove_text_between_brackets(text)
         if utterance.strip():
-            self._insert_utterance("user", text)
+            self._insert_utterance(speaker="user", text=text)
 
         return text
 

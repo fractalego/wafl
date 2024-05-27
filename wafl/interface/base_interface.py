@@ -1,6 +1,8 @@
+import re
 import time
-
 from typing import List
+
+from wafl.interface.conversation import Conversation, Utterance
 
 
 class BaseInterface:
@@ -8,7 +10,7 @@ class BaseInterface:
         self._is_listening = True
         self._choices = []
         self._facts = []
-        self._utterances = []
+        self._utterances = Conversation()
         self._decorator = decorator
 
     async def output(self, text: str, silent: bool = False):
@@ -33,7 +35,7 @@ class BaseInterface:
         self._is_listening = False
         self._choices = []
         self._facts = []
-        self._utterances = []
+        self._utterances = Conversation()
 
     async def add_choice(self, text):
         self._choices.append((time.time(), text))
@@ -49,14 +51,23 @@ class BaseInterface:
     def get_facts_and_timestamp(self):
         return self._facts
 
-    def get_utterances_list(self):
-        return [item[1] for item in self._utterances]
+    def get_utterances_list(self) -> List[str]:
+        if not self._utterances:
+            return []
+
+        return [
+            f"{utterance.speaker}: {utterance.text}"
+            for utterance in self._utterances.utterances
+        ]
+
+    def last_speaker(self):
+        return self._utterances.get_last_n(1).utterances[0].speaker
 
     def get_utterances_list_with_timestamp(self):
         return self._utterances
 
     def reset_history(self):
-        self._utterances = []
+        self._utterances = Conversation()
         self._choices = []
         self._facts = []
 
@@ -70,7 +81,7 @@ class BaseInterface:
         return self._decorator.extract(text, self._utterances)
 
     def _insert_utterance(self, speaker, text: str):
-        if self._utterances == [] or text != self._utterances[-1][1].replace(
-            f"{speaker}: ", ""
-        ):
-            self._utterances.append((time.time(), f"{speaker}: {text}"))
+        text = re.sub(r"\[.*?\]", "", text)
+        self._utterances.add_utterance(
+            Utterance(text=text, speaker=speaker, timestamp=time.time())
+        )

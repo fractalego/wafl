@@ -1,7 +1,7 @@
 import asyncio
 
 
-class GeneratedEventLoop:
+class GeneratedEventHandler:
     def __init__(self, interface, events, logger):
         self._interface = interface
         self._events = events

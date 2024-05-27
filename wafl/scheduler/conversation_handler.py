@@ -5,7 +5,7 @@ import traceback
 from wafl.exceptions import CloseConversation
 
 
-class ConversationLoop:
+class ConversationHandler:
     def __init__(
         self,
         interface,

@@ -1,6 +1,5 @@
 import os
 import re
-import traceback
 
 from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
@@ -22,7 +21,7 @@ class ConversationEvents:
         self._config = config
         self._knowledge = load_knowledge(config, logger)
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
-        self._answerer._bridge._connector._cache = {}
+        self._answerer._client._connector._cache = {}
         self._interface = interface
         self._logger = logger
         self._is_computing = False
@@ -61,7 +60,7 @@ class ConversationEvents:
             if (
                 not text_is_question
                 and self._interface.get_utterances_list()
-                and self._interface.get_utterances_list()[-1].find("user:") == 0
+                and self._interface.last_speaker() == "user"
             ):
                 await self._interface.output("I don't know what to reply")
 

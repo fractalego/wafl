@@ -1,6 +1,7 @@
 import re
 import time
 
+from wafl.interface.conversation import Utterance
 from wafl.simple_text_processing.deixis import from_bot_to_user
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
@@ -27,7 +28,7 @@ class DummyInterface(BaseInterface):
 
         if not silent:
             self._dialogue += "bot: " + text + "\n"
-            self._utterances.append((time.time(), f"bot: {from_bot_to_user(text)}"))
+            self._insert_utterance(speaker="bot", text=text)
             self.bot_has_spoken(True)
 
     async def input(self) -> str:
@@ -42,7 +43,7 @@ class DummyInterface(BaseInterface):
 
         self._dialogue += "user: " + text + "\n"
         utterance = text
-        self._utterances.append((time.time(), f"user: {utterance}"))
+        self._insert_utterance(speaker="user", text=text)
         return utterance
 
     def bot_has_spoken(self, to_set: bool = None):

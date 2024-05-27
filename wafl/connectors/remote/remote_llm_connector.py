@@ -4,6 +4,7 @@ import aiohttp
 import asyncio
 
 from wafl.connectors.base_llm_connector import BaseLLMConnector
+from wafl.connectors.prompt_template import PromptTemplate
 from wafl.variables import is_supported
 
 
@@ -13,7 +14,7 @@ class RemoteLLMConnector(BaseLLMConnector):
     _num_prediction_tokens = 200
     _cache = {}
 
-    def __init__(self, config, last_strings=None, num_replicas=3):
+    def __init__(self, config, last_strings=None, num_replicas=1):
         super().__init__(last_strings)
         host = config["model_host"]
         port = config["model_port"]
@@ -33,7 +34,11 @@ class RemoteLLMConnector(BaseLLMConnector):
             raise RuntimeError("Cannot connect a running LLM.")
 
     async def predict(
-        self, prompt: str, temperature=None, num_tokens=None, num_replicas=None
+        self,
+        prompt: PromptTemplate,
+        temperature=None,
+        num_tokens=None,
+        num_replicas=None,
     ) -> [str]:
         if not temperature:
             temperature = self._default_temperature
@@ -45,10 +50,9 @@ class RemoteLLMConnector(BaseLLMConnector):
             num_replicas = self._num_replicas
 
         payload = {
-            "data": prompt,
+            "data": prompt.to_dict(),
             "temperature": temperature,
             "num_tokens": num_tokens,
-            "last_strings": self._last_strings,
             "num_replicas": num_replicas,
         }
 
@@ -68,10 +72,13 @@ class RemoteLLMConnector(BaseLLMConnector):
 
     async def check_connection(self):
         payload = {
-            "data": "test",
+            "data": {
+                "system_prompt": "Hello!",
+                "conversation": [{"speaker": "user", "text": "Hi!"}],
+            },
             "temperature": 0.6,
             "num_tokens": 1,
-            "last_strings": self._last_strings,
+            "last_strings": self._important_strings,
             "num_replicas": self._num_replicas,
         }
         try:

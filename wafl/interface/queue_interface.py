@@ -16,7 +16,7 @@ class QueueInterface(BaseInterface):
             return
 
         self.output_queue.append({"text": text, "silent": False})
-        self._insert_utterance("bot", text)
+        self._insert_utterance(speaker="bot", text=text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
@@ -24,7 +24,7 @@ class QueueInterface(BaseInterface):
             await asyncio.sleep(0.1)
 
         text = self.input_queue.pop(0)
-        self._insert_utterance("user", text)
+        self._insert_utterance(speaker="user", text=text)
         return text
 
     async def insert_input(self, text: str):

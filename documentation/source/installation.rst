@@ -24,9 +24,10 @@ After installing the requirements, you can initialize the interface by running t
 .. code-block:: bash
 
     $ wafl init
+    $ wafl run
 
-which creates a `config.json` file that you can edit to change the default settings.
-A standard rule file is also created as `wafl.rules`.
+The first command creates a set of template files, including a configuration in `config.json` that you can edit to change the default settings.
+The second command starts the audio interface as well as a web server on port 8090 by default.
 Please see the examples in the following chapters.
 
 
@@ -41,13 +42,6 @@ In order to quickly run the LLM side, you can use the following installation com
     $ wafl-llm start
 
     which will use the default models and start the server on port 8080.
-
-Alternatively, a Docker image can be used to run it as in the following:
-
-.. code-block:: bash
-
-    $ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
-
 
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.
 The default is localhost.

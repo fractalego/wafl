@@ -30,7 +30,7 @@ class TestInterruptionsToCloseConversation(TestCase):
         )
         try:
             asyncio.run(conversation_events.process_next())
-
+            print(interface.get_utterances_list())
         except CloseConversation:
             self.assertTrue(True)
             return
