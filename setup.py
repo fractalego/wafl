@@ -17,7 +17,7 @@ setup(
         "wafl",
         "wafl.answerer",
         "wafl.connectors",
-        "wafl.connectors.bridges",
+        "wafl.connectors.clients",
         "wafl.connectors.factories",
         "wafl.connectors.remote",
         "wafl.events",
