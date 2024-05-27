@@ -49,8 +49,7 @@ These settings regulate the following:
 
     * "frontend_port" is the port where the web frontend is running. The default is 8090.
 
-    * "llm_model" is the configuration to connect to the LLM model in the backend. The default is "localhost:8080".
-       The "temperature" parameter is used to set the temperature for the LLM model. The default is 0.4.
+    * "llm_model" is the configuration to connect to wafl-llm in the backend. The default url is "localhost:8080". The "temperature" parameter is used to set the temperature for the LLM model. The default is 0.4.
 
     * "listener_model" is the configuration to connect to the listener model in the backend. The default is "localhost:8080".
 

@@ -1,3 +1,6 @@
+from typing import List
+
+
 class RuleMaker:
     def __init__(
         self,
@@ -18,17 +21,17 @@ class RuleMaker:
         else:
             self._max_indentation = config.get_value("max_recursion")
 
-    async def create_from_query(self, query):
+    async def create_from_query(self, query: "Query") -> List[str]:
         rules = await self._knowledge.ask_for_rule_backward(query, threshold=0.92)
         rules = rules[: self._max_num_rules]
         rules_texts = []
         for rule in rules:
             rules_text = rule.get_string_using_template(
-                "- If {effect} go through the following points:"
+                "- {effect}:\n{clauses}\n"
+                + rule.indent_str
+                + f'- After you completed all the steps output "{self._delete_current_rule}".\n'
             )
-            rules_text += f'{rule.indent_str}- After you completed all the steps output "{self._delete_current_rule}" and continue the conversation.\n'
-
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
 
-        return "\n".join(rules_texts)
+        return rules_texts

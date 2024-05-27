@@ -1,4 +1,4 @@
-# WAFL 0.0.80 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
+# WAFL 0.0.90 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
 
 Introduction
 ============
@@ -56,13 +56,6 @@ wafl-llm start
 ```
 which will use the default models and start the server on port 8080.
 
-#### Docker
-A docker image can be used to run it as in the following:
-
-```bash
-$ docker run -p8080:8080 --env NVIDIA_DISABLE_REQUIRE=1 --gpus all fractalego/wafl-llm:0.80
-```
-
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.
 The default is localhost.
 Alternatively, you can run the LLM side by cloning [this repository](https://github.com/fractalego/wafl-llm).
@@ -73,6 +66,11 @@ Running WAFL
 This document contains a few examples of how to use the `wafl` CLI.
 There are four modes in which to run the system
 
+
+### $ wafl run
+Starts all the available interfaces of the chatbot at the same time.
+
+
 ## $ wafl run-audio
 
 This is the main mode of operation. It will run the system in a loop, waiting for the user to speak a command.
@@ -82,7 +80,7 @@ The default name is "computer", but you can change it to whatever you want.
 
 ## $ wafl run-server
 
-It runs a local web server that listens for HTTP requests on port 8889.
+It runs a local web server that listens for HTTP requests on port 8090.
 The server will act as a chatbot, executing commands and returning the result as defined in the rules.
 
 

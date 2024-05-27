@@ -1,3 +1,5 @@
+* substitute utterances in base_interface with the conversation class
+
 * add config file for model names
     - llm model name
     - whisper model name
@@ -6,9 +8,9 @@
 /* let user decide port for frontend
 /* update docs about port
 /* push new version
-* update pypi with wafl and wafl-llm
-* clean code for llm eval and make it public
-* update huggingface readme
+/* update pypi with wafl and wafl-llm
+/* clean code for llm eval and make it public
+/* update huggingface readme
 * read overleaf paper
 
 
