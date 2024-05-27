@@ -5,7 +5,8 @@ There are four modes in which to run the system
 
 $ wafl run
 ----------
-Starts all the available interfaces of the chatbot at the same time.
+Starts the available interfaces of the chatbot at the same time.
+This is equivalent to running run-audio and run-server in parallel (see below).
 
 
 $ wafl run-audio
