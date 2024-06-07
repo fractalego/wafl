@@ -82,8 +82,19 @@ class Conversation:
 
         self.utterances = new_utterances
 
-    def get_last_n(self, n: int) -> "Conversation":
-        return Conversation(self.utterances[-n:]) if self.utterances else Conversation()
+    def get_last_n(self, n: int, stop_at_string: str=None) -> "Conversation":
+        if not self.utterances:
+            return Conversation()
+
+        utterances_to_return: List[Utterance] = []
+        for utterance in reversed(self.utterances):
+            utterances_to_return.append(utterance)
+            if stop_at_string and stop_at_string in utterance.text:
+                break
+            if len(utterances_to_return) == n:
+                break
+        utterances_to_return.reverse()
+        return Conversation(utterances_to_return)
 
     def get_last_speaker_utterances(self, speaker: str, n: int) -> List[str]:
         if not self.utterances:

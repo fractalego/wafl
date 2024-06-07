@@ -1,3 +1,8 @@
+* after a rule is deleted, you should also prune the conversation above.
+  The system can get confused if the conversation becomes too long
+  re-train the system with prior conversations before calling the rule
+
+
 * substitute utterances in base_interface with the conversation class
 
 * add config file for model names

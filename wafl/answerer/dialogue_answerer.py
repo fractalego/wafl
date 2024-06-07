@@ -41,7 +41,7 @@ class DialogueAnswerer(BaseAnswerer):
         query = Query.create_from_text("The user says: " + query_text)
         rules_text = await self._get_relevant_rules(query)
         conversation = self._interface.get_utterances_list_with_timestamp().get_last_n(
-            self._max_num_past_utterances
+            self._max_num_past_utterances, stop_at_string=self._delete_current_rule
         )
         if not conversation:
             conversation = Conversation(
