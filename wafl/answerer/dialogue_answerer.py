@@ -28,7 +28,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._interface = interface
         self._max_num_past_utterances = 5
         self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 0
+        self._max_num_past_utterances_for_rules = 2
         self._prior_facts_with_timestamp = []
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rules = []
@@ -130,7 +130,7 @@ class DialogueAnswerer(BaseAnswerer):
         for rule in rules:
             if rule not in self._prior_rules:
                 self._prior_rules.append(rule)
-        return self._prior_rules
+        return self._prior_rules[-self._max_num_past_utterances_for_rules :]
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)
