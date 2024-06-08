@@ -3,6 +3,8 @@ import traceback
 
 from importlib import import_module
 from inspect import getmembers, isfunction
+from typing import List, Tuple
+
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chitchat_answer_client import LLMChitChatAnswerClient
@@ -34,15 +36,15 @@ class DialogueAnswerer(BaseAnswerer):
             delete_current_rule=self._delete_current_rule,
         )
 
-    async def answer(self, query_text):
+    async def answer(self, query_text: str) -> Answer:
         if self._logger:
             self._logger.write(f"Dialogue Answerer: the query is {query_text}")
 
         query = Query.create_from_text("The user says: " + query_text)
-        rules_text = await self._get_relevant_rules(query)
         conversation = self._interface.get_utterances_list_with_timestamp().get_last_n(
             self._max_num_past_utterances, stop_at_string=self._delete_current_rule
         )
+        rules_text = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = Conversation(
                 [
@@ -79,7 +81,7 @@ class DialogueAnswerer(BaseAnswerer):
             ) = await self._substitute_memory_in_answer_and_get_memories_if_present(
                 await self._substitute_results_in_answer(original_answer_text)
             )
-            if answer_text in last_bot_utterances:
+            if answer_text in last_bot_utterances and not _is_executable(original_answer_text):
                 conversation = Conversation(
                     [
                         Utterance(
@@ -122,8 +124,8 @@ class DialogueAnswerer(BaseAnswerer):
         return Answer.create_from_text(final_answer_text)
 
     async def _get_relevant_facts(
-        self, query, has_prior_rules, conversational_timestamp
-    ):
+        self, query: Query, has_prior_rules: bool, conversational_timestamp: int
+    ) -> str:
         memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
         self._prior_facts_with_timestamp = [
             item
@@ -155,8 +157,8 @@ class DialogueAnswerer(BaseAnswerer):
 
         return memory
 
-    async def _get_relevant_rules(self, query):
-        rules = await self._rule_creator.create_from_query(query)
+    async def _get_relevant_rules(self, conversation: Conversation) -> List[str]:
+        rules = await self._rule_creator.create_from_query(conversation)
         for rule in rules:
             if rule not in self._prior_rules:
                 self._prior_rules.append(rule)
@@ -166,7 +168,7 @@ class DialogueAnswerer(BaseAnswerer):
         self._module = import_module(module_name)
         self._functions = [item[0] for item in getmembers(self._module, isfunction)]
 
-    async def _substitute_results_in_answer(self, answer_text):
+    async def _substitute_results_in_answer(self, answer_text: str) -> str:
         matches = re.finditer(
             r"<execute>(.*?)</execute>|<execute>(.*?\))$",
             answer_text,
@@ -192,8 +194,8 @@ class DialogueAnswerer(BaseAnswerer):
         return answer_text
 
     async def _substitute_memory_in_answer_and_get_memories_if_present(
-        self, answer_text
-    ):
+        self, answer_text: str
+    ) -> Tuple[str, List[str]]:
         matches = re.finditer(
             r"<remember>(.*?)</remember>|<remember>(.*?)$",
             answer_text,
@@ -221,7 +223,7 @@ class DialogueAnswerer(BaseAnswerer):
 
         return answer_text, memories
 
-    async def _run_code(self, to_execute):
+    async def _run_code(self, to_execute: str) -> str:
         result = None
         for _ in range(3):
             try:
@@ -256,3 +258,7 @@ class DialogueAnswerer(BaseAnswerer):
             result = f"\n```python\n{to_execute}\n```"
 
         return result
+
+
+def _is_executable(text: str) -> bool:
+    return "<execute>" in text
