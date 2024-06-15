@@ -129,8 +129,9 @@ class DialogueAnswerer(BaseAnswerer):
         rules = await self._rule_creator.create_from_query(conversation)
         for rule in rules:
             if rule not in self._prior_rules:
-                self._prior_rules.append(rule)
-        return self._prior_rules[-self._max_num_past_utterances_for_rules :]
+                self._prior_rules.insert(0, rule)
+        self._prior_rules = self._prior_rules[:self._max_num_past_utterances_for_rules]
+        return self._prior_rules
 
     def _init_python_module(self, module_name):
         self._module = import_module(module_name)

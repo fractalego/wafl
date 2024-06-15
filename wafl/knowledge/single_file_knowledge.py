@@ -59,7 +59,7 @@ class SingleFileKnowledge(BaseKnowledge):
                 loop = None
 
             if not loop or not loop.is_running():
-                asyncio.run(self._initialize_retrievers())
+                asyncio.run(self.initialize_retrievers())
 
     async def add(self, text):
         fact_index = f"F{len(self._facts_dict)}"
@@ -158,7 +158,7 @@ class SingleFileKnowledge(BaseKnowledge):
 
         return text
 
-    async def _initialize_retrievers(self):
+    async def initialize_retrievers(self):
         for index, fact in self._facts_dict.items():
             if text_is_exact_string(fact.text):
                 continue

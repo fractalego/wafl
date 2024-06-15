@@ -26,7 +26,7 @@ class ConversationTestCases:
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
         conversation_events = ConversationEvents(self._config, interface=interface)
-        await conversation_events._knowledge._initialize_retrievers()
+        await conversation_events._knowledge.initialize_retrievers()
 
         print(self.BLUE_COLOR_START + f"\nRunning test '{name}'." + self.COLOR_END)
         continue_conversations = True
