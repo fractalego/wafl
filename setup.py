@@ -61,6 +61,7 @@ setup(
         "einops==0.6.1",
         "g2p-en==2.1.0",
         "pyyaml==6.0.1",
+        "joblib==1.4.2",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

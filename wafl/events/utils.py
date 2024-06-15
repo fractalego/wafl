@@ -1,4 +1,8 @@
+import joblib
+import os
 import re
+
+
 
 from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.simple_text_processing.normalize import normalized
@@ -28,4 +32,11 @@ def load_knowledge(config, logger):
     else:
         rules_txt = config.get_value("rules")
 
-    return SingleFileKnowledge(config, rules_txt, logger=logger)
+    if os.path.exists(config.get_value("index_filename")):
+        knowledge = joblib.load(config.get_value("index_filename"))
+        if knowledge.hash == hash(rules_txt):
+            return knowledge
+
+    knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
+    joblib.dump(knowledge, config.get_value("index_filename"))
+    return knowledge

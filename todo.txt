@@ -1,5 +1,7 @@
 wafl:
-- create indices
+- create indice
+- silence output when someone speak
+- multiple models in wafl-llm, with selection from frontend
 
 training:
 - retrain phi3

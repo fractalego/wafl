@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import random
 from typing import List
 
 import nltk
@@ -32,6 +33,11 @@ class SingleFileKnowledge(BaseKnowledge):
     _max_rules_per_type = 3
 
     def __init__(self, config, rules_text=None, logger=None):
+        if rules_text:
+            self.hash = hash(rules_text)
+        else:
+            self.hash = str(random.randint(0, 1000000))
+
         self._logger = logger
         self._facts_dict = {}
         self._rules_dict = {}

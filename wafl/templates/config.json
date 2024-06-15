@@ -4,6 +4,7 @@
   "deactivate_sound": true,
   "rules": "rules.yaml",
   "functions": "functions.py",
+  "index_filename": "knowledge_cache",
   "frontend_port": 8090,
   "llm_model": {
     "model_host": "localhost",
