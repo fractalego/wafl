@@ -51,10 +51,6 @@ class DialogueAnswerer(BaseAnswerer):
         rules_text = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
-        last_bot_utterances = conversation.get_last_speaker_utterances("bot", 3)
-        last_user_utterance = conversation.get_last_speaker_utterances("user", 1)
-        if not last_user_utterance:
-            last_user_utterance = query_text
         conversational_timestamp = len(conversation)
         facts = await self._get_relevant_facts(
             query,
@@ -73,12 +69,6 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text, memories = await self._apply_substitutions(
                 original_answer_text
             )
-            if answer_text in last_bot_utterances and not is_executable(
-                original_answer_text
-            ):
-                conversation = create_one_liner(last_user_utterance[-1])
-                continue
-
             if self._delete_current_rule in answer_text:
                 self._prior_rules = []
                 final_answer_text += answer_text

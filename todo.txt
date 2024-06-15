@@ -1,5 +1,7 @@
 wafl:
-- create indice
+/- create indices
+- allow files/folders to be indexed (modify rules.yaml and then re-index)
+- add keywords in retrieval from tfidf
 - silence output when someone speak
 - multiple models in wafl-llm, with selection from frontend
 
