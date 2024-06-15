@@ -113,6 +113,9 @@ class DialogueAnswerer(BaseAnswerer):
                     "The bot can answer the question while informing the user that the answer was not retrieved"
                 )
 
+        if has_prior_rules:
+            memory += f"\nThe user wants the bot to answer the query using the rules."
+
         return memory
 
     async def _get_relevant_rules(self, conversation: Conversation) -> List[str]:
