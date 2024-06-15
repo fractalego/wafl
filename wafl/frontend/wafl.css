@@ -1,5 +1,5 @@
 body {
-    background: #f0f8ff;
+    background: #fffffa;
     color: black;
     font-family: monospace;
     font-size: 25px;
@@ -30,7 +30,6 @@ pre {
 }
 
 pre .dialogue {
-    width: 50vw;
     height: 90vh;
     display: flex;
     padding: 10px;
@@ -55,11 +54,6 @@ pre .logs {
     width: 100%;
     padding: 10px 10px;
     border-top: 1px solid #4e4a4a;
-}
-
-#banner {
-    width: 100%;
-    padding: 10px 10px;
 }
 
 #default-sidebar a{

@@ -45,7 +45,7 @@ class WebHandler:
         self._interface.reset_history()
         self._interface.deactivate()
         self._interface.activate()
-        self._conversation_events.reload_knowledge()
+        await self._conversation_events.reload_knowledge()
         self._conversation_events.reset_discourse_memory()
         await self._interface.output("Hello. How may I help you?")
         conversation = await self._messages_creator.get_messages_window()

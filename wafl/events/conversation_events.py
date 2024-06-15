@@ -101,11 +101,12 @@ class ConversationEvents:
 
         return False
 
+    async def reload_knowledge(self):
+        self._knowledge = load_knowledge(self._config, self._logger)
+        await self._knowledge.initialize_retrievers()
+
     def is_computing(self):
         return self._is_computing
-
-    def reload_knowledge(self):
-        self._knowledge = load_knowledge(self._config, self._logger)
 
     def reset_discourse_memory(self):
         self._answerer = create_answerer(
