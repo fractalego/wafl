@@ -31,7 +31,7 @@ class RuleMaker:
             rules_text = rule.get_string_using_template(
                 "- {effect}:\n{clauses}\n"
                 + rule.indent_str
-                + f'- After you completed all the steps output "{self._delete_current_rule}".\n'
+#                + f'- After you completed all the steps output "{self._delete_current_rule}".\n'
             )
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")
