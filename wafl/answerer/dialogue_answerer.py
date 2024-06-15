@@ -21,7 +21,6 @@ from wafl.simple_text_processing.questions import is_question
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._threshold_for_facts = 0.85
-        self._delete_current_rule = "<delete_rule/>"
         self._client = LLMChitChatAnswerClient(config)
         self._knowledge = knowledge
         self._logger = logger
@@ -38,7 +37,6 @@ class DialogueAnswerer(BaseAnswerer):
             config,
             interface,
             max_num_rules=1,
-            delete_current_rule=self._delete_current_rule,
         )
 
     async def answer(self, query_text: str) -> Answer:
@@ -69,14 +67,8 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text, memories = await self._apply_substitutions(
                 original_answer_text
             )
-            if self._delete_current_rule in answer_text:
-                self._prior_rules = []
-                final_answer_text += answer_text
-                break
 
             final_answer_text += answer_text
-            if final_answer_text.strip() == self._delete_current_rule:
-                continue
 
             if not memories:
                 break
@@ -115,9 +107,6 @@ class DialogueAnswerer(BaseAnswerer):
                     f"\nThe answer to {query.text} is not in the knowledge base."
                     "The bot can answer the question while informing the user that the answer was not retrieved"
                 )
-
-        if has_prior_rules:
-            memory += f"\nThe user wants the bot to answer the query using the rules."
 
         return memory
 
