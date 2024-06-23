@@ -5,11 +5,16 @@ from wafl.readers.text_reader import TextReader
 class ReaderFactory:
     _chunk_size = 1000
     _overlap = 100
-    
+    _extension_to_reader_dict = {
+        ".pdf": PdfReader,
+        ".txt": TextReader
+    }
+
     @staticmethod
     def get_reader(filename):
-        if ".pdf" in filename.lower():
-            return PdfReader(ReaderFactory._chunk_size, ReaderFactory._overlap)
-        else:
-            return TextReader(ReaderFactory._chunk_size, ReaderFactory._overlap)
+        for extension, reader in ReaderFactory._extension_to_reader_dict.items():
+            if extension in filename.lower():
+                return reader(ReaderFactory._chunk_size, ReaderFactory._overlap)
+
+        return TextReader(ReaderFactory._chunk_size, ReaderFactory._overlap)
 

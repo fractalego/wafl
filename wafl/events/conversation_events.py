@@ -4,7 +4,8 @@ import re
 from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid, load_knowledge
+from wafl.events.utils import input_is_valid
+from wafl.knowledge.indexing_implementation import load_knowledge
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 

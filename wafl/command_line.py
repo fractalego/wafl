@@ -2,6 +2,7 @@ import os
 import sys
 
 from wafl.config import create_initial_files
+from wafl.knowledge.indexing_implementation import add_to_index
 from wafl.parsing.preprocess import remove_preprocessed
 from wafl.run import (
     run_from_command_line,
@@ -19,9 +20,8 @@ def print_help():
     print("\n")
     print("These are the available commands:")
     print("> wafl init: Initialize the current folder")
-    print(
-        "> wafl run: Starts all the available interfaces of the chatbot at the same time"
-    )
+    print("> wafl add <PATH>: Add the file or folder at <PATH> to the index")
+    print("> wafl run: Starts the chatbot on the web interface and the audio interface.")
     print("> wafl run-cli: Run a cli version of the chatbot")
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")
@@ -71,12 +71,18 @@ def process_cli():
         elif command == "run-action":
             if len(arguments) > 2:
                 action_name = arguments[2]
+                run_action(action_name)
 
             else:
                 print("Please provide the action name as the second argument.")
-                return
 
-            run_action(action_name)
+        elif command == "add":
+            if len(arguments) > 2:
+                path = arguments[2]
+                add_to_index(path)
+
+            else:
+                print("Please provide the path as the second argument.")
 
         elif command == "help":
             print_help()

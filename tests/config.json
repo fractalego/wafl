@@ -3,6 +3,7 @@
   "waking_up_sound": true,
   "deactivate_sound": true,
   "rules": "rules.yaml",
+  "index": "indices.yaml",
   "functions": "functions.py",
   "max_recursion": 2,
   "llm_model": {
