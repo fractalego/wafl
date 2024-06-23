@@ -8,20 +8,19 @@ from wafl.knowledge.single_file_knowledge import SingleFileKnowledge
 from wafl.readers.reader_factory import ReaderFactory
 
 
-def _add_indices_to_knowledge(knowledge, text):
+async def _add_indices_to_knowledge(knowledge, text):
     indices = yaml.safe_load(text)
     for path in indices["paths"]:
         for root, _, files in os.walk(path):
             for file in files:
-                with open(os.path.join(root, file)) as f:
-                    reader = ReaderFactory.get_reader(file)
-                    for chunk in reader.get_chunks(f.read()):
-                        knowledge.add(chunk)
+                reader = ReaderFactory.get_reader(file)
+                for chunk in reader.get_chunks(os.path.join(root, file)):
+                    await knowledge.add(chunk)
 
     return knowledge
 
 
-def load_knowledge(config, logger):
+async def load_knowledge(config, logger=None):
     if ".yaml" in config.get_value("rules") and not any(
         item in config.get_value("rules") for item in [" ", "\n"]
     ):
@@ -41,7 +40,7 @@ def load_knowledge(config, logger):
             return knowledge
 
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
-    knowledge = _add_indices_to_knowledge(knowledge, index_txt)
+    knowledge = await _add_indices_to_knowledge(knowledge, index_txt)
     joblib.dump(knowledge, config.get_value("index_filename"))
     return knowledge
 
