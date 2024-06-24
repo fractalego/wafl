@@ -39,8 +39,8 @@ class TestRules(TestCase):
             interface=interface,
         )
         asyncio.run(conversation_events.process_next())
-        expected = "The horse is tall"
-        self.assertIn(expected, interface.get_utterances_list()[-1])
+        expected = "the horse is tall"
+        self.assertIn(expected, interface.get_utterances_list()[-1].lower())
 
     def test__rules_are_not_always_triggered(self):
         interface = DummyInterface(

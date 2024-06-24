@@ -1,3 +1,9 @@
+None of the knowledge is loaded from the web interface. Why?
+- you have just changed the load_knowledge function to make it async.
+
+
+
+
 wafl:
 /- create indices
 - allow files/folders to be indexed (modify rules.yaml and then re-index)

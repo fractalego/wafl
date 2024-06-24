@@ -31,6 +31,8 @@ async def load_knowledge(config, logger=None):
         rules_txt = config.get_value("rules")
 
     index_filename = config.get_value("index")
+    if not os.path.exists(index_filename):
+        raise RuntimeError(f"Index file {index_filename} does not exist.")
     with open(index_filename) as file:
         index_txt = file.read()
 
@@ -42,6 +44,7 @@ async def load_knowledge(config, logger=None):
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
     knowledge = await _add_indices_to_knowledge(knowledge, index_txt)
     joblib.dump(knowledge, config.get_value("index_filename"))
+    await knowledge.initialize_retrievers()
     return knowledge
 
 

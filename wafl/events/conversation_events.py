@@ -113,7 +113,6 @@ class ConversationEvents:
 
     async def reload_knowledge(self):
         self._knowledge = await load_knowledge(self._config, self._logger)
-        await self._knowledge.initialize_retrievers()
 
     def is_computing(self):
         return self._is_computing
