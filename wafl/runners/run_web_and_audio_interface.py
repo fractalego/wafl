@@ -48,7 +48,7 @@ def run_app():
             _logger,
             activation_word=config.get_value("waking_up_word"),
         )
-        web_loop = WebHandler(interface, conversation_id, conversation_events)
+        web_loop = WebHandler(interface, config, conversation_id, conversation_events)
         return {
             "scheduler": Scheduler([conversation_loop, web_loop]),
             "web_server_loop": web_loop,
