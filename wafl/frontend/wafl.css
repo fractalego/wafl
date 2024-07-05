@@ -10,14 +10,15 @@ body {
 
 #query{
     font-size: 20px;
-    margin: 20px;
     min-height: 25px;
     max-height: 50px;
-    width: 100%;
     border-radius: 5px;
     border-color: #7a7a9f;
     border-width: 2px;
+    display: flex;
     padding: 10px;
+    margin-left: 1px;
+    margin-right: 18px;
     resize: none;
 }
 
@@ -32,13 +33,12 @@ pre {
 pre .dialogue {
     height: 90vh;
     display: flex;
-    padding: 10px;
-    margin-left: 8px;
+    padding-bottom: 10px;
+    padding-right: 5px;
     flex-direction: column-reverse;
 }
 
 pre .logs {
-    width: 35vw;
     height: 90vh;
     display: flex;
     padding: 10px;

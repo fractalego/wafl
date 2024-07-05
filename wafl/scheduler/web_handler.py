@@ -36,7 +36,7 @@ class WebHandler:
         await self._interface.insert_input(query)
         return f"""
     <textarea id="query" type="text"
-           class='shadow-lg'
+           class='shadow-lg w-full'
            placeholder="{query}"
            name="query"
            hx-post="/{self._conversation_id}/input"
