@@ -7,13 +7,13 @@ from flask import render_template, redirect, url_for
 from wafl.interface.list_interface import ListInterface
 from wafl.interface.voice_interface import VoiceInterface
 from wafl.scheduler.scheduler import Scheduler
-from wafl.scheduler.conversation_handler import ConversationHandler
+from wafl.handlers.conversation_handler import ConversationHandler
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
 from wafl.config import Configuration
 from wafl.runners.routes import get_app, add_new_rules
-from wafl.scheduler.web_handler import WebHandler
+from wafl.handlers.web_handler import WebHandler
 
 app = get_app()
 _logger = LocalFileLogger()
