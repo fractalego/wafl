@@ -103,3 +103,28 @@ class RemoteLLMConnector(BaseLLMConnector):
             print()
 
         return False
+
+    async def get_information(self):
+        payload = {
+            "data": {
+                "system_prompt": "Hello!",
+                "conversation": [{"speaker": "user", "text": "Hi!"}],
+            },
+            "temperature": 0.6,
+            "num_tokens": 1,
+            "last_strings": self._important_strings,
+            "num_replicas": self._num_replicas,
+        }
+        async with aiohttp.ClientSession(
+                conn_timeout=6000,
+                connector=aiohttp.TCPConnector(ssl=False),
+        ) as session:
+            async with session.post(self._server_url, json=payload) as response:
+                answer = json.loads(await response.text())
+                status = answer["status"]
+                if status != "success":
+                    raise RuntimeError(f"Error in prediction: {answer}")
+                return {
+                    "model_name": answer["model"],
+                    "backend_version": answer["version"],
+                }

@@ -2,6 +2,9 @@ import asyncio
 import os
 
 from flask import render_template, request, jsonify
+
+from wafl.config import Configuration
+from wafl.connectors.clients.information_client import InformationClient
 from wafl.interface.base_interface import BaseInterface
 from wafl.logger.history_logger import HistoryLogger
 from wafl.scheduler.messages_creator import MessagesCreator
@@ -13,6 +16,7 @@ class WebHandler:
     def __init__(
         self,
         interface: BaseInterface,
+        config: Configuration,
         conversation_id: int,
         conversation_events: "ConversationEvents",
     ):
@@ -22,6 +26,7 @@ class WebHandler:
         self._conversation_events = conversation_events
         self._prior_dialogue_items = ""
         self._messages_creator = MessagesCreator(self._interface)
+        self._information_client = InformationClient(config)
 
     async def index(self):
         return render_template("index.html", conversation_id=self._conversation_id)
@@ -95,6 +100,17 @@ class WebHandler:
     async def toggle_logs(self):
         self._messages_creator.toggle_logs()
         return jsonify("")
+
+    async def get_info(self):
+        info = await self._information_client.get_information()
+        return f"""
+        <div id="info"
+              hx-post="/{self._conversation_id}/get_info"
+                hx-swap="innerHTML"
+                hx-target="#info"
+                hx-trigger="load"
+        >{info}</div>
+        """
 
     async def run(self):
         print(f"New web server instance {self._conversation_id} running!")

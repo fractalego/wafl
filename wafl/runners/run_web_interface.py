@@ -51,7 +51,7 @@ def run_server_only_app():
             deactivate_on_closed_conversation=False,
         )
         asyncio.run(interface.output("Hello. How may I help you?"))
-        web_loop = WebHandler(interface, conversation_id, conversation_events)
+        web_loop = WebHandler(interface, config, conversation_id, conversation_events)
         return {
             "scheduler": Scheduler([conversation_loop, web_loop]),
             "web_server_loop": web_loop,
