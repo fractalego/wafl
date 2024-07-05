@@ -56,7 +56,7 @@ rules:
     - say that you are just improvising the answer
     - say what you think answer the question
 
-  - the user thanks the bot:
+  - the user says "thank you":
     - The intention of the user is to close the conversation
     - You must answer the user by writing "<execute>close_conversation()</execute>"
 
