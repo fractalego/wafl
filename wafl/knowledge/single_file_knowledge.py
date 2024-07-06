@@ -6,7 +6,7 @@ from typing import List
 import nltk
 
 from wafl.config import Configuration
-from wafl.facts import Fact
+from wafl.dataclasses.facts import Fact
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,
@@ -67,14 +67,18 @@ class SingleFileKnowledge(BaseKnowledge):
             if not loop or not loop.is_running():
                 asyncio.run(self.initialize_retrievers())
 
-    async def add(self, text):
-        fact_index = f"F{len(self._facts_dict)}"
-        self._facts_dict[fact_index] = Fact(text=text)
+    async def add(self, text: str):
+        await self.add_fact(Fact(text=text))
+
+    async def add_fact(self, fact: Fact):
+        index = str(len(self._facts_dict))
+        index = f"F{index}"
+        self._facts_dict[index] = fact
         await self._facts_retriever.add_text_and_index(
-            clean_text_for_retrieval(text), fact_index
+            clean_text_for_retrieval(fact.text), index=index
         )
         await self._facts_retriever_for_questions.add_text_and_index(
-            clean_text_for_retrieval(text), fact_index
+            clean_text_for_retrieval(fact.text), index=index
         )
 
     async def add_rule(self, rule_text):

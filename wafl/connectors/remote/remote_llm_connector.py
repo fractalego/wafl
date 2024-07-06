@@ -116,8 +116,8 @@ class RemoteLLMConnector(BaseLLMConnector):
             "num_replicas": self._num_replicas,
         }
         async with aiohttp.ClientSession(
-                conn_timeout=6000,
-                connector=aiohttp.TCPConnector(ssl=False),
+            conn_timeout=6000,
+            connector=aiohttp.TCPConnector(ssl=False),
         ) as session:
             async with session.post(self._server_url, json=payload) as response:
                 answer = json.loads(await response.text())

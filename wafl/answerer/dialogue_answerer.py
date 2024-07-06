@@ -2,7 +2,6 @@ from importlib import import_module
 from inspect import getmembers, isfunction
 from typing import List, Tuple
 from wafl.answerer.answerer_implementation import (
-    is_executable,
     substitute_memory_in_answer_and_get_memories_if_present,
     create_one_liner,
     get_text_from_facts_and_thresholds,
@@ -13,7 +12,7 @@ from wafl.answerer.answerer_implementation import (
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chitchat_answer_client import LLMChitChatAnswerClient
-from wafl.extractors.dataclasses import Query, Answer
+from wafl.dataclasses.dataclasses import Query, Answer
 from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
 
@@ -115,7 +114,7 @@ class DialogueAnswerer(BaseAnswerer):
         for rule in rules:
             if rule not in self._prior_rules:
                 self._prior_rules.insert(0, rule)
-        self._prior_rules = self._prior_rules[:self._max_num_past_utterances_for_rules]
+        self._prior_rules = self._prior_rules[: self._max_num_past_utterances_for_rules]
         return self._prior_rules
 
     def _init_python_module(self, module_name):

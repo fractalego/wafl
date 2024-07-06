@@ -1,5 +1,8 @@
-from logging import getLogger
+import pymupdf
 
+from logging import getLogger
+from typing import List
+from wafl.dataclasses.facts import Fact
 from wafl.readers.base_reader import BaseReader
 
 _logger = getLogger(__name__)
@@ -10,6 +13,13 @@ class PdfReader(BaseReader):
         self.chunk_size = chunk_size
         self.overlap = overlap
 
-    def get_chunks(self, filename):
+    def get_chunks(self, filename: str) -> List[Fact]:
         _logger.info(f"Reading PDF file: {filename}")
-
+        with pymupdf.open(filename) as doc:
+            return [
+                Fact(
+                    text=page.get_text(),
+                    metadata={"filename": filename, "page_number": i},
+                )
+                for i, page in enumerate(doc)
+            ]

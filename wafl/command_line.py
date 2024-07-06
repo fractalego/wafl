@@ -21,7 +21,9 @@ def print_help():
     print("These are the available commands:")
     print("> wafl init: Initialize the current folder")
     print("> wafl add <PATH>: Add the file or folder at <PATH> to the index")
-    print("> wafl run: Starts the chatbot on the web interface and the audio interface.")
+    print(
+        "> wafl run: Starts the chatbot on the web interface and the audio interface."
+    )
     print("> wafl run-cli: Run a cli version of the chatbot")
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")

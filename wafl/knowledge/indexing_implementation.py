@@ -15,7 +15,7 @@ async def _add_indices_to_knowledge(knowledge, text):
             for file in files:
                 reader = ReaderFactory.get_reader(file)
                 for chunk in reader.get_chunks(os.path.join(root, file)):
-                    await knowledge.add(chunk)
+                    await knowledge.add_fact(chunk)
 
     return knowledge
 

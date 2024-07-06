@@ -69,5 +69,3 @@ def needs_substitutions(effect):
         return True
 
     return False
-
-

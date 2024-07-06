@@ -1,7 +1,7 @@
 from typing import List
 
-from wafl.extractors.dataclasses import Query
-from wafl.rules import Rule
+from wafl.dataclasses.dataclasses import Query
+from wafl.dataclasses.rules import Rule
 
 
 class RuleMaker:
@@ -27,8 +27,7 @@ class RuleMaker:
         rules_texts = []
         for rule in rules:
             rules_text = rule.get_string_using_template(
-                "- {effect}:\n{clauses}\n"
-                + rule.indent_str
+                "- {effect}:\n{clauses}\n" + rule.indent_str
             )
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")

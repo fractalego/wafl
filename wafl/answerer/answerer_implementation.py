@@ -4,7 +4,7 @@ import traceback
 from typing import List, Tuple
 
 from wafl.exceptions import CloseConversation
-from wafl.facts import Fact
+from wafl.dataclasses.facts import Fact
 from wafl.interface.conversation import Conversation, Utterance
 
 
@@ -116,7 +116,15 @@ async def _run_code(to_execute: str, module, functions) -> str:
 def get_text_from_facts_and_thresholds(
     facts_and_thresholds: List[Tuple[Fact, float]], memory: str
 ) -> List[str]:
-    return [item[0].text for item in facts_and_thresholds if item[0].text not in memory]
+    text_list = []
+    for item in facts_and_thresholds:
+        if item[0].text not in memory:
+            text = item[0].text
+            if item[0].metadata:
+                text = f"Metadata for the following text: {str(item[0].metadata)}" + "\n" + text
+            text_list.append(text)
+
+    return text_list
 
 
 def add_dummy_utterances_to_continue_generation(
