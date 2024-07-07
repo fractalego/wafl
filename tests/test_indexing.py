@@ -34,6 +34,15 @@ class TestIndexing(TestCase):
         expected = "WAFL"
         self.assertIn(expected, results[0].text)
 
+    def test__pdf_can_be_read(self):
+        config = Configuration.load_local_config()
+        knowledge = asyncio.run(load_knowledge(config))
+        results = asyncio.run(
+            knowledge.ask_for_facts(Query.create_from_text("What color is the sky?"))
+        )
+        expected = "green"
+        self.assertIn(expected, results[0].text)
+
 
 def _load_index():
     with open("indices.yaml", "r") as file:
