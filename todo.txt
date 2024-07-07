@@ -1,13 +1,15 @@
-* add control over which llm to use from the frontend
-  - add list of models in the backend
+/* add control over which llm to use from the frontend
+/  - add list of models in the backend
 
 * interruptible speech
+* add option so use llama.cpp from wafl_llm
+* add option to have None as a model setting in wafl_llm
 
 * dependabot!!!
 * use poetry
-* add pdf to indexing
-* add jason to indexing
-* add metadata to indexing items
+/* add pdf to indexing
+* add json to indexing
+/* add metadata to indexing items
 
 
 /make backend it run with ollama as well (no too slow)
