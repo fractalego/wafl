@@ -1,7 +1,7 @@
 from typing import List
 
-from wafl.extractors.dataclasses import Query
-from wafl.rules import Rule
+from wafl.dataclasses.dataclasses import Query
+from wafl.dataclasses.rules import Rule
 
 
 class RuleMaker:
@@ -11,14 +11,12 @@ class RuleMaker:
         config: "BaseConfig",
         interface: "BaseInterface",
         max_num_rules: int,
-        delete_current_rule: str,
         max_recursion: int = 3,
     ):
         self._knowledge = knowledge
         self._config = config
         self._interface = interface
         self._max_num_rules = max_num_rules
-        self._delete_current_rule = delete_current_rule
         if not config.get_value("max_recursion"):
             self._max_indentation = max_recursion
         else:
@@ -29,9 +27,7 @@ class RuleMaker:
         rules_texts = []
         for rule in rules:
             rules_text = rule.get_string_using_template(
-                "- {effect}:\n{clauses}\n"
-                + rule.indent_str
-                + f'- After you completed all the steps output "{self._delete_current_rule}".\n'
+                "- {effect}:\n{clauses}\n" + rule.indent_str
             )
             rules_texts.append(rules_text)
             await self._interface.add_fact(f"The bot remembers the rule:\n{rules_text}")

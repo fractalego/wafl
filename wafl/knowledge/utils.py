@@ -1,7 +1,3 @@
-import wafl.simple_text_processing.questions
-from wafl.simple_text_processing.questions import get_sentence_from_yn_question
-
-
 def text_is_exact_string(text):
     return text.strip() and text.strip()[0] == "_"
 

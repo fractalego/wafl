@@ -16,6 +16,7 @@ Welcome to WAFL's 0.0.90 documentation!
    configuration
    running_WAFL
    facts_and_rules
+   modify_the_prompt
    examples
    testcases
    actions

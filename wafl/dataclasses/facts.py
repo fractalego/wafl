@@ -10,6 +10,7 @@ class Fact:
     is_interruption: bool = False
     source: str = None
     destination: str = None
+    metadata: Union[str, dict] = None
 
     def toJSON(self):
         return str(self)

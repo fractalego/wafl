@@ -3,7 +3,11 @@
   "waking_up_sound": true,
   "deactivate_sound": true,
   "rules": "rules.yaml",
+  "index": "indices.yaml",
+  "cache_filename": "knowledge_cache",
+  "prompt_filename": "main.prompt",
   "functions": "functions.py",
+  "max_recursion": 2,
   "frontend_port": 8090,
   "llm_model": {
     "model_host": "localhost",

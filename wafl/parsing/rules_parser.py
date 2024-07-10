@@ -1,7 +1,7 @@
 import yaml
 
-from wafl.facts import Fact
-from wafl.rules import Rule
+from wafl.dataclasses.facts import Fact
+from wafl.dataclasses.rules import Rule
 from wafl.simple_text_processing.deixis import from_user_to_bot
 
 

@@ -2,7 +2,6 @@ from importlib import import_module
 from inspect import getmembers, isfunction
 from typing import List, Tuple
 from wafl.answerer.answerer_implementation import (
-    is_executable,
     substitute_memory_in_answer_and_get_memories_if_present,
     create_one_liner,
     get_text_from_facts_and_thresholds,
@@ -12,17 +11,16 @@ from wafl.answerer.answerer_implementation import (
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
-from wafl.connectors.clients.llm_chitchat_answer_client import LLMChitChatAnswerClient
-from wafl.extractors.dataclasses import Query, Answer
-from wafl.interface.conversation import Conversation, Utterance
+from wafl.connectors.clients.llm_chat_client import LLMChatClient
+from wafl.dataclasses.dataclasses import Query, Answer
+from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
 
 
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._threshold_for_facts = 0.85
-        self._delete_current_rule = "[delete_rule]"
-        self._client = LLMChitChatAnswerClient(config)
+        self._client = LLMChatClient(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
@@ -38,7 +36,6 @@ class DialogueAnswerer(BaseAnswerer):
             config,
             interface,
             max_num_rules=1,
-            delete_current_rule=self._delete_current_rule,
         )
 
     async def answer(self, query_text: str) -> Answer:
@@ -51,10 +48,6 @@ class DialogueAnswerer(BaseAnswerer):
         rules_text = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
-        last_bot_utterances = conversation.get_last_speaker_utterances("bot", 3)
-        last_user_utterance = conversation.get_last_speaker_utterances("user", 1)
-        if not last_user_utterance:
-            last_user_utterance = query_text
         conversational_timestamp = len(conversation)
         facts = await self._get_relevant_facts(
             query,
@@ -73,18 +66,9 @@ class DialogueAnswerer(BaseAnswerer):
             answer_text, memories = await self._apply_substitutions(
                 original_answer_text
             )
-            if answer_text in last_bot_utterances and not is_executable(
-                original_answer_text
-            ):
-                conversation = create_one_liner(last_user_utterance[-1])
-                continue
-
-            if self._delete_current_rule in answer_text:
-                self._prior_rules = []
-                final_answer_text += answer_text
-                break
 
             final_answer_text += answer_text
+
             if not memories:
                 break
 
@@ -130,7 +114,7 @@ class DialogueAnswerer(BaseAnswerer):
         for rule in rules:
             if rule not in self._prior_rules:
                 self._prior_rules.insert(0, rule)
-        self._prior_rules = self._prior_rules[:self._max_num_past_utterances_for_rules]
+        self._prior_rules = self._prior_rules[: self._max_num_past_utterances_for_rules]
         return self._prior_rules
 
     def _init_python_module(self, module_name):

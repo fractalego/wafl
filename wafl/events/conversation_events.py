@@ -1,10 +1,12 @@
+import asyncio
 import os
 import re
 
 from wafl.events.answerer_creator import create_answerer
 from wafl.simple_text_processing.normalize import normalized
 from wafl.config import Configuration
-from wafl.events.utils import input_is_valid, load_knowledge
+from wafl.events.utils import input_is_valid
+from wafl.knowledge.indexing_implementation import load_knowledge
 from wafl.simple_text_processing.questions import is_question
 from wafl.exceptions import InterruptTask
 
@@ -19,7 +21,15 @@ class ConversationEvents:
         logger=None,
     ):
         self._config = config
-        self._knowledge = load_knowledge(config, logger)
+        try:
+            loop = asyncio.get_running_loop()
+
+        except RuntimeError:
+            loop = None
+
+        if not loop or not loop.is_running():
+            self._knowledge = asyncio.run(load_knowledge(config, logger))
+
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
         self._answerer._client._connector._cache = {}
         self._interface = interface
@@ -102,8 +112,7 @@ class ConversationEvents:
         return False
 
     async def reload_knowledge(self):
-        self._knowledge = load_knowledge(self._config, self._logger)
-        await self._knowledge.initialize_retrievers()
+        self._knowledge = await load_knowledge(self._config, self._logger)
 
     def is_computing(self):
         return self._is_computing

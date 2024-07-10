@@ -2,6 +2,8 @@ import os
 import random
 import re
 
+import nltk
+
 from wafl.events.utils import remove_text_between_brackets
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
@@ -55,7 +57,8 @@ class VoiceInterface(BaseInterface):
         text = text
         self._insert_utterance(speaker="bot", text=text)
         print(COLOR_START + "bot> " + text + COLOR_END)
-        await self._speaker.speak(text)
+        for sentence in nltk.sent_tokenize(text):
+            await self._speaker.speak(sentence)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:

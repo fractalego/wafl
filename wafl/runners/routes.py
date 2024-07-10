@@ -78,3 +78,9 @@ def add_new_rules(app: Flask, conversation_id: int, web_server_loop: "WebLoop"):
         web_server_loop.toggle_logs,
         methods=["POST"],
     )
+    app.add_url_rule(
+        f"/{conversation_id}/get_info",
+        f"get_info_{conversation_id}",
+        web_server_loop.get_info,
+        methods=["POST"],
+    )
