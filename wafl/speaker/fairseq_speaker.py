@@ -11,7 +11,7 @@ class FairSeqSpeaker(BaseSpeaker):
         self._connector = SpeakerConnectorFactory.get_connector(config)
         self._p = pyaudio.PyAudio()
 
-    async def speak(self, text):
+    async def speak(self, text):  #### This is the function that is called in the VoiceInterface class
         text = convert_numbers_to_words(text)
         prediction = await self._connector.predict(text)
         wav = prediction["wav"]
