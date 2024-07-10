@@ -1,12 +1,21 @@
+* interruptible speech
+* dependabot!!!
+* use poetry
+
+PharazonE
+* upload to hetzner and make it work for some retrieval tasks
+* develop more rules + use-cases for voice and other
+
+
 /* add control over which llm to use from the frontend
 /  - add list of models in the backend
 
-* interruptible speech
-* add option so use llama.cpp from wafl_llm
-* add option to have None as a model setting in wafl_llm
+/* add quantization of llm to wafl_llm config
+/* write docs about it on wafl
 
-* dependabot!!!
-* use poetry
+/* add option so use llama.cpp from wafl_llm
+/* add option to have None as a model setting in wafl_llm
+
 /* add pdf to indexing
 * add json to indexing
 /* add metadata to indexing items

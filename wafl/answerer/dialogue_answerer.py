@@ -11,7 +11,7 @@ from wafl.answerer.answerer_implementation import (
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
-from wafl.connectors.clients.llm_chitchat_answer_client import LLMChitChatAnswerClient
+from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.dataclasses.dataclasses import Query, Answer
 from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
@@ -20,7 +20,7 @@ from wafl.simple_text_processing.questions import is_question
 class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._threshold_for_facts = 0.85
-        self._client = LLMChitChatAnswerClient(config)
+        self._client = LLMChatClient(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface

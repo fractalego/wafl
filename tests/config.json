@@ -4,7 +4,8 @@
   "deactivate_sound": true,
   "rules": "rules.yaml",
   "index": "indices.yaml",
-  "index_filename": "knowledge_cache",
+  "cache_filename": "knowledge_cache",
+  "prompt_filename": "main.prompt",
   "functions": "functions.py",
   "max_recursion": 2,
   "llm_model": {

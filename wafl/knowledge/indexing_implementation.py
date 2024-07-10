@@ -36,14 +36,14 @@ async def load_knowledge(config, logger=None):
     with open(index_filename) as file:
         index_txt = file.read()
 
-    if os.path.exists(config.get_value("index_filename")):
-        knowledge = joblib.load(config.get_value("index_filename"))
+    if os.path.exists(config.get_value("cache_filename")):
+        knowledge = joblib.load(config.get_value("cache_filename"))
         if knowledge.hash == hash(rules_txt + index_txt):
             return knowledge
 
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
     knowledge = await _add_indices_to_knowledge(knowledge, index_txt)
-    joblib.dump(knowledge, config.get_value("index_filename"))
+    joblib.dump(knowledge, config.get_value("cache_filename"))
     await knowledge.initialize_retrievers()
     return knowledge
 
