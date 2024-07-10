@@ -2,7 +2,6 @@
 * dependabot!!!
 * use poetry
 
-PharazonE
 * upload to hetzner and make it work for some retrieval tasks
 * develop more rules + use-cases for voice and other
 
