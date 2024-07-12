@@ -27,4 +27,8 @@ class LLMChatClient:
         )
 
     def _get_system_prompt(self, text, rules_text):
-        return self.prompt.replace("{facts}", text.strip()).replace("{rules}", rules_text.strip()).strip()
+        return (
+            self.prompt.replace("{facts}", text.strip())
+            .replace("{rules}", rules_text.strip())
+            .strip()
+        )

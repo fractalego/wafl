@@ -121,7 +121,11 @@ def get_text_from_facts_and_thresholds(
         if item[0].text not in memory:
             text = item[0].text
             if item[0].metadata:
-                text = f"Metadata for the following text: {str(item[0].metadata)}" + "\n" + text
+                text = (
+                    f"Metadata for the following text: {str(item[0].metadata)}"
+                    + "\n"
+                    + text
+                )
             text_list.append(text)
 
     return text_list
