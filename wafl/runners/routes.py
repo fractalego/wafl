@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, abort
 from flask_cors import CORS
 
 _path = os.path.dirname(__file__)
@@ -12,75 +12,101 @@ app = Flask(
 )
 CORS(app)
 
+_routes_dict = {}
+
 
 def get_app():
     return app
 
 
-def add_new_rules(app: Flask, conversation_id: int, web_server_loop: "WebLoop"):
-    app.add_url_rule(
-        f"/{conversation_id}/",
-        f"index_{conversation_id}",
-        web_server_loop.index,
-        methods=["GET"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/reset_conversation",
-        f"reset_conversation_{conversation_id}",
-        web_server_loop.reset_conversation,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/reload_rules",
-        f"reload_rules_{conversation_id}",
-        web_server_loop.reload_rules,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/check_new_messages",
-        f"check_new_messages_{conversation_id}",
-        web_server_loop.check_for_new_messages,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/load_messages",
-        f"load_messages_{conversation_id}",
-        web_server_loop.load_messages,
-        methods=["POST", "GET"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/input",
-        f"input_{conversation_id}",
-        web_server_loop.handle_input,
-        methods=["POST", "GET"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/output",
-        f"output_{conversation_id}",
-        web_server_loop.handle_output,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/thumbs_up",
-        f"thumbs_up_{conversation_id}",
-        web_server_loop.thumbs_up,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/thumbs_down",
-        f"thumbs_down_{conversation_id}",
-        web_server_loop.thumbs_down,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/toggle_logs",
-        f"toggle_logs_{conversation_id}",
-        web_server_loop.toggle_logs,
-        methods=["POST"],
-    )
-    app.add_url_rule(
-        f"/{conversation_id}/get_info",
-        f"get_info_{conversation_id}",
-        web_server_loop.get_info,
-        methods=["POST"],
-    )
+@app.route("/<conversation_id>/index", methods=["GET"])
+async def get_index(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["index"]()
+
+
+@app.route("/<conversation_id>/reset_conversation", methods=["POST"])
+async def reset_conversation(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["reset_conversation"]()
+
+
+@app.route("/<conversation_id>/reload_rules", methods=["POST"])
+async def reload_rules(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["reload_rules"]()
+
+
+@app.route("/<conversation_id>/check_new_messages", methods=["POST"])
+async def check_new_messages(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["check_new_messages"]()
+
+
+@app.route("/<conversation_id>/load_messages", methods=["POST", "GET"])
+async def load_messages(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["load_messages"]()
+
+
+@app.route("/<conversation_id>/input", methods=["POST", "GET"])
+async def input(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["input"]()
+
+
+@app.route("/<conversation_id>/output", methods=["POST"])
+async def output(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["output"]()
+
+
+@app.route("/<conversation_id>/thumbs_up", methods=["POST"])
+async def thumbs_up(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["thumbs_up"]()
+
+
+@app.route("/<conversation_id>/thumbs_down", methods=["POST"])
+async def thumbs_down(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["thumbs_down"]()
+
+
+@app.route("/<conversation_id>/toggle_logs", methods=["POST"])
+async def toggle_logs(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["toggle_logs"]()
+
+
+@app.route("/<conversation_id>/get_info", methods=["POST"])
+async def get_info(conversation_id: str):
+    if conversation_id not in _routes_dict:
+        abort(404)
+    return await _routes_dict[conversation_id]["get_info"]()
+
+
+def add_new_routes(conversation_id: str, web_server_handler: "WebHandler"):
+    _routes_dict[str(conversation_id)] = {
+        "index": web_server_handler.index,
+        "reset_conversation": web_server_handler.reset_conversation,
+        "reload_rules": web_server_handler.reload_rules,
+        "check_new_messages": web_server_handler.check_for_new_messages,
+        "load_messages": web_server_handler.load_messages,
+        "input": web_server_handler.handle_input,
+        "output": web_server_handler.handle_output,
+        "thumbs_up": web_server_handler.thumbs_up,
+        "thumbs_down": web_server_handler.thumbs_down,
+        "toggle_logs": web_server_handler.toggle_logs,
+        "get_info": web_server_handler.get_info,
+    }

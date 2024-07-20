@@ -17,10 +17,10 @@ class ListInterface(BaseInterface):
         )
 
     async def input(self) -> str:
-        done, pending = await asyncio.wait(
-            [interface.input() for interface in self._interfaces_list],
-            return_when=asyncio.FIRST_COMPLETED,
-        )
+        tasks = [interface.input() for interface in self._interfaces_list]
+        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        for task in pending:
+            task.cancel()
         return done.pop().result()
 
     async def insert_input(self, text: str):
