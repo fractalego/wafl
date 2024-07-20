@@ -19,43 +19,46 @@ app = get_app()
 _logger = LocalFileLogger()
 
 
+@app.route("/create_new_instance", methods=["POST"])
+def create_new_instance():
+    conversation_id = random.randint(0, sys.maxsize)
+    result = create_scheduler_and_webserver_loop(conversation_id)
+    add_new_routes(conversation_id, result["web_server_handler"])
+    thread = threading.Thread(target=result["scheduler"].run)
+    thread.start()
+    return redirect(f"{conversation_id}/index")
+
+
+@app.route("/")
+async def index():
+    return render_template("selector.html")
+
+
+def create_scheduler_and_webserver_loop(conversation_id):
+    config = Configuration.load_local_config()
+    interface = ListInterface([VoiceInterface(config), QueueInterface()])
+    interface.activate()
+    conversation_events = ConversationEvents(
+        config=config,
+        interface=interface,
+        logger=_logger,
+    )
+    conversation_loop = ConversationHandler(
+        interface,
+        conversation_events,
+        _logger,
+        activation_word=config.get_value("waking_up_word"),
+    )
+    web_handler = WebHandler(
+        interface, config, conversation_id, conversation_events
+    )
+    return {
+        "scheduler": Scheduler([conversation_loop, web_handler]),
+        "web_server_handler": web_handler,
+    }
+
+
 def run_app():
-    @app.route("/create_new_instance", methods=["POST"])
-    def create_new_instance():
-        conversation_id = random.randint(0, sys.maxsize)
-        result = create_scheduler_and_webserver_loop(conversation_id)
-        add_new_routes(conversation_id, result["web_server_handler"])
-        thread = threading.Thread(target=result["scheduler"].run)
-        thread.start()
-        return redirect(f"{conversation_id}/index")
-
-    @app.route("/")
-    async def index():
-        return render_template("selector.html")
-
-    def create_scheduler_and_webserver_loop(conversation_id):
-        config = Configuration.load_local_config()
-        interface = ListInterface([VoiceInterface(config), QueueInterface()])
-        interface.activate()
-        conversation_events = ConversationEvents(
-            config=config,
-            interface=interface,
-            logger=_logger,
-        )
-        conversation_loop = ConversationHandler(
-            interface,
-            conversation_events,
-            _logger,
-            activation_word=config.get_value("waking_up_word"),
-        )
-        web_handler = WebHandler(
-            interface, config, conversation_id, conversation_events
-        )
-        return {
-            "scheduler": Scheduler([conversation_loop, web_handler]),
-            "web_server_handler": web_handler,
-        }
-
     app.run(
         host="0.0.0.0",
         port=Configuration.load_local_config().get_value("frontend_port"),
