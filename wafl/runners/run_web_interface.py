@@ -52,9 +52,7 @@ def create_scheduler_and_webserver_loop(conversation_id):
         deactivate_on_closed_conversation=False,
     )
     asyncio.run(interface.output("Hello. How may I help you?"))
-    web_handler = WebHandler(
-        interface, config, conversation_id, conversation_events
-    )
+    web_handler = WebHandler(interface, config, conversation_id, conversation_events)
     return {
         "scheduler": Scheduler([conversation_loop, web_handler]),
         "web_server_handler": web_handler,

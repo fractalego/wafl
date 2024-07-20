@@ -49,9 +49,7 @@ def create_web_and_audio_scheduler_and_webserver_loop(conversation_id):
         _logger,
         activation_word=config.get_value("waking_up_word"),
     )
-    web_handler = WebHandler(
-        interface, config, conversation_id, conversation_events
-    )
+    web_handler = WebHandler(interface, config, conversation_id, conversation_events)
     return {
         "scheduler": Scheduler([conversation_loop, web_handler]),
         "web_server_handler": web_handler,

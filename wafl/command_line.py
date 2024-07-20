@@ -11,9 +11,6 @@ from wafl.run import (
     download_models,
 )
 from wafl.runners.run_from_actions import run_action
-from wafl.runners.run_from_audio import run_from_audio
-from wafl.runners.run_web_and_audio_interface import run_app
-from wafl.runners.run_web_interface import run_server_only_app
 
 
 def print_help():
@@ -53,6 +50,8 @@ def process_cli():
             download_models()
 
         elif command == "run":
+            from wafl.runners.run_web_and_audio_interface import run_app
+
             run_app()
             remove_preprocessed("/")
 
@@ -61,10 +60,14 @@ def process_cli():
             remove_preprocessed("/")
 
         elif command == "run-audio":
+            from wafl.runners.run_from_audio import run_from_audio
+
             run_from_audio()
             remove_preprocessed("/")
 
         elif command == "run-server":
+            from wafl.runners.run_web_interface import run_server_only_app
+
             run_server_only_app()
             remove_preprocessed("/")
 

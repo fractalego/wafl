@@ -39,7 +39,6 @@ class VoiceInterface(BaseInterface):
             config.get_value("listener_model")["listener_hotword_logp"]
         )
         self._bot_has_spoken = False
-        self._utterances = []
 
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
