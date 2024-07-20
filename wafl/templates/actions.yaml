@@ -1,7 +1,7 @@
-action_1_summarise_guardian:
+action_1_template:
   -
-    action: get the news from the guardian website
-    expected: the bot outputs a list of headlines
+    action: get the time
+    expected: the result is a timestamp
   -
-    action: write the list of news headlines above as a text into the file summary_news.txt
-    expected:
+    action: get the date
+    expected: the result is a date
