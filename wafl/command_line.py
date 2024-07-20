@@ -28,9 +28,11 @@ def print_help():
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")
     print("> wafl run-tests: Run the tests in testcases.txt")
+    print("> wafl add <PATH>: Add the file or folder at <PATH> to the index")
     print(
         "> wafl run-action <ACTION_NAME>: Run the action <ACTION_NAME> from actions.yaml"
     )
+    print("> wafl help: Show this help message")
     print()
 
 
@@ -50,7 +52,7 @@ def process_cli():
             create_initial_files()
             download_models()
 
-        if command == "run":
+        elif command == "run":
             run_app()
             remove_preprocessed("/")
 

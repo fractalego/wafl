@@ -1,6 +1,10 @@
-* interruptible speech
 * dependabot!!!
+* update readme with index.
+
 * use poetry
+
+
+/* interruptible speech
 
 * upload to hetzner and make it work for some retrieval tasks
 * develop more rules + use-cases for voice and other

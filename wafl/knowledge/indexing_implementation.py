@@ -10,6 +10,9 @@ from wafl.readers.reader_factory import ReaderFactory
 
 async def _add_indices_to_knowledge(knowledge, text):
     indices = yaml.safe_load(text)
+    if "paths" not in indices or not indices["paths"]:
+        return knowledge
+
     for path in indices["paths"]:
         for root, _, files in os.walk(path):
             for file in files:

@@ -12,7 +12,7 @@ from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.queue_interface import QueueInterface
 from wafl.config import Configuration
-from wafl.runners.routes import get_app, add_new_rules
+from wafl.runners.routes import get_app, add_new_routes
 from wafl.handlers.web_handler import WebHandler
 
 app = get_app()
@@ -24,10 +24,10 @@ def run_app():
     def create_new_instance():
         conversation_id = random.randint(0, sys.maxsize)
         result = create_scheduler_and_webserver_loop(conversation_id)
-        add_new_rules(app, conversation_id, result["web_server_loop"])
+        add_new_routes(conversation_id, result["web_server_handler"])
         thread = threading.Thread(target=result["scheduler"].run)
         thread.start()
-        return redirect(url_for(f"index_{conversation_id}"))
+        return redirect(f"{conversation_id}/index")
 
     @app.route("/")
     async def index():
@@ -48,10 +48,12 @@ def run_app():
             _logger,
             activation_word=config.get_value("waking_up_word"),
         )
-        web_loop = WebHandler(interface, config, conversation_id, conversation_events)
+        web_handler = WebHandler(
+            interface, config, conversation_id, conversation_events
+        )
         return {
-            "scheduler": Scheduler([conversation_loop, web_loop]),
-            "web_server_loop": web_loop,
+            "scheduler": Scheduler([conversation_loop, web_handler]),
+            "web_server_handler": web_handler,
         }
 
     app.run(
