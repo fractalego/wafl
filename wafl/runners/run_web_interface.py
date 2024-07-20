@@ -3,7 +3,7 @@ import random
 import sys
 import threading
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect
 
 from wafl.scheduler.scheduler import Scheduler
 from wafl.handlers.web_handler import WebHandler
