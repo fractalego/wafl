@@ -18,9 +18,8 @@ class CommandLineInterface(BaseInterface):
             print(text)
             return
 
-        utterance = from_bot_to_user(text)
-        print(COLOR_START + "bot> " + utterance + COLOR_END)
-        self._utterances.append((time.time(), f"bot: {text}"))
+        print(COLOR_START + "bot> " + text + COLOR_END)
+        self._insert_utterance(speaker="bot", text=text)
         self.bot_has_spoken(True)
 
     async def input(self) -> str:
@@ -29,7 +28,7 @@ class CommandLineInterface(BaseInterface):
             await self.output("I did not quite understand that")
             text = input("user> ")
 
-        self._utterances.append((time.time(), f"user: {text}"))
+        self._insert_utterance(speaker="user", text=text)
         return text
 
     def bot_has_spoken(self, to_set: bool = None):

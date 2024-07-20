@@ -20,9 +20,9 @@ _logger = LocalFileLogger()
 
 
 @app.route("/create_new_instance", methods=["POST"])
-def create_new_instance():
+def create_new_web_and_audio_instance():
     conversation_id = random.randint(0, sys.maxsize)
-    result = create_scheduler_and_webserver_loop(conversation_id)
+    result = create_web_and_audio_scheduler_and_webserver_loop(conversation_id)
     add_new_routes(conversation_id, result["web_server_handler"])
     thread = threading.Thread(target=result["scheduler"].run)
     thread.start()
@@ -30,11 +30,11 @@ def create_new_instance():
 
 
 @app.route("/")
-async def index():
+async def index_web_and_audio_():
     return render_template("selector.html")
 
 
-def create_scheduler_and_webserver_loop(conversation_id):
+def create_web_and_audio_scheduler_and_webserver_loop(conversation_id):
     config = Configuration.load_local_config()
     interface = ListInterface([VoiceInterface(config), QueueInterface()])
     interface.activate()

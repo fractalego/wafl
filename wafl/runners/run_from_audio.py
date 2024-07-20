@@ -20,7 +20,9 @@ def run_from_audio():
         interface,
         conversation_events,
         _logger,
-        activation_word=config.get_value("waking_up_word"),
+        activation_word="",
+        max_misses=-1,
+        deactivate_on_closed_conversation=False,
     )
     scheduler = Scheduler([conversation_loop])
     scheduler.run()

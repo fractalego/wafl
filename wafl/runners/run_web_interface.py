@@ -19,6 +19,21 @@ app = get_app()
 _logger = LocalFileLogger()
 
 
+@app.route("/create_new_instance", methods=["POST"])
+def create_new_web_instance():
+    conversation_id = str(random.randint(0, sys.maxsize))
+    result = create_scheduler_and_webserver_loop(conversation_id)
+    add_new_routes(conversation_id, result["web_server_handler"])
+    thread = threading.Thread(target=result["scheduler"].run)
+    thread.start()
+    return redirect(f"{conversation_id}/index")
+
+
+@app.route("/")
+async def index_web():
+    return render_template("selector.html")
+
+
 def create_scheduler_and_webserver_loop(conversation_id):
     config = Configuration.load_local_config()
     interface = QueueInterface()
@@ -44,21 +59,6 @@ def create_scheduler_and_webserver_loop(conversation_id):
         "scheduler": Scheduler([conversation_loop, web_handler]),
         "web_server_handler": web_handler,
     }
-
-
-@app.route("/create_new_instance", methods=["POST"])
-def create_new_instance():
-    conversation_id = str(random.randint(0, sys.maxsize))
-    result = create_scheduler_and_webserver_loop(conversation_id)
-    add_new_routes(conversation_id, result["web_server_handler"])
-    thread = threading.Thread(target=result["scheduler"].run)
-    thread.start()
-    return redirect(f"{conversation_id}/index")
-
-
-@app.route("/")
-async def index():
-    return render_template("selector.html")
 
 
 def run_server_only_app():
