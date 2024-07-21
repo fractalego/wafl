@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Running WAFL &mdash; WAFL  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Running WAFL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wafl-run">$ wafl run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wafl-run-audio">$ wafl run-audio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wafl-run-server">$ wafl run-server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wafl-run-cli">$ wafl run-cli</a></li>
@@ -54,6 +59,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="facts_and_rules.html">The rules.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indexing_files.html">Indexing Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modify_the_prompt.html">Modify the original prompt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testcases.html">Creating a testcase</a></li>
 <li class="toctree-l1"><a class="reference internal" href="actions.html">Running Actions</a></li>
@@ -85,27 +92,32 @@
            <div itemprop="articleBody">
              
   <section id="running-wafl">
-<h1>Running WAFL<a class="headerlink" href="#running-wafl" title="Permalink to this heading"></a></h1>
+<h1>Running WAFL<a class="headerlink" href="#running-wafl" title="Link to this heading"></a></h1>
 <p>This document contains a few examples of how to use the <cite>wafl</cite> CLI.
 There are four modes in which to run the system</p>
+<section id="wafl-run">
+<h2>$ wafl run<a class="headerlink" href="#wafl-run" title="Link to this heading"></a></h2>
+<p>Starts the available interfaces of the chatbot at the same time.
+This is equivalent to running run-audio and run-server in parallel (see below).</p>
+</section>
 <section id="wafl-run-audio">
-<h2>$ wafl run-audio<a class="headerlink" href="#wafl-run-audio" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-audio<a class="headerlink" href="#wafl-run-audio" title="Link to this heading"></a></h2>
 <p>It will run the system in a loop, waiting for the user to speak a command.
 The activation word is the name defined in config.json.
 The default name is “computer”, but you can change it to whatever you want.</p>
 </section>
 <section id="wafl-run-server">
-<h2>$ wafl run-server<a class="headerlink" href="#wafl-run-server" title="Permalink to this heading"></a></h2>
-<p>It runs a local web server that listens for HTTP requests on port 8889.
+<h2>$ wafl run-server<a class="headerlink" href="#wafl-run-server" title="Link to this heading"></a></h2>
+<p>It runs a local web server that listens for HTTP requests on port 8090.
 The server will act as a chatbot, executing commands and returning the result as defined in the rules.</p>
 </section>
 <section id="wafl-run-cli">
-<h2>$ wafl run-cli<a class="headerlink" href="#wafl-run-cli" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-cli<a class="headerlink" href="#wafl-run-cli" title="Link to this heading"></a></h2>
 <p>This command works as for the run-server command, but it will listen for commands on the command line.
 It does not run a webserver and is useful for testing purposes.</p>
 </section>
 <section id="wafl-run-tests">
-<h2>$ wafl run-tests<a class="headerlink" href="#wafl-run-tests" title="Permalink to this heading"></a></h2>
+<h2>$ wafl run-tests<a class="headerlink" href="#wafl-run-tests" title="Link to this heading"></a></h2>
 <p>This command will run all the tests defined in the file testcases.txt.</p>
 </section>
 </section>
