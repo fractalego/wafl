@@ -39,9 +39,12 @@ async def load_knowledge(config, logger=None):
     with open(index_filename) as file:
         index_txt = file.read()
 
-    if os.path.exists(config.get_value("cache_filename")):
-        knowledge = joblib.load(config.get_value("cache_filename"))
-        if knowledge.hash == hash(rules_txt + index_txt):
+    cache_filename = config.get_value("cache_filename")
+    if os.path.exists(cache_filename):
+        knowledge = joblib.load(cache_filename)
+        if knowledge.hash == hash(rules_txt) and os.path.getmtime(
+            cache_filename
+        ) > os.path.getmtime(index_filename):
             return knowledge
 
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)

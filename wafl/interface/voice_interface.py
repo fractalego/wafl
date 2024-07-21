@@ -3,7 +3,7 @@ import os
 import random
 import re
 
-from wafl.events.utils import remove_text_between_brackets
+from wafl.events.utils import remove_text_between_brackets, remove_unclear
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
@@ -80,7 +80,7 @@ class VoiceInterface(BaseInterface):
         if utterance.strip():
             self._insert_utterance(speaker="user", text=text)
 
-        return text
+        return remove_unclear(text)
 
     def bot_has_spoken(self, to_set: bool = None):
         if to_set != None:
