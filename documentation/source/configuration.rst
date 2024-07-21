@@ -12,8 +12,11 @@ A typical configuration file looks like this:
       "waking_up_sound": true,
       "deactivate_sound": true,
       "rules": "rules.yaml",
+      "index": "indices.yaml",
+      "cache_filename": "knowledge_cache",
+      "prompt_filename": "main.prompt",
       "functions": "functions.py",
-      "frontend_port": 8081,
+      "max_recursion": 2,
       "llm_model": {
         "model_host": "localhost",
         "model_port": 8080,
@@ -37,6 +40,7 @@ A typical configuration file looks like this:
     }
 
 
+
 These settings regulate the following:
 
     * "waking_up_word" is the name of the bot, used to wake up the system in the "run-audio" mode.
@@ -44,6 +48,12 @@ These settings regulate the following:
     * "waking_up_sound" and "deactivate_sound" are played to signal the system is up or is back to idle.
 
     * "rules" is the file containing the facts and rules that guide the chatbot. The default is "rules.yaml".
+
+    * "index" is the file containing the path to the files to index. The default is "indices.yaml".
+
+    * "cache_filename" is the file where the indexed knowledge is cached. The default is "knowledge_cache".
+
+    * "prompt_filename" is the file containing the main prompt for the chatbot. The default is "main.prompt".
 
     * "functions" is the file containing the functions that can be used in the rules. The default is "functions.py".
 

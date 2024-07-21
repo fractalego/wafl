@@ -16,6 +16,13 @@ class Query:
     def create_from_text(text):
         return Query(text=text, is_question=is_question(text))
 
+    @staticmethod
+    def create_from_list(utterances):
+        text = "\n".join(utterances)
+        return Query(
+            text=text, is_question=any(is_question(item) for item in utterances)
+        )
+
 
 @dataclass
 class Answer:

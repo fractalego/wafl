@@ -2,7 +2,7 @@ import re
 
 from typing import List, Dict, Tuple, Any
 from fuzzywuzzy import process
-from wafl.extractors.dataclasses import Answer
+from wafl.dataclasses.dataclasses import Answer
 from wafl.simple_text_processing.normalize import normalized
 from wafl.simple_text_processing.questions import is_question
 

@@ -81,7 +81,10 @@ class BaseInterface:
         return self._decorator.extract(text, self._utterances)
 
     def _insert_utterance(self, speaker, text: str):
-        text = re.sub(r"\[.*?\]", "", text)
+        clean_text = re.sub(r"\[.*?]", "", text)
+        if not clean_text.strip():
+            clean_text = text
+
         self._utterances.add_utterance(
-            Utterance(text=text, speaker=speaker, timestamp=time.time())
+            Utterance(text=clean_text, speaker=speaker, timestamp=time.time())
         )

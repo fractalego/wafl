@@ -1,8 +1,9 @@
+import asyncio
 import os
 import random
 import re
 
-from wafl.events.utils import remove_text_between_brackets
+from wafl.events.utils import remove_text_between_brackets, remove_unclear
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
@@ -38,7 +39,6 @@ class VoiceInterface(BaseInterface):
             config.get_value("listener_model")["listener_hotword_logp"]
         )
         self._bot_has_spoken = False
-        self._utterances = []
 
     def add_hotwords(self, hotwords):
         self._listener.add_hotwords(hotwords)
@@ -62,6 +62,8 @@ class VoiceInterface(BaseInterface):
         text = ""
         while not text:
             text = await self._listener.input()
+            if not text.strip():
+                continue
             text = self.__remove_activation_word_and_normalize(text)
             hotword = await self._listener.get_hotword_if_present()
             if hotword:
@@ -78,7 +80,7 @@ class VoiceInterface(BaseInterface):
         if utterance.strip():
             self._insert_utterance(speaker="user", text=text)
 
-        return text
+        return remove_unclear(text)
 
     def bot_has_spoken(self, to_set: bool = None):
         if to_set != None:

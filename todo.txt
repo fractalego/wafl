@@ -1,3 +1,58 @@
+* use poetry
+
+/* why is the cache not working? The system re-loads the knowledge every time
+
+/* dependabot!!!
+/* update readme with index.
+
+
+/* interruptible speech
+
+* upload to hetzner and make it work for some retrieval tasks
+* develop more rules + use-cases for voice and other
+
+
+/* add control over which llm to use from the frontend
+/  - add list of models in the backend
+
+/* add quantization of llm to wafl_llm config
+/* write docs about it on wafl
+
+/* add option so use llama.cpp from wafl_llm
+/* add option to have None as a model setting in wafl_llm
+
+/* add pdf to indexing
+* add json to indexing
+/* add metadata to indexing items
+
+
+/make backend it run with ollama as well (no too slow)
+
+
+/None of the knowledge is loaded from the web interface. Why?
+/- you have just changed the load_knowledge function to make it async.
+
+
+wafl:
+/- create indices
+- allow files/folders to be indexed (modify rules.yaml and then re-index)
+- add keywords in retrieval from tfidf
+- silence output when someone speak
+- multiple models in wafl-llm, with selection from frontend
+
+training:
+- retrain phi3
+- add tokens <execute> and <remember> to the training data
+- add some prior conversation to the training data, taken from other examples
+- add more unused rules in the prompt
+
+
+
+* after a rule is deleted, you should also prune the conversation above.
+  The system can get confused if the conversation becomes too long
+  re-train the system with prior conversations before calling the rule
+
+
 * substitute utterances in base_interface with the conversation class
 
 * add config file for model names

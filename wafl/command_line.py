@@ -2,6 +2,7 @@ import os
 import sys
 
 from wafl.config import create_initial_files
+from wafl.knowledge.indexing_implementation import add_to_index
 from wafl.parsing.preprocess import remove_preprocessed
 from wafl.run import (
     run_from_command_line,
@@ -10,25 +11,25 @@ from wafl.run import (
     download_models,
 )
 from wafl.runners.run_from_actions import run_action
-from wafl.runners.run_from_audio import run_from_audio
-from wafl.runners.run_web_and_audio_interface import run_app
-from wafl.runners.run_web_interface import run_server_only_app
 
 
 def print_help():
     print("\n")
     print("These are the available commands:")
     print("> wafl init: Initialize the current folder")
+    print("> wafl add <PATH>: Add the file or folder at <PATH> to the index")
     print(
-        "> wafl run: Starts all the available interfaces of the chatbot at the same time"
+        "> wafl run: Starts the chatbot on the web interface and the audio interface."
     )
     print("> wafl run-cli: Run a cli version of the chatbot")
     print("> wafl run-audio: Run a voice-powered version of the chatbot")
     print("> wafl run-server: Run a webserver version of the chatbot")
     print("> wafl run-tests: Run the tests in testcases.txt")
+    print("> wafl add <PATH>: Add the file or folder at <PATH> to the index")
     print(
         "> wafl run-action <ACTION_NAME>: Run the action <ACTION_NAME> from actions.yaml"
     )
+    print("> wafl help: Show this help message")
     print()
 
 
@@ -48,7 +49,9 @@ def process_cli():
             create_initial_files()
             download_models()
 
-        if command == "run":
+        elif command == "run":
+            from wafl.runners.run_web_and_audio_interface import run_app
+
             run_app()
             remove_preprocessed("/")
 
@@ -57,10 +60,14 @@ def process_cli():
             remove_preprocessed("/")
 
         elif command == "run-audio":
+            from wafl.runners.run_from_audio import run_from_audio
+
             run_from_audio()
             remove_preprocessed("/")
 
         elif command == "run-server":
+            from wafl.runners.run_web_interface import run_server_only_app
+
             run_server_only_app()
             remove_preprocessed("/")
 
@@ -71,12 +78,18 @@ def process_cli():
         elif command == "run-action":
             if len(arguments) > 2:
                 action_name = arguments[2]
+                run_action(action_name)
 
             else:
                 print("Please provide the action name as the second argument.")
-                return
 
-            run_action(action_name)
+        elif command == "add":
+            if len(arguments) > 2:
+                path = arguments[2]
+                add_to_index(path)
+
+            else:
+                print("Please provide the path as the second argument.")
 
         elif command == "help":
             print_help()

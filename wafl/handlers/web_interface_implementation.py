@@ -7,7 +7,7 @@ def _change_code_wrapper(text):
 
     def replace_code(match):
         code = match.group(1)
-        return f'<textarea readonly id="code" rows="{num_rows}">{code}</textarea>'
+        return f'<div id="code" rows="{num_rows}">{code}</div>'
 
     return re.sub(pattern, replace_code, text, flags=re.DOTALL)
 

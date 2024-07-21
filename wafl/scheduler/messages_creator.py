@@ -1,4 +1,4 @@
-from wafl.scheduler.web_interface_implementation import get_html_from_dialogue_item
+from wafl.handlers.web_interface_implementation import get_html_from_dialogue_item
 
 
 class MessagesCreator:

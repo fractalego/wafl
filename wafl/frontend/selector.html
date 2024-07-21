@@ -4,14 +4,20 @@
     <title> WAFL frontend </title>
     <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="text/javascript" src="/wafl.js"></script>
     <link rel="stylesheet" href="/wafl.css">
 </head>
 <body>
-<div style="margin-top:20px;"
+<div class="container mx-auto mt-20"
      hx-post="/create_new_instance"
-     hx-trigger="load">
-    Creating a new instance. This may take a few seconds...
+     hx-trigger="load"
+    <div style="width: 250px; height: 100px; margin-top: 10px;">
+        <div>
+            <img src="/logo.png" alt="WAFL" style="height: 100%;">
+        </div>
+        <div>
+            Creating a new instance. This may take a few seconds...
+        </div>
+    </div>
 </div>
 </body>
 </html>
