@@ -1,7 +1,9 @@
-* dependabot!!!
-* update readme with index.
-
 * use poetry
+
+/* why is the cache not working? The system re-loads the knowledge every time
+
+/* dependabot!!!
+/* update readme with index.
 
 
 /* interruptible speech
