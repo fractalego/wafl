@@ -1,9 +1,8 @@
-# WAFL 0.0.90 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
+# ![Logo](images/logo.png) WAFL 0.1.0 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
 
 Introduction
 ============
 
-![Logo](images/logo.png)
 
 WAFL is a framework for home assistants.
 It is designed to combine Large Language Models and rules to create a predictable behavior.
