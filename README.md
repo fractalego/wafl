@@ -1,6 +1,6 @@
 # ![Logo](images/logo.png) WAFL 0.1.0 [![Tests](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml/badge.svg)](https://github.com/fractalego/wafl/actions/workflows/development-tests1.yml)[![Docs](https://readthedocs.org/projects/wafl/badge/?version=latest)](https://wafl.readthedocs.io/en/latest/)
 
-Introductionhttps://www.youtube.com/watch?v=QKHSlBi5qok
+Introduction
 ============
 
 WAFL is a framework for personal agents. It integrates Large language models, speech recognition and text to speech.
