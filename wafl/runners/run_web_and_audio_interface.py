@@ -2,7 +2,7 @@ import random
 import sys
 import threading
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect
 
 from wafl.interface.list_interface import ListInterface
 from wafl.interface.voice_interface import VoiceInterface

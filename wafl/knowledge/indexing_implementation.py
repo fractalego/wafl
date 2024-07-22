@@ -45,6 +45,7 @@ async def load_knowledge(config, logger=None):
         if knowledge.hash == hash(rules_txt) and os.path.getmtime(
             cache_filename
         ) > os.path.getmtime(index_filename):
+            await knowledge.initialize_retrievers()
             return knowledge
 
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
