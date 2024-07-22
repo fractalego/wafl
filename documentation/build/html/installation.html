@@ -49,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#interface-side">Interface side</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#llm-side-needs-a-gpu">LLM side (needs a GPU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#llm-side-needs-a-gpu-to-be-efficient">LLM side (needs a GPU to be efficient)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
@@ -110,16 +110,15 @@ $<span class="w"> </span>wafl<span class="w"> </span>run
 The second command starts the audio interface as well as a web server on port 8090 by default.
 Please see the examples in the following chapters.</p>
 </section>
-<section id="llm-side-needs-a-gpu">
-<h2>LLM side (needs a GPU)<a class="headerlink" href="#llm-side-needs-a-gpu" title="Link to this heading"></a></h2>
+<section id="llm-side-needs-a-gpu-to-be-efficient">
+<h2>LLM side (needs a GPU to be efficient)<a class="headerlink" href="#llm-side-needs-a-gpu-to-be-efficient" title="Link to this heading"></a></h2>
 <p>The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
 In order to quickly run the LLM side, you can use the following installation commands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>wafl-llm
 $<span class="w"> </span>wafl-llm<span class="w"> </span>start
-
-which<span class="w"> </span>will<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>default<span class="w"> </span>models<span class="w"> </span>and<span class="w"> </span>start<span class="w"> </span>the<span class="w"> </span>server<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">8080</span>.
 </pre></div>
 </div>
+<p>which will use the default models and start the server on port 8080.</p>
 <p>The interface side has a <cite>config.json</cite> file that needs to be filled with the IP address of the LLM side.
 The default is localhost.</p>
 <p>Finally, you can run the LLM side by cloning [this repository](<a class="reference external" href="https://github.com/fractalego/wafl-llm">https://github.com/fractalego/wafl-llm</a>).</p>
