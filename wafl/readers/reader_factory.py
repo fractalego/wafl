@@ -3,7 +3,7 @@ from wafl.readers.text_reader import TextReader
 
 
 class ReaderFactory:
-    _chunk_size = 1000
+    _chunk_size = 10000
     _overlap = 100
     _extension_to_reader_dict = {".pdf": PdfReader, ".txt": TextReader}
 
