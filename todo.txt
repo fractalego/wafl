@@ -1,3 +1,5 @@
+* multiple knowledge bases, one for internal facts and one for each indexed paths
+* perhaps a way to structure the prompt using <> tags. The memory items need to be distinct.
 * use poetry
 
 /* why is the cache not working? The system re-loads the knowledge every time
