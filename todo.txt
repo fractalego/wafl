@@ -1,4 +1,6 @@
-* knowledge cache does not cache the rules or facts
+* why do I need to re-initialise the retrievers after unpickling the knowledge?
+
+/* knowledge cache does not cache the rules or facts
 
 * multiple knowledge bases, one for internal facts and one for each indexed paths
 * perhaps a way to structure the prompt using <> tags. The memory items need to be distinct.
