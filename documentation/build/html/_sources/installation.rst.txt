@@ -31,7 +31,7 @@ The second command starts the audio interface as well as a web server on port 80
 Please see the examples in the following chapters.
 
 
-LLM side (needs a GPU)
+LLM side (needs a GPU to be efficient)
 ----------------------
 The second part (LLM side) is a model server for the speech-to-text model, the LLM, the embedding system, and the text-to-speech model.
 In order to quickly run the LLM side, you can use the following installation commands:
@@ -41,7 +41,7 @@ In order to quickly run the LLM side, you can use the following installation com
     $ pip install wafl-llm
     $ wafl-llm start
 
-    which will use the default models and start the server on port 8080.
+which will use the default models and start the server on port 8080.
 
 The interface side has a `config.json` file that needs to be filled with the IP address of the LLM side.
 The default is localhost.
