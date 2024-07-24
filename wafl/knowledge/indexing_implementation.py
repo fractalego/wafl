@@ -45,13 +45,12 @@ async def load_knowledge(config, logger=None):
         if knowledge.hash == hash(rules_txt) and os.path.getmtime(
             cache_filename
         ) > os.path.getmtime(index_filename):
-            await knowledge.initialize_retrievers()
             return knowledge
 
     knowledge = SingleFileKnowledge(config, rules_txt, logger=logger)
     knowledge = await _add_indices_to_knowledge(knowledge, index_txt)
-    joblib.dump(knowledge, config.get_value("cache_filename"))
     await knowledge.initialize_retrievers()
+    joblib.dump(knowledge, config.get_value("cache_filename"))
     return knowledge
 
 

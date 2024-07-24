@@ -2,7 +2,6 @@ import os
 import numpy as np
 
 from typing import List, Tuple
-from gensim.models import KeyedVectors
 from wafl.connectors.factories.sentence_embedder_connector_factory import (
     SentenceEmbedderConnectorFactory,
 )
@@ -18,18 +17,24 @@ class DenseRetriever(BaseRetriever):
         self._connector = SentenceEmbedderConnectorFactory.get_connector(
             model_name, config
         )
-        self._embeddings_model = KeyedVectors(384)
+        self._matrix = np.zeros((0, 384))
+        self._indices = []
 
     async def add_text_and_index(self, text: str, index: str):
         embeddings = await self._get_embeddings_from_text(text)
-        self._embeddings_model.add_vectors([index], [embeddings])
-        self._embeddings_model.fill_norms(force=True)
+        self._matrix = np.vstack([self._matrix, embeddings])
+        self._indices.append(index)
 
     async def get_indices_and_scores_from_text(
-        self, text: str
+        self, text: str, topn: int = 5
     ) -> List[Tuple[str, float]]:
         embeddings = await self._get_embeddings_from_text(text)
-        return self._embeddings_model.similar_by_vector(embeddings, topn=5)
+        scores = np.dot(self._matrix, embeddings) / (
+            np.linalg.norm(self._matrix, axis=1) * np.linalg.norm(embeddings)
+        )
+        indices_and_scores = list(zip(self._indices, scores))
+        indices_and_scores.sort(key=lambda x: x[1], reverse=True)
+        return indices_and_scores[:topn]
 
     async def _get_embeddings_from_text(self, text: str) -> "numpy.array":
         return (await self._connector.predict(text))["embedding"]
