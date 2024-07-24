@@ -1,4 +1,5 @@
 * why do I need to re-initialise the retrievers after unpickling the knowledge?
+   - maybe you should save the retrievers in the knowledge object separately?
 
 /* knowledge cache does not cache the rules or facts
 
