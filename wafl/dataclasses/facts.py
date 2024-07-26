@@ -1,5 +1,11 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Union
+
+
+class Sources(Enum):
+    TEXT = 1
+    RULES = 2
 
 
 @dataclass
@@ -8,9 +14,9 @@ class Fact:
     is_question: bool = False
     variable: str = None
     is_interruption: bool = False
-    source: str = None
     destination: str = None
     metadata: Union[str, dict] = None
+    source: Sources = Sources.RULES
 
     def toJSON(self):
         return str(self)

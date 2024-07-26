@@ -1,5 +1,10 @@
-* why do I need to re-initialise the retrievers after unpickling the knowledge?
+* The prior items with timestamps might not be necessary.
+  - Just implement a queue with a fixed size
+
+
+/* why do I need to re-initialise the retrievers after unpickling the knowledge?
    - maybe you should save the retrievers in the knowledge object separately?
+   - It was gensim that was not serializable. Took it out
 
 /* knowledge cache does not cache the rules or facts
 

@@ -4,7 +4,7 @@ from wafl.readers.text_reader import TextReader
 
 class ReaderFactory:
     _chunk_size = 10000
-    _overlap = 100
+    _overlap = 500
     _extension_to_reader_dict = {".pdf": PdfReader, ".txt": TextReader}
 
     @staticmethod
@@ -12,8 +12,5 @@ class ReaderFactory:
         for extension, reader in ReaderFactory._extension_to_reader_dict.items():
             if extension in filename.lower():
                 return reader(ReaderFactory._chunk_size, ReaderFactory._overlap)
-
-        ### add pdf reader
-        ### add metadata and show in the UI
 
         return TextReader(ReaderFactory._chunk_size, ReaderFactory._overlap)

@@ -25,9 +25,9 @@ class DialogueAnswerer(BaseAnswerer):
         self._logger = logger
         self._interface = interface
         self._max_num_past_utterances = 5
-        self._max_num_past_utterances_for_facts = 5
-        self._max_num_past_utterances_for_rules = 2
-        self._prior_facts_with_timestamp = []
+        self._max_num_facts = 5
+        self._max_num_rules = 2
+        self._prior_facts = []
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rules = []
         self._max_predictions = 3
@@ -48,17 +48,15 @@ class DialogueAnswerer(BaseAnswerer):
         rules_text = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
-        conversational_timestamp = len(conversation)
-        facts = await self._get_relevant_facts(
+        memory = await self._get_relevant_facts(
             query,
             has_prior_rules=bool(rules_text),
-            conversational_timestamp=conversational_timestamp,
         )
 
         final_answer_text = ""
         for _ in range(self._max_predictions):
             original_answer_text = await self._client.get_answer(
-                text=facts,
+                text=memory,
                 rules_text=rules_text,
                 dialogue=conversation,
             )
@@ -82,22 +80,20 @@ class DialogueAnswerer(BaseAnswerer):
 
         return Answer.create_from_text(final_answer_text)
 
-    async def _get_relevant_facts(
-        self, query: Query, has_prior_rules: bool, conversational_timestamp: int
-    ) -> str:
-        memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
-        self._prior_facts_with_timestamp = self._get_prior_facts_with_timestamp(
-            conversational_timestamp
-        )
+    async def _get_relevant_facts(self, query: Query, has_prior_rules: bool) -> str:
+        memory = "\n".join([item[0] for item in self._prior_facts])
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=True, threshold=self._threshold_for_facts
         )
         if facts_and_thresholds:
             facts = get_text_from_facts_and_thresholds(facts_and_thresholds, memory)
-            self._prior_facts_with_timestamp.extend(
-                (item, conversational_timestamp) for item in facts
-            )
-            memory = "\n".join(["- " + item[0] for item in self._prior_facts_with_timestamp])
+            self._prior_facts.extend(facts)
+            text_fact = [fact for fact in self._prior_facts if fact.source == "TEXT"][
+                : self._max_num_facts
+            ]
+            rule_fact = [fact for fact in self._prior_facts if fact.source == "RULES"]
+            self._prior_facts = text_fact + rule_fact
+            memory = "\n\n".join(["- " + item for item in self._prior_facts])
             await self._interface.add_fact(f"The bot remembers the facts:\n{memory}")
 
         else:
@@ -114,7 +110,7 @@ class DialogueAnswerer(BaseAnswerer):
         for rule in rules:
             if rule not in self._prior_rules:
                 self._prior_rules.insert(0, rule)
-        self._prior_rules = self._prior_rules[: self._max_num_past_utterances_for_rules]
+        self._prior_rules = self._prior_rules[: self._max_num_rules]
         return self._prior_rules
 
     def _init_python_module(self, module_name):
@@ -129,13 +125,3 @@ class DialogueAnswerer(BaseAnswerer):
                 self._functions,
             )
         )
-
-    def _get_prior_facts_with_timestamp(
-        self, conversational_timestamp: int
-    ) -> List[Tuple[str, int]]:
-        return [
-            item
-            for item in self._prior_facts_with_timestamp
-            if item[1]
-            > conversational_timestamp - self._max_num_past_utterances_for_facts
-        ]
