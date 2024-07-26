@@ -4,8 +4,8 @@ from typing import Union
 
 
 class Sources(Enum):
-    TEXT = 1
-    RULES = 2
+    FROM_TEXT = 1
+    FROM_RULES = 2
 
 
 @dataclass
@@ -16,7 +16,18 @@ class Fact:
     is_interruption: bool = False
     destination: str = None
     metadata: Union[str, dict] = None
-    source: Sources = Sources.RULES
+    source: Sources = Sources.FROM_RULES
 
     def toJSON(self):
         return str(self)
+
+    def copy(self):
+        return Fact(
+            self.text,
+            self.is_question,
+            self.variable,
+            self.is_interruption,
+            self.destination,
+            self.metadata,
+            self.source,
+        )

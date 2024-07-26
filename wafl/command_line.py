@@ -9,6 +9,7 @@ from wafl.run import (
     run_testcases,
     print_incipit,
     download_models,
+    load_indices,
 )
 from wafl.runners.run_from_actions import run_action
 
@@ -52,26 +53,31 @@ def process_cli():
         elif command == "run":
             from wafl.runners.run_web_and_audio_interface import run_app
 
+            load_indices()
             run_app()
             remove_preprocessed("/")
 
         elif command == "run-cli":
+            load_indices()
             run_from_command_line()
             remove_preprocessed("/")
 
         elif command == "run-audio":
             from wafl.runners.run_from_audio import run_from_audio
 
+            load_indices()
             run_from_audio()
             remove_preprocessed("/")
 
         elif command == "run-server":
             from wafl.runners.run_web_interface import run_server_only_app
 
+            load_indices()
             run_server_only_app()
             remove_preprocessed("/")
 
         elif command == "run-tests":
+            load_indices()
             run_testcases()
             remove_preprocessed("/")
 

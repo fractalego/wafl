@@ -4,6 +4,7 @@ import random
 from typing import List
 
 import nltk
+from tqdm import tqdm
 
 from wafl.config import Configuration
 from wafl.dataclasses.facts import Fact
@@ -169,7 +170,8 @@ class SingleFileKnowledge(BaseKnowledge):
         return text
 
     async def initialize_retrievers(self):
-        for index, fact in self._facts_dict.items():
+        print("Initializing fact retrievers")
+        for index, fact in tqdm(self._facts_dict.items()):
             if text_is_exact_string(fact.text):
                 continue
 
@@ -181,17 +183,14 @@ class SingleFileKnowledge(BaseKnowledge):
                 clean_text_for_retrieval(fact.text), index
             )
 
-        for index, rule in self._rules_dict.items():
+        print("Initializing rule retrievers")
+        for index, rule in tqdm(self._rules_dict.items()):
             if text_is_exact_string(rule.effect.text):
                 continue
 
             await self._rules_retriever.add_text_and_index(
                 clean_text_for_retrieval(rule.effect.text), index
             )
-
-        for index, rule in self._rules_dict.items():
-            if not text_is_exact_string(rule.effect.text):
-                continue
 
             await self._rules_string_retriever.add_text_and_index(
                 rule.effect.text, index

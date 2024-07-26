@@ -20,7 +20,7 @@ class TextReader(BaseReader):
                 Fact(
                     text=chunk,
                     metadata={"filename": filename, "chunk_number": i},
-                    source=Sources.RULES,
+                    source=Sources.FROM_TEXT,
                 )
                 for i, chunk in enumerate(chunks)
             ]

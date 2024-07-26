@@ -1,5 +1,10 @@
-* The prior items with timestamps might not be necessary.
-  - Just implement a queue with a fixed size
+* Add tqdm to indexing.
+* Make it index when wafl start first, not at the first use/login
+
+/* The prior items with timestamps might not be necessary.
+/  - Just implement a queue with a fixed size
+
+* add entailer to wafl_llm
 
 
 /* why do I need to re-initialise the retrievers after unpickling the knowledge?

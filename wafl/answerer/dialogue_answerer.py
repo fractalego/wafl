@@ -1,18 +1,21 @@
 from importlib import import_module
 from inspect import getmembers, isfunction
-from typing import List, Tuple
+from typing import List
+
 from wafl.answerer.answerer_implementation import (
     substitute_memory_in_answer_and_get_memories_if_present,
     create_one_liner,
-    get_text_from_facts_and_thresholds,
+    get_facts_with_metadata_from_facts_and_thresholds,
     add_dummy_utterances_to_continue_generation,
     add_memories_to_facts,
     execute_results_in_answer,
+    create_memory_from_fact_list,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.dataclasses.dataclasses import Query, Answer
+from wafl.dataclasses.facts import Sources
 from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
 
@@ -81,19 +84,18 @@ class DialogueAnswerer(BaseAnswerer):
         return Answer.create_from_text(final_answer_text)
 
     async def _get_relevant_facts(self, query: Query, has_prior_rules: bool) -> str:
-        memory = "\n".join([item[0] for item in self._prior_facts])
+        memory = create_memory_from_fact_list(self._prior_facts, self._max_num_facts)
         facts_and_thresholds = await self._knowledge.ask_for_facts_with_threshold(
             query, is_from_user=True, threshold=self._threshold_for_facts
         )
         if facts_and_thresholds:
-            facts = get_text_from_facts_and_thresholds(facts_and_thresholds, memory)
+            facts = get_facts_with_metadata_from_facts_and_thresholds(
+                facts_and_thresholds, memory
+            )
             self._prior_facts.extend(facts)
-            text_fact = [fact for fact in self._prior_facts if fact.source == "TEXT"][
-                : self._max_num_facts
-            ]
-            rule_fact = [fact for fact in self._prior_facts if fact.source == "RULES"]
-            self._prior_facts = text_fact + rule_fact
-            memory = "\n\n".join(["- " + item for item in self._prior_facts])
+            memory = create_memory_from_fact_list(
+                self._prior_facts, self._max_num_facts
+            )
             await self._interface.add_fact(f"The bot remembers the facts:\n{memory}")
 
         else:

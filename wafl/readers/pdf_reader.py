@@ -20,7 +20,7 @@ class PdfReader(BaseReader):
                 Fact(
                     text=page.get_text(),
                     metadata={"filename": filename, "page_number": i},
-                    source=Sources.TEXT,
+                    source=Sources.FROM_TEXT,
                 )
                 for i, page in enumerate(doc)
             ]
