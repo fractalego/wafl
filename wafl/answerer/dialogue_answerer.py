@@ -97,7 +97,7 @@ class DialogueAnswerer(BaseAnswerer):
             self._prior_facts_with_timestamp.extend(
                 (item, conversational_timestamp) for item in facts
             )
-            memory = "\n".join([item[0] for item in self._prior_facts_with_timestamp])
+            memory = "\n".join(["- " + item[0] for item in self._prior_facts_with_timestamp])
             await self._interface.add_fact(f"The bot remembers the facts:\n{memory}")
 
         else:
