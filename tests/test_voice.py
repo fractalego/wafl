@@ -15,7 +15,7 @@ facts:
   
 rules:
   - the user's name is Jane:
-    - write "I hear you"
+    - reply with "I hear you" and nothing else
 """.strip()
 
 _path = os.path.dirname(__file__)
@@ -23,7 +23,7 @@ _path = os.path.dirname(__file__)
 
 class TestVoice(TestCase):
     def test__activation(self):
-        interface = DummyInterface(to_utter=["computer", "my name is Jane"])
+        interface = DummyInterface(to_utter=["computer my name is Jane"])
         config = Configuration.load_local_config()
         config.set_value("rules", _wafl_example)
         conversation_events = ConversationEvents(config=config, interface=interface)
