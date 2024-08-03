@@ -14,8 +14,8 @@ from wafl.answerer.answerer_implementation import (
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
-from wafl.dataclasses.dataclasses import Query, Answer
-from wafl.dataclasses.facts import Sources
+from wafl.data_objects.dataclasses import Query, Answer
+from wafl.data_objects.facts import Sources
 from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
 

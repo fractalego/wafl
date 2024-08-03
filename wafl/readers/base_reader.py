@@ -1,6 +1,6 @@
 from typing import List
 
-from wafl.dataclasses.facts import Fact
+from wafl.data_objects.facts import Fact
 
 
 class BaseReader:

@@ -1,4 +1,6 @@
 from wafl.answerer.entailer import Entailer
+from wafl.knowledge.indexing_implementation import load_knowledge
+
 from wafl.simple_text_processing.deixis import from_user_to_bot, from_bot_to_user
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
@@ -25,8 +27,10 @@ class ConversationTestCases:
         test_lines = self._testcase_data[name]["lines"]
         is_negated = self._testcase_data[name]["negated"]
         interface = DummyInterface(user_lines)
-        conversation_events = ConversationEvents(self._config, interface=interface)
-        await conversation_events._knowledge.initialize_retrievers()
+        knowledge = await load_knowledge(self._config)
+        conversation_events = ConversationEvents(
+            self._config, interface=interface, knowledge=knowledge
+        )
 
         print(self.BLUE_COLOR_START + f"\nRunning test '{name}'." + self.COLOR_END)
         continue_conversations = True
@@ -77,9 +81,7 @@ class ConversationTestCases:
         if lhs_name != rhs_name:
             return False
 
-        return await self._entailer.left_entails_right(
-            lhs, rhs, "\n".join(prior_dialogue)
-        )
+        return await self._entailer.left_entails_right(lhs, rhs)
 
     def _apply_deixis(self, line):
         name = line.split(":")[0].strip()

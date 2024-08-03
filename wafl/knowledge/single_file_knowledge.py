@@ -7,7 +7,7 @@ import nltk
 from tqdm import tqdm
 
 from wafl.config import Configuration
-from wafl.dataclasses.facts import Fact
+from wafl.data_objects.facts import Fact
 from wafl.knowledge.base_knowledge import BaseKnowledge
 from wafl.knowledge.utils import (
     text_is_exact_string,

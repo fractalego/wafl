@@ -4,7 +4,7 @@ import traceback
 from typing import List, Tuple
 
 from wafl.exceptions import CloseConversation
-from wafl.dataclasses.facts import Fact, Sources
+from wafl.data_objects.facts import Fact, Sources
 from wafl.interface.conversation import Conversation, Utterance
 
 
@@ -135,9 +135,7 @@ def get_facts_with_metadata_from_facts_and_thresholds(
         if item[0].text not in memory:
             new_fact = item[0].copy()
             if item[0].metadata:
-                new_fact.text = (
-                    new_fact.text
-                )
+                new_fact.text = new_fact.text
             fact_list.append(new_fact)
 
     return fact_list

@@ -2,7 +2,7 @@ import pymupdf
 
 from logging import getLogger
 from typing import List
-from wafl.dataclasses.facts import Fact, Sources
+from wafl.data_objects.facts import Fact, Sources
 from wafl.readers.base_reader import BaseReader
 
 _logger = getLogger(__name__)

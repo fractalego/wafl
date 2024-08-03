@@ -27,5 +27,9 @@
   "text_embedding_model": {
     "model_host": "localhost",
     "model_port": 8080
+  },
+  "entailer_model": {
+    "model_host": "localhost",
+    "model_port": 8080
   }
 }

@@ -19,6 +19,7 @@ class ConversationEvents:
         config: "Configuration",
         interface: "BaseInterface",
         logger=None,
+        knowledge=None,
     ):
         self._config = config
         try:
@@ -29,6 +30,8 @@ class ConversationEvents:
 
         if not loop or not loop.is_running():
             self._knowledge = asyncio.run(load_knowledge(config, logger))
+        else:
+            self._knowledge = knowledge
 
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
         self._answerer._client._connector._cache = {}

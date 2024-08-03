@@ -1,6 +1,6 @@
 from wafl.simple_text_processing.questions import is_question
-from wafl.dataclasses.facts import Fact
-from wafl.dataclasses.rules import Rule
+from wafl.data_objects.facts import Fact
+from wafl.data_objects.rules import Rule
 
 
 def parse_rule_from_single_line(text):
