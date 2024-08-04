@@ -165,5 +165,5 @@ def add_memories_to_facts(facts: str, memories: List[str]) -> str:
 
 def select_best_rules_using_entailer(conversation: Conversation, rules_as_strings: List[str], entailer: Entailer, num_rules: int) -> str:
     query_text = conversation.get_last_speaker_utterance("user")
-    rules_as_strings = sorted(rules_as_strings, key=lambda x: entailer.get_score(query_text, x), reverse=True)
+    rules_as_strings = sorted(rules_as_strings, key=lambda x: await entailer.get_score(query_text, x), reverse=True)
     return rules_as_strings[:num_rules]
