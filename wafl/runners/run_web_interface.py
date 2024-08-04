@@ -5,7 +5,6 @@ import threading
 
 from flask import render_template, redirect
 
-from wafl.knowledge.indexing_implementation import load_knowledge
 from wafl.scheduler.scheduler import Scheduler
 from wafl.handlers.web_handler import WebHandler
 from wafl.handlers.conversation_handler import ConversationHandler
