@@ -163,12 +163,19 @@ def add_memories_to_facts(facts: str, memories: List[str]) -> str:
     return facts + "\n" + "\n".join(memories)
 
 
-async def select_best_rules_using_entailer(conversation: Conversation, rules_as_strings: List[str], entailer: Entailer, num_rules: int) -> List[str]:
+async def select_best_rules_using_entailer(
+    conversation: Conversation,
+    rules_as_strings: List[str],
+    entailer: Entailer,
+    num_rules: int,
+) -> List[str]:
     query_text = conversation.get_last_speaker_utterance("user")
     ### Sort rules by score
     scores = []
     for rule in rules_as_strings:
         score = await entailer.get_score(query_text, rule)
         scores.append(score)
-    rules_as_strings = sorted(rules_as_strings, key=lambda x: scores[rules_as_strings.index(x)], reverse=True)
+    rules_as_strings = sorted(
+        rules_as_strings, key=lambda x: scores[rules_as_strings.index(x)], reverse=True
+    )
     return rules_as_strings[:num_rules]

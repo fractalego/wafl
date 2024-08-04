@@ -10,7 +10,8 @@ from wafl.answerer.answerer_implementation import (
     add_dummy_utterances_to_continue_generation,
     add_memories_to_facts,
     execute_results_in_answer,
-    create_memory_from_fact_list, select_best_rules_using_entailer,
+    create_memory_from_fact_list,
+    select_best_rules_using_entailer,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
@@ -110,7 +111,9 @@ class DialogueAnswerer(BaseAnswerer):
 
     async def _get_relevant_rules(self, conversation: Conversation) -> List[str]:
         rules_as_strings = await self._rule_creator.create_from_query(conversation)
-        rules_as_strings = await select_best_rules_using_entailer(conversation, rules_as_strings, self._entailer, num_rules=1)
+        rules_as_strings = await select_best_rules_using_entailer(
+            conversation, rules_as_strings, self._entailer, num_rules=1
+        )
         for rule in rules_as_strings:
             if rule not in self._prior_rules:
                 self._prior_rules.insert(0, rule)
