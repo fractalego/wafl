@@ -20,7 +20,7 @@ setup(
         "wafl.connectors.clients",
         "wafl.connectors.factories",
         "wafl.connectors.remote",
-        "wafl.dataclasses",
+        "wafl.data_objects",
         "wafl.events",
         "wafl.extractors",
         "wafl.handlers",

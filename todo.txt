@@ -1,6 +1,6 @@
-* apply entailer to rule retrieval:
-  if more than one rule is retrieved, then the one
-  that is entailed by the query should be chosen
+/* apply entailer to rule retrieval:
+/  if more than one rule is retrieved, then the one
+/  that is entailed by the query should be chosen
 
 * the answer from the indexed files should be directed from a rule.
    - facts and rules should live at the highest level of the retrieval
