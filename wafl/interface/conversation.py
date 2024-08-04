@@ -111,6 +111,15 @@ class Conversation:
             if utterance.speaker == speaker
         ][-n:]
 
+    def get_last_speaker_utterance(self, speaker: str) -> str:
+        if not self.utterances:
+            return ""
+
+        for utterance in reversed(self.utterances):
+            if utterance.speaker == speaker:
+                return utterance.text
+        return ""
+
     def get_first_timestamp(self) -> float:
         return self.utterances[0].timestamp if self.utterances else None
 

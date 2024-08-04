@@ -9,3 +9,6 @@ class Entailer:
     async def left_entails_right(self, lhs: str, rhs: str) -> bool:
         prediction = await self.entailer_client.get_entailment_score(lhs, rhs)
         return prediction > 0.5
+
+    async def get_score(self, lhs: str, rhs: str) -> float:
+        return await self.entailer_client.get_entailment_score(lhs, rhs)

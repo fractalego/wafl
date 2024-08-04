@@ -2,6 +2,7 @@ from importlib import import_module
 from inspect import getmembers, isfunction
 from typing import List
 
+from wafl.answerer.entailer import Entailer
 from wafl.answerer.answerer_implementation import (
     substitute_memory_in_answer_and_get_memories_if_present,
     create_one_liner,
@@ -9,13 +10,12 @@ from wafl.answerer.answerer_implementation import (
     add_dummy_utterances_to_continue_generation,
     add_memories_to_facts,
     execute_results_in_answer,
-    create_memory_from_fact_list,
+    create_memory_from_fact_list, select_best_rules_using_entailer,
 )
 from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.data_objects.dataclasses import Query, Answer
-from wafl.data_objects.facts import Sources
 from wafl.interface.conversation import Conversation
 from wafl.simple_text_processing.questions import is_question
 
@@ -24,6 +24,7 @@ class DialogueAnswerer(BaseAnswerer):
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._threshold_for_facts = 0.85
         self._client = LLMChatClient(config)
+        self._entailer = Entailer(config)
         self._knowledge = knowledge
         self._logger = logger
         self._interface = interface
@@ -108,8 +109,9 @@ class DialogueAnswerer(BaseAnswerer):
         return memory
 
     async def _get_relevant_rules(self, conversation: Conversation) -> List[str]:
-        rules = await self._rule_creator.create_from_query(conversation)
-        for rule in rules:
+        rules_as_strings = await self._rule_creator.create_from_query(conversation)
+        rules_as_strings = select_best_rules_using_entailer(conversation, rules_as_strings, self._entailer, num_rules=1)
+        for rule in rules_as_strings:
             if rule not in self._prior_rules:
                 self._prior_rules.insert(0, rule)
         self._prior_rules = self._prior_rules[: self._max_num_rules]
