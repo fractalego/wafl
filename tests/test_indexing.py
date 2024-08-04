@@ -5,7 +5,7 @@ import yaml
 from unittest import TestCase
 
 from wafl.config import Configuration
-from wafl.dataclasses.dataclasses import Query
+from wafl.data_objects.dataclasses import Query
 from wafl.knowledge.indexing_implementation import add_to_index, load_knowledge
 
 _path = os.path.dirname(__file__)

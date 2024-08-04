@@ -3,8 +3,9 @@ import traceback
 
 from typing import List, Tuple
 
+from wafl.answerer.entailer import Entailer
 from wafl.exceptions import CloseConversation
-from wafl.dataclasses.facts import Fact
+from wafl.data_objects.facts import Fact, Sources
 from wafl.interface.conversation import Conversation, Utterance
 
 
@@ -113,22 +114,32 @@ async def _run_code(to_execute: str, module, functions) -> str:
     return result
 
 
-def get_text_from_facts_and_thresholds(
+def create_memory_from_fact_list(facts: List[Fact], max_num_facts: int) -> str:
+    text_fact_list = [
+        "\n\n- " + "<item> " + fact.text + " </item>"
+        for fact in facts
+        if fact.source == Sources.FROM_TEXT
+    ][:max_num_facts]
+    rule_fact_list = [
+        "\n\n- " + "<item> " + fact.text + " </item>"
+        for fact in facts
+        if fact.source in [None, Sources.FROM_RULES]
+    ]
+    return "".join(text_fact_list + rule_fact_list)
+
+
+def get_facts_with_metadata_from_facts_and_thresholds(
     facts_and_thresholds: List[Tuple[Fact, float]], memory: str
 ) -> List[str]:
-    text_list = []
+    fact_list = []
     for item in facts_and_thresholds:
         if item[0].text not in memory:
-            text = item[0].text
+            new_fact = item[0].copy()
             if item[0].metadata:
-                text = (
-                    f"Metadata for the following text: {str(item[0].metadata)}"
-                    + "\n"
-                    + text
-                )
-            text_list.append(text)
+                new_fact.text = new_fact.text
+            fact_list.append(new_fact)
 
-    return text_list
+    return fact_list
 
 
 def add_dummy_utterances_to_continue_generation(
@@ -150,3 +161,9 @@ def add_dummy_utterances_to_continue_generation(
 
 def add_memories_to_facts(facts: str, memories: List[str]) -> str:
     return facts + "\n" + "\n".join(memories)
+
+
+def select_best_rules_using_entailer(conversation: Conversation, rules_as_strings: List[str], entailer: Entailer, num_rules: int) -> str:
+    query_text = conversation.get_last_speaker_utterance("user")
+    rules_as_strings = sorted(rules_as_strings, key=lambda x: entailer.get_score(query_text, x), reverse=True)
+    return rules_as_strings[:num_rules]

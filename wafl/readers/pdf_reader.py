@@ -2,7 +2,7 @@ import pymupdf
 
 from logging import getLogger
 from typing import List
-from wafl.dataclasses.facts import Fact
+from wafl.data_objects.facts import Fact, Sources
 from wafl.readers.base_reader import BaseReader
 
 _logger = getLogger(__name__)
@@ -20,6 +20,7 @@ class PdfReader(BaseReader):
                 Fact(
                     text=page.get_text(),
                     metadata={"filename": filename, "page_number": i},
+                    source=Sources.FROM_TEXT,
                 )
                 for i, page in enumerate(doc)
             ]

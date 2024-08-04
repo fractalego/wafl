@@ -1,3 +1,4 @@
+import asyncio
 import random
 import sys
 import threading
@@ -6,6 +7,7 @@ from flask import render_template, redirect
 
 from wafl.interface.list_interface import ListInterface
 from wafl.interface.voice_interface import VoiceInterface
+from wafl.knowledge.indexing_implementation import load_knowledge
 from wafl.scheduler.scheduler import Scheduler
 from wafl.handlers.conversation_handler import ConversationHandler
 from wafl.logger.local_file_logger import LocalFileLogger

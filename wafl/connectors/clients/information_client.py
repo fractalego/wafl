@@ -1,9 +1,6 @@
 import os
-import textwrap
-from typing import List
 
 from wafl.connectors.factories.llm_connector_factory import LLMConnectorFactory
-from wafl.connectors.prompt_template import PromptTemplate
 
 _path = os.path.dirname(__file__)
 
