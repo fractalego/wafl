@@ -14,9 +14,7 @@ class DenseRetriever(BaseRetriever):
     _threshold_length = 5
 
     def __init__(self, model_name, config):
-        self._connector = SentenceEmbedderConnectorFactory.get_connector(
-            model_name, config
-        )
+        self._connector = SentenceEmbedderConnectorFactory.get_connector(config)
         self._matrix = np.zeros((0, 384))
         self._indices = []
 

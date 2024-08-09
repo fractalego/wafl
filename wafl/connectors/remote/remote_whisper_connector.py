@@ -4,14 +4,16 @@ import json
 
 from typing import Dict
 
+from wafl.config import Configuration
+
 
 class RemoteWhisperConnector:
     _max_tries = 3
 
-    def __init__(self, config):
+    def __init__(self, config: Configuration):
         self._server_url = (
-            f"https://{config['model_host']}:"
-            f"{config['model_port']}/predictions/whisper"
+            f"https://{config.get_value('backend')['host']}:"
+            f"{config.get_value('backend')['port']}/predictions/whisper"
         )
         try:
             loop = asyncio.get_running_loop()
