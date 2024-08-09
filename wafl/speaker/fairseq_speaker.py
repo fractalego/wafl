@@ -13,9 +13,9 @@ class FairSeqSpeaker(BaseSpeaker):
         self._connector = SpeakerConnectorFactory.get_connector(config)
         self._p = pyaudio.PyAudio()
         self._input_chunk_size = 1024
-        self._output_chunk_size = 16384
+        self._output_chunk_size = 4096
         self._volume_threshold = (
-            config.get_value("listener_model")["listener_volume_threshold"] / 5e3
+            config.get_value("listener_model")["listener_volume_threshold"] * 1e-4
         )
 
     async def speak(self, text):
@@ -34,6 +34,7 @@ class FairSeqSpeaker(BaseSpeaker):
         await asyncio.sleep(0.1)
         for i in range(0, len(wav), self._output_chunk_size):
             inp = stream.read(self._input_chunk_size)
+            print("Ratio!",  _rms(inp) / self._volume_threshold)
             if _rms(inp) > self._volume_threshold:
                 break
             stream.write(wav[i : i + self._output_chunk_size])
