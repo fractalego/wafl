@@ -10,8 +10,8 @@ from wafl.variables import is_supported
 
 class RemoteLLMConnector(BaseLLMConnector):
     _max_tries = 3
-    _max_reply_length = 2048
-    _num_prediction_tokens = 200
+    _max_reply_length = 1024
+    _num_prediction_tokens = 1024
     _cache = {}
 
     def __init__(self, config, last_strings=None, num_replicas=1):
