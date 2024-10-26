@@ -10,7 +10,7 @@
   "max_recursion": 2,
   "frontend_port": 8090,
   "backend": {
-    "host": "localhost",
+    "host": "aragorn",
     "port": 8080,
     "token": "secret"
   },

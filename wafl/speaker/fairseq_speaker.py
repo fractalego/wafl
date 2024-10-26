@@ -34,7 +34,6 @@ class FairSeqSpeaker(BaseSpeaker):
         await asyncio.sleep(0.1)
         for i in range(0, len(wav), self._output_chunk_size):
             inp = stream.read(self._input_chunk_size)
-            print("Ratio!",  _rms(inp) / self._volume_threshold)
             if _rms(inp) > self._volume_threshold:
                 break
             stream.write(wav[i : i + self._output_chunk_size])
