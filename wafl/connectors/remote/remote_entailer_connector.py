@@ -1,17 +1,17 @@
 import aiohttp
 import asyncio
 import json
-import numpy as np
+from typing import Dict
 
-from typing import Dict, List
+from wafl.config import Configuration
 
 
 class RemoteEntailerConnector:
     _max_tries = 3
 
-    def __init__(self, config):
-        host = config["model_host"]
-        port = config["model_port"]
+    def __init__(self, config: Configuration):
+        host = config.get_value("backend")["host"]
+        port = config.get_value("backend")["port"]
 
         self._server_url = f"https://{host}:" f"{port}/predictions/entailer"
         try:

@@ -3,6 +3,7 @@ import json
 import aiohttp
 import asyncio
 
+from wafl.config import Configuration
 from wafl.connectors.base_llm_connector import BaseLLMConnector
 from wafl.connectors.prompt_template import PromptTemplate
 from wafl.variables import is_supported
@@ -10,15 +11,15 @@ from wafl.variables import is_supported
 
 class RemoteLLMConnector(BaseLLMConnector):
     _max_tries = 3
-    _max_reply_length = 2048
-    _num_prediction_tokens = 200
+    _max_reply_length = 1024
+    _num_prediction_tokens = 1024
     _cache = {}
 
-    def __init__(self, config, last_strings=None, num_replicas=1):
+    def __init__(self, config: Configuration, last_strings=None, num_replicas=1):
         super().__init__(last_strings)
-        host = config["model_host"]
-        port = config["model_port"]
-        self._default_temperature = config["temperature"]
+        host = config.get_value("backend")["host"]
+        port = config.get_value("backend")["port"]
+        self._default_temperature = config.get_value("generation_config")["temperature"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
         self._num_replicas = num_replicas
 

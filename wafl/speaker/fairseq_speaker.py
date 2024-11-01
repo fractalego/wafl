@@ -13,9 +13,9 @@ class FairSeqSpeaker(BaseSpeaker):
         self._connector = SpeakerConnectorFactory.get_connector(config)
         self._p = pyaudio.PyAudio()
         self._input_chunk_size = 1024
-        self._output_chunk_size = 16384
+        self._output_chunk_size = 4096
         self._volume_threshold = (
-            config.get_value("listener_model")["listener_volume_threshold"] / 5e3
+            config.get_value("listener_model")["listener_volume_threshold"] * 1e-4
         )
 
     async def speak(self, text):

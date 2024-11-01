@@ -1,9 +1,14 @@
+* use entailment score to flag a rule for execution before the answer.
+* get all model list from wafl_llm backend. Only specify the connection port and host in wafl
+
+* the answer from the indexed files should be directed from a rule.
+   - facts and rules should live at the highest level of the retrieval
+
+
 /* apply entailer to rule retrieval:
 /  if more than one rule is retrieved, then the one
 /  that is entailed by the query should be chosen
 
-* the answer from the indexed files should be directed from a rule.
-   - facts and rules should live at the highest level of the retrieval
 
 
 /* Add tqdm to indexing.

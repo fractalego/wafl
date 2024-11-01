@@ -9,9 +9,7 @@ _path = os.path.dirname(__file__)
 
 class EntailerClient:
     def __init__(self, config):
-        self._connector = EntailerConnectorFactory.get_connector(
-            "entailer_model", config
-        )
+        self._connector = EntailerConnectorFactory.get_connector(config)
         self._config = config
 
     async def get_entailment_score(self, lhs: str, rhs: str) -> float:

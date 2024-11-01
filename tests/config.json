@@ -8,28 +8,15 @@
   "prompt_filename": "main.prompt",
   "functions": "functions.py",
   "max_recursion": 2,
-  "llm_model": {
-    "model_host": "localhost",
-    "model_port": 8080,
-    "temperature": 0.4
+  "frontend_port": 8090,
+  "backend": {
+    "host": "aragorn",
+    "port": 8080,
+    "token": "secret"
   },
   "listener_model": {
-    "model_host": "localhost",
-    "model_port": 8080,
     "listener_hotword_logp": -8,
     "listener_volume_threshold": 0.6,
     "listener_silence_timeout": 0.7
-  },
-  "speaker_model": {
-    "model_host": "localhost",
-    "model_port": 8080
-  },
-  "text_embedding_model": {
-    "model_host": "localhost",
-    "model_port": 8080
-  },
-  "entailer_model": {
-    "model_host": "localhost",
-    "model_port": 8080
   }
 }

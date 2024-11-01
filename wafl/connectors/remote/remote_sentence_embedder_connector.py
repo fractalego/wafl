@@ -10,8 +10,8 @@ class RemoteSentenceEmbedderConnector:
     _max_tries = 3
 
     def __init__(self, config):
-        host = config["model_host"]
-        port = config["model_port"]
+        host = config.get_value("backend")["host"]
+        port = config.get_value("backend")["port"]
 
         self._server_url = f"https://{host}:" f"{port}/predictions/sentence_embedder"
         try:
