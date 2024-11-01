@@ -29,10 +29,16 @@ class TestSpeaker(TestCase):
         )
         asyncio.run(speaker.speak(text))
 
-    def test_number_pronunciation(self):
+    def test_number_pronunciation1(self):
         config = Configuration.load_local_config()
         speaker = TTSSpeaker(config)
         text = "The time is 54 past 8"
+        asyncio.run(speaker.speak(text))
+
+    def test_number_pronunciation2(self):
+        config = Configuration.load_local_config()
+        speaker = TTSSpeaker(config)
+        text = "The time is 8 54"
         asyncio.run(speaker.speak(text))
 
     def test_on_sound(self):
