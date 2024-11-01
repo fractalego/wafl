@@ -4,7 +4,7 @@ import os
 from unittest import TestCase
 
 from wafl.config import Configuration
-from wafl.speaker.fairseq_speaker import FairSeqSpeaker
+from wafl.speaker.tts_speaker import TTSSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
 
 _wafl_greetings = """
@@ -17,13 +17,13 @@ _path = os.path.dirname(__file__)
 class TestSpeaker(TestCase):
     def test_voice(self):
         config = Configuration.load_local_config()
-        speaker = FairSeqSpeaker(config)
+        speaker = TTSSpeaker(config)
         text = "Hello world"
         asyncio.run(speaker.speak(text))
 
     def test_long_text(self):
         config = Configuration.load_local_config()
-        speaker = FairSeqSpeaker(config)
+        speaker = TTSSpeaker(config)
         text = (
             "Shall I compare you to a summer's day? Thou art more lovely and temperate."
         )
@@ -31,7 +31,7 @@ class TestSpeaker(TestCase):
 
     def test_number_pronunciation(self):
         config = Configuration.load_local_config()
-        speaker = FairSeqSpeaker(config)
+        speaker = TTSSpeaker(config)
         text = "The time is 54 past 8"
         asyncio.run(speaker.speak(text))
 

@@ -10,9 +10,12 @@
   "max_recursion": 2,
   "frontend_port": 8090,
   "backend": {
-    "host": "aragorn",
+    "host": "localhost",
     "port": 8080,
     "token": "secret"
+  },
+  "generation_config": {
+    "temperature": 0.4
   },
   "listener_model": {
     "listener_hotword_logp": -8,

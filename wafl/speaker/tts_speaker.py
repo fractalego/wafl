@@ -8,7 +8,7 @@ from wafl.speaker.base_speaker import BaseSpeaker
 from wafl.speaker.utils import convert_numbers_to_words
 
 
-class FairSeqSpeaker(BaseSpeaker):
+class TTSSpeaker(BaseSpeaker):
     def __init__(self, config):
         self._connector = SpeakerConnectorFactory.get_connector(config)
         self._p = pyaudio.PyAudio()
