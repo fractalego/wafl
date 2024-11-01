@@ -1,4 +1,3 @@
-import asyncio
 import os
 import random
 import re
@@ -7,7 +6,7 @@ from wafl.events.utils import remove_text_between_brackets, remove_unclear
 from wafl.interface.base_interface import BaseInterface
 from wafl.interface.utils import not_good_enough
 from wafl.listener.whisper_listener import WhisperListener
-from wafl.speaker.fairseq_speaker import FairSeqSpeaker
+from wafl.speaker.tts_speaker import TTSSpeaker
 from wafl.speaker.soundfile_speaker import SoundFileSpeaker
 
 _path = os.path.dirname(__file__)
@@ -27,7 +26,7 @@ class VoiceInterface(BaseInterface):
         self._deactivation_sound_filename = self.__get_deactivation_sound_from_config(
             config
         )
-        self._speaker = FairSeqSpeaker(config)
+        self._speaker = TTSSpeaker(config)
         self._listener = WhisperListener(config)
         self._listener.set_timeout(
             config.get_value("listener_model")["listener_silence_timeout"]
