@@ -34,8 +34,10 @@ class RemoteEntailerConnector:
                 async with session.post(self._server_url, json=payload) as response:
                     data = await response.text()
                     prediction = json.loads(data)
-                    score = prediction["score"]
-                    return {"score": float(score)}
+                    if "score" in prediction:
+                        score = prediction["score"]
+                        return {"score": float(score)}
+                    return {"score": -1.0}
 
         return {"score": -1.0}
 
