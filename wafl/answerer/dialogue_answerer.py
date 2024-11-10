@@ -17,7 +17,7 @@ from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.data_objects.dataclasses import Query, Answer
-from wafl.interface.conversation import Conversation
+from wafl.interface.conversation import Conversation, Utterance
 from wafl.simple_text_processing.questions import is_question
 
 
@@ -50,6 +50,7 @@ class DialogueAnswerer(BaseAnswerer):
         conversation = self._interface.get_utterances_list_with_timestamp().get_last_n(
             self._max_num_past_utterances
         )
+        conversation.add_utterance(Utterance(speaker="user", text=query_text))
         rules_text = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
