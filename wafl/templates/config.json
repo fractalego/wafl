@@ -14,9 +14,13 @@
     "port": 8080,
     "token": "secret"
   },
+  "generation_config": {
+    "temperature": 0.4
+  },
   "listener_model": {
     "listener_hotword_logp": -8,
     "listener_volume_threshold": 0.6,
-    "listener_silence_timeout": 0.7
+    "listener_silence_timeout": 0.7,
+    "interruptible": true
   }
 }

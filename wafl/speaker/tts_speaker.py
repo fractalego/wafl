@@ -17,6 +17,7 @@ class TTSSpeaker(BaseSpeaker):
         self._volume_threshold = (
             config.get_value("listener_model")["listener_volume_threshold"] * 1e-4
         )
+        self._interruptible = config.get_value("listener_model")["interruptible"]
 
     async def speak(self, text):
         text = convert_numbers_to_words(text)
@@ -32,11 +33,15 @@ class TTSSpeaker(BaseSpeaker):
         )
         stream.start_stream()
         await asyncio.sleep(0.1)
-        for i in range(0, len(wav), self._output_chunk_size):
-            inp = stream.read(self._input_chunk_size)
-            if _rms(inp) > self._volume_threshold:
-                break
-            stream.write(wav[i : i + self._output_chunk_size])
+        if self._interruptible:
+            for i in range(0, len(wav), self._output_chunk_size):
+                inp = stream.read(self._input_chunk_size)
+                if _rms(inp) > self._volume_threshold:
+                    break
+                stream.write(wav[i : i + self._output_chunk_size])
+        else:
+            stream.write(wav)
+
         stream.stop_stream()
         stream.close()
         await asyncio.sleep(0.1)
