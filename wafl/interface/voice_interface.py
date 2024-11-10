@@ -76,7 +76,7 @@ class VoiceInterface(BaseInterface):
         text = text.lower().capitalize()
         print(COLOR_START + "user> " + text + COLOR_END)
         utterance = remove_text_between_brackets(text)
-        if utterance.strip():
+        if utterance.strip() and self._is_listening:
             self._insert_utterance(speaker="user", text=text)
 
         return remove_unclear(text)

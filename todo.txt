@@ -1,3 +1,6 @@
+* make interruptible speech optional
+
+
 * use entailment score to flag a rule for execution before the answer.
 * get all model list from wafl_llm backend. Only specify the connection port and host in wafl
 
