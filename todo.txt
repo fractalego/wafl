@@ -1,4 +1,9 @@
-* make interruptible speech optional
+* This is wrong - from wafl_ll
+    <|end|><|assistant|><|user|> Hi!<|end|><|assistant|>
+   The user is sandwiched between the assistant. It should be:
+    <|end|><|assistant|> Hi!<|end|><|user|>
+
+/* make interruptible speech optional
 
 
 * use entailment score to flag a rule for execution before the answer.
