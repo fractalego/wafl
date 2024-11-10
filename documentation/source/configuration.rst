@@ -7,37 +7,33 @@ A typical configuration file looks like this:
 
 .. code-block:: text
 
-    {
-      "waking_up_word": "computer",
-      "waking_up_sound": true,
-      "deactivate_sound": true,
-      "rules": "rules.yaml",
-      "index": "indices.yaml",
-      "cache_filename": "knowledge_cache",
-      "prompt_filename": "main.prompt",
-      "functions": "functions.py",
-      "max_recursion": 2,
-      "llm_model": {
-        "model_host": "localhost",
-        "model_port": 8080,
-        "temperature": 0.4
-      },
-      "listener_model": {
-        "model_host": "localhost",
-        "model_port": 8080,
-        "listener_hotword_logp": -8,
-        "listener_volume_threshold": 0.6,
-        "listener_silence_timeout": 0.7
-      },
-      "speaker_model": {
-        "model_host": "localhost",
-        "model_port": 8080
-      },
-      "text_embedding_model": {
-        "model_host": "localhost",
-        "model_port": 8080
-      }
-    }
+{
+  "waking_up_word": "computer",
+  "waking_up_sound": true,
+  "deactivate_sound": true,
+  "rules": "rules.yaml",
+  "index": "indices.yaml",
+  "cache_filename": "knowledge_cache",
+  "prompt_filename": "main.prompt",
+  "functions": "functions.py",
+  "max_recursion": 2,
+  "frontend_port": 8090,
+  "backend": {
+    "host": "localhost",
+    "port": 8080,
+    "token": "secret"
+  },
+  "generation_config": {
+    "temperature": 0.4
+  },
+  "listener_model": {
+    "listener_hotword_logp": -8,
+    "listener_volume_threshold": 0.6,
+    "listener_silence_timeout": 0.7,
+    "interruptible": true
+  }
+}
+
 
 
 
@@ -59,20 +55,10 @@ These settings regulate the following:
 
     * "frontend_port" is the port where the web frontend is running. The default is 8090.
 
-    * "llm_model" is the configuration to connect to wafl-llm in the backend. The default url is "localhost:8080". The "temperature" parameter is used to set the temperature for the LLM model. The default is 0.4.
+    * "backend" is the configuration related to the backend. The default is "localhost:8080".
 
-    * "listener_model" is the configuration to connect to the listener model in the backend. The default is "localhost:8080".
+    * "generation_config" is the configuration related to the generation of the response. The default is "temperature: 0.4".
 
-       - The listener model is used to detect the wake-up word.
-         The similarity threshold for the detection can be set with the "listener_hotword_logp" parameter.
-
-       - The "listener_volume_threshold" parameter is used to set the volume threshold for any conversation.
-         Any word uttered with a volume below this threshold is ignored.
-
-       - The "listener_silence_timeout" parameter is used to set the silence timeout for any conversation.
-         If no word is uttered for a time longer than this timeout, the conversation is considered finished.
-
-    * "speaker_model" is the configuration to connect to the speaker model in the backend. The default is "localhost:8080".
-
-    * "text_embedding_model" is the configuration to connect to the text embedding model in the backend. The default is "localhost:8080".
-
+    * "listener_model" is the configuration related to the listener model.
+      These items determine the thresholds for hotword detection, volume threshold, silence timeout, and whether the listener is interruptible.
+      The default is "listener_hotword_logp: -8", "listener_volume_threshold: 0.6", "listener_silence_timeout: 0.7", "interruptible: true".
