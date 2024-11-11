@@ -41,6 +41,9 @@ class ConversationEvents:
         if logger:
             self._logger.set_depth(0)
 
+    def reset(self):
+        self._answerer.reset()
+
     async def output(self, text: str):
         await self._interface.output(text)
 

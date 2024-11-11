@@ -1,3 +1,5 @@
+* delete rules and memory from discourse_answerer
+
 * This is wrong - from wafl_ll
     <|end|><|assistant|><|user|> Hi!<|end|><|assistant|>
    The user is sandwiched between the assistant. It should be:

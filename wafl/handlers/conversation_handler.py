@@ -66,6 +66,7 @@ class ConversationHandler:
                     and interactions == 1
                 ):
                     self._interface.deactivate()
+                    self._conversation_events.reset()
                     num_misses = 0
 
                 if (
