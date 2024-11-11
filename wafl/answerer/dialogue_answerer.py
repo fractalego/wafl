@@ -13,7 +13,6 @@ from wafl.answerer.answerer_implementation import (
     create_memory_from_fact_list,
     select_best_rules_using_entailer,
 )
-from wafl.answerer.base_answerer import BaseAnswerer
 from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.data_objects.dataclasses import Query, Answer
@@ -21,7 +20,7 @@ from wafl.interface.conversation import Conversation, Utterance
 from wafl.simple_text_processing.questions import is_question
 
 
-class DialogueAnswerer(BaseAnswerer):
+class DialogueAnswerer:
     def __init__(self, config, knowledge, interface, code_path, logger):
         self._threshold_for_facts = 0.85
         self._client = LLMChatClient(config)
@@ -42,6 +41,10 @@ class DialogueAnswerer(BaseAnswerer):
             interface,
             max_num_rules=1,
         )
+
+    def reset(self):
+        self._prior_facts = []
+        self._prior_rules = []
 
     async def answer(self, query_text: str) -> Answer:
         if self._logger:
