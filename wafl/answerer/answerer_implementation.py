@@ -105,8 +105,7 @@ async def _run_code(to_execute: str, module, functions) -> str:
             result = (
                 f"Error while executing\n\n```python\n{to_execute}\n```\n\n{str(e)}"
             )
-            traceback.print_exc()
-            break
+            raise RuntimeError(result)
 
     if not result:
         result = f"\n```python\n{to_execute}\n```"

@@ -63,24 +63,32 @@ class DialogueAnswerer:
         )
 
         final_answer_text = ""
+        is_finished = False
         for _ in range(self._max_predictions):
-            original_answer_text = await self._client.get_answer(
-                text=memory,
-                rules_text=rules_text,
-                dialogue=conversation,
-            )
-            await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
-            answer_text, memories = await self._apply_substitutions(
-                original_answer_text
-            )
+            try:
+                original_answer_text = await self._client.get_answer(
+                    text=memory,
+                    rules_text=rules_text,
+                    dialogue=conversation,
+                )
+                await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
+                answer_text, memories = await self._apply_substitutions(
+                    original_answer_text
+                )
 
-            final_answer_text += answer_text
+                final_answer_text += answer_text
+                if not memories:
+                    is_finished = True
+                    break
+                facts = add_memories_to_facts(facts, memories)
+                add_dummy_utterances_to_continue_generation(conversation, answer_text)
 
-            if not memories:
-                break
+            except Exception as e:
+                if self._logger:
+                    self._logger.write(f"Error in generating answer: {e}")
 
-            facts = add_memories_to_facts(facts, memories)
-            add_dummy_utterances_to_continue_generation(conversation, answer_text)
+        if not is_finished:
+            final_answer_text += "I was unable to generate a full answer. Please see the logs for more information."
 
         if self._logger:
             self._logger.write(
