@@ -64,7 +64,7 @@ class DialogueAnswerer:
 
         final_answer_text = ""
         is_finished = False
-        for _ in range(self._max_predictions):
+        for num_attempts in range(self._max_predictions):
             try:
                 original_answer_text = await self._client.get_answer(
                     text=memory,
@@ -83,9 +83,10 @@ class DialogueAnswerer:
                 facts = add_memories_to_facts(facts, memories)
                 add_dummy_utterances_to_continue_generation(conversation, answer_text)
 
-            except Exception as e:
+            except RuntimeError as e:
                 if self._logger:
                     self._logger.write(f"Error in generating answer: {e}")
+                conversation.add_utterance(Utterance(speaker="bot", text=f"[Trying again for the {num_attempts + 2} time.]\n"))
 
         if not is_finished:
             final_answer_text += "I was unable to generate a full answer. Please see the logs for more information."

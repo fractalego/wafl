@@ -52,19 +52,14 @@ async def substitute_memory_in_answer_and_get_memories_if_present(
 
 
 async def execute_results_in_answer(answer_text: str, module, functions) -> str:
+    if "<execute>" in answer_text and "</execute>" not in answer_text:
+        answer_text += "</execute>"
+
     matches = re.finditer(
-        r"<execute>(.*?)</execute>|<execute>(.*?\))$",
+        r"<execute>(.*?)</execute>",
         answer_text,
         re.DOTALL | re.MULTILINE,
     )
-    for match in matches:
-        to_execute = match.group(1)
-        if not to_execute:
-            continue
-        result = await _run_code(to_execute, module, functions)
-        answer_text = answer_text.replace(match.group(0), result)
-
-    matches = re.finditer(r"<execute>(.*?\))$", answer_text, re.DOTALL | re.MULTILINE)
     for match in matches:
         to_execute = match.group(1)
         if not to_execute:
