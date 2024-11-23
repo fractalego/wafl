@@ -1,8 +1,6 @@
 import re
-import traceback
 
 from typing import List, Tuple
-
 from wafl.answerer.entailer import Entailer
 from wafl.exceptions import CloseConversation
 from wafl.data_objects.facts import Fact, Sources
