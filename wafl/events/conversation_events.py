@@ -82,6 +82,12 @@ class ConversationEvents:
 
             if (
                 not text_is_question
+                and not self._interface.get_utterances_list()
+            ):
+                await self._interface.output("I don't know what to reply")
+
+            if (
+                not text_is_question
                 and answer.is_true()
                 and not self._interface.bot_has_spoken()
             ):
