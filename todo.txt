@@ -1,3 +1,7 @@
+* user prior text and response from failed substitutions between [] instead of just iteration number (line 89, dialogue_answerer.py)
+* remove dead code
+* re-fine-tune phi to get better performance
+
 * delete rules and memory from discourse_answerer
 
 * This is wrong - from wafl_ll

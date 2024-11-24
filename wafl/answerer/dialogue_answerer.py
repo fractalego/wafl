@@ -71,7 +71,9 @@ class DialogueAnswerer:
                     rules_text=rules_text,
                     dialogue=conversation,
                 )
-                await self._interface.add_fact(f"The bot predicts: {original_answer_text}")
+                await self._interface.add_fact(
+                    f"The bot predicts: {original_answer_text}"
+                )
                 answer_text, memories = await self._apply_substitutions(
                     original_answer_text
                 )
@@ -86,7 +88,12 @@ class DialogueAnswerer:
             except RuntimeError as e:
                 if self._logger:
                     self._logger.write(f"Error in generating answer: {e}")
-                conversation.add_utterance(Utterance(speaker="bot", text=f"[Trying again for the {num_attempts + 2} time.]\n"))
+                conversation.add_utterance(
+                    Utterance(
+                        speaker="bot",
+                        text=f"[when using the answer {original_answer_text} the system says {e}]\n",
+                    )
+                )
 
         if not is_finished:
             final_answer_text += "I was unable to generate a full answer. Please see the logs for more information."
