@@ -2,7 +2,9 @@ import json
 import os
 import shutil
 
-from wafl.connectors.remote.remote_configuration_connector import RemoteConfigurationConnector
+from wafl.connectors.remote.remote_configuration_connector import (
+    RemoteConfigurationConnector,
+)
 
 _path = os.path.dirname(__file__)
 
@@ -23,7 +25,9 @@ class Configuration:
         with open(filename) as file:
             self._data = json.load(file)
 
-        self._remote_config = RemoteConfigurationConnector(self._data["backend"]["host"], self._data["backend"]["port"])
+        self._remote_config = RemoteConfigurationConnector(
+            self._data["backend"]["host"], self._data["backend"]["port"]
+        )
 
     def get_value(self, key):
         if key in self._data:

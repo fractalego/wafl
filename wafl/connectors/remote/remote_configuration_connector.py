@@ -5,6 +5,7 @@ import json
 from typing import Dict
 from wafl.variables import get_variables
 
+
 class RemoteConfigurationConnector:
     _max_tries = 3
 
@@ -19,7 +20,9 @@ class RemoteConfigurationConnector:
         if (not loop or (loop and not loop.is_running())) and not asyncio.run(
             self.check_connection()
         ):
-            raise RuntimeError("Cannot connect a running Configuration handler. Is WAFL-LLM running?")
+            raise RuntimeError(
+                "Cannot connect a running Configuration handler. Is WAFL-LLM running?"
+            )
 
     async def predict(self) -> Dict[str, str]:
         payload = {"version": get_variables()["version"]}
@@ -44,7 +47,6 @@ class RemoteConfigurationConnector:
                     }
 
         return {}
-
 
     async def check_connection(self) -> bool:
         try:

@@ -12,7 +12,7 @@ _path = os.path.dirname(__file__)
 class TestConnection(TestCase):
     def test__entailer_connector(self):
         config = Configuration.load_local_config()
-        connector = RemoteEntailerConnector(config.get_value("entailer_model"))
+        connector = RemoteEntailerConnector(config)
         prediction = asyncio.run(
             connector.predict(
                 "The first contact is a romance novel set in the middle ages.",
