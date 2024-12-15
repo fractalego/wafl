@@ -12,7 +12,7 @@ _path = os.path.dirname(__file__)
 class TestConnection(TestCase):
     def test__connection_to_generative_model_can_generate_text(self):
         config = Configuration.load_local_config()
-        connector = RemoteLLMConnector(config.get_value("llm_model"))
+        connector = RemoteLLMConnector(config)
         prediction = asyncio.run(
             connector.predict(
                 PromptCreator.create_from_one_instruction(
@@ -25,7 +25,7 @@ class TestConnection(TestCase):
 
     def test__connection_to_generative_model_can_generate_text_within_tags(self):
         config = Configuration.load_local_config()
-        connector = RemoteLLMConnector(config.get_value("llm_model"))
+        connector = RemoteLLMConnector(config)
         connector._num_prediction_tokens = 200
         text = 'Generate a full paragraph based on this chapter title " The First Contact". The theme of the paragraph is space opera. Include the characters "Alberto" and "Maria". Write at least three sentences.'
         prompt = f"""
@@ -43,7 +43,7 @@ Complete the following task and add <|EOS|> at the end: {text}
 
     def test__connection_to_generative_model_can_generate_a_python_list(self):
         config = Configuration.load_local_config()
-        connector = RemoteLLMConnector(config.get_value("llm_model"))
+        connector = RemoteLLMConnector(config)
         connector._num_prediction_tokens = 200
         prompt = "Generate a Python list of 4 chapters names for a space opera book. The output needs to be a python list of strings: "
         prediction = asyncio.run(
