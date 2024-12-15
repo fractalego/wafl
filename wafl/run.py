@@ -4,6 +4,7 @@ from wafl.config import Configuration
 from wafl.exceptions import CloseConversation
 from wafl.events.conversation_events import ConversationEvents
 from wafl.interface.command_line_interface import CommandLineInterface
+from wafl.knowledge.indexing_implementation import load_knowledge
 from wafl.logger.local_file_logger import LocalFileLogger
 from wafl.testcases import ConversationTestCases
 from wafl.variables import get_variables
@@ -15,6 +16,12 @@ def print_incipit():
     print()
     print(f"Running WAFL version {get_variables()['version']}.")
     print()
+
+
+def load_indices():
+    print("Loading knowledge indices...")
+    config = Configuration.load_local_config()
+    asyncio.run(load_knowledge(config, _logger))
 
 
 def run_from_command_line():

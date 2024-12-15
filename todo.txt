@@ -1,4 +1,42 @@
-* why do I need to re-initialise the retrievers after unpickling the knowledge?
+* user prior text and response from failed substitutions between [] instead of just iteration number (line 89, dialogue_answerer.py)
+* remove dead code
+* re-fine-tune phi to get better performance
+
+* delete rules and memory from discourse_answerer
+
+* This is wrong - from wafl_ll
+    <|end|><|assistant|><|user|> Hi!<|end|><|assistant|>
+   The user is sandwiched between the assistant. It should be:
+    <|end|><|assistant|> Hi!<|end|><|user|>
+
+/* make interruptible speech optional
+
+
+* use entailment score to flag a rule for execution before the answer.
+* get all model list from wafl_llm backend. Only specify the connection port and host in wafl
+
+* the answer from the indexed files should be directed from a rule.
+   - facts and rules should live at the highest level of the retrieval
+
+
+/* apply entailer to rule retrieval:
+/  if more than one rule is retrieved, then the one
+/  that is entailed by the query should be chosen
+
+
+
+/* Add tqdm to indexing.
+/* Make it index when wafl start first, not at the first use/login
+
+/* The prior items with timestamps might not be necessary.
+/  - Just implement a queue with a fixed size
+
+* add entailer to wafl_llm
+
+
+/* why do I need to re-initialise the retrievers after unpickling the knowledge?
+   - maybe you should save the retrievers in the knowledge object separately?
+   - It was gensim that was not serializable. Took it out
 
 /* knowledge cache does not cache the rules or facts
 

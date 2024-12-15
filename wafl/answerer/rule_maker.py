@@ -1,7 +1,7 @@
 from typing import List
 
-from wafl.dataclasses.dataclasses import Query
-from wafl.dataclasses.rules import Rule
+from wafl.data_objects.dataclasses import Query
+from wafl.data_objects.rules import Rule
 
 
 class RuleMaker:

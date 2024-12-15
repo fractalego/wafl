@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import List
 
-from wafl.dataclasses.facts import Fact
+from wafl.data_objects.facts import Fact, Sources
 from wafl.readers.base_reader import BaseReader
 
 _logger = getLogger(__name__)
@@ -20,6 +20,7 @@ class TextReader(BaseReader):
                 Fact(
                     text=chunk,
                     metadata={"filename": filename, "chunk_number": i},
+                    source=Sources.FROM_TEXT,
                 )
                 for i, chunk in enumerate(chunks)
             ]

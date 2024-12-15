@@ -1,7 +1,6 @@
 flask[async]==3.0.3
 flask-cors==4.0.1
 nltk==3.8.1
-gensim==4.3.3
 sklearn==0.0
 python-Levenshtein==0.25.1
 fuzzywuzzy==0.18.0

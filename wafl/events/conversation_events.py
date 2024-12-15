@@ -19,6 +19,7 @@ class ConversationEvents:
         config: "Configuration",
         interface: "BaseInterface",
         logger=None,
+        knowledge=None,
     ):
         self._config = config
         try:
@@ -29,6 +30,8 @@ class ConversationEvents:
 
         if not loop or not loop.is_running():
             self._knowledge = asyncio.run(load_knowledge(config, logger))
+        else:
+            self._knowledge = knowledge
 
         self._answerer = create_answerer(config, self._knowledge, interface, logger)
         self._answerer._client._connector._cache = {}
@@ -37,6 +40,9 @@ class ConversationEvents:
         self._is_computing = False
         if logger:
             self._logger.set_depth(0)
+
+    def reset(self):
+        self._answerer.reset()
 
     async def output(self, text: str):
         await self._interface.output(text)
@@ -72,6 +78,9 @@ class ConversationEvents:
                 and self._interface.get_utterances_list()
                 and self._interface.last_speaker() == "user"
             ):
+                await self._interface.output("I don't know what to reply")
+
+            if not text_is_question and not self._interface.get_utterances_list():
                 await self._interface.output("I don't know what to reply")
 
             if (

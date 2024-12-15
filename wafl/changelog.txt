@@ -1,0 +1,7 @@
+- version 0.1.3
+* added multi-threaded support for multiple files indexing
+* TODO: ADD support for multiple knowledge bases.
+        It needs to index the rules and the files separately!
+* the interface should show where the facts come from in the web interface
+* add support for wafl studio where you can concatenate actions (and create corresponding yaml files)
+* use <> tags for contactenation
