@@ -7,7 +7,7 @@ The rules that *must* be followed are:
 {rules}
 
 Create a plausible dialogue based on the aforementioned summary and rules.
-Do not repeat yourself. Be friendly but not too servile.
+Do not repeat yourself. Your answers must be brief. Follow the rules if they apply.
 Follow the rules if present and they apply to the dialogue. Do not improvise if rules are present.
 The user query might be incomplete or ambiguous or ungrammatical. The bot *must* ask for clarification if needed.
 The bot only answers if the query is clear and unambiguous.
