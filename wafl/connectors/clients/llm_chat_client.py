@@ -14,7 +14,7 @@ class LLMChatClient:
         with open(self._config.get_value("prompt_filename")) as f:
             self.prompt = f.read()
 
-    async def get_answer(self, text: str, dialogue: str, rules_text: List[str]) -> str:
+    async def get_answers(self, text: str, dialogue: str, rules_text: List[str]) -> [str]:
         prompt = await self._get_answer_prompt(text, dialogue, "\n".join(rules_text))
         return await self._connector.generate(prompt)
 

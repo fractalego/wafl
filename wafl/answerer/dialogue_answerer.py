@@ -17,6 +17,7 @@ from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.data_objects.dataclasses import Query, Answer
 from wafl.interface.conversation import Conversation, Utterance
+from wafl.selectors.selector import Selector
 from wafl.simple_text_processing.questions import is_question
 
 
@@ -35,6 +36,7 @@ class DialogueAnswerer:
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rules = []
         self._max_predictions = 3
+        self._selector = Selector()
         self._rule_creator = RuleMaker(
             knowledge,
             config,
@@ -66,10 +68,12 @@ class DialogueAnswerer:
         is_finished = False
         for num_attempts in range(self._max_predictions):
             try:
-                original_answer_text = await self._client.get_answer(
-                    text=memory,
-                    rules_text=rules_text,
-                    dialogue=conversation,
+                original_answer_text = self._selector.select_best_answer(
+                    await self._client.get_answers(
+                        text=memory,
+                        rules_text=rules_text,
+                        dialogue=conversation,
+                    )
                 )
                 await self._interface.add_fact(
                     f"The bot predicts: {original_answer_text}"

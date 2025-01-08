@@ -15,7 +15,8 @@
     "token": "secret"
   },
   "generation_config": {
-    "temperature": 0.4
+    "temperature": 0.4,
+    "num_replicas": 3
   },
   "listener_model": {
     "listener_hotword_logp": -8,
