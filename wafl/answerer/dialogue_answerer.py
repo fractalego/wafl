@@ -69,11 +69,14 @@ class DialogueAnswerer:
         for num_attempts in range(self._max_predictions):
             try:
                 original_answer_text = self._selector.select_best_answer(
+                    rules_text,
+                    conversation,
+                    memory,
                     await self._client.get_answers(
                         text=memory,
                         rules_text=rules_text,
                         dialogue=conversation,
-                    )
+                    ),
                 )
                 await self._interface.add_fact(
                     f"The bot predicts: {original_answer_text}"
