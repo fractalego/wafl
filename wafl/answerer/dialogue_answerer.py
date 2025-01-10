@@ -36,7 +36,7 @@ class DialogueAnswerer:
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rules = []
         self._max_predictions = 3
-        self._selector = Selector()
+        self._selector = Selector(config)
         self._rule_creator = RuleMaker(
             knowledge,
             config,
@@ -68,10 +68,10 @@ class DialogueAnswerer:
         is_finished = False
         for num_attempts in range(self._max_predictions):
             try:
-                original_answer_text = self._selector.select_best_answer(
+                original_answer_text = await self._selector.select_best_answer(
                     rules_text,
-                    conversation,
                     memory,
+                    conversation,
                     await self._client.get_answers(
                         text=memory,
                         rules_text=rules_text,

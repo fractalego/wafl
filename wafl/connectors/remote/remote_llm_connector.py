@@ -93,7 +93,7 @@ class RemoteLLMConnector(BaseLLMConnector):
                     if not is_supported(wafl_llm_version):
                         print("This version of wafl-llm is not supported.")
                         print("Please update wafl-llm.")
-                        raise aiohttp.client.InvalidURL
+                        raise aiohttp.client.InvalidURL(self._server_url)
 
                     return True
 

@@ -7,7 +7,7 @@ class Selector:
     def __init__(self, config: Configuration):
         self._entailer = Entailer(config)
 
-    def select_best_answer(
+    async def select_best_answer(
         self, memory: str, rules_text: str, conversation: Conversation, answers
     ):
         memory_scores = [0 for _ in answers]
@@ -17,12 +17,12 @@ class Selector:
             current_conversation = conversation.copy()
             current_conversation.add_utterance(Utterance(answer, "bot"))
             current_conversation_text = (
-                f"The conversation goes as follows:\n{current_conversation}"
+                f"The conversation goes as follows:\n{current_conversation.to_text()}"
             )
-            memory_scores[i] = self._entailer.get_score(
+            memory_scores[i] = await self._entailer.get_score(
                 f"This is what the bot remembers: {memory}", current_conversation_text
             )
-            rules_score[i] = self._entailer.get_score(
+            rules_score[i] = await self._entailer.get_score(
                 f"These are the rules the bot must follow: {rules_text}",
                 current_conversation_text,
             )
