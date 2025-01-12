@@ -67,7 +67,7 @@ class TestSelector(IsolatedAsyncioTestCase):
         print(answer_list)
         prediction = await Selector(config).select_best_answer(
             memory="",
-            rules_text=rules_texts,
+            rules_text_list=[rules_texts],
             conversation=conversation,
             answers=answer_list,
         )
@@ -94,7 +94,7 @@ class TestSelector(IsolatedAsyncioTestCase):
         print(answer_list)
         prediction = await Selector(config).select_best_answer(
             memory="",
-            rules_text=rules_texts,
+            rules_text_list=[rules_texts],
             conversation=conversation,
             answers=answer_list,
         )

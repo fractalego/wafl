@@ -12,6 +12,13 @@ class Selector:
     async def select_best_answer(
         self, memory: str, rules_text_list: List[str], conversation: Conversation, answers: List[str]
     ):
+        """
+        Selects the best answer from a list of answers based on the rules and conversation.
+        Ideally, the answer is the one that has the highest score based on being grounded in the rules.
+
+        TODO: add memory to the score calculation.
+        """
+
         memory_scores = [0 for _ in answers]
         rules_score = [0 for _ in answers]
         rules_text = "\n\n".join(rules_text_list)
@@ -22,9 +29,6 @@ class Selector:
             current_conversation_text = (
                 f"The conversation goes as follows:\n{current_conversation.to_text()}"
             )
-            # memory_scores[i] = await self._entailer.get_score(
-            #     f"This is what the bot remembers: {memory}", current_conversation_text
-            # )
             rules_score[i] = await self._entailer.get_score(
                 f"These are the rules the bot must follow: {rules_text}",
                 current_conversation_text,
