@@ -56,12 +56,12 @@ class DialogueAnswerer:
             self._max_num_past_utterances
         )
         conversation.add_utterance(Utterance(speaker="user", text=query_text))
-        rules_text = await self._get_relevant_rules(conversation)
+        rules_text_list = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
         memory = await self._get_relevant_facts(
             query,
-            has_prior_rules=bool(rules_text),
+            has_prior_rules=bool(rules_text_list),
         )
 
         final_answer_text = ""
@@ -69,12 +69,12 @@ class DialogueAnswerer:
         for num_attempts in range(self._max_predictions):
             try:
                 original_answer_text = await self._selector.select_best_answer(
-                    rules_text,
-                    memory,
-                    conversation,
-                    await self._client.get_answers(
+                    memory=memory,
+                    rules_text_list=rules_text_list,
+                    conversation=conversation,
+                    answers=await self._client.get_answers(
                         text=memory,
-                        rules_text=rules_text,
+                        rules_text_list=rules_text_list,
                         dialogue=conversation,
                     ),
                 )

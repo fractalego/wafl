@@ -10,7 +10,9 @@ from wafl.parsing.rules_parser import get_facts_and_rules_from_text
 wafl_example = """
 rules:
   - the user says "my name is bob":
-    - You must answer the user by writing "the horse is tall"
+    - write "the horse is tall"
+    - do not write anything else. 
+    - end the conversation.
     
   - the user says their name:
     - reply casually to the conversation"
