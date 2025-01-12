@@ -15,12 +15,13 @@
     "token": "secret"
   },
   "generation_config": {
-    "temperature": 0.4
+    "temperature": 0.4,
+    "num_replicas": 3
   },
   "listener_model": {
     "listener_hotword_logp": -8,
     "listener_volume_threshold": 0.6,
     "listener_silence_timeout": 0.7,
-    "interruptible": false
+    "interruptible": true
   }
 }

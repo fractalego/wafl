@@ -15,13 +15,13 @@ class RemoteLLMConnector(BaseLLMConnector):
     _num_prediction_tokens = 1024
     _cache = {}
 
-    def __init__(self, config: Configuration, last_strings=None, num_replicas=1):
+    def __init__(self, config: Configuration, last_strings=None):
         super().__init__(last_strings)
         host = config.get_value("backend")["host"]
         port = config.get_value("backend")["port"]
         self._default_temperature = config.get_value("generation_config")["temperature"]
         self._server_url = f"https://{host}:{port}/predictions/bot"
-        self._num_replicas = num_replicas
+        self._num_replicas = config.get_value("generation_config")["num_replicas"]
 
         try:
             loop = asyncio.get_running_loop()
@@ -93,7 +93,7 @@ class RemoteLLMConnector(BaseLLMConnector):
                     if not is_supported(wafl_llm_version):
                         print("This version of wafl-llm is not supported.")
                         print("Please update wafl-llm.")
-                        raise aiohttp.client.InvalidURL
+                        raise aiohttp.client.InvalidURL(self._server_url)
 
                     return True
 

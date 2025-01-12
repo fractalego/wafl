@@ -33,6 +33,7 @@ setup(
         "wafl.retriever",
         "wafl.runners",
         "wafl.scheduler",
+        "wafl.selectors",
         "wafl.simple_text_processing",
         "wafl.speaker",
     ],

@@ -17,6 +17,7 @@ from wafl.answerer.rule_maker import RuleMaker
 from wafl.connectors.clients.llm_chat_client import LLMChatClient
 from wafl.data_objects.dataclasses import Query, Answer
 from wafl.interface.conversation import Conversation, Utterance
+from wafl.selectors.selector import Selector
 from wafl.simple_text_processing.questions import is_question
 
 
@@ -35,6 +36,7 @@ class DialogueAnswerer:
         self._init_python_module(code_path.replace(".py", ""))
         self._prior_rules = []
         self._max_predictions = 3
+        self._selector = Selector(config)
         self._rule_creator = RuleMaker(
             knowledge,
             config,
@@ -54,22 +56,27 @@ class DialogueAnswerer:
             self._max_num_past_utterances
         )
         conversation.add_utterance(Utterance(speaker="user", text=query_text))
-        rules_text = await self._get_relevant_rules(conversation)
+        rules_text_list = await self._get_relevant_rules(conversation)
         if not conversation:
             conversation = create_one_liner(query_text)
         memory = await self._get_relevant_facts(
             query,
-            has_prior_rules=bool(rules_text),
+            has_prior_rules=bool(rules_text_list),
         )
 
         final_answer_text = ""
         is_finished = False
         for num_attempts in range(self._max_predictions):
             try:
-                original_answer_text = await self._client.get_answer(
-                    text=memory,
-                    rules_text=rules_text,
-                    dialogue=conversation,
+                original_answer_text = await self._selector.select_best_answer(
+                    memory=memory,
+                    rules_text_list=rules_text_list,
+                    conversation=conversation,
+                    answers=await self._client.get_answers(
+                        text=memory,
+                        rules_text_list=rules_text_list,
+                        dialogue=conversation,
+                    ),
                 )
                 await self._interface.add_fact(
                     f"The bot predicts: {original_answer_text}"

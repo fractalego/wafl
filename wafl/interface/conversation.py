@@ -129,10 +129,22 @@ class Conversation:
     def to_dict(self):
         return [utterance.to_dict() for utterance in self.utterances]
 
+    def to_text(self):
+        return "\n".join(
+            [utterance.speaker + ": " + utterance.text for utterance in self.utterances]
+        )
+
     def get_utterances_list(self) -> List[Utterance]:
         if not self.utterances:
             return []
         return self.utterances
+
+    def copy(self):
+        return Conversation(
+            utterances=[
+                Utterance(**utterance.to_dict()) for utterance in self.utterances
+            ]
+        )
 
     def __len__(self):
         if not self.utterances:

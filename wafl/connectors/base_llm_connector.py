@@ -1,8 +1,6 @@
 import logging
 import re
 
-from wafl.connectors.utils import select_best_answer
-
 _system_logger = logging.getLogger(__file__)
 
 model = None
@@ -32,11 +30,14 @@ class BaseLLMConnector:
     async def predict(self, prompt: str) -> [str]:
         raise NotImplementedError
 
-    async def generate(self, prompt: "PromptTemplate") -> str:
+    async def generate(self, prompt: "PromptTemplate") -> [str]:
         if str(prompt.to_dict()) in self._cache:
             return self._cache[str(prompt.to_dict())]
 
-        text = select_best_answer(await self.predict(prompt), self._important_strings)
+        answers = await self.predict(prompt)
+        return [self._post_process(text, prompt) for text in answers]
+
+    def _post_process(self, text: str, prompt: "PromptTemplate") -> str:
         end_set = set()
         for item in self._important_strings:
             if "</remember>" in item or "</execute>" in item:

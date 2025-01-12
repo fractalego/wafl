@@ -31,3 +31,12 @@ class PromptCreator:
                 utterances=[Utterance(speaker="user", text=instruction)]
             ),
         )
+
+    @staticmethod
+    def create_from_arguments(
+        prompt: str, conversation: Conversation, **kwargs
+    ) -> PromptTemplate:
+        return PromptTemplate(
+            system_prompt=prompt.format(**kwargs),
+            conversation=conversation,
+        )
