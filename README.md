@@ -94,5 +94,11 @@ Documentation
 
 The documentation can be found at [wafl.readthedocs.io](https://wafl.readthedocs.io).
 
+Social media contact
+====================
 
+You can find the project at
 <a rel="me" href="https://fractalego.social/@wafl">Mastodon</a>
+
+Please note that the autor of this project will never contact you to ask for funding.
+Note also that any interaction on social media outside the above link is an impersonation and likely a scam.
