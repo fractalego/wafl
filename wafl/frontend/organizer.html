@@ -1,0 +1,1376 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>AgentsCoordinator</title>
+    <style>
+.color1 {color: #2085d8;}
+.color2 {color: #20a8d8;}
+.color3 {color: #6ad9e1;}
+.color4 {color: #caefed;}
+.color5 {color: #f8efed;}
+
+
+.container {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #B8B8D1;
+    background-color: #FFFFFB;
+    font-family: Inconsolata, monospace;
+    border-radius: 5px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 2000;
+}
+.ui-selected {
+    border-color: darkblue;
+}
+
+.container:focus {
+    outline: 2px solid #5B5F97;
+}
+
+.container .results {
+    margin-top: 10px;
+}
+
+.container textarea {
+    resize: vertical;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block; /*reset from inline*/
+    width: 100%;
+    margin: 0; /*remove defaults*/
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 4px;
+    background: #fff;
+    border-style: none;
+    border-color: Transparent;
+    border-radius: 2px;
+    overflow: auto;
+    overflow-y: auto; /*resets IE*/
+    overflow-x: hidden; /*resets IE*/
+}
+
+.my-connection {
+    border-radius: 0px;
+    z-index: 0;
+}
+
+.menu-item:hover {
+    background-color: lightgrey;
+    cursor: pointer;
+}
+
+.output {
+    border: 1px solid #FF6B6C;
+}
+
+.executor {
+    border: 1px solid #556B6C;
+}
+
+#pin:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+}
+
+.bold-svg {
+    fill: darkgrey;
+}
+</style>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+// Source https://github.com/musclesoft/jquery-connections/
+// License: MIT
+// author: David Császár (Diamond/Musclesoft Crew)
+
+(function($) {
+  $.fn.connections = function(options) {
+    if (options === "update") {
+      return processConnections(update, this);
+    } else if (options === "remove") {
+      return processConnections(destroy, this);
+    } else if (options === "remove_connection") {
+      return processConnections(destroy, this);
+    } else {
+      options = $.extend(
+        true,
+        {
+          borderClasses: {},
+          class: "connection",
+          css: {},
+          from: this,
+          tag: "connection",
+          to: this,
+          within: ":root"
+        },
+        options
+      );
+      connect(options);
+      return this;
+    }
+  };
+
+  $.event.special.connections = {
+    teardown: function(namespaces) {
+      processConnections(destroy, $(this));
+    }
+  };
+
+  var connect = function(options) {
+    var borderClasses = options.borderClasses;
+    var tag = options.tag;
+    var end1 = $(options.from);
+    var end2 = $(options.to);
+    var within = $(options.within);
+    delete options.borderClasses;
+    delete options.tag;
+    delete options.from;
+    delete options.to;
+    delete options.within;
+    within.each(function() {
+      var container = this;
+      var done = new Array();
+      end1.each(function() {
+        var node = this;
+        done.push(this);
+        end2.not(done).each(function() {
+          createConnection(
+            container,
+            [node, this],
+            tag,
+            borderClasses,
+            options
+          );
+        });
+      });
+    });
+  };
+
+  var createConnection = function(
+    container,
+    nodes,
+    tag,
+    borderClasses,
+    options
+  ) {
+    var css = $.extend({ position: "absolute" }, options.css);
+    var connection = $("<" + tag + "/>", options).css(css);
+    connection.appendTo(container);
+
+    var border_w = (connection.outerWidth() - connection.innerWidth()) / 2;
+    var border_h = (connection.outerHeight() - connection.innerHeight()) / 2;
+
+    if (border_w <= 0 && border_h <= 0) {
+      border_w = border_h = 1;
+    }
+
+    var data = {
+      borderClasses: borderClasses,
+      border_h: border_h,
+      border_w: border_w,
+      node_from: $(nodes[0]),
+      node_to: $(nodes[1]),
+      nodes_dom: nodes,
+      css: css
+    };
+
+    if ("none" === connection.css("border-top-style")) {
+      data.css.borderStyle = "solid";
+    }
+    $.data(connection.get(0), "connection", data);
+    $.data(connection.get(0), "connections", [connection.get(0)]);
+    for (var i = 0; i < 2; i++) {
+      var connections = connection.add($.data(nodes[i], "connections")).get();
+      $.data(nodes[i], "connections", connections);
+      if (connections.length == 1) {
+        $(nodes[i]).on("connections.connections", false);
+      }
+    }
+    update(connection.get(0));
+  };
+
+  var destroy = function(connection) {
+    var nodes = $.data(connection, "connection").nodes_dom;
+    for (var i = 0; i < 2; i++) {
+      var connections = $($.data(nodes[i], "connections"))
+        .not(connection)
+        .get();
+      $.data(nodes[i], "connections", connections);
+    }
+    $(connection).remove();
+  };
+
+  var getState = function(data) {
+    data.rect_from = data.nodes_dom[0].getBoundingClientRect();
+    data.rect_to = data.nodes_dom[1].getBoundingClientRect();
+    var cached = data.cache;
+    data.cache = [
+      data.rect_from.top,
+      data.rect_from.right,
+      data.rect_from.bottom,
+      data.rect_from.left,
+      data.rect_to.top,
+      data.rect_to.right,
+      data.rect_to.bottom,
+      data.rect_to.left
+    ];
+    data.hidden =
+      0 === (data.cache[0] | data.cache[1] | data.cache[2] | data.cache[3]) ||
+      0 === (data.cache[4] | data.cache[5] | data.cache[6] | data.cache[7]);
+    data.unmodified = true;
+    if (cached === undefined) {
+      return (data.unmodified = false);
+    }
+    for (var i = 0; i < 8; i++) {
+      if (cached[i] !== data.cache[i]) {
+        return (data.unmodified = false);
+      }
+    }
+  };
+
+  var update = function(connection) {
+    var data = $.data(connection, "connection");
+    getState(data);
+    if (data.unmodified) {
+      return;
+    }
+    var border_h = data.border_h;
+    var border_w = data.border_w;
+    var from = data.rect_from;
+    var to = data.rect_to;
+    var b = (from.bottom + from.top) / 2;
+    var r = (to.left + to.right) / 2;
+    var t = (to.bottom + to.top) / 2;
+    var l = (from.left + from.right) / 2;
+
+    var h = ["right", "left"];
+    if (l > r) {
+      h = ["left", "right"];
+      var x = Math.max(r - border_w / 2, Math.min(from.right, to.right));
+      r = l + border_w / 2;
+      l = x;
+    } else {
+      l -= border_w / 2;
+      r = Math.min(r + border_w / 2, Math.max(from.left, to.left));
+    }
+    var v = ["bottom", "top"];
+    if (t > b) {
+      v = ["top", "bottom"];
+      var x = Math.max(b - border_h / 2, Math.min(from.bottom, to.bottom));
+      b = t + border_h / 2;
+      t = x;
+    } else {
+      b = Math.min(b, Math.max(from.top, to.top));
+      t -= border_h / 2;
+    }
+    var width = r - l;
+    var height = b - t;
+    if (width < border_w) {
+      t = Math.max(t, Math.min(from.bottom, to.bottom));
+      b = Math.min(b, Math.max(from.top, to.top));
+      l = Math.max(from.left, to.left);
+      r = Math.min(from.right, to.right);
+      r = l = (l + r - border_w) / 2;
+    }
+    if (height < border_h) {
+      l = Math.max(l, Math.min(from.right, to.right));
+      r = Math.min(r, Math.max(from.left, to.left));
+      t = Math.max(from.top, to.top);
+      b = Math.min(from.bottom, to.bottom);
+      b = t = (t + b - border_h) / 2;
+    }
+    width = r - l;
+    height = b - t;
+    width <= 0 && (border_h = 0);
+    height <= 0 && (border_w = 0);
+    var style =
+      "border-" +
+      v[0] +
+      "-" +
+      h[0] +
+      "-radius: 0;" +
+      "border-" +
+      v[0] +
+      "-" +
+      h[1] +
+      "-radius: 0;" +
+      "border-" +
+      v[1] +
+      "-" +
+      h[0] +
+      "-radius: 0;"
+    ;
+    (border_h <= 0 || border_w <= 0) &&
+
+      (style += "border-" + v[1] + "-" + h[1] + "-radius: 0;");
+    if (data.hidden) {
+      style += "display: none;";
+    } else {
+      data.css["border-" + v[0] + "-width"] = 0;
+      data.css["border-" + h[0] + "-width"] = 0;
+      data.css["border-" + v[1] + "-width"] = border_h;
+      data.css["border-" + h[1] + "-width"] = border_w;
+      let degrees = "";
+      if (v[1] === "top" && h[1] === "right") {
+        degrees = "-45deg";
+      } else if (v[1] === "top" && h[1] === "left") {
+        degrees = "45deg";
+      } else if (v[1] === "bottom" && h[1] === "right") {
+        degrees = "-135deg";
+      } else if (v[1] === "bottom" && h[1] === "left") {
+        degrees = "135deg";
+      }
+      data.css["border-image"] = `linear-gradient(${degrees}, #eeeeee, black) 1 round`;
+
+      var current_rect = connection.getBoundingClientRect();
+      data.css.left = connection.offsetLeft + l - current_rect.left;
+      data.css.top = connection.offsetTop + t - current_rect.top;
+      data.css.width = width - border_w;
+      data.css.height = height - border_h;
+    }
+    let target_border_witdh = 10;
+
+    if(h[1] === "left") {
+      $("#" + data.node_to[0].id).css("border-width", 1);
+      if (data.css.left > data.rect_to.left) {
+        if(v[1] === "bottom") {
+           $("#" + data.node_to[0].id).css("border-top-width", target_border_witdh);
+        } else {
+            $("#" + data.node_to[0].id).css("border-bottom-width", target_border_witdh);
+        }
+      } else {
+        $("#" + data.node_to[0].id).css("border-left-width", target_border_witdh);
+      }
+    }
+    if(h[1] === "right") {
+      $("#" + data.node_to[0].id).css("border-width", 1);
+      if (data.css.left + data.css.width < data.rect_to.right) {
+        if(v[1] === "bottom") {
+          $("#" + data.node_to[0].id).css("border-top-width", target_border_witdh);
+        } else {
+            $("#" + data.node_to[0].id).css("border-bottom-width", target_border_witdh);
+        }
+      } else {
+        $("#" + data.node_to[0].id).css("border-right-width", target_border_witdh);
+      }
+    }
+    var bc = data.borderClasses;
+    $(connection)
+      .removeClass(bc[v[0]])
+      .removeClass(bc[h[0]])
+      .addClass(bc[v[1]])
+      .addClass(bc[h[1]])
+      .attr("style", style)
+      .css(data.css);
+  };
+
+  var processConnections = function(method, elements) {
+    return elements.each(function() {
+      var connections = $.data(this, "connections");
+      if (connections instanceof Array) {
+        for (var i = 0, len = connections.length; i < len; i++) {
+          method(connections[i]);
+        }
+      }
+    });
+  };
+})(jQuery);
+</script>
+    <script>
+var current_selection = null;
+var cntrlIsPressed = false;
+var connection_list_name_from_and_to = [];
+var mousex = 0, mousey = 0;
+var prior_pages;
+var copiedElements = [];
+
+$(function() {
+    // Make the entire body selectable
+    $("body").selectable({
+        filter: ".container",
+    });
+});
+
+$(document).keydown(function (event) {
+    if (event.which == "17")
+        cntrlIsPressed = true;
+});
+
+
+$(document).keyup(function () {
+    cntrlIsPressed = false;
+});
+
+
+
+function loadPageHistory() {
+    prior_pages = JSON.parse(storedHistory);
+}
+
+function savePageState() {
+    // if prior_pages is undefined, initialize it
+    if (typeof prior_pages === 'undefined') {
+        prior_pages = [];
+    }
+    prior_pages.push(get_body_clone_string());
+}
+
+
+// $(document).keydown(function (event) {
+//     if (event.which == "90" && cntrlIsPressed) {
+//         if (prior_pages.length > 0) {
+//             var last_page = prior_pages.pop();
+//             document.body.outerHTML = last_page;
+//             executeScripts(prior_pages);
+//             document.body.style="height: 10000px; width: 10000px;"
+//         }
+//     }
+// });
+
+
+function executeScripts(prior_pages) {
+    $('script').each(function() {
+        var oldScript = $(this);
+        if (oldScript.attr('src')) {
+            var newScript = document.createElement('script');
+            newScript.src = oldScript.attr('src');
+            newScript.async = false; // This is required for synchronous execution
+            document.body.appendChild(newScript);
+        } else {
+            var scriptContent = oldScript.html();
+            if (scriptContent.includes('var prior_pages')) {
+                return;
+            }
+            document.body.appendChild(document.createElement('script')).innerHTML = scriptContent; // Reload internal script
+        }
+    });
+    document.body.appendChild(document.createElement('script')).innerHTML = `
+        var prior_pages = ${JSON.stringify(prior_pages)};
+    `;
+}
+
+$(document).ready(function () {
+    var isMiddleButtonPressed = false;
+    var startX, startY;
+
+    $(document).mousedown(function (e) {
+        if (e.which === 2) {
+            isMiddleButtonPressed = true;
+            startX = e.pageX;
+            startY = e.pageY;
+            e.preventDefault();
+        }
+    });
+
+    $(document).mousemove(function (e) {
+        mousex = e.pageX;
+        mousey = e.pageY;
+
+        if (isMiddleButtonPressed) {
+            let deltaX = startX - e.pageX;
+            let deltaY = startY - e.pageY;
+
+            window.scrollBy(deltaX, deltaY);
+
+            startX = e.pageX;
+            startY = e.pageY;
+        }
+    });
+
+    $(document).mouseup(function (e) {
+        if (e.which === 2) {
+            isMiddleButtonPressed = false;
+        }
+    });
+});
+
+
+
+</script>
+    <script>
+function create_new_tile(event, position, html_tile_creator, type) {
+    var new_container_name = `${type}_container` + Math.floor(Math.random() * 1000000);
+    console.log(new_container_name);
+    var screenCenterX = window.innerWidth / 2 + Math.random() * 10;
+    var screenCenterY = window.innerHeight / 2 + Math.random() * 10;
+    if(position == 'mouse') {
+        // Get the mouse position and set the new container to be there
+        screenCenterX = mousex;
+        screenCenterY = mousey;
+        console.log(screenCenterX, screenCenterY);
+    }
+
+    jQuery('body').append(
+        html_tile_creator(new_container_name, screenCenterX, screenCenterY)
+    )
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.text = `
+    $(function () {
+        $('#${new_container_name}').draggable({
+            start: function(event, ui) {
+                savePageState();
+                // Only start dragging if the item is selected
+                if (!$(this).hasClass('ui-selected')) {
+                    $(".draggable").removeClass('ui-selected');
+                    $(this).addClass('ui-selected');
+                }
+
+                // Save the initial position of each selected item
+                var startPosition = ui.position;
+                $(".ui-selected").each(function() {
+                    var $this = $(this);
+                    var itemPosition = $this.position();
+                    $this.data("startPos", itemPosition);
+                    $this.data("offset", {
+                        top: itemPosition.top - startPosition.top,
+                        left: itemPosition.left - startPosition.left
+                    });
+                });
+            },                            
+            drag: function (event, ui) {
+                // Move each selected item according to the initial offset
+                $(".ui-selected").not(this).each(function() {
+                    var $this = $(this);
+                    var offset = $this.data("offset");
+                    $this.css({
+                        top: ui.position.top + offset.top,
+                        left: ui.position.left + offset.left
+                    });
+                });   
+                jQuery('#${new_container_name}').connections('update');
+                $(".ui-selected").each(function() {
+                    var $this = $(this);
+                    $this.connections('update');
+                });
+                    
+            },
+            stop: function (event, ui) {                   
+                $(".container").removeClass("ui-selected");
+            },
+        });
+        $('#${new_container_name}').resizable({
+            start: function(event, ui) {
+                savePageState();
+            },
+            resize: function () {
+                jQuery('#${new_container_name}').connections('update');
+            }
+        });
+        $('#${new_container_name}').on('keydown', function (event) {
+            savePageState();
+            console.log('#${new_container_name}')
+            if (event.keyCode == 46) {
+                if (document.activeElement.tagName.toLowerCase() != "textarea") {
+                    remove_connection_to_and_from('${new_container_name}');
+                    $('#${new_container_name}').connections('remove_connection');
+                    this.remove();
+                }
+            }
+        });
+
+        $('#${new_container_name}').on('click', function (event) {
+            savePageState();
+            console.log(event.target.closest("#pin"));
+            if (event.target.closest("#pin") != null) {
+                let target = $('#${new_container_name} #pin'); 
+                if (target.hasClass("unselected")) {
+                    target.removeClass("unselected");
+                    target.addClass("selected");
+                    $("#${new_container_name} #pin svg").toggleClass("bold-svg");
+                }
+                else {
+                    $("#${new_container_name} #pin svg").toggleClass("bold-svg");
+                    target.removeClass("selected");
+                    target.addClass("unselected");
+                };
+            }
+            console.log('#${new_container_name}');
+            if (cntrlIsPressed && current_selection != null) {
+                var connection_name = '${type}_connection-${new_container_name}' + Math.floor(Math.random() * 1000000);       
+                $(current_selection).connections({
+                    to: '#${new_container_name}',
+                    'class': 'my-connection ' + connection_name,
+                });
+                if (current_selection != ${new_container_name}) {
+                    connection_list_name_from_and_to.push([connection_name, current_selection, '#${new_container_name}']);
+                    $('.' + connection_name).attr('tabindex', '-1');
+                    $('.' + connection_name).on('keydown', function (event) {
+                        console.log('.' + connection_name);
+                        savePageState();
+                        $('.' + connection_name).connections('remove_connection');
+                        remove_connection_from_list(connection_name);
+                    });
+                    $('.' + connection_name).focus(function() {
+                        $('.' + connection_name).css({
+                            'border-image': 'none', // Remove gradient border
+                            'border-color': 'black', // Set solid black border                       
+                        });
+                    });
+                }
+                current_selection = null;
+            }
+            current_selection = '#${new_container_name}';
+        });
+    });
+    `;
+    document.head.appendChild(script);
+}
+
+
+</script>
+    <script>
+$(function () {
+    $("#navigation").draggable({
+        drag: function () {
+            jQuery('#navigation').connections('update');
+        }
+    });
+
+});
+</script>
+    <script>
+function create_project_tile(container_name, x, y) {
+    const width = 500;
+    const height = 250;
+    return `
+<div class="container conditional" id="${container_name}" tabindex="-1" style="width: ${width}px; height: ${height}px;
+            top: ${y}px; left: ${x}px; position: absolute; padding-bottom: 10px; border-top-width: 10px;">
+    <textarea id="condition" rows="1" placeholder="Condition" name="title-${container_name}" style="border: 1px solid darkgray;"></textarea>
+    <div class="container-separator" style="width: 100%; height: 10px;"></div>
+    <textarea id="prompt" placeholder="Prompt" style="height: 70%; margin-bottom: 10px; resize: none; border: 1px solid darkgray;" name="description-${container_name}"></textarea>
+    </div>
+`
+}
+
+
+$(function () {
+    $("#navigation #new-project-tile-button").on('click', function (event) {
+        create_new_tile(event, position="center", html_tile_creator=create_project_tile, type="conditional");
+    });
+    $(document).on('keypress',function(event) {
+        var tag = event.target.tagName.toLowerCase();
+        if(event.which == "c".charCodeAt(0) && tag != 'input' && tag != 'textarea') {
+            create_new_tile(event, position="mouse", html_tile_creator=create_project_tile, type="conditional");
+        }
+    });
+});
+
+</script>
+    <script>
+function create_task_tile(container_name, x, y) {
+    const width = 300;
+    const height = 250;
+    return `<div class="container prompt" id="${container_name}" tabindex="-1" style="width: ${width}px; height: ${height}px;\n` +
+            `                           top: ${y}px; left: ${x}px; position: absolute; padding-bottom: 10px; border-top-width: 10px;">\n` +
+            `<div class="container-separator" style="width: 100%; height: 10px;"></div>\n` +
+            `<textarea id="prompt" placeholder="Prompt" style="height: 90%; margin-bottom: 10px; border: 1px solid darkgray; resize: none;">\n` +
+            `</textarea>\n` +
+            `</div>`
+}
+
+
+$(function () {
+    $("#navigation #new-task-tile-button").on('click', function (event) {
+        create_new_tile(event, position="center", html_tile_creator=create_task_tile, type="prompt");
+    });
+    $(document).on('keypress',function(event) {
+        var tag = event.target.tagName.toLowerCase();
+        if(event.which == "p".charCodeAt(0) && tag != 'input' && tag != 'textarea') {
+            create_new_tile(event, position="mouse", html_tile_creator=create_task_tile, type="prompt");
+        }
+    });
+});
+
+</script>
+    <script>
+function refactor_connections(pageContent, append_to="head") {
+    for (var i = 0; i < connection_list_name_from_and_to.length; i++) {
+        var connection_name = connection_list_name_from_and_to[i][0];
+        var connection_from = connection_list_name_from_and_to[i][1];
+        var connection_to = connection_list_name_from_and_to[i][2];
+
+        var newScript = $('<script>')
+        .attr('type', 'text/javascript')
+        .text(`
+            $(function () {
+                $('${connection_from}').connections({
+                    to: '${connection_to}',
+                    'class': 'my-connection ${connection_name}'
+                });
+                $('.${connection_name}').attr('tabindex', '-1');
+                $('.${connection_name}').on('keydown', function (event) {
+                    $('${connection_to}').connections('remove_connection');
+                });
+            });
+        `);
+        pageContent.find(append_to).append(newScript);
+        var latestConnections = $('<script>')
+        .attr('type', 'text/javascript')
+        .text(`
+            connection_list_name_from_and_to = ${JSON.stringify(connection_list_name_from_and_to)};
+        `);
+        pageContent.find(append_to).append(latestConnections);
+    }
+}
+
+
+function get_working_html_page() {
+    var pageContent = $('html').clone();
+    refactor_connections(pageContent);
+    pageContent.find('textarea').each(function() {
+        $(this).text($(this).val());
+    });
+    pageContent.find('.my-connection').remove();
+    return pageContent;
+}
+
+function get_body_clone_string() {
+    var pageContent = $('body').clone();
+    refactor_connections(pageContent, "body");
+    pageContent.find('textarea').each(function() {
+        $(this).text($(this).val());
+    });
+    pageContent.find('.my-connection').remove();
+    return pageContent.html();
+}
+
+
+$(document).ready(function() {
+    $('#save-button').click(function() {
+        var pageContent = get_working_html_page();
+        var blob = new Blob([pageContent.html()], { type: 'text/html' });
+
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'savedPage.html';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+});
+</script>
+    <script>
+var initial_messages =  [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Please follow the instructions below."
+        }
+    ]
+
+$(function () {
+    $("#start").draggable({
+        drag: function () {
+            jQuery('#start').connections('update');
+        }
+    });
+
+    $("#start").on('click', function (event) {
+        current_selection = '#start';
+    });
+    $('#start').on('click', function (event) {
+        if (cntrlIsPressed && current_selection != null) {
+            current_selection = null;
+        }
+        current_selection = '#start';
+    });
+    $('#play-button').on('click', async function (event) {
+        let start_messages = structuredClone(initial_messages);
+        await iterate_over_edges("#start", start_messages);
+    });
+});
+</script>
+    <script>
+var url = "https://api.openai.com/v1/chat/completions";
+
+
+var initial_data = {
+    "model": "gpt-4o-mini",
+    "messages": []
+}
+
+var options = {
+    headers: {
+        'dataType': 'json',
+        'content-type': 'application/json',
+    },
+    method: 'POST',
+    redirect: 'follow',
+};
+
+
+async function connect_to_api(messages) {
+    key = $('#key').val();
+    var payload = initial_data;
+    payload.messages = messages;
+    options['body'] = JSON.stringify(payload);
+    options['headers']['Authorization'] = `Bearer ${key}`;
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (data["choices"]) {
+        return data["choices"][0]["message"]["content"];
+    }
+    alert(data["error"]["message"]);
+    return "";
+}
+
+</script>
+    <script>
+function remove_connection_from_list(connection_name) {
+    for (var i = 0; i < connection_list_name_from_and_to.length; i++) {
+        if (connection_list_name_from_and_to[i][0] == connection_name) {
+            connection_list_name_from_and_to.splice(i, 1);
+        }
+    }
+}
+
+function remove_connection_to_and_from(tile_name) {
+    for (var i = 0; i < connection_list_name_from_and_to.length; i++) {
+        if (connection_list_name_from_and_to[i][1] == "#" + tile_name
+            || connection_list_name_from_and_to[i][2] == "#" + tile_name) {
+            $(connection_list_name_from_and_to[i][1]).connections('remove_connection');
+            connection_list_name_from_and_to.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+async function iterate_over_edges(start_at_id, messages) {
+    already_predicted = false;
+    var prediction = "";
+    for (const connection of connection_list_name_from_and_to) {
+        const [connection_name, connection_from, connection_to] = connection;
+        if (connection_from == connection_to) {
+            continue;
+        }
+        if (connection_from == start_at_id) {
+            if (connection_name.indexOf("chat") == 0) {
+                has_pin = $(`${connection_to} #pin`).hasClass("selected");
+                if (has_pin) {
+                    continue;
+                }
+                if (!already_predicted) {
+                    $(`${connection_to} #spinner`).html(spinner);
+                    prediction = await connect_to_api(messages);
+                    already_predicted = true;
+                }
+                $(`${connection_to} #output`).val(prediction);
+                $(`${connection_to} #spinner`).html("");
+            }
+        }
+    }
+    for (const connection of connection_list_name_from_and_to) {
+        const [connection_name, connection_from, connection_to] = connection;
+        if (connection_from == connection_to) {
+            continue;
+        }
+        if (connection_from == start_at_id) {
+            if (connection_name.indexOf("prompt") == 0) {
+                let new_messages = structuredClone(messages);
+                current_prompt = $(`${connection_to} #prompt`).val();
+                prior_prompts = collect_prior_prompts(connection_to);
+                if (prior_prompts.length > 0)
+                    current_prompt = current_prompt + "\n\n<additional_information>" + prior_prompts.join("\n") + "</additional_information>";
+                new_messages.push({
+                    "role": "user",
+                    "content": current_prompt,
+                });
+
+                iterate_over_edges(connection_to, new_messages);
+            }
+            if (connection_name.indexOf("chat") == 0) {
+                let new_messages = structuredClone(messages);
+                new_messages.push({
+                    "role": "user",
+                    "content": $(`${connection_to} #output`).val()
+                });
+                iterate_over_edges(connection_to, new_messages);
+            }
+            if (connection_name.indexOf("conditional") == 0) {
+                let new_messages = structuredClone(messages);
+                let condition = $(`${connection_to} #condition`).val()
+                let prompt = $(`${connection_to} #prompt`).val()
+                $(`${connection_to} #spinner`).html(spinner);
+                prediction = await connect_to_api(new_messages);
+                let entailment_messages = create_entailment_messages(prediction, condition)
+                prediction = await connect_to_api(entailment_messages);
+                $(`${connection_to} #spinner`).html("");
+                if (prediction[0] == "Y") {
+                    new_messages.push({
+                        "role": "user",
+                        "content": prompt,
+                    });
+                    iterate_over_edges(connection_to, new_messages);
+                }
+            }
+            if (connection_name.indexOf("executor") == 0) {
+                let new_messages = structuredClone(messages);
+                let instruction = $(`${connection_to} #instruction`).val();
+                let prompt = get_executor_prompt(instruction);
+                new_messages.push({
+                    "role": "user",
+                    "content": prompt,
+                });
+                has_pin = $(`${connection_to} #pin`).hasClass("selected");
+                let code = $(`${connection_to} #code`).val();
+                let result = "";
+                if (!has_pin) {
+                    $(`${connection_to} #spinner`).html(spinner);
+                    prediction = await connect_to_api(new_messages);
+                    code = prediction.match(/<execute>([\s\S]*?)<\/execute>/)[1];
+                }
+                $(`${connection_to} #code`).text(code);
+                try {
+                    eval(code);
+                } catch (error) {
+                    result = error.toString();
+                }
+                $(`${connection_to} #result`).text(result);
+                new_messages[new_messages.length - 1].content = `The assistant knows:\n ${result}`;
+                $(`${connection_to} #spinner`).html("");
+                iterate_over_edges(connection_to, new_messages);
+            }
+            if (connection_name.indexOf("dashboard") == 0) {
+                let new_messages = structuredClone(messages);
+                let instruction = $(`${connection_to} #instruction`).val();
+                let prompt = get_dashboard_prompt(instruction);
+                new_messages.push({
+                    "role": "user",
+                    "content": prompt,
+                });
+                has_pin = $(`${connection_to} #pin`).hasClass("selected");
+                let code = $(`${connection_to} #code`).val();
+                if (!has_pin) {
+                    $(`${connection_to} #spinner`).html(spinner);
+                    code = await connect_to_api(new_messages);
+                }
+                code = code.replaceAll("<html", "div").replaceAll("html>", "div>").replaceAll("<head", "div").replaceAll("head>", "div>").replaceAll("<body", "div").replaceAll("body>", "div>");
+
+                $(`${connection_to} #code`).val(code);
+                $(`${connection_to} #result`).html(code);
+                new_messages[new_messages.length - 1].content = `The assistant knows:\n ${code}`;
+                $(`${connection_to} #spinner`).html("");
+                iterate_over_edges(connection_to, new_messages);
+            }
+
+        }
+    }
+}
+
+function collect_prior_prompts(start_at_id) {
+    let prompts = [];
+    for (const connection of connection_list_name_from_and_to) {
+        const [connection_name, connection_from, connection_to] = connection;
+        if (connection_from == connection_to) {
+            continue;
+        }
+        if (connection_to == start_at_id) {
+            if (connection_name.indexOf("prompt") == 0) {
+                prompts.push($(`${connection_from} #prompt`).val());
+            }
+        }
+    }
+    return prompts;
+}
+</script>
+    <script>
+entailment_prompt = `Please say if the first text entails the second:
+<first_text>
+{lhs}
+</first_text>
+<second_text>
+{rhs}
+</second_text>
+Answer only with one character: Y/N\n
+`
+
+entailment_messages = [
+    {
+        "role": "system",
+        "content": "You are an assistant that can determine if one text entails another. The assistant will provide you with two texts, and you will have to determine if the first text entails the second. You can only answer with one character: Y/N."
+    },
+    {
+        "role": "user",
+        "content": entailment_prompt
+    }
+]
+
+function create_entailment_messages(lhs, rhs) {
+    let messages = structuredClone(entailment_messages);
+    messages[1].content = entailment_prompt.replace("{lhs}", lhs).replace("{rhs}", rhs);
+    return messages;
+}
+
+function get_executor_prompt(instruction) {
+    return `
+Create a javascript code that follows the instruction and returns a result into the variable 'result'. The variable result already exists and is empty. The instruction is:
+${instruction}
+
+The code should be able to run as it is typed. It should not be a function or a class. It should be a single block of code.
+The code needs to be self-contained and not rely on external variables or functions.
+It must be able to run in a browser environment, not a Node.js environment.
+You must create just the code. Do not use Markdown.
+The code must start with "result = '';". Do not re-declare the variable result.
+The output of the code must be a string into the variable result.
+Be careful with scoping: the variable result is already declared and the output must be accessible from the global scope.
+The code cannot be asynchronous. Do not use async/await or Promises.
+Wrap the code in <execute> tags.
+`
+}
+
+function get_dashboard_prompt(instruction) {
+    return `
+Create an html code that follows the instruction. The instruction is:
+${instruction}
+
+You must create just the html code. Do not use Markdown.
+The code is contained in a single <div> tag and must be able to run in a browser environment.
+Never create a single web page!!
+Never use the <script> tag!!
+Never use the <style> tag!!
+Never use the <body> tag!!
+Never use the <head> tag!!
+Never use the <html> tag!!
+`
+}
+</script>
+    <script>
+function create_output_tile(container_name, x, y) {
+    return `
+<div class="container output" tabindex="-1"
+     id="${container_name}"
+     style="width: 350px; height: 300px; border-top-width: 10px; top: ${y}px; left: ${x}px; position: absolute; padding-bottom: 10px"
+>
+    <div class="flex display">
+        <div id="pin" class="container-separator mb-2 mr-2 unselected top-0" style="height: 16px; width: 16px;">${pin}</div>
+        <div class="container-separator mb-2" style="width: 100%; height: 16px;" id="spinner"></div>
+    </div>
+<textarea id="output" placeholder="Output" style="height: 90%; margin-bottom: 10px; resize: none; border: 1px solid darkgray;" readonly></textarea>
+</div>
+`
+}
+
+
+$(function () {
+    $("#navigation #new-output-button").on('click', function (event) {
+        create_new_tile(event, position="center", html_tile_creator=create_output_tile, type="chat");
+    });
+    $(document).on('keypress',function(event) {
+        var tag = event.target.tagName.toLowerCase();
+        if(event.which == "o".charCodeAt(0) && tag != 'input' && tag != 'textarea') {
+            create_new_tile(event, position="mouse", html_tile_creator=create_output_tile, type="chat");
+        }
+    });
+});
+
+</script>
+    <script>
+function create_executor_tile(container_name, x, y) {
+    const width = 500;
+    const height = 300;
+    let script_tag = "script";
+    return `
+<div class="container executor flex-col" id="${container_name}" tabindex="-1" style="width: ${width}px; height: ${height}px; 
+            top: ${y}px; left: ${x}px; position: absolute; border-top-width: 10px; padding-bottom: 20px;">
+    <textarea id="instruction" rows="1" placeholder="Instruction" name="title-${container_name}" style="border: 1px solid darkgray;"></textarea>
+    <div class="flex display">
+        <div id="pin" class="container-separator mb-2 mr-2 unselected top-0" style="height: 16px; width: 16px;">${pin}</div>
+        <div class="container-separator mb-2" style="width: 100%; height: 16px;" id="spinner"></div>
+    </div>                  
+    <div class="flex">                
+        <button class="tab-btn w-full py-2 px-4 text-center bg-white font-semibold rounded-t-md focus:outline-none hover:bg-blue-50 border-l border-r first:border-l-0 active border-b-0" data-tab="tab1-${container_name}" data-other="tab2-${container_name}">
+            Results
+        </button>
+        <button class="tab-btn w-full py-2 px-4 text-center bg-white font-semibold rounded-t-md focus:outline-none hover:bg-blue-50 border-l border-r first:border-l-0 active border-b-0" data-tab="tab2-${container_name}" data-other="tab1-${container_name}">
+            Code
+        </button>
+    </div>
+    <div style="height: calc(100% - 100px);">
+        <div id="tab1-${container_name}" class="tab-content">
+            <textarea id="result" class="h-full" placeholder="Result" style="margin-bottom: 10px; resize: none; border: 1px solid darkgray;" name="description-${container_name}" readonly></textarea>       
+        </div>
+        <div id="tab2-${container_name}" class="tab-content hidden">
+            <textarea id="code" class="h-full" placeholder="Code" style="margin-bottom: 10px; resize: none; border: 1px solid darkgray;" name="description-${container_name}"></textarea>
+        </div>
+    </div>
+  
+</div>
+<${script_tag}>
+    $(document).ready(function () {
+        // On tab button click
+        $('.tab-btn').click(function () {
+            // Remove 'bg-white', 'text-blue-500', 'border-b-0' from all tab buttons and add 'bg-gray-200', 'text-gray-700'
+            $('.tab-btn').removeClass('bg-white text-blue-500 border-b-0').addClass('text-gray-700');
+
+            // Add 'bg-white', 'text-blue-500', 'border-b-0' to the clicked tab button and remove 'bg-gray-200', 'text-gray-700'
+            $(this).addClass('bg-white text-blue-500 border-b-0').removeClass('text-gray-700');
+
+            // Hide all tab content
+            $('#' + $(this).data('other')).addClass('hidden');
+
+            // Show content of the clicked tab
+            $('#' + $(this).data('tab')).removeClass('hidden');
+        });
+    });
+</${script_tag}>
+      `
+}
+
+
+$(function () {
+    $("#navigation #new-executor-button").on('click', function (event) {
+        create_new_tile(event, position = "center", html_tile_creator = create_executor_tile, type = "executor");
+    });
+    $(document).on('keypress', function (event) {
+        var tag = event.target.tagName.toLowerCase();
+        if (event.which == "e".charCodeAt(0) && tag != 'input' && tag != 'textarea') {
+            create_new_tile(event, position = "mouse", html_tile_creator = create_executor_tile, type = "executor");
+        }
+    });
+});
+
+</script>
+    <script>
+var spinner = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity="0.25"/><path fill="currentColor" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>`;
+var pin = `<svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M21.290667 1024.042667a21.333333 21.333333 0 0 1-15.104-36.394667l386.56-386.602667-146.730667-146.730666a64.042667 64.042667 0 0 1 0-90.496l21.333333-21.333334a63.573333 63.573333 0 0 1 45.269334-18.730666h135.338666a21.205333 21.205333 0 0 0 15.061334-6.229334l179.498666-179.498666a8.789333 8.789333 0 0 0 0-12.501334 51.626667 51.626667 0 0 1 0-72.832l33.834667-33.834666a63.488 63.488 0 0 1 45.269333-18.688c17.109333 0 33.194667 6.656 45.269334 18.688l238.336 238.336a64.042667 64.042667 0 0 1 0 90.496l-33.834667 33.834666a51.114667 51.114667 0 0 1-36.394667 15.061334c-13.781333 0-26.709333-5.333333-36.437333-15.061334a8.746667 8.746667 0 0 0-6.229333-2.56 8.746667 8.746667 0 0 0-6.229334 2.56l-179.498666 179.498667a21.248 21.248 0 0 0-6.229334 15.104v135.338667c0 17.109333-6.656 33.152-18.730666 45.269333l-21.333334 21.333333c-12.074667 12.074667-28.117333 18.688-45.269333 18.688s-33.194667-6.656-45.269333-18.688l-146.730667-146.730666-386.56 386.602666a22.101333 22.101333 0 0 1-15.189333 6.101334zM312.618667 366.378667a21.376 21.376 0 0 0-15.104 6.229333l-21.333334 21.333333a21.333333 21.333333 0 0 0 0 30.165334l323.669334 323.669333a21.333333 21.333333 0 0 0 30.208 0l21.333333-21.333333a21.504 21.504 0 0 0 6.229333-15.104V576c0-17.109333 6.656-33.152 18.730667-45.269333l179.498667-179.498667a51.2 51.2 0 0 1 36.394666-15.104 51.2 51.2 0 0 1 36.437334 15.104c1.706667 1.706667 3.882667 2.602667 6.272 2.602667a8.533333 8.533333 0 0 0 6.229333-2.602667l33.834667-33.834667a21.333333 21.333333 0 0 0 0-30.165333l-238.336-238.336a21.333333 21.333333 0 0 0-30.208 0l-33.834667 33.834667a8.832 8.832 0 0 0 0 12.501333c20.053333 20.053333 20.096 52.736 0.042667 72.832L493.226667 347.648a63.573333 63.573333 0 0 1-45.226667 18.730667H312.618667z"  /></svg>`;
+
+</script>
+    <script>
+$(function() {
+    var mouseX, mouseY;
+    $(document).mousemove(function(event) {
+        mouseX = event.pageX;
+        mouseY = event.pageY;
+    });
+
+    $(document).keydown(function(event) {
+        if (event.target.closest("input") != null || event.target.closest("textarea") != null) {
+            return;
+        }
+        if (event.ctrlKey && event.key === 'c') {
+            copiedElements = [];
+            $(".ui-selected").each(function() {
+                copiedElements.push([$(this).clone(), $(this).offset().left - mouseX, $(this).offset().top - mouseY]);
+            });
+            if (copiedElements.length === 0) {
+                $(".container").each(function() {
+                    if ($(this).is(":focus")) {
+                        copiedElements.push([$(this).clone(), $(this).offset().left - mouseX, $(this).offset().top - mouseY]);
+                    }
+                });
+            }
+            event.preventDefault();
+        }
+
+        if (event.ctrlKey && event.key === 'v') {
+            if (copiedElements.length > 0) {
+                copiedElements.forEach(function(el_x_y) {
+                    var [el, xpos, ypos] = el_x_y;
+                    var newElement = $(el).removeClass("ui-selected"); // Clone and remove ui-selected class
+                    let random_string = Math.random().toString(36).substring(7);
+                    newElement.attr('id', newElement.attr('id') + '-copy' + random_string);
+                    let new_id = newElement.attr('id');
+                    var connection_name = new_id.replace('container', 'connection');
+                    newElement.css({
+                        position: 'absolute',
+                        // the top and left corner of the element will be at the cursor position
+                        top: mouseY + ypos + newElement.outerHeight()/2,
+                        left: mouseX + xpos + newElement.outerWidth()/2
+                    });
+                    newElement.draggable({
+                        start: function(event, ui) {
+                            // Only start dragging if the item is selected
+                            if (!$(this).hasClass('ui-selected')) {
+                                $(".draggable").removeClass('ui-selected');
+                                $(this).addClass('ui-selected');
+                            }
+
+                            // Save the initial position of each selected item
+                            var startPosition = ui.position;
+                            $(".ui-selected").each(function() {
+                                var $this = $(this);
+                                var itemPosition = $this.position();
+                                $this.data("startPos", itemPosition);
+                                $this.data("offset", {
+                                    top: itemPosition.top - startPosition.top,
+                                    left: itemPosition.left - startPosition.left
+                                });
+                            });
+                        },
+                        drag: function (event, ui) {
+                            // Move each selected item according to the initial offset
+                            $(".ui-selected").not(this).each(function() {
+                                var $this = $(this);
+                                var offset = $this.data("offset");
+                                $this.css({
+                                    top: ui.position.top + offset.top,
+                                    left: ui.position.left + offset.left
+                                });
+                            });
+                            jQuery(`#${new_id}`).connections('update');
+                            $(".ui-selected").each(function() {
+                                var $this = $(this);
+                                $this.connections('update');
+                            });
+
+                        },
+                        stop: function (event, ui) {
+                            $(`#${new_id}`).removeClass("ui-selected");
+                        },
+                    });
+                    newElement.resizable({
+                        resize: function () {
+                            jQuery(`#${new_id}`).connections('update');
+                        }
+                    });
+                    newElement.on('keydown', function (event) {
+                        console.log(`#${new_id}`)
+                        if (event.keyCode == 46) {
+                            if (document.activeElement.tagName.toLowerCase() != "textarea") {
+                                $(`#${new_id}`).connections('remove_connection');
+                                this.remove();
+                            }
+                        }
+                    });
+
+                    newElement.on('click', function (event) {
+                        console.log(event.target.closest("#pin"));
+                        if (event.target.closest("#pin") != null) {
+                            let target = $(`#${new_id} #pin`);
+                            if (target.hasClass("unselected")) {
+                                target.removeClass("unselected");
+                                target.addClass("selected");
+                                $(`#${new_id} #pin svg`).toggleClass("bold-svg");
+                            }
+                            else {
+                                $(`#${new_id} #pin svg`).toggleClass("bold-svg");
+                                target.removeClass("selected");
+                                target.addClass("unselected");
+                            };
+                        }
+                        console.log(`#${new_id}`);
+                        if (cntrlIsPressed && current_selection != null) {
+                            $(current_selection).connections({
+                                to: `#${new_id}`,
+                                'class': `my-connection ${connection_name}`
+                            });
+                            connection_list_name_from_and_to.push([`${connection_name}`, current_selection, `#${new_id}`]);
+                            $(`.${connection_name}`).attr('tabindex', '-1');
+                            $(`.${connection_name}`).on('keydown', function (event) {
+                                console.log(`#${connection_name}`);
+                                $(`.${connection_name}`).connections('remove_connection');
+                                remove_connection_from_list(`${connection_name}`);
+                            });
+                            current_selection = null;
+                        }
+                        current_selection = `#${new_id}`;
+
+                    });
+                    newElement.appendTo("body");
+                });
+            }
+            event.preventDefault(); // Prevent default paste behavior
+            // unselect all elements
+            $(".draggable").removeClass('ui-selected');
+        }
+    });
+});
+</script>
+    <script>
+function create_dashboard_tile(container_name, x, y) {
+    const width = 500;
+    const height = 300;
+    let script_tag = "script";
+    return `
+<div class="container executor flex-col" id="${container_name}" tabindex="-1" style="width: ${width}px; height: ${height}px; 
+            top: ${y}px; left: ${x}px; position: absolute; border-top-width: 10px; padding-bottom: 20px;">
+    <textarea id="instruction" rows="1" placeholder="Instruction" name="title-${container_name}" style="border: 1px solid darkgray;"></textarea>
+    <div class="flex display">
+        <div id="pin" class="container-separator mb-2 mr-2 unselected top-0" style="height: 16px; width: 16px;">${pin}</div>
+        <div class="container-separator mb-2" style="width: 100%; height: 16px;" id="spinner"></div>
+    </div>                  
+    <div class="flex">                
+        <button class="tab-btn w-full py-2 px-4 text-center bg-white font-semibold rounded-t-md focus:outline-none hover:bg-blue-50 border-l border-r first:border-l-0 active border-b-0" data-tab="tab1-${container_name}" data-other="tab2-${container_name}">
+            Results
+        </button>
+        <button class="tab-btn w-full py-2 px-4 text-center bg-white font-semibold rounded-t-md focus:outline-none hover:bg-blue-50 border-l border-r first:border-l-0 active border-b-0" data-tab="tab2-${container_name}" data-other="tab1-${container_name}">
+            Code
+        </button>
+    </div>
+    <div style="height: calc(100% - 100px);">
+        <div id="tab1-${container_name}" class="tab-content">
+            <div id="result" class="h-full overflow-auto" placeholder="Result" style="margin-bottom: 10px; resize: none; border: 1px solid darkgray;" name="description-${container_name}" readonly></div>       
+        </div>
+        <div id="tab2-${container_name}" class="tab-content hidden">
+            <textarea id="code" class="h-full" placeholder="Code" style="margin-bottom: 10px; resize: none; border: 1px solid darkgray;" name="description-${container_name}"></textarea>
+        </div>
+    </div>
+  
+</div>
+<${script_tag}>
+    $(document).ready(function () {
+        // On tab button click
+        $('.tab-btn').click(function () {
+            // Remove 'bg-white', 'text-blue-500', 'border-b-0' from all tab buttons and add 'bg-gray-200', 'text-gray-700'
+            $('.tab-btn').removeClass('bg-white text-blue-500 border-b-0').addClass('text-gray-700');
+
+            // Add 'bg-white', 'text-blue-500', 'border-b-0' to the clicked tab button and remove 'bg-gray-200', 'text-gray-700'
+            $(this).addClass('bg-white text-blue-500 border-b-0').removeClass('text-gray-700');
+
+            // Hide all tab content
+            $('#' + $(this).data('other')).addClass('hidden');
+
+            // Show content of the clicked tab
+            $('#' + $(this).data('tab')).removeClass('hidden');
+        });
+    });
+</${script_tag}>
+      `
+}
+
+
+$(function () {
+    $("#navigation #new-dashboard-button").on('click', function (event) {
+        create_new_tile(event, position = "center", html_tile_creator = create_dashboard_tile, type = "dashboard");
+    });
+    $(document).on('keypress', function (event) {
+        var tag = event.target.tagName.toLowerCase();
+        if (event.which == "d".charCodeAt(0) && tag != 'input' && tag != 'textarea') {
+            create_new_tile(event, position = "mouse", html_tile_creator = create_dashboard_tile, type = "executor");
+        }
+    });
+});
+
+</script>
+</head>
+<body style="height: 10000px; width: 10000px;">
+    <div class="container top-0" tabindex="-1"
+         id="navigation"
+         style="width: 250px; height: auto; top: 50px; left: 50px; padding-top: 20px; border-top-width: 10px;"
+    >
+        <div class="text-left menu-item" id="new-project-tile-button">New Conditional prompt</div>
+        <div class="text-left menu-item" id="new-task-tile-button">New Prompt</div>
+        <div class="text-left menu-item" id="new-output-button">New Output</div>
+        <div class="text-left menu-item" id="new-executor-button">New Executor</div>
+        <div class="text-left menu-item" id="new-dashboard-button">New Dashboard</div>
+        <div class="text-left menu-item" id="save-button">Save</div>
+    </div>
+    <div class="container top-0" tabindex="-1"
+         id="start"
+         style="width: 280px; height: auto; top: 50px; left: 350px; padding-top: 20px; border-top-width: 10px;"
+    >
+        <input type="password" id="key" value="" name="key" placeholder="Paste your OpenAI key here." style="width: 100%; position: center;" required>
+        <div style="margin-top: 10px;" class="text-left menu-item" id="play-button">Play</div>
+    </div>
+
+</body>
+</html>

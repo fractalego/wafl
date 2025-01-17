@@ -34,7 +34,7 @@ The user wants to know today's date:
 
 The user wants to know the day of the week:
   - output <execute>get_day()</execute>.
-""" #### this much faster - the model only generates the output. it does not try to be chatty
+"""
 
 rules_texts = """
 - the user wants to know the time:

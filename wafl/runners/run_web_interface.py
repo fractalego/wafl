@@ -34,6 +34,11 @@ async def index_web():
     return render_template("selector.html")
 
 
+@app.route("/organizer")
+async def organizer():
+    return render_template("organizer.html")
+
+
 def create_scheduler_and_webserver_loop(conversation_id):
     config = Configuration.load_local_config()
     interface = QueueInterface()
